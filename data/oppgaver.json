@@ -164,6 +164,24 @@
   "min": 5
  },
  {
+  "id": "v-vask",
+  "navn": "Klesvask: vaske, henge opp, brette",
+  "ikon": "🧺",
+  "kat": "Vask",
+  "int": "dager",
+  "dager": [
+   0,
+   2,
+   4
+  ],
+  "rull": [
+   "anniken",
+   "thor"
+  ],
+  "poeng": 2,
+  "min": 20
+ },
+ {
   "id": "t-trapp",
   "navn": "Støvsuge trappa",
   "ikon": "🪜",
