@@ -422,8 +422,11 @@ var visUke=mandag(NAA);
 var valgt=null;
 try{valgt=localStorage.getItem('ft-person')||null}catch(e){}
 (function(){var q='';try{q=(new URLSearchParams(location.search).get('p')||location.hash.replace('#','')||'').toLowerCase()}catch(e){}
+  try{q=decodeURIComponent(q)}catch(e){}
   if(q==='vårin'||q==='varin')q='vaarin';
-  if(q&&PMAP[q]){valgt=q;try{localStorage.setItem('ft-person',q)}catch(e){}}})();
+  /* «Alle» er ikke en person i PMAP — internt er det valgt=null, samme som Alle-knappen gjør */
+  if(q==='alle'||q==='all'||q==='oss'){valgt=null;try{localStorage.removeItem('ft-person')}catch(e){}}
+  else if(q&&PMAP[q]){valgt=q;try{localStorage.setItem('ft-person',q)}catch(e){}}})();
 try{var lu=JSON.parse(localStorage.getItem('ft-uker')||'{}');UKER=lu||{}}catch(e){}
 function lagreLokalt(){try{localStorage.setItem('ft-uker',JSON.stringify(UKER))}catch(e){}}
 
