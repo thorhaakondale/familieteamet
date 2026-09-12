@@ -486,9 +486,10 @@ function tegnIdag(){
     html+='<div class="grp'+(g==='Henger igjen'?' hg':'')+'">'+esc(navnG[g]||g)+'</div><div class="tiles">';
     /* «Alle»-visning: samme oppgave for flere personer samme dag = én rute med avatarer */
     var liste=grp[g];
-    if(!valgt){var by={},ord=[];liste.forEach(function(s){var k=s.o.id+'|'+s.dag;if(!by[k]){by[k]=[];ord.push(k)}by[k].push(s)});
+    /* Forfalte ruter slås IKKE sammen: de kan komme fra ulike uker, og hver av dem må beholde sin egen ukeKey */
+    if(!valgt&&g!=='Henger igjen'){var by={},ord=[];liste.forEach(function(s){var k=s.o.id+'|'+s.dag;if(!by[k]){by[k]=[];ord.push(k)}by[k].push(s)});
       liste=ord.map(function(k){var arr=by[k];if(arr.length===1)return arr[0];var a=arr[0];return {o:a.o,dag:a.dag,person:a.person,orig:a.orig,key:a.key,felles:arr}})}
-    liste.sort(function(a,b){var da=(a.felles?a.felles.every(function(x){return erGjort(key,x.key)}):erGjort(key,a.key))?1:0,dbb=(b.felles?b.felles.every(function(x){return erGjort(key,x.key)}):erGjort(key,b.key))?1:0;if(da!==dbb)return da-dbb;return (a.person>b.person)?1:-1}).forEach(function(s){
+    liste.sort(function(a,b){var da=(a.felles?a.felles.every(function(x){return erGjort(key,x.key)}):erGjort(a.ukeKey||key,a.key))?1:0,dbb=(b.felles?b.felles.every(function(x){return erGjort(key,x.key)}):erGjort(b.ukeKey||key,b.key))?1:0;if(da!==dbb)return da-dbb;return (a.person>b.person)?1:-1}).forEach(function(s){
       if(s.felles){
         var alleD=s.felles.every(function(x){return erGjort(key,x.key)}), antD=s.felles.filter(function(x){return erGjort(key,x.key)}).length;
         var av=s.felles.map(function(x){var q=PMAP[x.person];return '<span class="av'+(erGjort(key,x.key)?' ok':'')+'" style="--pc:'+q.farge+'" title="'+esc(q.navn)+'">'+esc(q.kort)+'</span>'}).join('');
