@@ -117,6 +117,11 @@ b,strong{font-weight:800}
 .dagbar{height:12px;border-radius:999px;background:var(--line2);overflow:hidden;margin:4px 0 2px}
 .dagfill{height:100%;background:linear-gradient(90deg,var(--accent),var(--ok));border-radius:999px;transition:width .5s}
 .dagtxt{font-size:14px;color:var(--ink2);margin:0 0 6px}
+.grp.hg{color:var(--warn)}
+.tile.hg{border-color:var(--warn);background:var(--warnbg)}
+.glemt{background:var(--warnbg);border:1px solid var(--warn);border-radius:10px;padding:8px 10px;margin:6px 0 8px;font-size:13.5px;font-weight:700;color:var(--ink)}
+.glemt .gk{font:inherit;font-size:13px;font-weight:800;margin:3px 4px 3px 0;padding:4px 9px;border-radius:999px;border:1.5px solid var(--warn);background:var(--card);color:var(--ink);cursor:pointer}
+.glemt .small{display:block;font-weight:600;margin-top:3px}
 .konf{position:fixed;top:-10px;width:10px;height:14px;z-index:70;pointer-events:none;animation:fall 1.8s ease-in forwards;border-radius:2px}
 @keyframes fall{to{transform:translateY(110vh) rotate(540deg);opacity:.2}}
 @media (prefers-reduced-motion:reduce){.konf{display:none}}
@@ -253,6 +258,7 @@ details.om .in{padding:8px 0 0;font-size:14px;max-width:70ch}
 <p><b>Poengene</b> er ett lag, ikke fem. Ingen konkurrerer mot søsken. Oscar (2) er med på sine småting, og alt han gjør teller.</p>
 <p><b>Voksne</b> legger inn nye oppgaver, flytter dager og setter belønning under Oppgavebanken. Rader merket «forslag» er tavlas forslag og skal justeres av dere.</p>
 <p><b>Egen lenke og «app» på iPad og mobil.</b> Bruk lenka med <code>&amp;p=erik</code>, <code>&amp;p=vaarin</code>, <code>&amp;p=oscar</code>, <code>&amp;p=thor</code> eller <code>&amp;p=anniken</code>, så åpner tavla ferdig valgt for den personen — også fra hjemskjermen. Legg den på hjemskjermen: iPad/iPhone — Del-knappen → «Legg til på Hjem-skjerm»; Android — menyen ⋮ → «Legg til på startskjermen». Ingen innlogging trengs.</p>
+<p><b>Glemt eller ikke gjort?</b> Rutiner (morgen, hjemkomst, måltider, kl. 22) er nye hver dag: ble de ikke huket, står dagen tom i uketabellen og poengene mangler — men de hoper seg ikke opp. Ble noe gjort uten hake, viser «Ikke huket i går» det dagen etter, med ett trykk for å rette. Alt annet — ryddedagen, hver 3. uke, sesong — henger igjen under «⏰ Henger igjen» til det faktisk er gjort, for badet er fortsatt skittent.</p>
 <p><b>Bytte eller flytte en oppgave.</b> Trykk ⇄ på ruta: velg hvem som tar den i dag (jobber Anniken, tar Thor middagen), eller flytt den til en annen dag denne uka (rekker du ikke badene lørdag, tar du dem mandag). Vil du skyve den lenger, velg «utsett til» — i morgen, to dager, neste uke eller en dato du velger selv; da dukker den opp den dagen, merket ⏭. Alt kan angres med ↩. Ferdige ruter krymper og legger seg nederst i gruppa, så det som gjenstår står øverst.</p>
 <p><b>Belønningstrappa.</b> Ett ukemål gir spillkveld, to på rad filmkveld hjemme, tre av fire uker gir overnattingsbesøk (huset er helgeklart og de voksne har overskudd), seks av åtte uker en fornøyelsesdag som planlegges i kalenderen, og tolv av seksten uker utløser bossen — den eneste premien som er en ting, og den kommer sjelden med vilje. Linja over lagtabellen ruller gjennom nivåene og viser hvor langt dere er. Voksne endrer tekstene under Oppgavebanken.</p>
 <p><b>Lagring.</b> Hakene lagres delt (Firebase, EU), så mobil, iPad og PC viser det samme uten innlogging — lenka dere fikk har familiekoden i seg, og enheten husker den. Oppgavebanken og trappa ligger i appens filer og oppdateres av Bjørn og Liv. Mister siden kontakten, lagres det på enheten til den er tilbake.</p>
@@ -266,6 +272,7 @@ details.om .in{padding:8px 0 0;font-size:14px;max-width:70ch}
 
 <script>
 /* ---------- oppsett ---------- */
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -478,6 +485,31 @@ function tegnHvem(){
   });
 }
 
+/* Oppgaver som IKKE er rutiner og som ikke ble gjort på dagen sin, henger igjen til de er gjort (badet er fortsatt skittent).
+   Rutiner (hverdag/daglig/faste dager) henger aldri igjen — de er nye hver dag, og den glemte dagen står tom i uketabellen. */
+function erRutine(o){return o.int==='hverdag'||o.int==='daglig'||o.int==='dager'}
+function forfalte(){
+  var man=mandag(NAA), dIdx=(NAA.getDay()+6)%7, ut=[];
+  for(var w=0;w<13;w++){var m=addDays(man,-7*w), k=ukeKey(m);
+    planUke(m).forEach(function(s){
+      if(erRutine(s.o)) return;
+      if(s.o.int==='uke'&&w>0) return; /* ukentlige kommer igjen neste uke uansett — henger bare ut uka */
+      var passert=(w>0)||(s.dag<dIdx); if(!passert) return;
+      if(addDays(m,s.dag)<STARTDATO) return; /* ingenting fra før appen fantes */
+      if(erGjort(k,s.key)) return;
+      if(s.o.int==='dato'&&w>2) return; /* engangsoppgaver eldre enn to uker slipper vi */
+      if(valgt&&s.person!==valgt) return;
+      /* periodiske: bare den nyeste ugjorte forekomsten per oppgave og person */
+      if(ut.some(function(x){return x.o.id===s.o.id&&x.person===s.person})) return;
+      ut.push({o:s.o,dag:s.dag,person:s.person,orig:s.orig,key:s.key,ukeKey:k,dato:addDays(m,s.dag),forfalt:true,utsatt:s.utsatt,fraUke:s.fraUke,fraKey:s.fraKey});
+    });
+  }
+  return ut;
+}
+function glemtIGaar(){
+  var ig=addDays(NAA,-1), m=mandag(ig), k=ukeKey(m), d=(ig.getDay()+6)%7;
+  return planUke(m).filter(function(s){return erRutine(s.o)&&s.dag===d&&!erGjort(k,s.key)&&(!valgt||s.person===valgt)}).map(function(s){s.ukeKey=k;return s});
+}
 function tegnIdag(){
   var man=mandag(NAA), key=ukeKey(man), dIdx=(NAA.getDay()+6)%7;
   var pv=valgt?PMAP[valgt]:null;
@@ -486,13 +518,15 @@ function tegnIdag(){
   var pl=document.getElementById('dagplan');
   pl.innerHTML=plan.length?'<div class="plan">'+plan.map(function(l){var s=l.split('·');return '<div><b>'+esc((s[0]||'').trim())+'</b>'+esc((s.slice(1).join('·')||'').trim())+'</div>'}).join('')+'</div>':'';
   var slots=planUke(man).filter(function(s){return s.dag===dIdx&&(!valgt||s.person===valgt)});
-  var grp={}; GRUPPER.forEach(function(g){grp[g]=[]});
+  slots.forEach(function(s){s.ukeKey=key});
+  var henger=forfalte();
+  var grp={'Henger igjen':henger}; GRUPPER.forEach(function(g){grp[g]=[]});
   slots.forEach(function(s){var g=s.o.int==='dato'?'Ute':s.o.kat; if(s.o.int==='dato'&&s.o.tid) g='Ute'; (grp[g]||(grp[g]=[])).push(s)});
   var html='';
-  var navnG={'Morgen':'Morgen','Etter skolen':'Når du kommer hjem','Måltider':'Måltider','Kveld':'Kl. 22 — før legging','Rydding':'Ryddejobb','Vask':'Vask og bestilling','Sesong':'Modent nå','Ute':'Avtalt tidspunkt'};
-  GRUPPER.forEach(function(g){
+  var navnG={'Morgen':'Morgen','Etter skolen':'Når du kommer hjem','Måltider':'Måltider','Kveld':'Kl. 22 — før legging','Rydding':'Ryddejobb','Vask':'Vask og bestilling','Sesong':'Modent nå','Ute':'Avtalt tidspunkt','Henger igjen':'⏰ Henger igjen — ikke gjort ennå'};
+  ['Henger igjen'].concat(GRUPPER).forEach(function(g){
     if(!grp[g].length) return;
-    html+='<div class="grp">'+esc(navnG[g]||g)+'</div><div class="tiles">';
+    html+='<div class="grp'+(g==='Henger igjen'?' hg':'')+'">'+esc(navnG[g]||g)+'</div><div class="tiles">';
     /* «Alle»-visning: samme oppgave for flere personer samme dag = én rute med avatarer */
     var liste=grp[g];
     if(!valgt){var by={},ord=[];liste.forEach(function(s){var k=s.o.id+'|'+s.dag;if(!by[k]){by[k]=[];ord.push(k)}by[k].push(s)});
@@ -505,13 +539,15 @@ function tegnIdag(){
         html+='<div class="tile'+(alleD?' done':'')+'" style="--pc:var(--accent)"><button class="tmain" data-k="'+esc(key)+'" data-f="'+esc(s.felles.map(function(x){return x.key}).join(','))+'" aria-pressed="'+alleD+'"><span class="chk">✓</span><span class="ik">'+s.o.ikon+'</span><span class="tx"><span class="nm">'+esc(s.o.navn)+'</span><span class="mt">'+metaF+'</span><span class="avs">'+av+'</span></span></button><span class="side"><span class="pt num">+'+(s.o.poeng*s.felles.length)+'</span></span></div>';
         return;
       }
-      var done=erGjort(key,s.key), p=PMAP[s.person];
+      var done=erGjort(s.ukeKey||key,s.key), p=PMAP[s.person];
       var meta=(s.o.tid?'kl. '+s.o.tid+' · ':'')+(s.o.min?s.o.min+' min':'')+(valgt?'':' · '+p.navn);
       if(s.o.lenke) meta+=' · <a href="'+s.o.lenke+'" onclick="event.stopPropagation()">'+esc(s.o.lenkenavn||'åpne')+'</a>';
       if(s.byttet) meta='⇄ for '+PMAP[s.orig].navn+' · '+meta;
       if(s.flyttet) meta='→ fra '+DAGK[s.fraDag]+' · '+meta;
-      if(s.utsatt) meta='⏭ utsatt fra '+datoNorsk(s.fraDato)+' · '+meta;
-      html+='<div class="tile'+(done?' done':'')+'" style="--pc:'+p.farge+'"><button class="tmain" data-k="'+esc(key)+'" data-s="'+esc(s.key)+'" data-p="'+esc(s.person)+'" aria-pressed="'+done+'"><span class="chk">✓</span><span class="ik">'+s.o.ikon+'</span><span class="tx"><span class="nm">'+esc(s.o.navn)+'</span><span class="mt">'+meta+'</span></span></button><span class="side"><span class="pt num">+'+s.o.poeng+'</span><button class="tb" title="Bytt oppgaven til en annen" aria-label="Bytt til en annen" data-k="'+esc(key)+'" data-o="'+esc(s.o.id)+'" data-d="'+s.dag+'" data-fra="'+esc(s.orig)+'" data-naa="'+esc(s.person)+'" data-dag0="'+(s.flyttet?s.fraDag:s.dag)+'"'+(s.utsatt?' data-uts="'+esc(s.fraUke)+'" data-utsk="'+esc(s.fraKey)+'"':'')+'>⇄</button></span></div>';
+      if(s.utsatt&&s.fraDato) meta='⏭ utsatt fra '+datoNorsk(s.fraDato)+' · '+meta;
+      if(s.forfalt) meta='skulle vært '+DAGK[s.dag]+' '+datoNorsk(s.dato)+' · '+meta;
+      var tk=s.ukeKey||key;
+      html+='<div class="tile'+(done?' done':'')+(s.forfalt?' hg':'')+'" style="--pc:'+p.farge+'"><button class="tmain" data-k="'+esc(tk)+'" data-s="'+esc(s.key)+'" data-p="'+esc(s.person)+'" aria-pressed="'+done+'"><span class="chk">✓</span><span class="ik">'+s.o.ikon+'</span><span class="tx"><span class="nm">'+esc(s.o.navn)+'</span><span class="mt">'+meta+'</span></span></button><span class="side"><span class="pt num">+'+s.o.poeng+'</span><button class="tb" title="Bytt oppgaven til en annen" aria-label="Bytt til en annen" data-k="'+esc(tk)+'" data-o="'+esc(s.o.id)+'" data-d="'+s.dag+'" data-fra="'+esc(s.orig)+'" data-naa="'+esc(s.person)+'" data-dag0="'+(s.flyttet?s.fraDag:s.dag)+'"'+(s.utsatt?' data-uts="'+esc(s.fraUke)+'" data-utsk="'+esc(s.fraKey)+'"':'')+'>⇄</button></span></div>';
     });
     html+='</div>';
   });
@@ -521,8 +557,11 @@ function tegnIdag(){
   if(antAlle){var pct=Math.round(antGjort/antAlle*100);
     frem='<div class="dagbar"><div class="dagfill" style="width:'+pct+'%"></div></div><p class="dagtxt">'+(antGjort===antAlle?'<b>Alt gjort i dag!</b> 🎉 Kjempebra.':'<b>'+antGjort+' av '+antAlle+'</b> gjort · '+(antAlle-antGjort)+' igjen')+'</p>';
     if(antGjort===antAlle&&!window.__feiret){window.__feiret=true;feir()}else if(antGjort<antAlle)window.__feiret=false;}
+  var gl=glemtIGaar();
+  if(gl.length){frem+='<div class="glemt">Ikke huket i går: '+gl.map(function(s){return '<button class="gk" data-k="'+esc(s.ukeKey)+'" data-s="'+esc(s.key)+'" data-p="'+esc(s.person)+'">'+s.o.ikon+' '+esc(s.o.navn)+(valgt?'':' · '+esc(PMAP[s.person].navn))+' ✓?</button>'}).join('')+'<span class="small">Trykk hvis det ble gjort likevel. Ellers står dagen tom — rutiner tas ikke igjen.</span></div>'}
   if(!html) html='<p class="tom">Ingen oppgaver i dag — fri! 🎉</p>';
   var el=document.getElementById('idag-liste');el.innerHTML=frem+html;
+  el.querySelectorAll('.gk').forEach(function(b){b.onclick=function(){toggle(b.dataset.k,b.dataset.s,b.dataset.p)}});
   el.querySelectorAll('.tmain').forEach(function(b){b.onclick=function(){
     if(b.dataset.f){var keys=b.dataset.f.split(','),alle=keys.every(function(k){return erGjort(b.dataset.k,k)});
       keys.forEach(function(k){if(erGjort(b.dataset.k,k)===alle)toggle(b.dataset.k,k,k.split('|')[2])});return}
