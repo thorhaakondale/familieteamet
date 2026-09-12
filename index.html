@@ -234,7 +234,6 @@ details.om .in{padding:8px 0 0;font-size:14px;max-width:70ch}
     <div><label for="f-int">Rytme</label><select id="f-int"><option value="hverdag">Hver hverdag</option><option value="daglig">Hver dag</option><option value="uke" selected>Hver uke</option><option value="2uke">Hver 2. uke</option><option value="3uke">Hver 3. uke</option><option value="4uke">Hver 4. uke</option><option value="kvartal">Hver 3. måned</option><option value="dato">Én bestemt dato</option></select></div>
     <div><label for="f-dag">Dag</label><select id="f-dag"><option value="0">Mandag</option><option value="1">Tirsdag</option><option value="2">Onsdag</option><option value="3" selected>Torsdag</option><option value="4">Fredag</option><option value="5">Lørdag</option><option value="6">Søndag</option></select></div>
     <div><label for="f-dato">Dato (bare ved «bestemt dato»)</label><input id="f-dato" type="date"></div>
-    <div><label for="f-tid">Klokkeslett (valgfritt)</label><input id="f-tid" type="time"></div>
     <div><label for="f-poeng">Poeng</label><input id="f-poeng" type="text" inputmode="numeric" value="3"></div>
     <div><label for="f-min">Minutter</label><input id="f-min" type="text" inputmode="numeric" value="15"></div>
     <div class="full"><label>Hvem</label><div class="hv" id="f-hvem"></div></div>
@@ -245,7 +244,6 @@ details.om .in{padding:8px 0 0;font-size:14px;max-width:70ch}
       <div><label for="i-prosent">Ukemål i prosent av planlagte poeng</label><input id="i-prosent" type="text" inputmode="numeric" value="75"></div>
       <div class="full"><label>Belønningstrappa — teksten per nivå (rekkefølgen og kravene ligger fast: 1 uke · 2 på rad · 3 av 4 · 6 av 8 · 12 av 16)</label>
         <input id="i-t0" placeholder="Nivå 1 — én uke"><input id="i-t1" placeholder="Nivå 2 — to uker på rad" style="margin-top:6px"><input id="i-t2" placeholder="Nivå 3 — tre av fire uker" style="margin-top:6px"><input id="i-t3" placeholder="Nivå 4 — seks av åtte uker" style="margin-top:6px"><input id="i-t4" placeholder="Bossen — tolv av seksten uker" style="margin-top:6px"></div>
-      <div class="full"><label for="i-plan">Dagens plan (én linje per punkt, «kl. · tekst»)</label><input id="i-plan" placeholder="18:00 · Utejobb, alle sammen, 1 time"></div>
       <div class="full"><button type="submit">Lagre</button></div>
     </form>
   </details>
@@ -253,7 +251,7 @@ details.om .in{padding:8px 0 0;font-size:14px;max-width:70ch}
 
 <details class="om" id="om"><summary>Slik virker Familieteamet</summary><div class="in">
 <p><b>Hvem er du?</b> Velg navnet ditt øverst — iPaden husker det. «Alle» viser hele laget.</p>
-<p><b>I dag</b> viser bare det som skal gjøres i dag, i den rekkefølgen dagen går: morgen, etter skolen, måltider, ryddejobb, avtalt tidspunkt. Trykk på ruta når du er ferdig. Trykk igjen hvis du bommet.</p>
+<p><b>I dag</b> viser bare det som skal gjøres i dag, gruppert etter når på dagen det passer: morgen, etter skolen, måltider, kveld, ryddejobb. Ingen klokkeslett — det viktigste er at det blir gjort i løpet av dagen. Trykk på ruta når du er ferdig. Trykk igjen hvis du bommet.</p>
 <p><b>Rytmen.</b> Morgen- og hjemkomstrutinene går hver hverdag. Måltidsjobbene går hver dag og bytter mellom Erik og Vårin annenhver uke. <b>Torsdag er ryddedagen</b> — da er huset klart til helga og uka etter. Oppgaver som går hver 3. uke og hver 3. måned dukker opp på lørdager når de er modne. Sesongbyttet i garderoben kobles til Brukskortene, og skapsjekken onsdag kobles til Ukeshandel — samme rytme, samme sted.</p>
 <p><b>Poengene</b> er ett lag, ikke fem. Ingen konkurrerer mot søsken. Oscar (2) er med på sine småting, og alt han gjør teller.</p>
 <p><b>Voksne</b> legger inn nye oppgaver, flytter dager og setter belønning under Oppgavebanken. Rader merket «forslag» er tavlas forslag og skal justeres av dere.</p>
@@ -288,46 +286,7 @@ var DAGK=['man','tir','ons','tor','fre','lør','søn'];
 var GRUPPER=['Morgen','Etter skolen','Måltider','Kveld','Rydding','Vask','Sesong','Ute'];
 
 /* Seed = fallback hvis databasen ikke svarer. Databasen overstyrer felt for felt. */
-var SEED=[
- {id:'m-sekk',navn:'Sekken klar',ikon:'🎒',kat:'Morgen',int:'hverdag',hvem:['erik','vaarin'],poeng:1,min:3},
- {id:'m-tann-v',navn:'Tannpuss',ikon:'🪥',kat:'Morgen',int:'hverdag',hvem:['vaarin'],poeng:1,min:3},
- {id:'m-tann-e',navn:'Tannpuss og medisin',ikon:'🪥',kat:'Morgen',int:'hverdag',hvem:['erik'],poeng:1,min:3},
- {id:'m-niste',navn:'Smøre niste',ikon:'🥪',kat:'Morgen',int:'hverdag',hvem:['erik','vaarin'],poeng:1,min:5},
- {id:'m-frokost',navn:'Frokost og et glass vann',ikon:'🥣',kat:'Morgen',int:'hverdag',hvem:['erik','vaarin','oscar'],poeng:1,min:10},
- {id:'h-sko',navn:'Sko under skobenken eller i skoskapet',ikon:'👟',kat:'Etter skolen',int:'hverdag',hvem:['erik','vaarin','oscar'],poeng:1,min:1},
- {id:'h-sekk',navn:'Sekken på rommet',ikon:'🚪',kat:'Etter skolen',int:'hverdag',hvem:['erik','vaarin'],poeng:1,min:1},
- {id:'k-dekke',navn:'Dekke på bordet',ikon:'🍽️',kat:'Måltider',int:'daglig',rull:['vaarin','erik'],poeng:1,min:5},
- {id:'k-rydde',navn:'Rydde av bordet',ikon:'🧽',kat:'Måltider',int:'daglig',rull:['erik','vaarin'],poeng:1,min:5},
- {id:'k-tom',navn:'Tømme oppvaskmaskinen',ikon:'🫧',kat:'Måltider',int:'daglig',rull:['erik','vaarin'],poeng:2,min:8},
- {id:'k-fyll',navn:'Fylle oppvaskmaskinen',ikon:'🍴',kat:'Måltider',int:'daglig',rull:['vaarin','erik'],poeng:2,min:8},
- {id:'k-tallerken',navn:'Bære tallerkenen sin til benken',ikon:'🌱',kat:'Måltider',int:'daglig',hvem:['oscar'],poeng:1,min:1},
- {id:'kv-gang',navn:'Gangen og vaskerommet ryddig — PC-bag og treningsbag på plass',ikon:'🎒',kat:'Kveld',int:'daglig',tid:'22:00',hvem:['thor'],poeng:1,min:5},
- {id:'kv-bad',navn:'Sko på plass, håndklær opp fra badegulvet, badet ryddig',ikon:'🧖',kat:'Kveld',int:'daglig',tid:'22:00',hvem:['anniken'],poeng:1,min:5},
- {id:'kv-kjokken',navn:'Kjøkkenet klart til neste dag',ikon:'✨',kat:'Kveld',int:'daglig',tid:'22:00',hvem:['thor','anniken'],poeng:1,min:5},
- {id:'k-mat',navn:'Lage middag',ikon:'👨‍🍳',kat:'Måltider',int:'daglig',rull:['thor','anniken'],poeng:2,min:30},
- {id:'t-trapp',navn:'Støvsuge trappa',ikon:'🪜',kat:'Rydding',int:'uke',dag:3,hvem:['erik'],poeng:3,min:10,unntak:{'2026-W37':5}},
- {id:'t-sofa',navn:'Støvsuge sofaene',ikon:'🛋️',kat:'Rydding',int:'uke',dag:3,hvem:['erik'],poeng:3,min:10,unntak:{'2026-W37':5}},
- {id:'t-leker',navn:'Rydde Oscars leker',ikon:'🧸',kat:'Rydding',int:'uke',dag:3,hvem:['erik','oscar'],poeng:2,min:10,unntak:{'2026-W37':5}},
- {id:'t-skap-e',navn:'Klær på plass i eget skap',ikon:'👕',kat:'Rydding',int:'uke',dag:3,hvem:['erik'],poeng:2,min:10,unntak:{'2026-W37':5}},
- {id:'t-skap-v',navn:'Klær på plass i eget skap',ikon:'👗',kat:'Rydding',int:'uke',dag:3,hvem:['vaarin'],poeng:2,min:10,unntak:{'2026-W37':5}},
- {id:'t-skap-oa',navn:'Klær på plass i Oscars og mammas skap',ikon:'🧺',kat:'Rydding',int:'uke',dag:3,hvem:['vaarin'],poeng:3,min:15,unntak:{'2026-W37':5}},
- {id:'t-rom',navn:'Rydde rommet sitt',ikon:'🛏️',kat:'Rydding',int:'uke',dag:3,hvem:['erik','vaarin'],poeng:2,min:15,fra:'2026-W38'},
- {id:'t-skap-t',navn:'Eget skap + klær fra badet til vaskerommet',ikon:'🧺',kat:'Rydding',int:'uke',dag:3,hvem:['thor'],poeng:2,min:10,unntak:{'2026-W37':5}},
- {id:'t-robot',navn:'Robotstøvsugeren i 1. etasje',ikon:'🤖',kat:'Rydding',int:'uke',dag:3,hvem:['thor'],poeng:1,min:2,unntak:{'2026-W37':5}},
- {id:'t-bad',navn:'Lett over begge badene',ikon:'🚿',kat:'Rydding',int:'uke',dag:3,hvem:['thor'],poeng:3,min:15,unntak:{'2026-W37':5}},
- {id:'t-gulv',navn:'Vaske gulv i kjøkken og gang',ikon:'🧹',kat:'Rydding',int:'uke',dag:3,hvem:['anniken'],poeng:3,min:20,forslag:true,fra:'2026-W38'},
- {id:'v-vask',navn:'Klesvask: vaske, henge, legge sammen',ikon:'🧼',kat:'Vask',int:'dager',dager:[0,2,4],rull:['anniken','thor'],poeng:2,min:15,forslag:true,fra:'2026-W38'},
- {id:'v-skap',navn:'Sjekke skap og kjøleskap før Meny-bestillingen',ikon:'🛒',kat:'Vask',int:'uke',dag:2,rull:['thor','anniken'],poeng:2,min:10,lenke:'https://claude.ai/code/artifact/8f9a2b84-c50d-4500-9fe5-e81502d56246',lenkenavn:'Ukeshandel',fra:'2026-W38'},
- {id:'v-seng',navn:'Skifte sengetøy',ikon:'🛌',kat:'Vask',int:'2uke',dag:5,hvem:['erik','vaarin','thor','anniken'],poeng:2,min:10,fra:'2026-W38',forslag:true},
- {id:'v-soppel',navn:'Søppel og pant ut',ikon:'🗑️',kat:'Vask',int:'uke',dag:6,hvem:['erik'],poeng:2,min:5,forslag:true,fra:'2026-W38'},
- {id:'u3-bil',navn:'Støvsuge og rydde bilen',ikon:'🚗',kat:'Sesong',int:'3uke',dag:5,hvem:['thor','erik'],poeng:4,min:30,forslag:true,fra:'2026-W38'},
- {id:'u3-kjol',navn:'Tørke ut kjøleskapet',ikon:'🧊',kat:'Sesong',int:'3uke',dag:5,hvem:['anniken','vaarin'],poeng:4,min:20,forslag:true,fra:'2026-W39'},
- {id:'u3-vaskerom',navn:'Rydde vaskerommet',ikon:'🧴',kat:'Sesong',int:'3uke',dag:5,hvem:['thor'],poeng:3,min:20,forslag:true,fra:'2026-W40'},
- {id:'q-garderobe',navn:'Sesongbytte i garderoben',ikon:'🧥',kat:'Sesong',int:'kvartal',dag:5,hvem:['erik','vaarin','oscar','thor','anniken'],poeng:5,min:45,lenke:'https://claude.ai/code/artifact/1ff7d097-6449-4340-a8a3-201e50fb912d',lenkenavn:'Brukskortene',fra:'2026-W39'},
- {id:'q-vindu',navn:'Vaske vinduer',ikon:'🪟',kat:'Sesong',int:'kvartal',dag:5,hvem:['thor','anniken'],poeng:6,min:90,forslag:true,fra:'2026-W41'},
- {id:'q-bod',navn:'Rydde bod og garasje',ikon:'🧰',kat:'Sesong',int:'kvartal',dag:5,hvem:['thor','erik'],poeng:6,min:60,forslag:true,fra:'2026-W42'},
- {id:'d-ute',navn:'Hagen, uteputer og utemøbler inn før vinteren',ikon:'🍂',kat:'Ute',int:'dato',dato:'2026-09-12',tid:'18:00',hvem:['erik','vaarin','oscar','thor','anniken'],poeng:10,min:60}
-];
+var SEED=[{"id": "m-sekk", "navn": "Sekken klar", "ikon": "🎒", "kat": "Morgen", "int": "hverdag", "hvem": ["erik", "vaarin"], "poeng": 1, "min": 3}, {"id": "m-tann-v", "navn": "Tannpuss", "ikon": "🪥", "kat": "Morgen", "int": "hverdag", "hvem": ["vaarin"], "poeng": 1, "min": 3}, {"id": "m-tann-e", "navn": "1. Medisin · 2. Tannpuss", "ikon": "💊", "kat": "Morgen", "int": "hverdag", "hvem": ["erik"], "poeng": 1, "min": 3}, {"id": "m-frokost", "navn": "Niste smurt, frokost og et glass vann", "ikon": "🥪", "kat": "Morgen", "int": "hverdag", "hvem": ["erik", "vaarin"], "poeng": 2, "min": 15}, {"id": "h-sko", "navn": "Sko på plass, sekken på rommet", "ikon": "👟", "kat": "Etter skolen", "int": "hverdag", "hvem": ["erik", "vaarin"], "poeng": 2, "min": 3}, {"id": "k-dekke", "navn": "Dekke på bordet", "ikon": "🍽️", "kat": "Måltider", "int": "daglig", "rull": ["vaarin", "erik"], "poeng": 1, "min": 5}, {"id": "k-rydde", "navn": "Rydde av bordet", "ikon": "🧽", "kat": "Måltider", "int": "daglig", "rull": ["erik", "vaarin"], "poeng": 1, "min": 5}, {"id": "k-tom", "navn": "Tømme oppvaskmaskinen", "ikon": "🫧", "kat": "Måltider", "int": "daglig", "rull": ["erik", "vaarin"], "poeng": 2, "min": 8}, {"id": "k-fyll", "navn": "Fylle oppvaskmaskinen", "ikon": "🍴", "kat": "Måltider", "int": "daglig", "rull": ["vaarin", "erik"], "poeng": 2, "min": 8}, {"id": "k-tallerken", "navn": "Bære tallerkenen sin til benken", "ikon": "🌱", "kat": "Måltider", "int": "daglig", "hvem": ["oscar"], "poeng": 1, "min": 1}, {"id": "kv-gang", "navn": "Gangen og vaskerommet ryddig — PC-bag og treningsbag på plass", "ikon": "🎒", "kat": "Kveld", "int": "daglig", "hvem": ["thor"], "poeng": 1, "min": 5}, {"id": "kv-bad", "navn": "Sko på plass, håndklær opp fra badegulvet, badet ryddig", "ikon": "🧖", "kat": "Kveld", "int": "daglig", "hvem": ["anniken"], "poeng": 1, "min": 5}, {"id": "kv-kjokken", "navn": "Kjøkkenet klart til neste dag", "ikon": "✨", "kat": "Kveld", "int": "daglig", "hvem": ["thor", "anniken"], "poeng": 1, "min": 5}, {"id": "t-trapp", "navn": "Støvsuge trappa", "ikon": "🪜", "kat": "Rydding", "int": "uke", "dag": 3, "hvem": ["erik"], "poeng": 3, "min": 10, "unntak": {"2026-W37": 5}}, {"id": "t-sofa", "navn": "Støvsuge sofaene", "ikon": "🛋️", "kat": "Rydding", "int": "uke", "dag": 3, "hvem": ["erik"], "poeng": 3, "min": 10, "unntak": {"2026-W37": 5}}, {"id": "t-leker", "navn": "Rydde Oscars leker", "ikon": "🧸", "kat": "Rydding", "int": "uke", "dag": 3, "hvem": ["erik", "oscar"], "poeng": 2, "min": 10, "unntak": {"2026-W37": 5}}, {"id": "t-skap-e", "navn": "Klær på plass i eget skap", "ikon": "👕", "kat": "Rydding", "int": "uke", "dag": 3, "hvem": ["erik"], "poeng": 2, "min": 10, "unntak": {"2026-W37": 5}}, {"id": "t-skap-v", "navn": "Klær på plass i eget skap", "ikon": "👗", "kat": "Rydding", "int": "uke", "dag": 3, "hvem": ["vaarin"], "poeng": 2, "min": 10, "unntak": {"2026-W37": 5}}, {"id": "t-skap-oa", "navn": "Klær på plass i Oscars og mammas skap", "ikon": "🧺", "kat": "Rydding", "int": "uke", "dag": 3, "hvem": ["vaarin"], "poeng": 3, "min": 15, "unntak": {"2026-W37": 5}}, {"id": "t-rom", "navn": "Rydde rommet sitt", "ikon": "🛏️", "kat": "Rydding", "int": "uke", "dag": 3, "hvem": ["erik", "vaarin"], "poeng": 2, "min": 15, "fra": "2026-W38"}, {"id": "t-skap-t", "navn": "Eget skap + klær fra badet til vaskerommet", "ikon": "🧺", "kat": "Rydding", "int": "uke", "dag": 3, "hvem": ["thor"], "poeng": 2, "min": 10, "unntak": {"2026-W37": 5}}, {"id": "t-robot", "navn": "Robotstøvsugeren i 1. etasje", "ikon": "🤖", "kat": "Rydding", "int": "uke", "dag": 3, "hvem": ["thor"], "poeng": 1, "min": 2, "unntak": {"2026-W37": 5}}, {"id": "t-bad", "navn": "Lett over begge badene", "ikon": "🚿", "kat": "Rydding", "int": "uke", "dag": 3, "hvem": ["thor"], "poeng": 3, "min": 15, "unntak": {"2026-W37": 5}}, {"id": "t-gulv", "navn": "Vaske gulv i kjøkken og gang", "ikon": "🧹", "kat": "Rydding", "int": "uke", "dag": 3, "hvem": ["anniken"], "poeng": 3, "min": 20, "forslag": false, "fra": "2026-W38"}, {"id": "v-seng", "navn": "Skifte sengetøy", "ikon": "🛌", "kat": "Vask", "int": "3uke", "dag": 5, "hvem": ["erik", "vaarin", "thor", "anniken"], "poeng": 2, "min": 10, "fra": "2026-W38", "forslag": false}, {"id": "v-soppel", "navn": "Søppel og pant ut", "ikon": "🗑️", "kat": "Vask", "int": "uke", "dag": 6, "hvem": ["erik"], "poeng": 2, "min": 5, "forslag": false, "fra": "2026-W38"}, {"id": "u3-bil", "navn": "Støvsuge og rydde bilen", "ikon": "🚗", "kat": "Sesong", "int": "4uke", "dag": 5, "hvem": ["thor", "erik"], "poeng": 4, "min": 30, "forslag": true, "fra": "2026-W38"}, {"id": "u3-kjol", "navn": "Tørke ut kjøleskapet", "ikon": "🧊", "kat": "Sesong", "int": "4uke", "dag": 5, "hvem": ["anniken", "vaarin"], "poeng": 4, "min": 20, "forslag": true, "fra": "2026-W39"}, {"id": "u3-vaskerom", "navn": "Rydde vaskerommet", "ikon": "🧴", "kat": "Sesong", "int": "4uke", "dag": 5, "hvem": ["thor"], "poeng": 3, "min": 20, "forslag": true, "fra": "2026-W40"}, {"id": "q-garderobe", "navn": "Sesongbytte i garderoben", "ikon": "🧥", "kat": "Sesong", "int": "kvartal", "dag": 5, "hvem": ["erik", "vaarin", "oscar", "thor", "anniken"], "poeng": 5, "min": 45, "lenke": "https://claude.ai/code/artifact/1ff7d097-6449-4340-a8a3-201e50fb912d", "lenkenavn": "Brukskortene", "fra": "2026-W39"}, {"id": "q-vindu", "navn": "Vaske vinduer", "ikon": "🪟", "kat": "Sesong", "int": "kvartal", "dag": 5, "hvem": ["thor", "anniken"], "poeng": 6, "min": 90, "forslag": true, "fra": "2026-W41"}, {"id": "q-bod", "navn": "Rydde bod og garasje", "ikon": "🧰", "kat": "Sesong", "int": "kvartal", "dag": 5, "hvem": ["thor", "erik"], "poeng": 6, "min": 60, "forslag": true, "fra": "2026-W42"}, {"id": "d-ute", "navn": "Hagen, uteputer og utemøbler inn før vinteren", "ikon": "🍂", "kat": "Ute", "int": "dato", "dato": "2026-09-12", "hvem": ["erik", "vaarin", "oscar", "thor", "anniken"], "poeng": 10, "min": 60}, {"id": "m-frokost-o", "navn": "Frokost og et glass vann", "ikon": "🥣", "kat": "Morgen", "int": "hverdag", "hvem": ["oscar"], "poeng": 1, "min": 10}, {"id": "h-sko-o", "navn": "Sko under skobenken", "ikon": "👟", "kat": "Etter skolen", "int": "hverdag", "hvem": ["oscar"], "poeng": 1, "min": 1}];
 var SEED_TRAPP=[
  {ikon:'🎲',navn:'Spillkveld',krav:1,tekst:'Lagmålet nådd én uke: vi setter oss ned i helga og spiller det spillet barna velger'},
  {ikon:'🎬',navn:'Filmkveld hjemme',krav:2,tekst:'To uker på rad: filmkveld med kiosk hjemme — barna velger filmen'},
@@ -514,34 +473,31 @@ function tegnIdag(){
   var man=mandag(NAA), key=ukeKey(man), dIdx=(NAA.getDay()+6)%7;
   var pv=valgt?PMAP[valgt]:null;
   document.getElementById('idag-h').innerHTML=(pv?'Hei '+esc(pv.navn)+' '+pv.dyr:'Hele laget 👨‍👩‍👧‍👦')+' <span class="small">· '+DAGER[dIdx].toLowerCase()+' '+datoNorsk(NAA)+'</span>';
-  var plan=(INNST.plan&&INNST.plan[ymd(NAA)])||[];
-  var pl=document.getElementById('dagplan');
-  pl.innerHTML=plan.length?'<div class="plan">'+plan.map(function(l){var s=l.split('·');return '<div><b>'+esc((s[0]||'').trim())+'</b>'+esc((s.slice(1).join('·')||'').trim())+'</div>'}).join('')+'</div>':'';
+  document.getElementById('dagplan').innerHTML=''; /* ingen dagsplan: tavla er ikke en kalender — det viktigste er at det blir gjort i løpet av dagen */
   var slots=planUke(man).filter(function(s){return s.dag===dIdx&&(!valgt||s.person===valgt)});
   slots.forEach(function(s){s.ukeKey=key});
   var henger=forfalte();
   var grp={'Henger igjen':henger}; GRUPPER.forEach(function(g){grp[g]=[]});
-  slots.forEach(function(s){var g=s.o.int==='dato'?'Ute':s.o.kat; if(s.o.int==='dato'&&s.o.tid) g='Ute'; (grp[g]||(grp[g]=[])).push(s)});
+  slots.forEach(function(s){var g=s.o.kat||'Rydding'; (grp[g]||(grp[g]=[])).push(s)});
   var html='';
-  var navnG={'Morgen':'Morgen','Etter skolen':'Når du kommer hjem','Måltider':'Måltider','Kveld':'Kl. 22 — før legging','Rydding':'Ryddejobb','Vask':'Vask og bestilling','Sesong':'Modent nå','Ute':'Avtalt tidspunkt','Henger igjen':'⏰ Henger igjen — ikke gjort ennå'};
+  var navnG={'Morgen':'Morgen','Etter skolen':'Når du kommer hjem','Måltider':'Måltider','Kveld':'Kveld — før legging','Rydding':'Ryddejobb','Vask':'Vask og bestilling','Sesong':'Modent nå','Ute':'Ute','Henger igjen':'⏰ Henger igjen — ikke gjort ennå'};
   ['Henger igjen'].concat(GRUPPER).forEach(function(g){
     if(!grp[g].length) return;
     html+='<div class="grp'+(g==='Henger igjen'?' hg':'')+'">'+esc(navnG[g]||g)+'</div><div class="tiles">';
     /* «Alle»-visning: samme oppgave for flere personer samme dag = én rute med avatarer */
     var liste=grp[g];
-    /* Forfalte ruter slås IKKE sammen: de kan komme fra ulike uker, og hver av dem må beholde sin egen ukeKey */
-    if(!valgt&&g!=='Henger igjen'){var by={},ord=[];liste.forEach(function(s){var k=s.o.id+'|'+s.dag;if(!by[k]){by[k]=[];ord.push(k)}by[k].push(s)});
+    if(!valgt){var by={},ord=[];liste.forEach(function(s){var k=s.o.id+'|'+s.dag;if(!by[k]){by[k]=[];ord.push(k)}by[k].push(s)});
       liste=ord.map(function(k){var arr=by[k];if(arr.length===1)return arr[0];var a=arr[0];return {o:a.o,dag:a.dag,person:a.person,orig:a.orig,key:a.key,felles:arr}})}
-    liste.sort(function(a,b){var da=(a.felles?a.felles.every(function(x){return erGjort(key,x.key)}):erGjort(a.ukeKey||key,a.key))?1:0,dbb=(b.felles?b.felles.every(function(x){return erGjort(key,x.key)}):erGjort(b.ukeKey||key,b.key))?1:0;if(da!==dbb)return da-dbb;return (a.person>b.person)?1:-1}).forEach(function(s){
+    liste.sort(function(a,b){var da=(a.felles?a.felles.every(function(x){return erGjort(key,x.key)}):erGjort(key,a.key))?1:0,dbb=(b.felles?b.felles.every(function(x){return erGjort(key,x.key)}):erGjort(key,b.key))?1:0;if(da!==dbb)return da-dbb;return (a.person>b.person)?1:-1}).forEach(function(s){
       if(s.felles){
         var alleD=s.felles.every(function(x){return erGjort(key,x.key)}), antD=s.felles.filter(function(x){return erGjort(key,x.key)}).length;
         var av=s.felles.map(function(x){var q=PMAP[x.person];return '<span class="av'+(erGjort(key,x.key)?' ok':'')+'" style="--pc:'+q.farge+'" title="'+esc(q.navn)+'">'+esc(q.kort)+'</span>'}).join('');
-        var metaF=(s.o.tid?'kl. '+s.o.tid+' · ':'')+(s.o.min?s.o.min+' min · ':'')+'alle sammen · '+antD+' av '+s.felles.length;
-        html+='<div class="tile'+(alleD?' done':'')+'" style="--pc:var(--accent)"><button class="tmain" data-k="'+esc(key)+'" data-f="'+esc(s.felles.map(function(x){return x.key}).join(','))+'" aria-pressed="'+alleD+'"><span class="chk">✓</span><span class="ik">'+s.o.ikon+'</span><span class="tx"><span class="nm">'+esc(s.o.navn)+'</span><span class="mt">'+metaF+'</span><span class="avs">'+av+'</span></span></button><span class="side"><span class="pt num">+'+(s.o.poeng*s.felles.length)+'</span></span></div>';
+        var metaF=(s.o.min?s.o.min+' min · ':'')+'alle sammen · '+antD+' av '+s.felles.length;
+        html+='<div class="tile'+(alleD?' done':'')+'" style="--pc:var(--accent)"><button class="tmain" data-k="'+esc(key)+'" data-f="'+esc(s.felles.map(function(x){return x.key}).join(','))+'" aria-pressed="'+alleD+'"><span class="chk">✓</span><span class="ik">'+s.o.ikon+'</span><span class="tx"><span class="nm">'+esc(s.o.navn)+'</span><span class="mt">'+metaF+'</span><span class="avs">'+av+'</span></span></button><span class="side"><span class="pt num">+'+(s.o.poeng*s.felles.length)+'</span><button class="tb" title="Utsett for alle" aria-label="Utsett for alle" data-k="'+esc(s.felles[0].ukeKey||key)+'" data-o="'+esc(s.o.id)+'" data-d="'+s.dag+'" data-dag0="'+(s.felles[0].flyttet?s.felles[0].fraDag:s.dag)+'" data-felles="'+esc(s.felles.map(function(x){return x.orig}).join(','))+'">⇄</button></span></div>';
         return;
       }
       var done=erGjort(s.ukeKey||key,s.key), p=PMAP[s.person];
-      var meta=(s.o.tid?'kl. '+s.o.tid+' · ':'')+(s.o.min?s.o.min+' min':'')+(valgt?'':' · '+p.navn);
+      var meta=(s.o.min?s.o.min+' min':'')+(valgt?'':' · '+p.navn);
       if(s.o.lenke) meta+=' · <a href="'+s.o.lenke+'" onclick="event.stopPropagation()">'+esc(s.o.lenkenavn||'åpne')+'</a>';
       if(s.byttet) meta='⇄ for '+PMAP[s.orig].navn+' · '+meta;
       if(s.flyttet) meta='→ fra '+DAGK[s.fraDag]+' · '+meta;
@@ -572,6 +528,15 @@ function tegnIdag(){
     document.querySelectorAll('.velg').forEach(function(v){v.remove()});
     var o=OPPG.filter(function(x){return x.id===b.dataset.o})[0]; if(!o)return;
     var v=document.createElement('div'); v.className='velg';
+    if(b.dataset.felles){ /* felles oppgave: utsett for alle sammen */
+      var pers=b.dataset.felles.split(','), lf=document.createElement('div'); lf.className='vl'; lf.textContent='Utsett for alle til'; v.appendChild(lf);
+      var basisF=addDays(ukeFraKey(b.dataset.k),+b.dataset.dag0);
+      [[1,'i morgen'],[2,'+2 dager'],[7,'neste uke']].forEach(function(x){var k=document.createElement('button');k.style.setProperty('--pc','var(--warn)');k.textContent='⏭ '+x[1];
+        k.onclick=function(e){e.stopPropagation();pers.forEach(function(pp){utsett(b.dataset.k,o,+b.dataset.dag0,pp,ymd(addDays(basisF,x[0])))})};v.appendChild(k)});
+      var dif=document.createElement('input'); dif.type='date'; dif.className='vdato'; dif.min=ymd(addDays(basisF,1));
+      dif.onclick=function(e){e.stopPropagation()}; dif.onchange=function(e){e.stopPropagation();if(dif.value)pers.forEach(function(pp){utsett(b.dataset.k,o,+b.dataset.dag0,pp,dif.value)})}; v.appendChild(dif);
+      tile.appendChild(v); return;
+    }
     if(b.dataset.uts){ /* en utsatt oppgave: bare angre */
       var l0=document.createElement('div'); l0.className='vl'; l0.textContent='Utsatt oppgave'; v.appendChild(l0);
       var k0=document.createElement('button'); k0.style.setProperty('--pc','var(--ink2)'); k0.className='orig'; k0.textContent='↩ Tilbake til opprinnelig dag';
@@ -586,7 +551,8 @@ function tegnIdag(){
       var l2=document.createElement('div'); l2.className='vl'; l2.textContent='…eller flytt til en annen dag denne uka'; v.appendChild(l2);
       for(var d=0;d<7;d++){(function(d){var k=document.createElement('button'); k.style.setProperty('--pc','var(--ink2)'); k.textContent=(d===+b.dataset.dag0?'↩ ':'')+DAGK[d]; if(d===+b.dataset.d)k.className='naa';
         k.onclick=function(e){e.stopPropagation();flytt(b.dataset.k,o,+b.dataset.dag0,b.dataset.fra,d===+b.dataset.dag0?null:d)}; v.appendChild(k)})(d)}
-      /* utsett til en dato — i morgen, +2, neste uke, eller velg selv */
+    }
+    { /* utsett til en dato — i morgen, +2, neste uke, eller velg selv (gjelder alle typer) */
       var l3=document.createElement('div'); l3.className='vl'; l3.textContent='…eller utsett til'; v.appendChild(l3);
       var basis=addDays(ukeFraKey(b.dataset.k),+b.dataset.dag0);
       [[1,'i morgen'],[2,'+2 dager'],[7,'neste uke']].forEach(function(x){var k=document.createElement('button');k.style.setProperty('--pc','var(--warn)');k.textContent='⏭ '+x[1];
@@ -695,8 +661,7 @@ function tegnBank(){
     var ryt=INTNAVN[o.int]||o.int;
     if(o.int==='dager')ryt=(o.dager||[]).map(function(d){return DAGK[d]}).join('+');
     else if(['uke','2uke','3uke','4uke','kvartal'].indexOf(o.int)>=0)ryt+=' · '+DAGK[o.dag===undefined?3:o.dag];
-    else if(o.int==='dato')ryt=o.dato.split('-').reverse().join('.')+(o.tid?' kl. '+o.tid:'');
-    else if(o.tid)ryt+=' kl. '+o.tid;
+    else if(o.int==='dato')ryt=o.dato.split('-').reverse().join('.');
     var hv=o.rull?o.rull.map(ptag).join('')+'<span class="small">bytter</span>':(o.hvem||[]).map(ptag).join('');
     var ng=nesteGang(o);
     h+='<tr style="'+(o.aktiv===false?'opacity:.5':'')+'"><td class="ikon">'+o.ikon+'</td><td class="navn">'+esc(o.navn)+(o.forslag?' <span class="pill grey">forslag</span>':'')+(o.aktiv===false?' <span class="pill warn">av</span>':'')+(o.lenke?' <a href="'+o.lenke+'">'+esc(o.lenkenavn)+' →</a>':'')+'<small>'+esc(o.kat)+'</small></td><td>'+ryt+'</td><td>'+hv+'</td><td class="c num">'+o.poeng+'</td><td class="c num">'+(o.min||'')+'</td><td class="num">'+(ng?DAGK[(ng.getDay()+6)%7]+' '+datoNorsk(ng):'—')+'</td><td><button class="edit" data-id="'+esc(o.id)+'">endre</button></td></tr>';
@@ -712,7 +677,7 @@ function fyllSkjema(id){
   document.getElementById('ny-wrap').open=true;
   document.getElementById('f-id').value=o.id;document.getElementById('f-navn').value=o.navn;document.getElementById('f-ikon').value=o.ikon||'';
   document.getElementById('f-kat').value=o.kat;document.getElementById('f-int').value=o.int==='dager'?'hverdag':o.int;
-  document.getElementById('f-dag').value=String(o.dag===undefined?3:o.dag);document.getElementById('f-dato').value=o.dato||'';document.getElementById('f-tid').value=o.tid||'';
+  document.getElementById('f-dag').value=String(o.dag===undefined?3:o.dag);document.getElementById('f-dato').value=o.dato||'';
   document.getElementById('f-poeng').value=o.poeng;document.getElementById('f-min').value=o.min||'';
   var hv=o.rull||o.hvem||[];document.querySelectorAll('#f-hvem input[name=hv]').forEach(function(c){c.checked=hv.indexOf(c.value)>=0});
   document.getElementById('f-rull').checked=!!o.rull;document.getElementById('f-aktiv').checked=o.aktiv!==false;
@@ -725,7 +690,7 @@ document.getElementById('ny').onsubmit=function(e){
   if(!hv.length){alert('Velg minst én person.');return}
   var id=document.getElementById('f-id').value||('x-'+Date.now().toString(36));
   var o={id:id,navn:document.getElementById('f-navn').value.trim(),ikon:document.getElementById('f-ikon').value.trim()||'🧺',kat:document.getElementById('f-kat').value,int:document.getElementById('f-int').value,dag:+document.getElementById('f-dag').value,poeng:+(document.getElementById('f-poeng').value.replace(/\s/g,''))||1,min:+(document.getElementById('f-min').value.replace(/\s/g,''))||0,aktiv:document.getElementById('f-aktiv').checked,by:valgt||'familie',ts:new Date().toISOString()};
-  if(o.int==='dato'){o.dato=document.getElementById('f-dato').value;o.tid=document.getElementById('f-tid').value||'';if(!o.dato){alert('Velg dato.');return}}
+  if(o.int==='dato'){o.dato=document.getElementById('f-dato').value;if(!o.dato){alert('Velg dato.');return}}
   if(document.getElementById('f-rull').checked&&hv.length>1){o.rull=hv;o.hvem=[]}else{o.hvem=hv;o.rull=null}
   var gammel=OPPG.filter(function(x){return x.id===id})[0];
   if(gammel){Object.keys(o).forEach(function(k){gammel[k]=o[k]});if(!o.rull)delete gammel.rull;delete gammel.forslag}else OPPG.push(o);
@@ -739,14 +704,12 @@ document.getElementById('innst').onsubmit=function(e){
   var trapp=JSON.parse(JSON.stringify((INNST.trapp&&INNST.trapp.length)?INNST.trapp:SEED_TRAPP));
   for(var i=0;i<5;i++){var v=(document.getElementById('i-t'+i).value||'').trim();if(v&&trapp[i]){var d=v.split(':');if(d.length>1){trapp[i].navn=d[0].trim();trapp[i].tekst=d.slice(1).join(':').trim()}else trapp[i].tekst=v}}
   INNST.trapp=trapp;
-  var pl=document.getElementById('i-plan').value.trim();INNST.plan=INNST.plan||{};
-  if(pl)INNST.plan[ymd(NAA)]=pl.split(/\s*\|\s*|\n/).filter(Boolean);else delete INNST.plan[ymd(NAA)];
   try{localStorage.setItem('ft-innst',JSON.stringify(INNST))}catch(e){}
   if(db){db.child('innstillinger').set({id:'main',prosent:INNST.prosent,plan:INNST.plan||null,trapp:INNST.trapp,by:valgt||'familie',ts:new Date().toISOString()}).catch(function(er){status('Kunne ikke lagre innstillinger delt.')})}
   toast('Lagret ✓');tegn();
 };
 function fyllInnst(){var tr=(INNST.trapp&&INNST.trapp.length)?INNST.trapp:SEED_TRAPP;for(var i=0;i<5;i++){var el=document.getElementById('i-t'+i);if(el&&tr[i]&&document.activeElement!==el)el.value=tr[i].navn+': '+tr[i].tekst}
-  document.getElementById('i-prosent').value=INNST.prosent||75;document.getElementById('i-plan').value=((INNST.plan||{})[ymd(NAA)]||[]).join(' | ')}
+  document.getElementById('i-prosent').value=INNST.prosent||75;}
 
 /* ---------- samle ---------- */
 function tegn(){tegnHvem();tegnIdag();tegnLag();tegnUke();tegnHist();tegnBank();fyllInnst()}
@@ -780,8 +743,16 @@ function slaaSammenOppg(liste){
     db=firebase.database().ref('fam/'+KODE); dbOk=true;
     db.child('oppgaver').on('value',function(snap){var v=snap.val()||{};slaaSammenOppg(Object.keys(v).map(function(k){return v[k]}));tegn()});
     db.child('innstillinger').on('value',function(snap){var x=snap.val();if(x){if(x.prosent)INNST.prosent=x.prosent;if(x.plan)INNST.plan=Object.assign({},INNST.plan||{},x.plan);if(x.trapp&&x.trapp.length)INNST.trapp=x.trapp;tegn()}});
+    var LOKALT_FOER=JSON.parse(JSON.stringify(UKER)), foersteSnap=true;
     db.child('uker').on('value',function(snap){
       var v=snap.val()||{}; var n=0;
+      if(foersteSnap){ foersteSnap=false;
+        /* haker som ble satt mens enheten var uten delt lagring: last dem opp, ikke mist dem */
+        var upd={}, ant=0;
+        Object.keys(LOKALT_FOER).forEach(function(uk){var lg=(LOKALT_FOER[uk]||{}).gjort||{};var sv=(v[uk]||{}).gjort||{};
+          Object.keys(lg).forEach(function(k){if(lg[k]&&!sv[k]){upd['uker/'+uk+'/gjort/'+k]=lg[k];ant++}})});
+        if(ant){upd['uker/'+Object.keys(LOKALT_FOER)[0]+'/ts']=new Date().toISOString();db.update(upd).then(function(){toast('☁️ '+ant+' haker fra enheten lastet opp')}).catch(function(){})}
+      }
       Object.keys(v).forEach(function(id){var x=v[id]||{};taInnUke(id,x.gjort||{});var bt={};Object.keys(x.bytt||{}).forEach(function(k){if(x.bytt[k])bt[k]=x.bytt[k]});UKER[id].bytt=bt;var fl={};Object.keys(x.flytt||{}).forEach(function(k){if(x.flytt[k]!==null&&x.flytt[k]!==undefined)fl[k]=x.flytt[k]});UKER[id].flytt=fl;var ut2={};Object.keys(x.utsett||{}).forEach(function(k){if(x.utsett[k])ut2[k]=x.utsett[k]});UKER[id].utsett=ut2;n++});
       lagreLokalt();tegn();
       document.getElementById('dbpill').textContent='lagres delt';

@@ -37,8 +37,8 @@
   "min": 3
  },
  {
-  "id": "m-niste",
-  "navn": "Smøre niste",
+  "id": "m-frokost",
+  "navn": "Niste smurt, frokost og et glass vann",
   "ikon": "🥪",
   "kat": "Morgen",
   "int": "hverdag",
@@ -46,49 +46,21 @@
    "erik",
    "vaarin"
   ],
-  "poeng": 1,
-  "min": 5
- },
- {
-  "id": "m-frokost",
-  "navn": "Frokost og et glass vann",
-  "ikon": "🥣",
-  "kat": "Morgen",
-  "int": "hverdag",
-  "hvem": [
-   "erik",
-   "vaarin",
-   "oscar"
-  ],
-  "poeng": 1,
-  "min": 10
+  "poeng": 2,
+  "min": 15
  },
  {
   "id": "h-sko",
-  "navn": "Sko under skobenken eller i skoskapet",
+  "navn": "Sko på plass, sekken på rommet",
   "ikon": "👟",
-  "kat": "Etter skolen",
-  "int": "hverdag",
-  "hvem": [
-   "erik",
-   "vaarin",
-   "oscar"
-  ],
-  "poeng": 1,
-  "min": 1
- },
- {
-  "id": "h-sekk",
-  "navn": "Sekken på rommet",
-  "ikon": "🚪",
   "kat": "Etter skolen",
   "int": "hverdag",
   "hvem": [
    "erik",
    "vaarin"
   ],
-  "poeng": 1,
-  "min": 1
+  "poeng": 2,
+  "min": 3
  },
  {
   "id": "k-dekke",
@@ -160,7 +132,6 @@
   "ikon": "🎒",
   "kat": "Kveld",
   "int": "daglig",
-  "tid": "22:00",
   "hvem": [
    "thor"
   ],
@@ -173,7 +144,6 @@
   "ikon": "🧖",
   "kat": "Kveld",
   "int": "daglig",
-  "tid": "22:00",
   "hvem": [
    "anniken"
   ],
@@ -186,26 +156,12 @@
   "ikon": "✨",
   "kat": "Kveld",
   "int": "daglig",
-  "tid": "22:00",
   "hvem": [
    "thor",
    "anniken"
   ],
   "poeng": 1,
   "min": 5
- },
- {
-  "id": "k-mat",
-  "navn": "Lage middag",
-  "ikon": "👨‍🍳",
-  "kat": "Måltider",
-  "int": "daglig",
-  "rull": [
-   "thor",
-   "anniken"
-  ],
-  "poeng": 2,
-  "min": 30
  },
  {
   "id": "t-trapp",
@@ -379,44 +335,7 @@
   ],
   "poeng": 3,
   "min": 20,
-  "forslag": true,
-  "fra": "2026-W38"
- },
- {
-  "id": "v-vask",
-  "navn": "Klesvask: vaske, henge, legge sammen",
-  "ikon": "🧼",
-  "kat": "Vask",
-  "int": "dager",
-  "dager": [
-   0,
-   2,
-   4
-  ],
-  "rull": [
-   "anniken",
-   "thor"
-  ],
-  "poeng": 2,
-  "min": 15,
-  "forslag": true,
-  "fra": "2026-W38"
- },
- {
-  "id": "v-skap",
-  "navn": "Sjekke skap og kjøleskap før Meny-bestillingen",
-  "ikon": "🛒",
-  "kat": "Vask",
-  "int": "uke",
-  "dag": 2,
-  "rull": [
-   "thor",
-   "anniken"
-  ],
-  "poeng": 2,
-  "min": 10,
-  "lenke": "https://claude.ai/code/artifact/8f9a2b84-c50d-4500-9fe5-e81502d56246",
-  "lenkenavn": "Ukeshandel",
+  "forslag": false,
   "fra": "2026-W38"
  },
  {
@@ -424,7 +343,7 @@
   "navn": "Skifte sengetøy",
   "ikon": "🛌",
   "kat": "Vask",
-  "int": "2uke",
+  "int": "3uke",
   "dag": 5,
   "hvem": [
    "erik",
@@ -435,7 +354,7 @@
   "poeng": 2,
   "min": 10,
   "fra": "2026-W38",
-  "forslag": true
+  "forslag": false
  },
  {
   "id": "v-soppel",
@@ -449,7 +368,7 @@
   ],
   "poeng": 2,
   "min": 5,
-  "forslag": true,
+  "forslag": false,
   "fra": "2026-W38"
  },
  {
@@ -457,7 +376,7 @@
   "navn": "Støvsuge og rydde bilen",
   "ikon": "🚗",
   "kat": "Sesong",
-  "int": "3uke",
+  "int": "4uke",
   "dag": 5,
   "hvem": [
    "thor",
@@ -473,7 +392,7 @@
   "navn": "Tørke ut kjøleskapet",
   "ikon": "🧊",
   "kat": "Sesong",
-  "int": "3uke",
+  "int": "4uke",
   "dag": 5,
   "hvem": [
    "anniken",
@@ -489,7 +408,7 @@
   "navn": "Rydde vaskerommet",
   "ikon": "🧴",
   "kat": "Sesong",
-  "int": "3uke",
+  "int": "4uke",
   "dag": 5,
   "hvem": [
    "thor"
@@ -558,7 +477,6 @@
   "kat": "Ute",
   "int": "dato",
   "dato": "2026-09-12",
-  "tid": "18:00",
   "hvem": [
    "erik",
    "vaarin",
@@ -568,5 +486,29 @@
   ],
   "poeng": 10,
   "min": 60
+ },
+ {
+  "id": "m-frokost-o",
+  "navn": "Frokost og et glass vann",
+  "ikon": "🥣",
+  "kat": "Morgen",
+  "int": "hverdag",
+  "hvem": [
+   "oscar"
+  ],
+  "poeng": 1,
+  "min": 10
+ },
+ {
+  "id": "h-sko-o",
+  "navn": "Sko under skobenken",
+  "ikon": "👟",
+  "kat": "Etter skolen",
+  "int": "hverdag",
+  "hvem": [
+   "oscar"
+  ],
+  "poeng": 1,
+  "min": 1
  }
 ]
