@@ -1,0 +1,46 @@
+{
+ "prosent": 75,
+ "trapp": [
+  {
+   "ikon": "🎲",
+   "navn": "Spillkveld",
+   "krav": 1,
+   "tekst": "Lagmålet nådd én uke: vi setter oss ned i helga og spiller det spillet barna velger"
+  },
+  {
+   "ikon": "🎬",
+   "navn": "Filmkveld hjemme",
+   "krav": 2,
+   "tekst": "To uker på rad: filmkveld med kiosk hjemme — barna velger filmen"
+  },
+  {
+   "ikon": "🛌",
+   "navn": "Overnatting med en venn",
+   "krav": 3,
+   "av": 4,
+   "tekst": "Tre av de siste fire ukene: huset er helgeklart, og de voksne har overskudd til å si ja til overnattingsbesøk — ikke hver helg, men når laget har levert"
+  },
+  {
+   "ikon": "🤸",
+   "navn": "Fornøyelsesdag",
+   "krav": 6,
+   "av": 8,
+   "tekst": "Seks av de siste åtte ukene (omtrent hver 8. uke): trampolinepark, bowling eller svømmehall — barna velger, de voksne setter dato i kalenderen"
+  },
+  {
+   "ikon": "👑",
+   "navn": "Bossen",
+   "krav": 12,
+   "av": 16,
+   "tekst": "Tolv av de siste seksten ukene (hver 8.–16. uke): en liten boss-premie til hver — Pokémon-pakke til Erik, Vårin og Oscar velger noe tilsvarende"
+  }
+ ],
+ "plan": {
+  "2026-09-12": [
+   "Formiddag · Ryddejobbene dine",
+   "12:00–16:00 · Fri — gjør det du vil",
+   "16:00 · Pizza",
+   "18:00 · Utejobb, alle sammen, 1 time"
+  ]
+ }
+}

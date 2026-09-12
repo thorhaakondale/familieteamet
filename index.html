@@ -1,0 +1,728 @@
+<!doctype html>
+<html lang="nb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Familieteamet</title>
+<meta name="theme-color" content="#f1efe8">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Familieteamet">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-192.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800;900&display=swap">
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+<style>
+:root{
+  --bg:#f1efe8;--card:#ffffff;--card2:#faf9f5;--line:#dcd9cf;--line2:#ece9e0;
+  --ink:#141311;--ink2:#33322e;--muted:#5a5852;
+  --erik:#2560a8;--vaarin:#b03a6e;--oscar:#c9820c;--thor:#6a4fc4;--anniken:#1a9463;
+  --ok:#1a7f4b;--okbg:#dff3e6;--warn:#b7791f;--warnbg:#fbf0d5;
+  --accent:#1a9463;--accentbg:#e4f3ea;--shadow:0 1px 3px rgba(20,19,17,.08);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#17181a;--card:#222327;--card2:#1c1d20;--line:#3a3b40;--line2:#2e2f34;
+  --ink:#f2f1ec;--ink2:#d5d3cb;--muted:#a09e95;
+  --erik:#5b93de;--vaarin:#cd5b87;--oscar:#c08415;--thor:#8a72dd;--anniken:#2ba578;
+  --ok:#4fc27e;--okbg:#1d3527;--warn:#e0a33a;--warnbg:#3a2f18;
+  --accent:#2ba578;--accentbg:#1d3527;--shadow:0 1px 3px rgba(0,0,0,.4);
+}}
+:root[data-theme="dark"]{
+  --bg:#17181a;--card:#222327;--card2:#1c1d20;--line:#3a3b40;--line2:#2e2f34;
+  --ink:#f2f1ec;--ink2:#d5d3cb;--muted:#a09e95;
+  --erik:#5b93de;--vaarin:#cd5b87;--oscar:#c08415;--thor:#8a72dd;--anniken:#2ba578;
+  --ok:#4fc27e;--okbg:#1d3527;--warn:#e0a33a;--warnbg:#3a2f18;
+  --accent:#2ba578;--accentbg:#1d3527;--shadow:0 1px 3px rgba(0,0,0,.4);
+}
+*{box-sizing:border-box}
+html,body{overflow-x:clip;max-width:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Nunito,"Segoe UI",system-ui,sans-serif;font-size:15px;line-height:1.55;-webkit-tap-highlight-color:transparent}
+.wrap{max-width:1180px;margin:0 auto;padding:6px 22px 60px}
+@media(max-width:700px){.wrap{padding:6px 12px 60px}}
+@media(max-width:700px){h1{font-size:22px;margin:6px 0 0}.sub{font-size:13px;margin-bottom:6px}.hvem{gap:5px;margin:4px 0 10px}.hvem button{font-size:13px;padding:5px 10px;min-height:34px}.card{padding:11px 12px}}
+h1{font-size:26px;line-height:1.1;margin:8px 0 2px;font-weight:900;letter-spacing:-.01em;text-wrap:balance}
+h2{font-size:17px;margin:0 0 8px;font-weight:800}
+h3{font-size:15px;margin:14px 0 6px;font-weight:800}
+p{margin:0 0 8px}
+.sub{color:var(--muted);font-size:14px;margin:0 0 10px}
+a{color:var(--erik)}
+b,strong{font-weight:800}
+.num{font-variant-numeric:tabular-nums}
+/* nav */
+.dale-nav{position:sticky;top:0;z-index:60;background:var(--bg);margin:0 -22px 12px;padding:9px 22px;border-bottom:1px solid rgba(125,125,125,.22);backdrop-filter:saturate(1.1) blur(3px);display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.dale-nav a,.dale-nav span{font-size:12px;padding:4px 10px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);text-decoration:none;font-weight:700;white-space:nowrap}
+.dale-nav span{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+@media(max-width:700px){
+  .dale-nav{margin:0 -12px 10px;padding:8px 12px;gap:5px;flex-wrap:nowrap !important;overflow-x:auto;scrollbar-width:none}
+  .dale-nav::-webkit-scrollbar{display:none}
+  .dale-nav>*{flex:0 0 auto}
+  .dale-nav a,.dale-nav span{font-size:11px !important;padding:4px 9px !important}}
+.dale-totop{position:fixed;right:14px;bottom:18px;z-index:40;border:0;border-radius:999px;padding:10px 14px;font-size:14px;font-weight:700;font-family:inherit;background:var(--ink);color:var(--bg);box-shadow:0 3px 12px rgba(0,0,0,.3);cursor:pointer;opacity:0;pointer-events:none;transition:opacity .2s}
+.dale-totop.show{opacity:.92;pointer-events:auto}
+/* who */
+.hvem{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 12px}
+.hvem button{font:inherit;font-weight:800;font-size:14px;padding:7px 13px;border-radius:999px;border:2px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer;min-height:40px}
+.hvem button .dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;background:var(--pc)}
+.hvem button.on{border-color:var(--pc);background:var(--pc);color:#fff}
+.hvem button.on .dot{background:#fff}
+.hvem button:focus-visible{outline:3px solid var(--erik);outline-offset:2px}
+/* cards */
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;box-shadow:var(--shadow);margin:0 0 14px}
+.card.tint{background:var(--card2)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:760px){.row2{grid-template-columns:1fr}}
+.pill{display:inline-block;font-size:11.5px;font-weight:800;padding:2px 8px;border-radius:999px;background:var(--accentbg);color:var(--accent);letter-spacing:.02em;vertical-align:middle}
+.pill.grey{background:var(--line2);color:var(--ink2)}
+.pill.warn{background:var(--warnbg);color:var(--warn)}
+.ptag{display:inline-block;font-size:11.5px;font-weight:800;padding:1px 7px;border-radius:999px;color:#fff;background:var(--pc);vertical-align:middle;margin-right:4px}
+/* today tiles */
+.grp{margin:10px 0 4px;font-size:12.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:6px}
+.tile{display:flex;align-items:center;gap:6px;padding:0 4px 0 0;border-radius:10px;border:1.5px solid var(--line);background:var(--card);min-height:46px;color:var(--ink);width:100%;position:relative}
+.tile .tmain{display:flex;align-items:center;gap:8px;flex:1;min-width:0;padding:6px 4px 6px 9px;border:0;background:transparent;font:inherit;color:inherit;text-align:left;cursor:pointer;border-radius:10px}
+.tile .tmain:focus-visible{outline:3px solid var(--erik);outline-offset:-3px}
+.tile .tb{border:0;background:transparent;color:var(--muted);font:inherit;font-size:15px;padding:2px 8px;cursor:pointer;border-radius:8px;line-height:1.2}
+.tile .tb:hover{background:var(--line2)}
+.tile .velg{position:absolute;right:4px;top:100%;z-index:5;background:var(--card);border:1px solid var(--line);border-radius:10px;box-shadow:0 6px 18px rgba(0,0,0,.18);padding:6px;display:flex;gap:4px;flex-wrap:wrap;max-width:260px}
+.tile .velg button{font:inherit;font-weight:800;font-size:12.5px;padding:4px 9px;border-radius:999px;border:1.5px solid var(--pc);color:var(--pc);background:transparent;cursor:pointer}
+.tile .velg button.orig{border-style:dashed}
+.tile.done .tb{color:var(--ok)}
+.tile .avs{display:flex;gap:3px;margin-top:3px}
+.tile .av{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--pc);color:#fff;font-size:10.5px;font-weight:900;border:2px solid var(--card)}
+.tile .av.ok{box-shadow:0 0 0 2px var(--ok)}
+.tile.done .avs{display:none}
+.tile.done{min-height:34px;opacity:.75;border-color:var(--okbg)}
+.tile.done .tmain{padding:3px 4px 3px 9px}
+.tile.done .ik{font-size:15px}
+.tile.done .nm{font-size:12.5px;font-weight:700}
+.tile.done .mt{display:none}
+.tile.done .pt{font-size:12px}
+.tile .velg .vl{flex-basis:100%;font-size:11.5px;font-weight:800;color:var(--muted);margin:2px 2px 0}
+.tile .velg button.naa{background:var(--ink2);color:var(--card)}
+.tile .ik{font-size:19px;width:26px;text-align:center;flex:0 0 26px}
+.tile .tx{flex:1;min-width:0}
+.tile .nm{display:block;font-weight:800;font-size:14px;line-height:1.2;overflow-wrap:anywhere;hyphens:auto}
+.tile .mt{display:block;font-size:11.5px;color:var(--muted);margin-top:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tile .side{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:0 0 34px;gap:0}
+.tile .pt{font-weight:900;font-size:13px;color:var(--pc);white-space:nowrap;line-height:1}
+.tile.done{background:var(--okbg);border-color:var(--ok)}
+.tile.done .nm{text-decoration:line-through;color:var(--ink2)}
+.tile.done .pt{color:var(--ok)}
+.chk{width:20px;height:20px;border-radius:6px;border:2px solid var(--line);flex:0 0 20px;display:grid;place-items:center;font-size:14px;color:#fff;background:var(--card)}
+.tile.done .chk{background:var(--ok);border-color:var(--ok)}
+.tom{color:var(--muted);font-size:14px;padding:6px 0}
+/* meter */
+.meter{position:relative;height:22px;border-radius:999px;background:var(--line2);overflow:hidden;margin:6px 0 4px}
+.meter .fill{position:absolute;left:0;top:0;bottom:0;background:var(--accent);border-radius:999px;transition:width .4s}
+.meter .mark{position:absolute;top:-3px;bottom:-3px;width:3px;background:var(--ink)}
+.big{font-size:26px;font-weight:900;line-height:1.1}
+.big small{font-size:13px;font-weight:700;color:var(--muted)}
+.stat3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:8px 0}
+.stat3 div{background:var(--card2);border:1px solid var(--line2);border-radius:10px;padding:8px 10px}
+.stat3 .lab{font-size:12px;color:var(--muted);font-weight:700}
+.stat3 .val{font-size:22px;font-weight:900;line-height:1.1}
+@media(max-width:480px){.stat3{grid-template-columns:1fr 1fr 1fr;gap:6px}.stat3 .val{font-size:18px}}
+/* table */
+.tbl{width:100%;border-collapse:collapse;font-size:13.5px}
+.tbl th,.tbl td{padding:6px 6px;border-bottom:1px solid var(--line2);text-align:left;vertical-align:middle}
+.tbl th{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;font-weight:800}
+.tbl td.c,.tbl th.c{text-align:center}
+.tbl tr.today td{background:var(--accentbg)}
+.tbl .navn{font-weight:700}
+.tbl .navn small{display:block;font-weight:600;color:var(--muted);font-size:12px}
+.cell{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:8px;border:2px solid var(--line);background:var(--card);cursor:pointer;font-size:14px;color:#fff;font-weight:900}
+.cell.done{background:var(--ok);border-color:var(--ok)}
+.cell.na{visibility:hidden}
+.cell.p{border-style:dashed}
+.sveip{overflow-x:auto}
+.hint{display:none;font-size:12px;color:var(--muted)}
+@media(max-width:700px){.hint{display:block}}
+.ukenav{display:flex;align-items:center;gap:8px;margin:0 0 8px;flex-wrap:wrap}
+.ukenav button{font:inherit;font-weight:800;padding:5px 11px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+.ukenav b{font-size:16px}
+/* bank */
+.bank .tbl td{padding:7px 6px}
+.ikon{font-size:18px}
+form.ny{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-top:10px}
+form.ny label{font-size:12px;font-weight:800;color:var(--muted);display:block}
+form.ny input,form.ny select{font:inherit;width:100%;padding:7px 8px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink)}
+form.ny .full{grid-column:1/-1}
+form.ny .hv{display:flex;gap:10px;flex-wrap:wrap;font-size:14px;font-weight:700}
+form.ny button{font:inherit;font-weight:800;padding:9px 14px;border-radius:8px;border:0;background:var(--accent);color:#fff;cursor:pointer}
+.small{font-size:13px;color:var(--muted)}
+details.om{margin:6px 0 12px}
+details.om summary{cursor:pointer;font-weight:800;font-size:14px;color:var(--ink2)}
+details.om .in{padding:8px 0 0;font-size:14px;max-width:70ch}
+.toast{position:fixed;left:50%;bottom:70px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:999px;font-weight:900;font-size:18px;opacity:0;transition:all .25s;z-index:50;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.plan{display:flex;gap:8px;flex-wrap:wrap}
+.plan div{background:var(--card2);border:1px solid var(--line2);border-radius:10px;padding:6px 10px;font-size:13.5px}
+.plan div b{display:block;font-size:12px;color:var(--muted)}
+.dbstat{font-size:12px;color:var(--muted);margin-top:10px}
+.rull{margin:8px 0 10px;padding:9px 12px;border-radius:10px;background:var(--accentbg);color:var(--ink);font-weight:800;font-size:15px;min-height:42px;display:flex;align-items:center;gap:8px}
+.rull .ik{font-size:22px}
+.rull small{font-weight:700;color:var(--muted);font-size:12.5px;display:block}
+.tbl .naadd{color:var(--ok);font-weight:900}
+.edit{font:inherit;font-size:12px;padding:2px 8px;border-radius:6px;border:1px solid var(--line);background:var(--card);color:var(--ink2);cursor:pointer}
+.tbl .medis{color:var(--warn);font-weight:800}
+@media (prefers-reduced-motion:reduce){*{transition:none !important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<!-- egen app: ingen navigasjon til andre sider med vilje -->
+
+<h1 style="margin-top:14px">🧹 Familieteamet</h1>
+<p class="sub">Ett lag, fem spillere. Trykk på det du har gjort — poengene teller for hele familien. <span class="pill" id="dbpill">kobler til …</span></p>
+
+<div class="hvem" id="hvem" role="group" aria-label="Hvem er du?"></div>
+
+<section class="card" id="idag">
+  <h2 id="idag-h">I dag</h2>
+  <div id="dagplan"></div>
+  <div id="idag-liste"></div>
+</section>
+
+<section class="card" id="lag">
+  <h2>Lagmålet denne uka</h2>
+  <div class="big" id="lag-tall"></div>
+  <div class="meter"><div class="fill" id="lag-fill"></div><div class="mark" id="lag-mark"></div></div>
+  <p class="small" id="lag-txt"></p>
+  <div class="rull" id="lag-rull" aria-live="polite"></div>
+  <div class="sveip"><table class="tbl" id="lag-tbl"></table></div>
+  <h3>Belønningstrappa</h3>
+  <div class="sveip"><table class="tbl" id="trapp-tbl"></table></div>
+  <p class="small" style="margin-top:8px">Målet er tre firedeler av alt som er planlagt for uka — nok til at det er ærlig jobbet, ikke så mye at én dårlig dag ødelegger. Belønningene er tid sammen, ikke penger til den enkelte; bossen er et lite unntak som kommer sjelden.</p>
+</section>
+
+<section class="card" id="uka">
+  <div class="ukenav"><button id="uke-forrige" aria-label="Forrige uke">◀</button><b id="uke-tittel"></b><button id="uke-neste" aria-label="Neste uke">▶</button><button id="uke-naa">Denne uka</button></div>
+  <p class="sub" id="uke-sub"></p>
+  <div class="hint">↔ Sveip sidelengs for å se hele uka</div>
+  <div class="sveip"><table class="tbl" id="uke-tbl"></table></div>
+</section>
+
+<section class="card" id="historikk">
+  <h2>Uke for uke</h2>
+  <div class="sveip"><table class="tbl" id="hist-tbl"></table></div>
+</section>
+
+<section class="card bank" id="bank">
+  <h2>Oppgavebanken</h2>
+  <p class="sub">Alle oppgavene med rytme, hvem og poeng. Rader merket <span class="pill grey">forslag</span> er ikke avtalt ennå — endre eller slå av.</p>
+  <div class="sveip"><table class="tbl" id="bank-tbl"></table></div>
+  <details class="om" id="ny-wrap"><summary>＋ Legg til eller endre en oppgave (voksne)</summary>
+  <form class="ny" id="ny" autocomplete="off">
+    <input type="hidden" id="f-id">
+    <div class="full"><label for="f-navn">Oppgave</label><input id="f-navn" required placeholder="F.eks. Vanne plantene"></div>
+    <div><label for="f-ikon">Ikon</label><input id="f-ikon" value="🧺" maxlength="4"></div>
+    <div><label for="f-kat">Kategori</label><select id="f-kat"><option>Morgen</option><option>Etter skolen</option><option>Måltider</option><option>Kveld</option><option selected>Rydding</option><option>Vask</option><option>Sesong</option><option>Ute</option></select></div>
+    <div><label for="f-int">Rytme</label><select id="f-int"><option value="hverdag">Hver hverdag</option><option value="daglig">Hver dag</option><option value="uke" selected>Hver uke</option><option value="2uke">Hver 2. uke</option><option value="3uke">Hver 3. uke</option><option value="4uke">Hver 4. uke</option><option value="kvartal">Hver 3. måned</option><option value="dato">Én bestemt dato</option></select></div>
+    <div><label for="f-dag">Dag</label><select id="f-dag"><option value="0">Mandag</option><option value="1">Tirsdag</option><option value="2">Onsdag</option><option value="3" selected>Torsdag</option><option value="4">Fredag</option><option value="5">Lørdag</option><option value="6">Søndag</option></select></div>
+    <div><label for="f-dato">Dato (bare ved «bestemt dato»)</label><input id="f-dato" type="date"></div>
+    <div><label for="f-tid">Klokkeslett (valgfritt)</label><input id="f-tid" type="time"></div>
+    <div><label for="f-poeng">Poeng</label><input id="f-poeng" type="text" inputmode="numeric" value="3"></div>
+    <div><label for="f-min">Minutter</label><input id="f-min" type="text" inputmode="numeric" value="15"></div>
+    <div class="full"><label>Hvem</label><div class="hv" id="f-hvem"></div></div>
+    <div class="full"><button type="submit">Lagre oppgaven</button> <button type="button" id="f-avbryt" style="background:var(--line2);color:var(--ink)">Tøm skjema</button></div>
+  </form></details>
+  <details class="om" id="innst-wrap"><summary>⚙ Ukemål og belønning (voksne)</summary>
+    <form class="ny" id="innst">
+      <div><label for="i-prosent">Ukemål i prosent av planlagte poeng</label><input id="i-prosent" type="text" inputmode="numeric" value="75"></div>
+      <div class="full"><label>Belønningstrappa — teksten per nivå (rekkefølgen og kravene ligger fast: 1 uke · 2 på rad · 3 av 4 · 6 av 8 · 12 av 16)</label>
+        <input id="i-t0" placeholder="Nivå 1 — én uke"><input id="i-t1" placeholder="Nivå 2 — to uker på rad" style="margin-top:6px"><input id="i-t2" placeholder="Nivå 3 — tre av fire uker" style="margin-top:6px"><input id="i-t3" placeholder="Nivå 4 — seks av åtte uker" style="margin-top:6px"><input id="i-t4" placeholder="Bossen — tolv av seksten uker" style="margin-top:6px"></div>
+      <div class="full"><label for="i-plan">Dagens plan (én linje per punkt, «kl. · tekst»)</label><input id="i-plan" placeholder="18:00 · Utejobb, alle sammen, 1 time"></div>
+      <div class="full"><button type="submit">Lagre</button></div>
+    </form>
+  </details>
+</section>
+
+<details class="om" id="om"><summary>Slik virker Familieteamet</summary><div class="in">
+<p><b>Hvem er du?</b> Velg navnet ditt øverst — iPaden husker det. «Alle» viser hele laget.</p>
+<p><b>I dag</b> viser bare det som skal gjøres i dag, i den rekkefølgen dagen går: morgen, etter skolen, måltider, ryddejobb, avtalt tidspunkt. Trykk på ruta når du er ferdig. Trykk igjen hvis du bommet.</p>
+<p><b>Rytmen.</b> Morgen- og hjemkomstrutinene går hver hverdag. Måltidsjobbene går hver dag og bytter mellom Erik og Vårin annenhver uke. <b>Torsdag er ryddedagen</b> — da er huset klart til helga og uka etter. Oppgaver som går hver 3. uke og hver 3. måned dukker opp på lørdager når de er modne. Sesongbyttet i garderoben kobles til Brukskortene, og skapsjekken onsdag kobles til Ukeshandel — samme rytme, samme sted.</p>
+<p><b>Poengene</b> er ett lag, ikke fem. Ingen konkurrerer mot søsken. Oscar (2) er med på sine småting, og alt han gjør teller.</p>
+<p><b>Voksne</b> legger inn nye oppgaver, flytter dager og setter belønning under Oppgavebanken. Rader merket «forslag» er tavlas forslag og skal justeres av dere.</p>
+<p><b>Egen lenke og «app» på iPad og mobil.</b> Legg <code>#erik</code>, <code>#vaarin</code>, <code>#oscar</code>, <code>#thor</code> eller <code>#anniken</code> bak lenka, så åpner tavla ferdig valgt for den personen. Legg den på hjemskjermen: iPad/iPhone — Del-knappen → «Legg til på Hjem-skjerm»; Android — menyen ⋮ → «Legg til på startskjermen». Ingen innlogging trengs.</p>
+<p><b>Bytte eller flytte en oppgave.</b> Trykk ⇄ på ruta: velg hvem som tar den i dag (jobber Anniken, tar Thor middagen), eller flytt den til en annen dag denne uka (rekker du ikke badene lørdag, tar du dem mandag). Begge gjelder bare den uka; ↩ setter tilbake. Ferdige ruter krymper og legger seg nederst i gruppa, så det som gjenstår står øverst.</p>
+<p><b>Belønningstrappa.</b> Ett ukemål gir spillkveld, to på rad filmkveld hjemme, tre av fire uker gir overnattingsbesøk (huset er helgeklart og de voksne har overskudd), seks av åtte uker en fornøyelsesdag som planlegges i kalenderen, og tolv av seksten uker utløser bossen — den eneste premien som er en ting, og den kommer sjelden med vilje. Linja over lagtabellen ruller gjennom nivåene og viser hvor langt dere er. Voksne endrer tekstene under Oppgavebanken.</p>
+<p><b>Lagring.</b> Hakene lagres delt (Firebase, EU), så mobil, iPad og PC viser det samme uten innlogging — lenka dere fikk har familiekoden i seg, og enheten husker den. Oppgavebanken og trappa ligger i appens filer og oppdateres av Bjørn og Liv. Mister siden kontakten, lagres det på enheten til den er tilbake.</p>
+</div></details>
+
+<p><button class="edit" id="rapport">📤 Kopier ukerapport (til Bjørn)</button> <span class="small">— kopierer en kompakt oppsummering av de siste 8 ukene til utklippstavla.</span></p>
+<p class="dbstat" id="dbstat"></p>
+</div>
+<div class="toast" id="toast"></div>
+<button class="dale-totop" id="dale-totop" aria-label="Til toppen">↑ Topp</button>
+
+<script>
+/* ---------- oppsett ---------- */
+var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
+/* ---------- grunnlag ---------- */
+var PERS=[
+ {id:'erik',navn:'Erik',kort:'E',farge:'var(--erik)'},
+ {id:'vaarin',navn:'Vårin',kort:'V',farge:'var(--vaarin)'},
+ {id:'oscar',navn:'Oscar',kort:'O',farge:'var(--oscar)'},
+ {id:'thor',navn:'Thor',kort:'T',farge:'var(--thor)'},
+ {id:'anniken',navn:'Anniken',kort:'A',farge:'var(--anniken)'}
+];
+var PMAP={};PERS.forEach(function(p){PMAP[p.id]=p});
+var DAGER=['Mandag','Tirsdag','Onsdag','Torsdag','Fredag','Lørdag','Søndag'];
+var DAGK=['man','tir','ons','tor','fre','lør','søn'];
+var GRUPPER=['Morgen','Etter skolen','Måltider','Kveld','Rydding','Vask','Sesong','Ute'];
+
+/* Seed = fallback hvis databasen ikke svarer. Databasen overstyrer felt for felt. */
+var SEED=[
+ {id:'m-sekk',navn:'Sekken klar',ikon:'🎒',kat:'Morgen',int:'hverdag',hvem:['erik','vaarin'],poeng:1,min:3},
+ {id:'m-tann-v',navn:'Tannpuss',ikon:'🪥',kat:'Morgen',int:'hverdag',hvem:['vaarin'],poeng:1,min:3},
+ {id:'m-tann-e',navn:'Tannpuss og medisin',ikon:'🪥',kat:'Morgen',int:'hverdag',hvem:['erik'],poeng:1,min:3},
+ {id:'m-niste',navn:'Smøre niste',ikon:'🥪',kat:'Morgen',int:'hverdag',hvem:['erik','vaarin'],poeng:1,min:5},
+ {id:'m-frokost',navn:'Frokost og et glass vann',ikon:'🥣',kat:'Morgen',int:'hverdag',hvem:['erik','vaarin','oscar'],poeng:1,min:10},
+ {id:'h-sko',navn:'Sko under skobenken eller i skoskapet',ikon:'👟',kat:'Etter skolen',int:'hverdag',hvem:['erik','vaarin','oscar'],poeng:1,min:1},
+ {id:'h-sekk',navn:'Sekken på rommet',ikon:'🚪',kat:'Etter skolen',int:'hverdag',hvem:['erik','vaarin'],poeng:1,min:1},
+ {id:'k-dekke',navn:'Dekke på bordet',ikon:'🍽️',kat:'Måltider',int:'daglig',rull:['vaarin','erik'],poeng:1,min:5},
+ {id:'k-rydde',navn:'Rydde av bordet',ikon:'🧽',kat:'Måltider',int:'daglig',rull:['erik','vaarin'],poeng:1,min:5},
+ {id:'k-tom',navn:'Tømme oppvaskmaskinen',ikon:'🫧',kat:'Måltider',int:'daglig',rull:['erik','vaarin'],poeng:2,min:8},
+ {id:'k-fyll',navn:'Fylle oppvaskmaskinen',ikon:'🍴',kat:'Måltider',int:'daglig',rull:['vaarin','erik'],poeng:2,min:8},
+ {id:'k-tallerken',navn:'Bære tallerkenen sin til benken',ikon:'🌱',kat:'Måltider',int:'daglig',hvem:['oscar'],poeng:1,min:1},
+ {id:'kv-gang',navn:'Gangen og vaskerommet ryddig — PC-bag og treningsbag på plass',ikon:'🎒',kat:'Kveld',int:'daglig',tid:'22:00',hvem:['thor'],poeng:1,min:5},
+ {id:'kv-bad',navn:'Sko på plass, håndklær opp fra badegulvet, badet ryddig',ikon:'🧖',kat:'Kveld',int:'daglig',tid:'22:00',hvem:['anniken'],poeng:1,min:5},
+ {id:'kv-kjokken',navn:'Kjøkkenet klart til neste dag',ikon:'✨',kat:'Kveld',int:'daglig',tid:'22:00',hvem:['thor','anniken'],poeng:1,min:5},
+ {id:'k-mat',navn:'Lage middag',ikon:'👨‍🍳',kat:'Måltider',int:'daglig',rull:['thor','anniken'],poeng:2,min:30},
+ {id:'t-trapp',navn:'Støvsuge trappa',ikon:'🪜',kat:'Rydding',int:'uke',dag:3,hvem:['erik'],poeng:3,min:10,unntak:{'2026-W37':5}},
+ {id:'t-sofa',navn:'Støvsuge sofaene',ikon:'🛋️',kat:'Rydding',int:'uke',dag:3,hvem:['erik'],poeng:3,min:10,unntak:{'2026-W37':5}},
+ {id:'t-leker',navn:'Rydde Oscars leker',ikon:'🧸',kat:'Rydding',int:'uke',dag:3,hvem:['erik','oscar'],poeng:2,min:10,unntak:{'2026-W37':5}},
+ {id:'t-skap-e',navn:'Klær på plass i eget skap',ikon:'👕',kat:'Rydding',int:'uke',dag:3,hvem:['erik'],poeng:2,min:10,unntak:{'2026-W37':5}},
+ {id:'t-skap-v',navn:'Klær på plass i eget skap',ikon:'👗',kat:'Rydding',int:'uke',dag:3,hvem:['vaarin'],poeng:2,min:10,unntak:{'2026-W37':5}},
+ {id:'t-skap-oa',navn:'Klær på plass i Oscars og mammas skap',ikon:'🧺',kat:'Rydding',int:'uke',dag:3,hvem:['vaarin'],poeng:3,min:15,unntak:{'2026-W37':5}},
+ {id:'t-rom',navn:'Rydde rommet sitt',ikon:'🛏️',kat:'Rydding',int:'uke',dag:3,hvem:['erik','vaarin'],poeng:2,min:15,fra:'2026-W38'},
+ {id:'t-skap-t',navn:'Eget skap + klær fra badet til vaskerommet',ikon:'🧺',kat:'Rydding',int:'uke',dag:3,hvem:['thor'],poeng:2,min:10,unntak:{'2026-W37':5}},
+ {id:'t-robot',navn:'Robotstøvsugeren i 1. etasje',ikon:'🤖',kat:'Rydding',int:'uke',dag:3,hvem:['thor'],poeng:1,min:2,unntak:{'2026-W37':5}},
+ {id:'t-bad',navn:'Lett over begge badene',ikon:'🚿',kat:'Rydding',int:'uke',dag:3,hvem:['thor'],poeng:3,min:15,unntak:{'2026-W37':5}},
+ {id:'t-gulv',navn:'Vaske gulv i kjøkken og gang',ikon:'🧹',kat:'Rydding',int:'uke',dag:3,hvem:['anniken'],poeng:3,min:20,forslag:true,fra:'2026-W38'},
+ {id:'v-vask',navn:'Klesvask: vaske, henge, legge sammen',ikon:'🧼',kat:'Vask',int:'dager',dager:[0,2,4],rull:['anniken','thor'],poeng:2,min:15,forslag:true,fra:'2026-W38'},
+ {id:'v-skap',navn:'Sjekke skap og kjøleskap før Meny-bestillingen',ikon:'🛒',kat:'Vask',int:'uke',dag:2,rull:['thor','anniken'],poeng:2,min:10,lenke:'https://claude.ai/code/artifact/8f9a2b84-c50d-4500-9fe5-e81502d56246',lenkenavn:'Ukeshandel',fra:'2026-W38'},
+ {id:'v-seng',navn:'Skifte sengetøy',ikon:'🛌',kat:'Vask',int:'2uke',dag:5,hvem:['erik','vaarin','thor','anniken'],poeng:2,min:10,fra:'2026-W38',forslag:true},
+ {id:'v-soppel',navn:'Søppel og pant ut',ikon:'🗑️',kat:'Vask',int:'uke',dag:6,hvem:['erik'],poeng:2,min:5,forslag:true,fra:'2026-W38'},
+ {id:'u3-bil',navn:'Støvsuge og rydde bilen',ikon:'🚗',kat:'Sesong',int:'3uke',dag:5,hvem:['thor','erik'],poeng:4,min:30,forslag:true,fra:'2026-W38'},
+ {id:'u3-kjol',navn:'Tørke ut kjøleskapet',ikon:'🧊',kat:'Sesong',int:'3uke',dag:5,hvem:['anniken','vaarin'],poeng:4,min:20,forslag:true,fra:'2026-W39'},
+ {id:'u3-vaskerom',navn:'Rydde vaskerommet',ikon:'🧴',kat:'Sesong',int:'3uke',dag:5,hvem:['thor'],poeng:3,min:20,forslag:true,fra:'2026-W40'},
+ {id:'q-garderobe',navn:'Sesongbytte i garderoben',ikon:'🧥',kat:'Sesong',int:'kvartal',dag:5,hvem:['erik','vaarin','oscar','thor','anniken'],poeng:5,min:45,lenke:'https://claude.ai/code/artifact/1ff7d097-6449-4340-a8a3-201e50fb912d',lenkenavn:'Brukskortene',fra:'2026-W39'},
+ {id:'q-vindu',navn:'Vaske vinduer',ikon:'🪟',kat:'Sesong',int:'kvartal',dag:5,hvem:['thor','anniken'],poeng:6,min:90,forslag:true,fra:'2026-W41'},
+ {id:'q-bod',navn:'Rydde bod og garasje',ikon:'🧰',kat:'Sesong',int:'kvartal',dag:5,hvem:['thor','erik'],poeng:6,min:60,forslag:true,fra:'2026-W42'},
+ {id:'d-ute',navn:'Hagen, uteputer og utemøbler inn før vinteren',ikon:'🍂',kat:'Ute',int:'dato',dato:'2026-09-12',tid:'18:00',hvem:['erik','vaarin','oscar','thor','anniken'],poeng:10,min:60}
+];
+var SEED_TRAPP=[
+ {ikon:'🎲',navn:'Spillkveld',krav:1,tekst:'Lagmålet nådd én uke: vi setter oss ned i helga og spiller det spillet barna velger'},
+ {ikon:'🎬',navn:'Filmkveld hjemme',krav:2,tekst:'To uker på rad: filmkveld med kiosk hjemme — barna velger filmen'},
+ {ikon:'🛌',navn:'Overnatting med en venn',krav:3,av:4,tekst:'Tre av de siste fire ukene: huset er helgeklart, og de voksne har overskudd til å si ja til overnattingsbesøk — ikke hver helg, men når laget har levert'},
+ {ikon:'🤸',navn:'Fornøyelsesdag',krav:6,av:8,tekst:'Seks av de siste åtte ukene (omtrent hver 8. uke): trampolinepark, bowling eller svømmehall — barna velger, de voksne setter dato i kalenderen'},
+ {ikon:'👑',navn:'Bossen',krav:12,av:16,tekst:'Tolv av de siste seksten ukene (hver 8.–16. uke): en liten boss-premie til hver — Pokémon-pakke til Erik, Vårin og Oscar velger noe tilsvarende'}
+];
+var SEED_INNST={prosent:75,belonning:'Barna velger lørdagsaktiviteten',trapp:SEED_TRAPP,plan:{'2026-09-12':['Formiddag · Ryddejobbene dine','12:00–16:00 · Fri — gjør det du vil','16:00 · Pizza','18:00 · Utejobb, alle sammen, 1 time']}};
+
+/* ---------- uke-matte ---------- */
+function isoWeek(d){var t=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));var dn=t.getUTCDay()||7;t.setUTCDate(t.getUTCDate()+4-dn);var y=t.getUTCFullYear();var w=Math.ceil(((t-Date.UTC(y,0,1))/86400000+1)/7);return {y:y,w:w}}
+function ukeKey(d){var i=isoWeek(d);return i.y+'-W'+(i.w<10?'0':'')+i.w}
+function mandag(d){var x=new Date(d.getFullYear(),d.getMonth(),d.getDate());var dn=(x.getDay()+6)%7;x.setDate(x.getDate()-dn);return x}
+function addDays(d,n){var x=new Date(d);x.setDate(x.getDate()+n);return x}
+function ymd(d){return d.getFullYear()+'-'+(d.getMonth()<9?'0':'')+(d.getMonth()+1)+'-'+(d.getDate()<10?'0':'')+d.getDate()}
+function ukeIndex(d){return Math.floor((mandag(d)-new Date(2024,0,1))/(7*86400000))}
+function ukeFraKey(k){var m=k.match(/(\d{4})-W(\d{2})/);var jan4=new Date(+m[1],0,4);var m1=mandag(jan4);return addDays(m1,(+m[2]-1)*7)}
+function datoNorsk(d){return d.getDate()+'.'+(d.getMonth()+1)+'.'}
+function fmt(n){return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g,' ')}
+
+/* Hvem har oppgaven denne uka (rullering annenhver uke) */
+function hvemUke(o,ukeIdx){
+  if(o.rull&&o.rull.length){return [o.rull[ukeIdx%o.rull.length]]}
+  return o.hvem||[];
+}
+/* Hvilke dager i uka (0–6) oppgaven faller på. Returnerer [] hvis ikke denne uka. */
+function dagerIUka(o,man){
+  if(o.aktiv===false) return [];
+  var key=ukeKey(man), idx=ukeIndex(man);
+  if(o.fra && key<o.fra) return [];
+  if(o.int==='dato'){var d=new Date(o.dato+'T00:00:00');var diff=Math.round((d-man)/86400000);return (diff>=0&&diff<7)?[diff]:[]}
+  if(o.int==='hverdag') return [0,1,2,3,4];
+  if(o.int==='daglig') return [0,1,2,3,4,5,6];
+  if(o.int==='dager') return o.dager||[];
+  var dag=(o.unntak&&o.unntak[key]!==undefined)?o.unntak[key]:(o.dag===undefined?3:o.dag);
+  if(o.int==='uke') return [dag];
+  var n={'2uke':2,'3uke':3,'4uke':4,'kvartal':13}[o.int];
+  if(!n) return [];
+  var start=o.fra?ukeIndex(ukeFraKey(o.fra)):0;
+  return ((idx-start)%n===0)?[dag]:[];
+}
+/* Alle planlagte "slots" for en uke: {o, dag, person, key} */
+function planUke(man){
+  var idx=ukeIndex(man), key=ukeKey(man), ut=[];
+  OPPG.forEach(function(o){
+    var dager=dagerIUka(o,man); if(!dager.length) return;
+    var hv=hvemUke(o,idx);
+    dager.forEach(function(d){hv.forEach(function(p){ut.push({o:o,dag:d,person:p,orig:p,key:o.id+'|'+d+'|'+p})})});
+  });
+  /* byttet oppgave: dokumentet for uka kan si at «oppgave|dag|fra» er overtatt av en annen */
+  var b=(UKER[key]&&UKER[key].bytt)||{}, f=(UKER[key]&&UKER[key].flytt)||{};
+  ut.forEach(function(s){var til=b[s.key];if(til&&PMAP[til]&&til!==s.person){s.person=til;s.byttet=true;s.key=s.o.id+'|'+s.dag+'|'+til}});
+  ut.forEach(function(s){var nd=f[s.o.id+'|'+s.dag+'|'+s.orig];if(nd!==undefined&&nd!==null&&nd>=0&&nd<=6&&nd!==s.dag){s.fraDag=s.dag;s.dag=nd;s.flyttet=true;s.key=s.o.id+'|'+nd+'|'+s.person}});
+  return ut;
+}
+function flytt(key,o,dag,person,nyDag){
+  var u=ukeDoc(key); if(!u.flytt)u.flytt={};
+  var fk=o.id+'|'+dag+'|'+person;
+  if(nyDag===null||nyDag===dag) delete u.flytt[fk]; else u.flytt[fk]=nyDag;
+  lagreLokalt(); tegn(); toast(nyDag===null||nyDag===dag?'Tilbake til '+DAGER[dag].toLowerCase():'→ flyttet til '+DAGER[nyDag].toLowerCase());
+  if(db){var upd={};upd['uker/'+key+'/flytt/'+fk]=(nyDag===null||nyDag===dag)?null:nyDag;upd['uker/'+key+'/ts']=new Date().toISOString();db.update(upd).catch(function(e){status('Kunne ikke lagre flyttingen delt.')})}
+}
+function bytt(key,o,dag,fra,til){
+  var u=ukeDoc(key); if(!u.bytt)u.bytt={};
+  var bk=o.id+'|'+dag+'|'+fra;
+  if(!til||til===fra) delete u.bytt[bk]; else u.bytt[bk]=til;
+  lagreLokalt(); tegn(); toast(til&&til!==fra?'⇄ '+PMAP[til].navn+' tar '+o.navn.toLowerCase():'Tilbake til '+PMAP[fra].navn);
+  if(db){var upd={};upd['uker/'+key+'/bytt/'+bk]=(til&&til!==fra)?til:null;upd['uker/'+key+'/ts']=new Date().toISOString();db.update(upd).catch(function(e){status('Kunne ikke lagre byttet delt.')})}
+}
+
+/* ---------- tilstand ---------- */
+var OPPG=JSON.parse(JSON.stringify(SEED));
+var INNST=JSON.parse(JSON.stringify(SEED_INNST));
+var UKER={};        /* key -> {gjort:{slotkey:ts}} */
+var db=null, dbOk=false, KODE=null;
+(function(){try{var q=new URLSearchParams(location.search).get('k');if(q){localStorage.setItem('ft-kode',q);history.replaceState(null,'',location.pathname+location.hash)}KODE=localStorage.getItem('ft-kode')}catch(e){}})();
+var NAA=new Date();
+var visUke=mandag(NAA);
+var valgt=null;
+try{valgt=localStorage.getItem('ft-person')||null}catch(e){}
+(function(){var q='';try{q=(new URLSearchParams(location.search).get('p')||location.hash.replace('#','')||'').toLowerCase()}catch(e){}
+  if(q==='vårin'||q==='varin')q='vaarin';
+  if(q&&PMAP[q]){valgt=q;try{localStorage.setItem('ft-person',q)}catch(e){}}})();
+try{var lu=JSON.parse(localStorage.getItem('ft-uker')||'{}');UKER=lu||{}}catch(e){}
+function lagreLokalt(){try{localStorage.setItem('ft-uker',JSON.stringify(UKER))}catch(e){}}
+
+function ukeDoc(key){if(!UKER[key])UKER[key]={gjort:{}};if(!UKER[key].gjort)UKER[key].gjort={};return UKER[key]}
+function erGjort(key,slot){var u=UKER[key];return !!(u&&u.gjort&&u.gjort[slot])}
+var PENDING={}; /* slot -> {key,val,ts} — egne trykk som ikke er bekreftet av delt lagring ennå */
+function toggle(key,slot,person){
+  var u=ukeDoc(key); var naaGjort=!u.gjort[slot];
+  var val=naaGjort?Date.now():null;
+  if(naaGjort) u.gjort[slot]=val; else delete u.gjort[slot];
+  PENDING[key+'#'+slot]={key:key,slot:slot,val:val,ts:Date.now()};
+  lagreLokalt(); tegn();
+  if(naaGjort){var p=OPPG.filter(function(o){return slot.indexOf(o.id+'|')===0})[0];toast('+'+(p?p.poeng:1)+' ⭐ '+(PMAP[person]?PMAP[person].navn:''))}
+  if(db){
+    var upd={}; upd['uker/'+key+'/gjort/'+slot]=val; upd['uker/'+key+'/by']=person||'familie'; upd['uker/'+key+'/ts']=new Date().toISOString();
+    db.update(upd).catch(function(e){status('Kunne ikke lagre delt — lagret på enheten. ('+(e&&e.message)+')')});
+  }
+}
+/* Server-tilstand inn, men egne ferske trykk (siste 20 s) beholdes til de er bekreftet */
+function taInnUke(id,gjortServer){
+  var g={}; Object.keys(gjortServer||{}).forEach(function(k){if(gjortServer[k])g[k]=gjortServer[k]});
+  var naa=Date.now();
+  Object.keys(PENDING).forEach(function(pk){var p=PENDING[pk];
+    if(p.key!==id) return;
+    var bekreftet=(p.val?g[p.slot]===p.val:!g[p.slot]);
+    if(bekreftet||naa-p.ts>20000){delete PENDING[pk];return}
+    if(p.val) g[p.slot]=p.val; else delete g[p.slot];
+  });
+  var gammel=UKER[id]||{};
+  UKER[id]={gjort:g,bytt:gammel.bytt||{},flytt:gammel.flytt||{}};
+}
+var toastT;function toast(t){var el=document.getElementById('toast');el.textContent=t;el.classList.add('show');clearTimeout(toastT);toastT=setTimeout(function(){el.classList.remove('show')},1400)}
+function status(t){document.getElementById('dbstat').textContent=t}
+
+/* ---------- tegning ---------- */
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function ptag(p){var x=PMAP[p];return x?'<span class="ptag" style="--pc:'+x.farge+'">'+esc(x.navn)+'</span>':''}
+
+function tegnHvem(){
+  var h=document.getElementById('hvem');h.innerHTML='';
+  var alle=[{id:'alle',navn:'Alle',farge:'var(--ink)'}].concat(PERS);
+  alle.forEach(function(p){
+    var b=document.createElement('button');b.style.setProperty('--pc',p.farge);
+    b.innerHTML='<span class="dot"></span>'+esc(p.navn);
+    if((valgt||'alle')===p.id)b.classList.add('on');
+    b.onclick=function(){valgt=p.id==='alle'?null:p.id;try{if(valgt)localStorage.setItem('ft-person',valgt);else localStorage.removeItem('ft-person')}catch(e){};tegn()};
+    h.appendChild(b);
+  });
+}
+
+function tegnIdag(){
+  var man=mandag(NAA), key=ukeKey(man), dIdx=(NAA.getDay()+6)%7;
+  document.getElementById('idag-h').textContent='I dag — '+DAGER[dIdx].toLowerCase()+' '+datoNorsk(NAA)+(valgt?' · '+PMAP[valgt].navn:' · hele laget');
+  var plan=(INNST.plan&&INNST.plan[ymd(NAA)])||[];
+  var pl=document.getElementById('dagplan');
+  pl.innerHTML=plan.length?'<div class="plan">'+plan.map(function(l){var s=l.split('·');return '<div><b>'+esc((s[0]||'').trim())+'</b>'+esc((s.slice(1).join('·')||'').trim())+'</div>'}).join('')+'</div>':'';
+  var slots=planUke(man).filter(function(s){return s.dag===dIdx&&(!valgt||s.person===valgt)});
+  var grp={}; GRUPPER.forEach(function(g){grp[g]=[]});
+  slots.forEach(function(s){var g=s.o.int==='dato'?'Ute':s.o.kat; if(s.o.int==='dato'&&s.o.tid) g='Ute'; (grp[g]||(grp[g]=[])).push(s)});
+  var html='';
+  var navnG={'Morgen':'Morgen','Etter skolen':'Når du kommer hjem','Måltider':'Måltider','Kveld':'Kl. 22 — før legging','Rydding':'Ryddejobb','Vask':'Vask og bestilling','Sesong':'Modent nå','Ute':'Avtalt tidspunkt'};
+  GRUPPER.forEach(function(g){
+    if(!grp[g].length) return;
+    html+='<div class="grp">'+esc(navnG[g]||g)+'</div><div class="tiles">';
+    /* «Alle»-visning: samme oppgave for flere personer samme dag = én rute med avatarer */
+    var liste=grp[g];
+    if(!valgt){var by={},ord=[];liste.forEach(function(s){var k=s.o.id+'|'+s.dag;if(!by[k]){by[k]=[];ord.push(k)}by[k].push(s)});
+      liste=ord.map(function(k){var arr=by[k];if(arr.length===1)return arr[0];var a=arr[0];return {o:a.o,dag:a.dag,person:a.person,orig:a.orig,key:a.key,felles:arr}})}
+    liste.sort(function(a,b){var da=(a.felles?a.felles.every(function(x){return erGjort(key,x.key)}):erGjort(key,a.key))?1:0,dbb=(b.felles?b.felles.every(function(x){return erGjort(key,x.key)}):erGjort(key,b.key))?1:0;if(da!==dbb)return da-dbb;return (a.person>b.person)?1:-1}).forEach(function(s){
+      if(s.felles){
+        var alleD=s.felles.every(function(x){return erGjort(key,x.key)}), antD=s.felles.filter(function(x){return erGjort(key,x.key)}).length;
+        var av=s.felles.map(function(x){var q=PMAP[x.person];return '<span class="av'+(erGjort(key,x.key)?' ok':'')+'" style="--pc:'+q.farge+'" title="'+esc(q.navn)+'">'+esc(q.kort)+'</span>'}).join('');
+        var metaF=(s.o.tid?'kl. '+s.o.tid+' · ':'')+(s.o.min?s.o.min+' min · ':'')+'alle sammen · '+antD+' av '+s.felles.length;
+        html+='<div class="tile'+(alleD?' done':'')+'" style="--pc:var(--accent)"><button class="tmain" data-k="'+esc(key)+'" data-f="'+esc(s.felles.map(function(x){return x.key}).join(','))+'" aria-pressed="'+alleD+'"><span class="chk">✓</span><span class="ik">'+s.o.ikon+'</span><span class="tx"><span class="nm">'+esc(s.o.navn)+'</span><span class="mt">'+metaF+'</span><span class="avs">'+av+'</span></span></button><span class="side"><span class="pt num">+'+(s.o.poeng*s.felles.length)+'</span></span></div>';
+        return;
+      }
+      var done=erGjort(key,s.key), p=PMAP[s.person];
+      var meta=(s.o.tid?'kl. '+s.o.tid+' · ':'')+(s.o.min?s.o.min+' min':'')+(valgt?'':' · '+p.navn);
+      if(s.o.lenke) meta+=' · <a href="'+s.o.lenke+'" onclick="event.stopPropagation()">'+esc(s.o.lenkenavn||'åpne')+'</a>';
+      if(s.byttet) meta='⇄ for '+PMAP[s.orig].navn+' · '+meta;
+      if(s.flyttet) meta='→ fra '+DAGK[s.fraDag]+' · '+meta;
+      html+='<div class="tile'+(done?' done':'')+'" style="--pc:'+p.farge+'"><button class="tmain" data-k="'+esc(key)+'" data-s="'+esc(s.key)+'" data-p="'+esc(s.person)+'" aria-pressed="'+done+'"><span class="chk">✓</span><span class="ik">'+s.o.ikon+'</span><span class="tx"><span class="nm">'+esc(s.o.navn)+'</span><span class="mt">'+meta+'</span></span></button><span class="side"><span class="pt num">+'+s.o.poeng+'</span><button class="tb" title="Bytt oppgaven til en annen" aria-label="Bytt til en annen" data-k="'+esc(key)+'" data-o="'+esc(s.o.id)+'" data-d="'+s.dag+'" data-fra="'+esc(s.orig)+'" data-naa="'+esc(s.person)+'" data-dag0="'+(s.flyttet?s.fraDag:s.dag)+'">⇄</button></span></div>';
+    });
+    html+='</div>';
+  });
+  if(!html) html='<p class="tom">Ingen oppgaver i dag — fri! 🎉</p>';
+  var el=document.getElementById('idag-liste');el.innerHTML=html;
+  el.querySelectorAll('.tmain').forEach(function(b){b.onclick=function(){
+    if(b.dataset.f){var keys=b.dataset.f.split(','),alle=keys.every(function(k){return erGjort(b.dataset.k,k)});
+      keys.forEach(function(k){if(erGjort(b.dataset.k,k)===alle)toggle(b.dataset.k,k,k.split('|')[2])});return}
+    toggle(b.dataset.k,b.dataset.s,b.dataset.p)}});
+  el.querySelectorAll('.tb').forEach(function(b){b.onclick=function(ev){ev.stopPropagation();
+    var tile=b.parentNode; var eks=tile.querySelector('.velg'); if(eks){eks.remove();return}
+    document.querySelectorAll('.velg').forEach(function(v){v.remove()});
+    var o=OPPG.filter(function(x){return x.id===b.dataset.o})[0]; if(!o)return;
+    var v=document.createElement('div'); v.className='velg';
+    var l1=document.createElement('div'); l1.className='vl'; l1.textContent='Hvem tar den i dag?'; v.appendChild(l1);
+    PERS.forEach(function(p){ if(p.id===b.dataset.naa) return;
+      var k=document.createElement('button'); k.style.setProperty('--pc',p.farge); k.textContent=(p.id===b.dataset.fra?'↩ ':'')+p.navn; if(p.id===b.dataset.fra)k.className='orig';
+      k.onclick=function(e){e.stopPropagation();bytt(b.dataset.k,o,+b.dataset.dag0,b.dataset.fra,p.id)}; v.appendChild(k)});
+    if(o.int!=='dato'){
+      var l2=document.createElement('div'); l2.className='vl'; l2.textContent='…eller flytt til en annen dag denne uka'; v.appendChild(l2);
+      for(var d=0;d<7;d++){(function(d){var k=document.createElement('button'); k.style.setProperty('--pc','var(--ink2)'); k.textContent=(d===+b.dataset.dag0?'↩ ':'')+DAGK[d]; if(d===+b.dataset.d)k.className='naa';
+        k.onclick=function(e){e.stopPropagation();flytt(b.dataset.k,o,+b.dataset.dag0,b.dataset.fra,d===+b.dataset.dag0?null:d)}; v.appendChild(k)})(d)}
+    }
+    tile.appendChild(v);
+  }});
+  document.addEventListener('click',function(){document.querySelectorAll('.velg').forEach(function(v){v.remove()})},{once:true});
+}
+
+function ukeTall(man){
+  var key=ukeKey(man), slots=planUke(man), sum=0, gjort=0, per={};
+  PERS.forEach(function(p){per[p.id]={plan:0,gjort:0,ant:0,antG:0}});
+  slots.forEach(function(s){sum+=s.o.poeng;per[s.person].plan+=s.o.poeng;per[s.person].ant++;if(erGjort(key,s.key)){gjort+=s.o.poeng;per[s.person].gjort+=s.o.poeng;per[s.person].antG++}});
+  var maal=Math.round(sum*(INNST.prosent||75)/100);
+  return {key:key,sum:sum,gjort:gjort,maal:maal,per:per};
+}
+
+function tegnLag(){
+  var man=mandag(NAA), t=ukeTall(man);
+  document.getElementById('lag-tall').innerHTML='<span class="num">'+fmt(t.gjort)+'</span> <small>av '+fmt(t.maal)+' poeng · uke '+isoWeek(man).w+'</small>';
+  var pct=t.sum?Math.min(100,t.gjort/t.sum*100):0, mk=t.sum?t.maal/t.sum*100:75;
+  document.getElementById('lag-fill').style.width=pct+'%';
+  document.getElementById('lag-mark').style.left='calc('+mk+'% - 1px)';
+  var rest=t.maal-t.gjort;
+  document.getElementById('lag-txt').innerHTML=(rest<=0?'<b>Ukemålet er nådd!</b>':'<b>'+fmt(rest)+' poeng igjen</b> til ukemålet')+' <span class="small">· planlagt i alt '+fmt(t.sum)+' poeng</span>';
+  var h='<tr><th>Spiller</th><th class="c">Poeng</th><th class="c">Av planlagt</th><th class="c">Oppgaver</th></tr>';
+  PERS.forEach(function(p){var x=t.per[p.id];h+='<tr><td>'+ptag(p.id)+'</td><td class="c num"><b>'+x.gjort+'</b></td><td class="c num">'+x.plan+'</td><td class="c num">'+x.antG+' / '+x.ant+'</td></tr>'});
+  document.getElementById('lag-tbl').innerHTML=h;
+  tegnTrapp(t);
+}
+/* Uker der lagmålet er nådd: rekke på rad (inkl. denne uka hvis nådd) og antall av siste 8 */
+function ukeStatus(){
+  var man=mandag(NAA), rekke=0, naaddNaa=false, brutt=false, liste=[];
+  for(var i=0;i<16;i++){var m=addDays(man,-7*i);var key=ukeKey(m);var t=UKER[key]?ukeTall(m):null;var naadd=!!(t&&t.maal>0&&t.gjort>=t.maal);
+    liste.push(naadd);
+    if(i===0)naaddNaa=naadd;
+    if(!brutt){if(naadd)rekke++;else if(i>0)brutt=true;}}
+  return {rekke:rekke,naaddNaa:naaddNaa,av:function(n){var c=0;for(var i=0;i<n&&i<liste.length;i++)if(liste[i])c++;return c}};
+}
+var rullIdx=0, rullTimer=null;
+function tegnTrapp(t){
+  var trapp=(INNST.trapp&&INNST.trapp.length)?INNST.trapp:SEED_TRAPP, st=ukeStatus(), rest=Math.max(0,t.maal-t.gjort);
+  var h='<tr><th></th><th>Belønning</th><th class="c">Status</th></tr>';
+  var linjer=[];
+  trapp.forEach(function(n){
+    var krav=n.av?n.krav+' av '+n.av+' uker':(n.krav===1?'lagmålet én uke':n.krav+' uker på rad');
+    var har=n.av?st.av(n.av):st.rekke;
+    var naadd=har>=n.krav;
+    var status=naadd?'<span class="naadd">✓ opptjent</span>':'<span class="num">'+har+' / '+n.krav+'</span>';
+    h+='<tr><td class="ikon">'+n.ikon+'</td><td class="navn">'+esc(n.navn)+' <span class="pill grey">'+krav+'</span><small>'+esc(n.tekst)+'</small></td><td class="c">'+status+'</td></tr>';
+    var linje=naadd?'Opptjent — '+n.navn.toLowerCase()+' står for tur!':(st.naaddNaa?'Denne uka er i boks. '+(n.krav-har)+' uke'+(n.krav-har===1?'':'r')+' til '+n.navn.toLowerCase():rest+' poeng igjen denne uka'+(n.krav>1?' · '+(n.krav-har)+' uke'+(n.krav-har===1?'':'r')+' til '+n.navn.toLowerCase():' → '+n.navn.toLowerCase()));
+    linjer.push('<span class="ik">'+n.ikon+'</span><span>'+esc(n.navn)+'<small>'+esc(linje)+'</small></span>');
+  });
+  document.getElementById('trapp-tbl').innerHTML=h;
+  RULL=linjer; visRull();
+  if(!rullTimer){var rm=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;rullTimer=setInterval(function(){rullIdx++;visRull()},rm?12000:4500)}
+}
+var RULL=[];function visRull(){if(!RULL.length)return;document.getElementById('lag-rull').innerHTML=RULL[rullIdx%RULL.length]}
+
+function tegnUke(){
+  var man=visUke, key=ukeKey(man), w=isoWeek(man), idx=ukeIndex(man);
+  document.getElementById('uke-tittel').textContent='Uke '+w.w+' · '+datoNorsk(man)+'–'+datoNorsk(addDays(man,6))+' '+w.y;
+  var erNaa=key===ukeKey(NAA), dIdx=(NAA.getDay()+6)%7;
+  document.getElementById('uke-sub').textContent=(valgt?PMAP[valgt].navn+'s':'Hele lagets')+' plan. Torsdag er ryddedagen'+(key==='2026-W37'?' — denne uka ble den flyttet til lørdag.':'.');
+  var slots=planUke(man).filter(function(s){return !valgt||s.person===valgt});
+  var rader={}; var orden=[];
+  slots.forEach(function(s){var rk=s.o.id+(valgt?'':'|'+s.person);if(!rader[rk]){rader[rk]={o:s.o,person:s.person,dager:{}};orden.push(rk)}rader[rk].dager[s.dag]=s});
+  orden.sort(function(a,b){var A=rader[a],B=rader[b];var ga=GRUPPER.indexOf(A.o.kat),gb=GRUPPER.indexOf(B.o.kat);if(ga!==gb)return ga-gb;if(A.person!==B.person)return PERS.findIndex(function(p){return p.id===A.person})-PERS.findIndex(function(p){return p.id===B.person});return 0});
+  var h='<tr><th>Oppgave</th>';DAGK.forEach(function(d,i){h+='<th class="c'+(erNaa&&i===dIdx?' today':'')+'">'+d+'<br><span class="small num">'+datoNorsk(addDays(man,i))+'</span></th>'});h+='<th class="c">P</th></tr>';
+  if(!orden.length) h+='<tr><td colspan="9" class="tom">Ingen oppgaver denne uka.</td></tr>';
+  orden.forEach(function(rk){var r=rader[rk];
+    h+='<tr><td class="navn">'+r.o.ikon+' '+esc(r.o.navn)+(valgt?'':'<small>'+ptag(r.person)+'</small>')+'</td>';
+    for(var d=0;d<7;d++){var s=r.dager[d];
+      if(!s){h+='<td class="c"><span class="cell na"></span></td>';continue}
+      var done=erGjort(key,s.key);
+      h+='<td class="c'+(erNaa&&d===dIdx?' today':'')+'"><button class="cell'+(done?' done':'')+'" data-k="'+esc(key)+'" data-s="'+esc(s.key)+'" data-p="'+esc(s.person)+'" aria-label="'+esc(r.o.navn+' '+DAGER[d])+'" aria-pressed="'+done+'">'+(done?'✓':'')+'</button></td>';
+    }
+    h+='<td class="c num">'+r.o.poeng+'</td></tr>';
+  });
+  var t=document.getElementById('uke-tbl');t.innerHTML=h;
+  t.querySelectorAll('.cell').forEach(function(b){b.onclick=function(){toggle(b.dataset.k,b.dataset.s,b.dataset.p)}});
+}
+
+function tegnHist(){
+  var h='<tr><th>Uke</th><th class="c">Poeng</th><th class="c">Mål</th><th class="c">Nådd</th>'+PERS.map(function(p){return '<th class="c">'+esc(p.kort)+'</th>'}).join('')+'</tr>';
+  var man=mandag(NAA), n=0;
+  for(var i=0;i<8;i++){var m=addDays(man,-7*i);var key=ukeKey(m);if(i>0&&!UKER[key])continue;var t=ukeTall(m);
+    h+='<tr'+(i===0?' class="today"':'')+'><td class="num">Uke '+isoWeek(m).w+' <span class="small">'+datoNorsk(m)+'</span></td><td class="c num"><b>'+t.gjort+'</b></td><td class="c num">'+t.maal+'</td><td class="c">'+(t.gjort>=t.maal&&t.maal>0?'✅':(i===0?'…':'—'))+'</td>'+PERS.map(function(p){return '<td class="c num">'+t.per[p.id].gjort+'</td>'}).join('')+'</tr>';n++}
+  h+='<tr><td colspan="9" class="small">E = Erik · V = Vårin · O = Oscar · T = Thor · A = Anniken. Uker uten registreringer vises ikke.</td></tr>';
+  document.getElementById('hist-tbl').innerHTML=h;
+}
+
+var INTNAVN={hverdag:'hver hverdag',daglig:'hver dag',dager:'faste dager',uke:'hver uke',"2uke":'hver 2. uke',"3uke":'hver 3. uke',"4uke":'hver 4. uke',kvartal:'hver 3. mnd',dato:'én dato'};
+function nesteGang(o){
+  var man=mandag(NAA), dIdx=(NAA.getDay()+6)%7;
+  for(var w=0;w<60;w++){var m=addDays(man,7*w);var dg=dagerIUka(o,m);for(var i=0;i<dg.length;i++){if(w===0&&dg[i]<dIdx)continue;return addDays(m,dg[i])}}
+  return null;
+}
+function tegnBank(){
+  var h='<tr><th></th><th>Oppgave</th><th>Rytme</th><th>Hvem</th><th class="c">Poeng</th><th class="c">Min</th><th>Neste</th><th></th></tr>';
+  var liste=OPPG.slice().sort(function(a,b){var ga=GRUPPER.indexOf(a.kat),gb=GRUPPER.indexOf(b.kat);return ga-gb});
+  liste.forEach(function(o){
+    var ryt=INTNAVN[o.int]||o.int;
+    if(o.int==='dager')ryt=(o.dager||[]).map(function(d){return DAGK[d]}).join('+');
+    else if(['uke','2uke','3uke','4uke','kvartal'].indexOf(o.int)>=0)ryt+=' · '+DAGK[o.dag===undefined?3:o.dag];
+    else if(o.int==='dato')ryt=o.dato.split('-').reverse().join('.')+(o.tid?' kl. '+o.tid:'');
+    else if(o.tid)ryt+=' kl. '+o.tid;
+    var hv=o.rull?o.rull.map(ptag).join('')+'<span class="small">bytter</span>':(o.hvem||[]).map(ptag).join('');
+    var ng=nesteGang(o);
+    h+='<tr style="'+(o.aktiv===false?'opacity:.5':'')+'"><td class="ikon">'+o.ikon+'</td><td class="navn">'+esc(o.navn)+(o.forslag?' <span class="pill grey">forslag</span>':'')+(o.aktiv===false?' <span class="pill warn">av</span>':'')+(o.lenke?' <a href="'+o.lenke+'">'+esc(o.lenkenavn)+' →</a>':'')+'<small>'+esc(o.kat)+'</small></td><td>'+ryt+'</td><td>'+hv+'</td><td class="c num">'+o.poeng+'</td><td class="c num">'+(o.min||'')+'</td><td class="num">'+(ng?DAGK[(ng.getDay()+6)%7]+' '+datoNorsk(ng):'—')+'</td><td><button class="edit" data-id="'+esc(o.id)+'">endre</button></td></tr>';
+  });
+  var t=document.getElementById('bank-tbl');t.innerHTML=h;
+  t.querySelectorAll('.edit').forEach(function(b){b.onclick=function(){fyllSkjema(b.dataset.id)}});
+}
+
+/* ---------- skjema ---------- */
+function fyllHvem(){var d=document.getElementById('f-hvem');d.innerHTML=PERS.map(function(p){return '<label style="display:inline-flex;gap:4px;align-items:center;color:var(--ink)"><input type="checkbox" name="hv" value="'+p.id+'"> '+esc(p.navn)+'</label>'}).join('')+'<label style="display:inline-flex;gap:4px;align-items:center;color:var(--ink)"><input type="checkbox" id="f-rull"> bytter annenhver uke</label><label style="display:inline-flex;gap:4px;align-items:center;color:var(--ink)"><input type="checkbox" id="f-aktiv" checked> aktiv</label>'}
+function fyllSkjema(id){
+  var o=OPPG.filter(function(x){return x.id===id})[0];if(!o)return;
+  document.getElementById('ny-wrap').open=true;
+  document.getElementById('f-id').value=o.id;document.getElementById('f-navn').value=o.navn;document.getElementById('f-ikon').value=o.ikon||'';
+  document.getElementById('f-kat').value=o.kat;document.getElementById('f-int').value=o.int==='dager'?'hverdag':o.int;
+  document.getElementById('f-dag').value=String(o.dag===undefined?3:o.dag);document.getElementById('f-dato').value=o.dato||'';document.getElementById('f-tid').value=o.tid||'';
+  document.getElementById('f-poeng').value=o.poeng;document.getElementById('f-min').value=o.min||'';
+  var hv=o.rull||o.hvem||[];document.querySelectorAll('#f-hvem input[name=hv]').forEach(function(c){c.checked=hv.indexOf(c.value)>=0});
+  document.getElementById('f-rull').checked=!!o.rull;document.getElementById('f-aktiv').checked=o.aktiv!==false;
+  gaaTil('ny-wrap');
+}
+document.getElementById('f-avbryt').onclick=function(){document.getElementById('ny').reset();document.getElementById('f-id').value=''};
+document.getElementById('ny').onsubmit=function(e){
+  e.preventDefault();
+  var hv=[].slice.call(document.querySelectorAll('#f-hvem input[name=hv]:checked')).map(function(c){return c.value});
+  if(!hv.length){alert('Velg minst én person.');return}
+  var id=document.getElementById('f-id').value||('x-'+Date.now().toString(36));
+  var o={id:id,navn:document.getElementById('f-navn').value.trim(),ikon:document.getElementById('f-ikon').value.trim()||'🧺',kat:document.getElementById('f-kat').value,int:document.getElementById('f-int').value,dag:+document.getElementById('f-dag').value,poeng:+(document.getElementById('f-poeng').value.replace(/\s/g,''))||1,min:+(document.getElementById('f-min').value.replace(/\s/g,''))||0,aktiv:document.getElementById('f-aktiv').checked,by:valgt||'familie',ts:new Date().toISOString()};
+  if(o.int==='dato'){o.dato=document.getElementById('f-dato').value;o.tid=document.getElementById('f-tid').value||'';if(!o.dato){alert('Velg dato.');return}}
+  if(document.getElementById('f-rull').checked&&hv.length>1){o.rull=hv;o.hvem=[]}else{o.hvem=hv;o.rull=null}
+  var gammel=OPPG.filter(function(x){return x.id===id})[0];
+  if(gammel){Object.keys(o).forEach(function(k){gammel[k]=o[k]});if(!o.rull)delete gammel.rull;delete gammel.forslag}else OPPG.push(o);
+  try{localStorage.setItem('ft-oppg',JSON.stringify(OPPG))}catch(e){}
+  if(db){var dok=JSON.parse(JSON.stringify(o));if(!dok.rull)delete dok.rull;dok.forslag=false;db.child('oppgaver/'+id).set(dok).catch(function(er){status('Kunne ikke lagre oppgaven delt.')})}
+  document.getElementById('ny').reset();document.getElementById('f-id').value='';toast('Lagret ✓');tegn();
+};
+document.getElementById('innst').onsubmit=function(e){
+  e.preventDefault();
+  INNST.prosent=+(document.getElementById('i-prosent').value.replace(/\s/g,''))||75;
+  var trapp=JSON.parse(JSON.stringify((INNST.trapp&&INNST.trapp.length)?INNST.trapp:SEED_TRAPP));
+  for(var i=0;i<5;i++){var v=(document.getElementById('i-t'+i).value||'').trim();if(v&&trapp[i]){var d=v.split(':');if(d.length>1){trapp[i].navn=d[0].trim();trapp[i].tekst=d.slice(1).join(':').trim()}else trapp[i].tekst=v}}
+  INNST.trapp=trapp;
+  var pl=document.getElementById('i-plan').value.trim();INNST.plan=INNST.plan||{};
+  if(pl)INNST.plan[ymd(NAA)]=pl.split(/\s*\|\s*|\n/).filter(Boolean);else delete INNST.plan[ymd(NAA)];
+  try{localStorage.setItem('ft-innst',JSON.stringify(INNST))}catch(e){}
+  if(db){db.child('innstillinger').set({id:'main',prosent:INNST.prosent,plan:INNST.plan||null,trapp:INNST.trapp,by:valgt||'familie',ts:new Date().toISOString()}).catch(function(er){status('Kunne ikke lagre innstillinger delt.')})}
+  toast('Lagret ✓');tegn();
+};
+function fyllInnst(){var tr=(INNST.trapp&&INNST.trapp.length)?INNST.trapp:SEED_TRAPP;for(var i=0;i<5;i++){var el=document.getElementById('i-t'+i);if(el&&tr[i]&&document.activeElement!==el)el.value=tr[i].navn+': '+tr[i].tekst}
+  document.getElementById('i-prosent').value=INNST.prosent||75;document.getElementById('i-plan').value=((INNST.plan||{})[ymd(NAA)]||[]).join(' | ')}
+
+/* ---------- samle ---------- */
+function tegn(){tegnHvem();tegnIdag();tegnLag();tegnUke();tegnHist();tegnBank();fyllInnst()}
+document.getElementById('uke-forrige').onclick=function(){visUke=addDays(visUke,-7);tegnUke()};
+document.getElementById('uke-neste').onclick=function(){visUke=addDays(visUke,7);tegnUke()};
+document.getElementById('uke-naa').onclick=function(){visUke=mandag(NAA);tegnUke()};
+function gaaTil(id){var m=document.getElementById(id);if(!m)return;var off=0;document.querySelectorAll('.dale-nav').forEach(function(n){var cs=getComputedStyle(n);if(cs.position==='sticky'||cs.position==='fixed'){var r=n.getBoundingClientRect();if(r.top<=1)off=Math.max(off,r.height)}});var y=m.getBoundingClientRect().top+window.pageYOffset-off-16;window.scrollTo({top:Math.max(0,y),behavior:'smooth'})}
+fyllHvem();
+try{var lo=JSON.parse(localStorage.getItem('ft-oppg')||'null');if(lo&&lo.length)OPPG=lo}catch(e){}
+try{var li=JSON.parse(localStorage.getItem('ft-innst')||'null');if(li)INNST=li}catch(e){}
+tegn();
+status('Lagret på denne enheten. Kobler til delt lagring …');
+
+/* ---------- innhold fra repoet (agentstyrt) + delt database (Firebase) ---------- */
+function slaaSammenOppg(liste){
+  liste.forEach(function(x){if(!x||!x.id)return;var o=OPPG.filter(function(y){return y.id===x.id})[0];
+    if(o){Object.keys(x).forEach(function(k){o[k]=x[k]});if(!x.rull)delete o.rull}else OPPG.push(x)});
+}
+(async function(){
+  /* 1) innholdet: data/oppgaver.json + data/innstillinger.json — Bjørn og Liv oppdaterer disse i repoet */
+  try{
+    var r1=await fetch('data/oppgaver.json?v='+Date.now(),{cache:'no-store'}); if(r1.ok){var lo=await r1.json(); if(lo&&lo.length){OPPG=JSON.parse(JSON.stringify(lo));}}
+    var r2=await fetch('data/innstillinger.json?v='+Date.now(),{cache:'no-store'}); if(r2.ok){var li=await r2.json(); if(li){if(li.prosent)INNST.prosent=li.prosent;if(li.trapp)INNST.trapp=li.trapp;if(li.plan)INNST.plan=Object.assign({},INNST.plan||{},li.plan)}}
+    tegn();
+  }catch(e){}
+  /* 2) delt lagring */
+  if(!KODE){status('Ingen familiekode. Åpne lenka du fikk (den har koden i seg), så husker enheten den.');document.getElementById('dbpill').textContent='mangler familiekode';return}
+  if(!(window.firebase&&firebase.initializeApp)){status('Fikk ikke lastet delt lagring — lagres på enheten til neste gang.');document.getElementById('dbpill').textContent='lagres på enheten';return}
+  try{
+    firebase.initializeApp(FIREBASE);
+    db=firebase.database().ref('fam/'+KODE); dbOk=true;
+    db.child('oppgaver').on('value',function(snap){var v=snap.val()||{};slaaSammenOppg(Object.keys(v).map(function(k){return v[k]}));tegn()});
+    db.child('innstillinger').on('value',function(snap){var x=snap.val();if(x){if(x.prosent)INNST.prosent=x.prosent;if(x.plan)INNST.plan=Object.assign({},INNST.plan||{},x.plan);if(x.trapp&&x.trapp.length)INNST.trapp=x.trapp;tegn()}});
+    db.child('uker').on('value',function(snap){
+      var v=snap.val()||{}; var n=0;
+      Object.keys(v).forEach(function(id){var x=v[id]||{};taInnUke(id,x.gjort||{});var bt={};Object.keys(x.bytt||{}).forEach(function(k){if(x.bytt[k])bt[k]=x.bytt[k]});UKER[id].bytt=bt;var fl={};Object.keys(x.flytt||{}).forEach(function(k){if(x.flytt[k]!==null&&x.flytt[k]!==undefined)fl[k]=x.flytt[k]});UKER[id].flytt=fl;n++});
+      lagreLokalt();tegn();
+      document.getElementById('dbpill').textContent='lagres delt';
+      status('Delt lagring tilkoblet · '+n+' uke'+(n===1?'':'r')+' registrert.');
+    },function(e){status('Delt lagring avviste tilkoblingen — er familiekoden riktig? ('+(e&&e.message)+')');document.getElementById('dbpill').textContent='lagres på enheten'});
+  }catch(e){status('Delt lagring feilet — lagres på enheten.')}
+})();
+
+/* ---------- ukerapport (til Bjørns bruksanalyse) ---------- */
+document.getElementById('rapport').onclick=function(){
+  var man=mandag(NAA), ut={laget:new Date().toISOString(),uker:[]};
+  for(var i=0;i<8;i++){var m=addDays(man,-7*i);var key=ukeKey(m);if(!UKER[key])continue;var t=ukeTall(m);var u=UKER[key];
+    var per={};PERS.forEach(function(p){per[p.id]=[t.per[p.id].gjort,t.per[p.id].plan,t.per[p.id].antG,t.per[p.id].ant]});
+    var slots=planUke(m), ikke={};slots.forEach(function(s){if(!erGjort(key,s.key)){ikke[s.o.id]=(ikke[s.o.id]||0)+1}});
+    var dager={};Object.keys(u.gjort||{}).forEach(function(k){var ts=u.gjort[k];if(ts){var d=new Date(ts);var dk=DAGK[(d.getDay()+6)%7]+'/'+d.getHours();dager[dk]=(dager[dk]||0)+1}});
+    ut.uker.push({uke:key,poeng:t.gjort,maal:t.maal,plan:t.sum,per:per,ikkeGjort:ikke,bytt:Object.keys(u.bytt||{}),flytt:u.flytt||{},naarHuket:dager});
+  }
+  var txt='FAMILIETEAMET UKERAPPORT\n'+JSON.stringify(ut);
+  (navigator.clipboard&&navigator.clipboard.writeText?navigator.clipboard.writeText(txt):Promise.reject()).then(function(){toast('Kopiert — lim inn i chatten til Bjørn')}).catch(function(){prompt('Kopier teksten:',txt)});
+};
+
+/* ---------- topp ---------- */
+var tt=document.getElementById('dale-totop');
+window.addEventListener('scroll',function(){tt.classList.toggle('show',window.scrollY>500)},{passive:true});
+tt.onclick=function(){window.scrollTo({top:0,behavior:'smooth'})};
+</script>
+<script>
+if('scrollRestoration' in history) history.scrollRestoration='manual';
+(function(){var stop=false;function opp(){if(stop)return;window.scrollTo(0,0);document.documentElement.scrollTop=0;document.body.scrollTop=0}
+['wheel','touchstart','keydown','pointerdown'].forEach(function(ev){window.addEventListener(ev,function(){stop=true},{once:true,passive:true})});
+opp();document.addEventListener('DOMContentLoaded',opp);window.addEventListener('load',opp);
+[0,50,120,250,450,700,1000,1500,2200].forEach(function(t){setTimeout(opp,t)});setTimeout(function(){stop=true},2500)})();
+if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){})})}
+</script>
+</body>
+</html>
