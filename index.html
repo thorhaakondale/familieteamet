@@ -252,7 +252,7 @@ details.om .in{padding:8px 0 0;font-size:14px;max-width:70ch}
 <p><b>Rytmen.</b> Morgen- og hjemkomstrutinene går hver hverdag. Måltidsjobbene går hver dag og bytter mellom Erik og Vårin annenhver uke. <b>Torsdag er ryddedagen</b> — da er huset klart til helga og uka etter. Oppgaver som går hver 3. uke og hver 3. måned dukker opp på lørdager når de er modne. Sesongbyttet i garderoben kobles til Brukskortene, og skapsjekken onsdag kobles til Ukeshandel — samme rytme, samme sted.</p>
 <p><b>Poengene</b> er ett lag, ikke fem. Ingen konkurrerer mot søsken. Oscar (2) er med på sine småting, og alt han gjør teller.</p>
 <p><b>Voksne</b> legger inn nye oppgaver, flytter dager og setter belønning under Oppgavebanken. Rader merket «forslag» er tavlas forslag og skal justeres av dere.</p>
-<p><b>Egen lenke og «app» på iPad og mobil.</b> Legg <code>#erik</code>, <code>#vaarin</code>, <code>#oscar</code>, <code>#thor</code> eller <code>#anniken</code> bak lenka, så åpner tavla ferdig valgt for den personen. Legg den på hjemskjermen: iPad/iPhone — Del-knappen → «Legg til på Hjem-skjerm»; Android — menyen ⋮ → «Legg til på startskjermen». Ingen innlogging trengs.</p>
+<p><b>Egen lenke og «app» på iPad og mobil.</b> Bruk lenka med <code>&amp;p=erik</code>, <code>&amp;p=vaarin</code>, <code>&amp;p=oscar</code>, <code>&amp;p=thor</code> eller <code>&amp;p=anniken</code>, så åpner tavla ferdig valgt for den personen — også fra hjemskjermen. Legg den på hjemskjermen: iPad/iPhone — Del-knappen → «Legg til på Hjem-skjerm»; Android — menyen ⋮ → «Legg til på startskjermen». Ingen innlogging trengs.</p>
 <p><b>Bytte eller flytte en oppgave.</b> Trykk ⇄ på ruta: velg hvem som tar den i dag (jobber Anniken, tar Thor middagen), eller flytt den til en annen dag denne uka (rekker du ikke badene lørdag, tar du dem mandag). Vil du skyve den lenger, velg «utsett til» — i morgen, to dager, neste uke eller en dato du velger selv; da dukker den opp den dagen, merket ⏭. Alt kan angres med ↩. Ferdige ruter krymper og legger seg nederst i gruppa, så det som gjenstår står øverst.</p>
 <p><b>Belønningstrappa.</b> Ett ukemål gir spillkveld, to på rad filmkveld hjemme, tre av fire uker gir overnattingsbesøk (huset er helgeklart og de voksne har overskudd), seks av åtte uker en fornøyelsesdag som planlegges i kalenderen, og tolv av seksten uker utløser bossen — den eneste premien som er en ting, og den kommer sjelden med vilje. Linja over lagtabellen ruller gjennom nivåene og viser hvor langt dere er. Voksne endrer tekstene under Oppgavebanken.</p>
 <p><b>Lagring.</b> Hakene lagres delt (Firebase, EU), så mobil, iPad og PC viser det samme uten innlogging — lenka dere fikk har familiekoden i seg, og enheten husker den. Oppgavebanken og trappa ligger i appens filer og oppdateres av Bjørn og Liv. Mister siden kontakten, lagres det på enheten til den er tilbake.</p>
@@ -416,16 +416,16 @@ var OPPG=JSON.parse(JSON.stringify(SEED));
 var INNST=JSON.parse(JSON.stringify(SEED_INNST));
 var UKER={};        /* key -> {gjort:{slotkey:ts}} */
 var db=null, dbOk=false, KODE=null;
-(function(){try{var q=new URLSearchParams(location.search).get('k');if(q){localStorage.setItem('ft-kode',q);history.replaceState(null,'',location.pathname+location.hash)}KODE=localStorage.getItem('ft-kode')}catch(e){}})();
+(function(){try{var q=new URLSearchParams(location.search).get('k');if(q){localStorage.setItem('ft-kode',q)}KODE=localStorage.getItem('ft-kode')}catch(e){}})();
+/* Koden og personen blir stående i adressen med vilje: «Legg til på Hjem-skjerm» tar vare på adressen slik den er,
+   og en hjemskjerm-app på iPhone/iPad har sitt eget minne, så den må få koden og navnet fra adressen hver gang. */
 var NAA=new Date();
 var visUke=mandag(NAA);
 var valgt=null;
 try{valgt=localStorage.getItem('ft-person')||null}catch(e){}
 (function(){var q='';try{q=(new URLSearchParams(location.search).get('p')||location.hash.replace('#','')||'').toLowerCase()}catch(e){}
-  try{q=decodeURIComponent(q)}catch(e){}
   if(q==='vårin'||q==='varin')q='vaarin';
-  /* «Alle» er ikke en person i PMAP — internt er det valgt=null, samme som Alle-knappen gjør */
-  if(q==='alle'||q==='all'||q==='oss'){valgt=null;try{localStorage.removeItem('ft-person')}catch(e){}}
+  if(q==='alle'){valgt=null;try{localStorage.removeItem('ft-person')}catch(e){}}
   else if(q&&PMAP[q]){valgt=q;try{localStorage.setItem('ft-person',q)}catch(e){}}})();
 try{var lu=JSON.parse(localStorage.getItem('ft-uker')||'{}');UKER=lu||{}}catch(e){}
 function lagreLokalt(){try{localStorage.setItem('ft-uker',JSON.stringify(UKER))}catch(e){}}
