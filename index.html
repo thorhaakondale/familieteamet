@@ -227,6 +227,8 @@ details.om .in{padding:8px 0 0;font-size:14px;max-width:70ch}
 <section class="card" id="historikk">
   <h2>Uke for uke</h2>
   <div class="sveip"><table class="tbl" id="hist-tbl"></table></div>
+  <h3 style="margin:14px 0 4px">🔧 Vedlikehold — neste 12 uker</h3><p class="sub">Maks to vedlikeholdsjobber per uke; køen jevnes ut automatisk. Bjørn foreslår lengre intervaller når jobber viser seg å tåle det.</p>
+  <div class="sveip"><table class="tbl" id="vedl-tbl"></table></div>
 </section>
 
 <section class="card bank" id="bank">
@@ -238,8 +240,10 @@ details.om .in{padding:8px 0 0;font-size:14px;max-width:70ch}
     <input type="hidden" id="f-id">
     <div class="full"><label for="f-navn">Oppgave</label><input id="f-navn" required placeholder="F.eks. Vanne plantene"></div>
     <div><label for="f-ikon">Ikon</label><input id="f-ikon" value="🧺" maxlength="4"></div>
-    <div><label for="f-kat">Kategori</label><select id="f-kat"><option>Morgen</option><option>Etter skolen</option><option>Dagen</option><option>Måltider</option><option>Kveld</option><option selected>Rydding</option><option>Vask</option><option>Sesong</option><option>Ute</option></select></div>
-    <div><label for="f-int">Rytme</label><select id="f-int"><option value="hverdag">Hver hverdag</option><option value="daglig">Hver dag</option><option value="uke" selected>Hver uke</option><option value="2uke">Hver 2. uke</option><option value="3uke">Hver 3. uke</option><option value="4uke">Hver 4. uke</option><option value="kvartal">Hver 3. måned</option><option value="dato">Én bestemt dato</option></select></div>
+    <div><label for="f-kat">Kategori</label><select id="f-kat"><option>Morgen</option><option>Etter skolen</option><option>Dagen</option><option>Måltider</option><option>Kveld</option><option selected>Rydding</option><option>Vask</option><option>Vedlikehold</option><option>Hytta</option><option>Sesong</option><option>Ute</option></select></div>
+    <div><label for="f-int">Rytme</label><select id="f-int"><option value="hverdag">Hver hverdag</option><option value="daglig">Hver dag</option><option value="uke" selected>Hver uke</option><option value="2uke">Hver 2. uke</option><option value="3uke">Hver 3. uke</option><option value="4uke">Hver 4. uke</option><option value="kvartal">Hver 3. måned</option><option value="uker">Hver N. uke (fyll inn under)</option><option value="dato">Én bestemt dato</option></select></div>
+    <div><label for="f-hver">Hver N. uke · slakk (uker den kan skyves)</label><input id="f-hver" type="text" inputmode="numeric" placeholder="26" style="width:48%"> <input id="f-slakk" type="text" inputmode="numeric" placeholder="3" style="width:48%"></div>
+    <div class="full"><label for="f-notat">Notat (vises på ruta)</label><input id="f-notat" placeholder="F.eks. innstillinger, antall, hvor tingene ligger"></div>
     <div><label for="f-dag">Dag</label><select id="f-dag"><option value="0">Mandag</option><option value="1">Tirsdag</option><option value="2">Onsdag</option><option value="3" selected>Torsdag</option><option value="4">Fredag</option><option value="5">Lørdag</option><option value="6">Søndag</option></select></div>
     <div><label for="f-dato">Dato (bare ved «bestemt dato»)</label><input id="f-dato" type="date"></div>
     <div><label for="f-poeng">Poeng</label><input id="f-poeng" type="text" inputmode="numeric" value="3"></div>
@@ -292,7 +296,7 @@ var PERS=[
 var PMAP={};PERS.forEach(function(p){PMAP[p.id]=p});
 var DAGER=['Mandag','Tirsdag','Onsdag','Torsdag','Fredag','Lørdag','Søndag'];
 var DAGK=['man','tir','ons','tor','fre','lør','søn'];
-var GRUPPER=['Morgen','Etter skolen','Dagen','Måltider','Rydding','Kveld','Vask','Sesong','Ute'];
+var GRUPPER=['Morgen','Etter skolen','Dagen','Måltider','Rydding','Kveld','Vask','Vedlikehold','Hytta','Sesong','Ute'];
 
 /* Seed = fallback hvis databasen ikke svarer. Databasen overstyrer felt for felt. */
 var SEED=[{"id": "m-sekk", "navn": "Sekken klar", "ikon": "🎒", "kat": "Morgen", "int": "hverdag", "hvem": ["erik", "vaarin"], "poeng": 1, "min": 3}, {"id": "m-tann-v", "navn": "Tannpuss", "ikon": "🪥", "kat": "Morgen", "int": "hverdag", "hvem": ["vaarin"], "poeng": 1, "min": 3}, {"id": "m-tann-e", "navn": "1. Medisin · 2. Tannpuss", "ikon": "💊", "kat": "Morgen", "int": "hverdag", "hvem": ["erik"], "poeng": 1, "min": 3}, {"id": "m-frokost", "navn": "Niste smurt, frokost og et glass vann", "ikon": "🥪", "kat": "Morgen", "int": "hverdag", "hvem": ["erik", "vaarin"], "poeng": 2, "min": 15}, {"id": "h-sko", "navn": "Sko på plass, sekken på rommet", "ikon": "👟", "kat": "Etter skolen", "int": "hverdag", "hvem": ["erik", "vaarin"], "poeng": 2, "min": 3}, {"id": "k-dekke", "navn": "Dekke på bordet", "ikon": "🍽️", "kat": "Måltider", "int": "daglig", "rull": ["vaarin", "erik"], "poeng": 1, "min": 5}, {"id": "k-rydde", "navn": "Rydde av bordet", "ikon": "🧽", "kat": "Måltider", "int": "daglig", "rull": ["erik", "vaarin"], "poeng": 1, "min": 5}, {"id": "k-tom", "navn": "Tømme oppvaskmaskinen", "ikon": "🫧", "kat": "Måltider", "int": "daglig", "rull": ["erik", "vaarin"], "poeng": 2, "min": 8}, {"id": "k-fyll", "navn": "Fylle oppvaskmaskinen", "ikon": "🍴", "kat": "Måltider", "int": "daglig", "rull": ["vaarin", "erik"], "poeng": 2, "min": 8}, {"id": "k-tallerken", "navn": "Bære tallerkenen sin til benken", "ikon": "🌱", "kat": "Måltider", "int": "daglig", "hvem": ["oscar"], "poeng": 1, "min": 1}, {"id": "kv-gang", "navn": "Gangen og vaskerommet ryddig — PC-bag og treningsbag på plass", "ikon": "🎒", "kat": "Kveld", "int": "daglig", "hvem": ["thor"], "poeng": 1, "min": 5}, {"id": "kv-bad", "navn": "Sko på plass, håndklær opp fra badegulvet, badet ryddig", "ikon": "🧖", "kat": "Kveld", "int": "daglig", "hvem": ["anniken"], "poeng": 1, "min": 5}, {"id": "kv-kjokken", "navn": "Kjøkkenet klart til neste dag", "ikon": "✨", "kat": "Kveld", "int": "daglig", "hvem": ["thor", "anniken"], "poeng": 1, "min": 5}, {"id": "v-vask", "navn": "Klesvask: vaske, henge opp, brette", "ikon": "🧺", "kat": "Vask", "int": "dager", "dager": [0, 2, 4], "rull": ["anniken", "thor"], "poeng": 2, "min": 20}, {"id": "t-trapp", "navn": "Støvsuge trappa", "ikon": "🪜", "kat": "Rydding", "int": "uke", "dag": 3, "hvem": ["erik"], "poeng": 3, "min": 10, "unntak": {"2026-W37": 5}}, {"id": "t-sofa", "navn": "Støvsuge sofaene", "ikon": "🛋️", "kat": "Rydding", "int": "uke", "dag": 3, "hvem": ["erik"], "poeng": 3, "min": 10, "unntak": {"2026-W37": 5}}, {"id": "t-leker", "navn": "Rydde Oscars leker", "ikon": "🧸", "kat": "Rydding", "int": "uke", "dag": 3, "hvem": ["erik", "oscar"], "poeng": 2, "min": 10, "unntak": {"2026-W37": 5}}, {"id": "t-skap-e", "navn": "Klær på plass i eget skap", "ikon": "👕", "kat": "Rydding", "int": "uke", "dag": 3, "hvem": ["erik"], "poeng": 2, "min": 10, "unntak": {"2026-W37": 5}}, {"id": "t-skap-v", "navn": "Klær på plass i eget skap", "ikon": "👗", "kat": "Rydding", "int": "uke", "dag": 3, "hvem": ["vaarin"], "poeng": 2, "min": 10, "unntak": {"2026-W37": 5}}, {"id": "t-skap-oa", "navn": "Klær på plass i Oscars og mammas skap", "ikon": "🧺", "kat": "Rydding", "int": "uke", "dag": 3, "hvem": ["vaarin"], "poeng": 3, "min": 15, "unntak": {"2026-W37": 5}}, {"id": "t-rom", "navn": "Rydde rommet sitt", "ikon": "🛏️", "kat": "Rydding", "int": "uke", "dag": 3, "hvem": ["erik", "vaarin"], "poeng": 2, "min": 15, "fra": "2026-W38"}, {"id": "t-skap-t", "navn": "Eget skap + klær fra badet til vaskerommet", "ikon": "🧺", "kat": "Rydding", "int": "uke", "dag": 3, "hvem": ["thor"], "poeng": 2, "min": 10, "unntak": {"2026-W37": 5}}, {"id": "t-robot", "navn": "Robotstøvsugeren i 1. etasje — sett på før jobb", "ikon": "🤖", "kat": "Morgen", "int": "uke", "dag": 4, "hvem": ["thor"], "poeng": 1, "min": 2}, {"id": "t-bad", "navn": "Vaske badene", "ikon": "🚿", "kat": "Rydding", "int": "uke", "dag": 3, "hvem": ["thor"], "poeng": 4, "min": 25, "unntak": {"2026-W37": 5}, "veksle": true}, {"id": "t-gulv", "navn": "Vaske gulv i kjøkken og gang", "ikon": "🧹", "kat": "Rydding", "int": "2uke", "dag": 3, "hvem": ["anniken"], "poeng": 3, "min": 20, "forslag": false, "fra": "2026-W38"}, {"id": "v-seng", "navn": "Skifte sengetøy", "ikon": "🛌", "kat": "Vask", "int": "3uke", "dag": 5, "hvem": ["erik", "vaarin", "thor", "anniken"], "poeng": 2, "min": 10, "fra": "2026-W38", "forslag": false}, {"id": "v-soppel", "navn": "Søppel og pant ut", "ikon": "🗑️", "kat": "Vask", "int": "uke", "dag": 6, "hvem": ["erik"], "poeng": 2, "min": 5, "forslag": false, "fra": "2026-W38"}, {"id": "u3-bil", "navn": "Støvsuge og rydde bilen", "ikon": "🚗", "kat": "Sesong", "int": "4uke", "dag": 5, "hvem": ["thor", "erik"], "poeng": 4, "min": 30, "forslag": true, "fra": "2026-W38"}, {"id": "u3-kjol", "navn": "Tørke ut kjøleskapet", "ikon": "🧊", "kat": "Sesong", "int": "4uke", "dag": 5, "hvem": ["anniken", "vaarin"], "poeng": 4, "min": 20, "forslag": true, "fra": "2026-W39"}, {"id": "u3-vaskerom", "navn": "Rydde vaskerommet", "ikon": "🧴", "kat": "Sesong", "int": "4uke", "dag": 5, "hvem": ["thor"], "poeng": 3, "min": 20, "forslag": true, "fra": "2026-W40"}, {"id": "q-garderobe", "navn": "Sesongbytte i garderoben", "ikon": "🧥", "kat": "Sesong", "int": "kvartal", "dag": 5, "hvem": ["erik", "vaarin", "oscar", "thor", "anniken"], "poeng": 5, "min": 45, "lenke": "https://claude.ai/code/artifact/1ff7d097-6449-4340-a8a3-201e50fb912d", "lenkenavn": "Brukskortene", "fra": "2026-W39"}, {"id": "q-vindu", "navn": "Vaske vinduer", "ikon": "🪟", "kat": "Sesong", "int": "kvartal", "dag": 5, "hvem": ["thor", "anniken"], "poeng": 6, "min": 90, "forslag": true, "fra": "2026-W41"}, {"id": "q-bod", "navn": "Rydde bod og garasje", "ikon": "🧰", "kat": "Sesong", "int": "kvartal", "dag": 5, "hvem": ["thor", "erik"], "poeng": 6, "min": 60, "forslag": true, "fra": "2026-W42"}, {"id": "d-ute", "navn": "Hagen, uteputer og utemøbler inn før vinteren", "ikon": "🍂", "kat": "Ute", "int": "dato", "dato": "2026-09-12", "hvem": ["erik", "vaarin", "oscar", "thor", "anniken"], "poeng": 10, "min": 60}, {"id": "m-frokost-o", "navn": "Frokost og et glass vann", "ikon": "🥣", "kat": "Morgen", "int": "hverdag", "hvem": ["oscar"], "poeng": 1, "min": 10}, {"id": "h-sko-o", "navn": "Sko under skobenken", "ikon": "👟", "kat": "Etter skolen", "int": "hverdag", "hvem": ["oscar"], "poeng": 1, "min": 1}];
@@ -321,16 +325,37 @@ function dagerIUka(o,man){
   if(o.aktiv===false) return [];
   var key=ukeKey(man), idx=ukeIndex(man);
   if(o.fra && key<o.fra) return [];
+  if(o.til && key>o.til) return [];
   if(o.int==='dato'){var d=new Date(o.dato+'T00:00:00');var diff=Math.round((d-man)/86400000);return (diff>=0&&diff<7)?[diff]:[]}
   if(o.int==='hverdag') return [0,1,2,3,4];
   if(o.int==='daglig') return [0,1,2,3,4,5,6];
   if(o.int==='dager') return o.dager||[];
   var dag=(o.unntak&&o.unntak[key]!==undefined)?o.unntak[key]:(o.dag===undefined?3:o.dag);
   if(o.int==='uke') return [dag];
+  if(o.int==='uker'){var pl=vedlPlan();var wk=pl[o.id];if(wk){return wk[idx]?[dag]:[]}var n0=o.hver||4,st0=o.fra?ukeIndex(ukeFraKey(o.fra)):0;return ((idx-st0)%n0===0&&idx>=st0)?[dag]:[]}
   var n={'2uke':2,'3uke':3,'4uke':4,'kvartal':13}[o.int];
   if(!n) return [];
   var start=o.fra?ukeIndex(ukeFraKey(o.fra)):0;
   return ((idx-start)%n===0)?[dag]:[];
+}
+/* v1.9: vedlikeholdsplanen — oppgaver med int 'uker' (hver N. uke, fra en startuke) legges ut med et tak per uke
+   (INNST.vedlTak, standard 2) og kan skyves inntil 'slakk' uker fram for å jevne ut køen. Deterministisk: samme data → samme plan. */
+var VEDL_CACHE={sig:'',plan:{}};
+function vedlPlan(){
+  var liste=OPPG.filter(function(o){return o.int==='uker'&&o.aktiv!==false&&(o.kat==='Vedlikehold'||o.kat==='Hytta')});
+  var sig=JSON.stringify(liste.map(function(o){return [o.id,o.hver,o.slakk,o.fra,o.poeng]}))+'|'+(INNST.vedlTak||2);
+  if(sig===VEDL_CACHE.sig) return VEDL_CACHE.plan;
+  var tak=INNST.vedlTak||2, start=ukeIndex(STARTDATO), slutt=start+160, ev=[];
+  liste.forEach(function(o){var n=Math.max(1,o.hver||4), st=o.fra?ukeIndex(ukeFraKey(o.fra)):start; for(var w=st;w<slutt;w+=n){if(w>=start-1)ev.push({o:o,w:w})}});
+  ev.sort(function(a,b){return a.w-b.w||(b.o.poeng||0)-(a.o.poeng||0)||(a.o.id<b.o.id?-1:1)});
+  var last={}, plan={}; liste.forEach(function(o){plan[o.id]={}});
+  OPPG.forEach(function(o){if(o.int==='dato'&&o.aktiv!==false&&(o.kat==='Vedlikehold'||o.kat==='Hytta')&&o.dato){var w=ukeIndex(new Date(o.dato+'T00:00:00'));last[w]=(last[w]||0)+1}});
+  ev.forEach(function(e){var n=Math.max(1,e.o.hver||4), sl=Math.min(e.o.slakk||0,Math.floor((n-1)/2)), w=e.w;
+    for(var k=0;k<=sl;k++){if((last[w+k]||0)<tak){w=w+k;break}}
+    /* ikke to forekomster av samme oppgave samme uke */
+    if(plan[e.o.id][w]) return;
+    last[w]=(last[w]||0)+1; plan[e.o.id][w]=true});
+  VEDL_CACHE={sig:sig,plan:plan}; return plan;
 }
 /* Alle planlagte "slots" for en uke: {o, dag, person, key} */
 function planUke(man){
@@ -509,27 +534,28 @@ function tegnIdag(){
   var erTorsdag=(dIdx===3), erLordag=(dIdx===5);
   slots.forEach(function(s){var g=s.o.kat||'Rydding'; (grp[g]||(grp[g]=[])).push(s)});
   var navnRydding=erTorsdag?'🧹 Husøkta — alle sammen etter skolen':'Ryddejobb';
-  var navnHenger=erLordag?'🧹 Lørdagsøkta — det som ikke ble gjort torsdag':'⏰ Henger igjen — ikke gjort ennå';
+  var navnHenger=erLordag?'🧹 Lørdagsøkta — det som henger igjen fra uka':'⏰ Henger igjen — ikke gjort ennå';
   var html='';
-  var navnG={'Morgen':'Morgen','Etter skolen':'Når du kommer hjem','Dagen':'I løpet av dagen','Måltider':'Måltider','Kveld':'Kveld — før legging','Rydding':navnRydding,'Vask':'Vask og bestilling','Sesong':'Modent nå','Ute':'Ute','Henger igjen':navnHenger};
+  var navnG={'Morgen':'Morgen','Etter skolen':'Når du kommer hjem','Dagen':'I løpet av dagen','Vedlikehold':'🔧 Vedlikehold hus','Hytta':'🏔️ Hytta og Airbnb','Måltider':'Måltider','Kveld':'Kveld — før legging','Rydding':navnRydding,'Vask':'Vask og bestilling','Sesong':'Modent nå','Ute':'Ute','Henger igjen':navnHenger};
   ['Henger igjen'].concat(GRUPPER).forEach(function(g){
     if(!grp[g].length) return;
     html+='<div class="grp'+(g==='Henger igjen'?' hg':'')+'">'+esc(navnG[g]||g)+'</div><div class="tiles">';
     /* «Alle»-visning: samme oppgave for flere personer samme dag = én rute med avatarer */
     var liste=grp[g];
     /* Forfalte ruter slås IKKE sammen: de kan komme fra ulike uker, og hver av dem må beholde sin egen ukeKey */
-    if(!valgt&&g!=='Henger igjen'){var by={},ord=[];liste.forEach(function(s){var k=s.o.id+'|'+s.dag;if(!by[k]){by[k]=[];ord.push(k)}by[k].push(s)});
-      liste=ord.map(function(k){var arr=by[k];if(arr.length===1)return arr[0];var a=arr[0];return {o:a.o,dag:a.dag,person:a.person,orig:a.orig,key:a.key,felles:arr}})}
-    liste.sort(function(a,b){var da=(a.felles?a.felles.every(function(x){return erGjort(key,x.key)}):erGjort(a.ukeKey||key,a.key))?1:0,dbb=(b.felles?b.felles.every(function(x){return erGjort(key,x.key)}):erGjort(b.ukeKey||key,b.key))?1:0;if(da!==dbb)return da-dbb;return (a.person>b.person)?1:-1}).forEach(function(s){
+    if(!valgt){var by={},ord=[];liste.forEach(function(s){var k=s.o.id+'|'+s.dag+'|'+(s.ukeKey||key);if(!by[k]){by[k]=[];ord.push(k)}by[k].push(s)});
+      liste=ord.map(function(k){var arr=by[k];if(arr.length===1)return arr[0];var a=arr[0];return {o:a.o,dag:a.dag,person:a.person,orig:a.orig,key:a.key,ukeKey:a.ukeKey,felles:arr}})}
+    liste.sort(function(a,b){var da=(a.felles?a.felles.every(function(x){return erGjort(a.ukeKey||key,x.key)}):erGjort(a.ukeKey||key,a.key))?1:0,dbb=(b.felles?b.felles.every(function(x){return erGjort(b.ukeKey||key,x.key)}):erGjort(b.ukeKey||key,b.key))?1:0;if(da!==dbb)return da-dbb;return (a.person>b.person)?1:-1}).forEach(function(s){
       if(s.felles){
-        var alleD=s.felles.every(function(x){return erGjort(key,x.key)}), antD=s.felles.filter(function(x){return erGjort(key,x.key)}).length;
-        var av=s.felles.map(function(x){var q=PMAP[x.person];return '<span class="av'+(erGjort(key,x.key)?' ok':'')+'" style="--pc:'+q.farge+'" title="'+esc(q.navn)+'">'+esc(q.kort)+'</span>'}).join('');
+        var fk=s.ukeKey||key;
+        var alleD=s.felles.every(function(x){return erGjort(fk,x.key)}), antD=s.felles.filter(function(x){return erGjort(fk,x.key)}).length;
+        var av=s.felles.map(function(x){var q=PMAP[x.person];return '<span class="av'+(erGjort(fk,x.key)?' ok':'')+'" style="--pc:'+q.farge+'" title="'+esc(q.navn)+'">'+esc(q.kort)+'</span>'}).join('');
         var metaF=(s.o.min?s.o.min+' min · ':'')+'alle sammen · '+antD+' av '+s.felles.length;
-        html+='<div class="tile'+(alleD?' done':'')+'" style="--pc:var(--accent)"><button class="tmain" data-k="'+esc(key)+'" data-f="'+esc(s.felles.map(function(x){return x.key}).join(','))+'" aria-pressed="'+alleD+'"><span class="chk">✓</span><span class="ik">'+s.o.ikon+'</span><span class="tx"><span class="nm">'+esc(s.o.navn)+'</span><span class="mt">'+metaF+'</span><span class="avs">'+av+'</span></span></button><span class="side"><span class="pt num">+'+(s.o.poeng*s.felles.length)+'</span><button class="tb" title="Utsett for alle" aria-label="Utsett for alle" data-k="'+esc(s.felles[0].ukeKey||key)+'" data-o="'+esc(s.o.id)+'" data-d="'+s.dag+'" data-dag0="'+(s.felles[0].flyttet?s.felles[0].fraDag:s.dag)+'" data-felles="'+esc(s.felles.map(function(x){return x.orig}).join(','))+'">⇄</button></span></div>';
+        html+='<div class="tile'+(alleD?' done':'')+'" style="--pc:var(--accent)"><button class="tmain" data-k="'+esc(fk)+'" data-f="'+esc(s.felles.map(function(x){return x.key}).join(','))+'" aria-pressed="'+alleD+'"><span class="chk">✓</span><span class="ik">'+s.o.ikon+'</span><span class="tx"><span class="nm">'+esc(s.o.navn)+'</span><span class="mt">'+metaF+'</span><span class="avs">'+av+'</span></span></button><span class="side"><span class="pt num">+'+(s.o.poeng*s.felles.length)+'</span><button class="tb" title="Utsett for alle" aria-label="Utsett for alle" data-k="'+esc(s.felles[0].ukeKey||key)+'" data-o="'+esc(s.o.id)+'" data-d="'+s.dag+'" data-dag0="'+(s.felles[0].flyttet?s.felles[0].fraDag:s.dag)+'" data-felles="'+esc(s.felles.map(function(x){return x.orig}).join(','))+'">⇄</button></span></div>';
         return;
       }
       var done=erGjort(s.ukeKey||key,s.key), p=PMAP[s.person];
-      var meta=(s.o.min?s.o.min+' min':'')+(valgt?'':' · '+p.navn);
+      var meta=(s.o.min?s.o.min+' min':'')+(valgt?'':' · '+p.navn)+(s.o.notat?' · '+esc(s.o.notat):'');
       if(s.o.lenke) meta+=' · <a href="'+s.o.lenke+'" onclick="event.stopPropagation()">'+esc(s.o.lenkenavn||'åpne')+'</a>';
       if(s.byttet) meta='⇄ for '+PMAP[s.orig].navn+' · '+meta;
       if(s.flyttet) meta='→ fra '+DAGK[s.fraDag]+' · '+meta;
@@ -708,8 +734,21 @@ function tegnHist(){
   h+='<tr><td colspan="10" class="small">E = Erik · V = Vårin · O = Oscar · T = Thor · A = Anniken. Uker uten registreringer vises ikke.</td></tr>';
   document.getElementById('hist-tbl').innerHTML=h;
 }
+function tegnVedl(){
+  var el=document.getElementById('vedl-tbl'); if(!el) return;
+  var man=mandag(NAA), h='<tr><th>Uke</th><th>Jobber</th><th class="c">Min</th></tr>', tot=0;
+  for(var w=0;w<12;w++){var m=addDays(man,7*w), key=ukeKey(m);
+    var sl=planUke(m).filter(function(s){return (s.o.kat==='Vedlikehold'||s.o.kat==='Hytta')&&!erGjort(key,s.key)});
+    var seen={}, navn=[], min=0; sl.forEach(function(s){if(seen[s.o.id])return;seen[s.o.id]=1;navn.push(s.o.ikon+' '+esc(s.o.navn)+' <span class="small">'+DAGK[s.dag]+'</span>');min+=s.o.min||0});
+    tot+=min;
+    h+='<tr'+(w===0?' class="today"':'')+'><td class="num">Uke '+isoWeek(m).w+' <span class="small">'+datoNorsk(m)+'</span></td><td>'+(navn.length?navn.join('<br>'):'<span class="small">—</span>')+'</td><td class="c num">'+(min||'')+'</td></tr>';
+  }
+  h+='<tr><td colspan="3" class="small">Til sammen '+tot+' min de neste 12 ukene ≈ '+Math.round(tot/12)+' min per uke.</td></tr>';
+  el.innerHTML=h;
+}
 
-var INTNAVN={hverdag:'hver hverdag',daglig:'hver dag',dager:'faste dager',uke:'hver uke',"2uke":'hver 2. uke',"3uke":'hver 3. uke',"4uke":'hver 4. uke',kvartal:'hver 3. mnd',dato:'én dato'};
+var INTNAVN={hverdag:'hver hverdag',daglig:'hver dag',dager:'faste dager',uke:'hver uke',"2uke":'hver 2. uke',"3uke":'hver 3. uke',"4uke":'hver 4. uke',kvartal:'hver 3. mnd',uker:'hver N. uke',dato:'én dato'};
+function intNavn(o){if(o.int==='uker'){var n=o.hver||4;return n===52?'hvert år':n===26?'hvert halvår':n===13?'hver 3. mnd':'hver '+n+'. uke'}return INTNAVN[o.int]||o.int}
 function nesteGang(o){
   var man=mandag(NAA), dIdx=(NAA.getDay()+6)%7;
   for(var w=0;w<60;w++){var m=addDays(man,7*w);var dg=dagerIUka(o,m);for(var i=0;i<dg.length;i++){if(w===0&&dg[i]<dIdx)continue;return addDays(m,dg[i])}}
@@ -719,13 +758,13 @@ function tegnBank(){
   var h='<tr><th></th><th>Oppgave</th><th>Rytme</th><th>Hvem</th><th class="c">Poeng</th><th class="c">Min</th><th>Neste</th><th></th></tr>';
   var liste=OPPG.slice().sort(function(a,b){var ga=GRUPPER.indexOf(a.kat),gb=GRUPPER.indexOf(b.kat);return ga-gb});
   liste.forEach(function(o){
-    var ryt=INTNAVN[o.int]||o.int;
+    var ryt=intNavn(o);
     if(o.int==='dager')ryt=(o.dager||[]).map(function(d){return DAGK[d]}).join('+');
-    else if(['uke','2uke','3uke','4uke','kvartal'].indexOf(o.int)>=0)ryt+=' · '+DAGK[o.dag===undefined?3:o.dag];
+    else if(['uke','2uke','3uke','4uke','kvartal','uker'].indexOf(o.int)>=0)ryt+=' · '+DAGK[o.dag===undefined?3:o.dag]+(o.slakk?' · ±'+o.slakk+' u':'');
     else if(o.int==='dato')ryt=o.dato.split('-').reverse().join('.');
     var hv=o.rull?o.rull.map(ptag).join('')+'<span class="small">bytter</span>':(o.hvem||[]).map(ptag).join('');
     var ng=nesteGang(o);
-    h+='<tr style="'+(o.aktiv===false?'opacity:.5':'')+'"><td class="ikon">'+o.ikon+'</td><td class="navn">'+esc(o.navn)+(o.forslag?' <span class="pill grey">forslag</span>':'')+(o.aktiv===false?' <span class="pill warn">av</span>':'')+(o.lenke?' <a href="'+o.lenke+'">'+esc(o.lenkenavn)+' →</a>':'')+'<small>'+esc(o.kat)+'</small></td><td>'+ryt+'</td><td>'+hv+'</td><td class="c num">'+o.poeng+'</td><td class="c num">'+(o.min||'')+'</td><td class="num">'+(ng?DAGK[(ng.getDay()+6)%7]+' '+datoNorsk(ng):'—')+'</td><td><button class="edit" data-id="'+esc(o.id)+'">endre</button></td></tr>';
+    h+='<tr style="'+(o.aktiv===false?'opacity:.5':'')+'"><td class="ikon">'+o.ikon+'</td><td class="navn">'+esc(o.navn)+(o.forslag?' <span class="pill grey">forslag</span>':'')+(o.aktiv===false?' <span class="pill warn">av</span>':'')+(o.lenke?' <a href="'+o.lenke+'">'+esc(o.lenkenavn)+' →</a>':'')+(o.notat?'<br><span class="small">'+esc(o.notat)+'</span>':'')+'<small>'+esc(o.kat)+'</small></td><td>'+ryt+'</td><td>'+hv+'</td><td class="c num">'+o.poeng+'</td><td class="c num">'+(o.min||'')+'</td><td class="num">'+(ng?DAGK[(ng.getDay()+6)%7]+' '+datoNorsk(ng):'—')+'</td><td><button class="edit" data-id="'+esc(o.id)+'">endre</button></td></tr>';
   });
   var t=document.getElementById('bank-tbl');t.innerHTML=h;
   t.querySelectorAll('.edit').forEach(function(b){b.onclick=function(){fyllSkjema(b.dataset.id)}});
@@ -740,6 +779,7 @@ function fyllSkjema(id){
   document.getElementById('f-kat').value=o.kat;document.getElementById('f-int').value=o.int==='dager'?'hverdag':o.int;
   document.getElementById('f-dag').value=String(o.dag===undefined?3:o.dag);document.getElementById('f-dato').value=o.dato||'';
   document.getElementById('f-poeng').value=o.poeng;document.getElementById('f-min').value=o.min||'';
+  document.getElementById('f-hver').value=o.hver||'';document.getElementById('f-slakk').value=o.slakk||'';document.getElementById('f-notat').value=o.notat||'';
   var hv=o.rull||o.hvem||[];document.querySelectorAll('#f-hvem input[name=hv]').forEach(function(c){c.checked=hv.indexOf(c.value)>=0});
   document.getElementById('f-rull').checked=!!o.rull;document.getElementById('f-aktiv').checked=o.aktiv!==false;
   gaaTil('ny-wrap');
@@ -752,6 +792,8 @@ document.getElementById('ny').onsubmit=function(e){
   var id=document.getElementById('f-id').value||('x-'+Date.now().toString(36));
   var o={id:id,navn:document.getElementById('f-navn').value.trim(),ikon:document.getElementById('f-ikon').value.trim()||'🧺',kat:document.getElementById('f-kat').value,int:document.getElementById('f-int').value,dag:+document.getElementById('f-dag').value,poeng:+(document.getElementById('f-poeng').value.replace(/\s/g,''))||1,min:+(document.getElementById('f-min').value.replace(/\s/g,''))||0,aktiv:document.getElementById('f-aktiv').checked,by:valgt||'familie',ts:new Date().toISOString()};
   if(o.int==='dato'){o.dato=document.getElementById('f-dato').value;if(!o.dato){alert('Velg dato.');return}}
+  if(o.int==='uker'){o.hver=+(document.getElementById('f-hver').value.replace(/\s/g,''))||4;o.slakk=+(document.getElementById('f-slakk').value.replace(/\s/g,''))||0;var g0=OPPG.filter(function(x){return x.id===id})[0];if(!(g0&&g0.fra))o.fra=ukeKey(NAA)}
+  var nt=document.getElementById('f-notat').value.trim();if(nt)o.notat=nt;
   if(document.getElementById('f-rull').checked&&hv.length>1){o.rull=hv;o.hvem=[]}else{o.hvem=hv;o.rull=null}
   var gammel=OPPG.filter(function(x){return x.id===id})[0];
   if(gammel){Object.keys(o).forEach(function(k){gammel[k]=o[k]});if(!o.rull)delete gammel.rull;delete gammel.forslag}else OPPG.push(o);
@@ -773,7 +815,7 @@ function fyllInnst(){var tr=(INNST.trapp&&INNST.trapp.length)?INNST.trapp:SEED_T
   document.getElementById('i-prosent').value=INNST.prosent||75;}
 
 /* ---------- samle ---------- */
-function tegn(){tegnHvem();tegnIdag();tegnLag();tegnUke();tegnSlik();tegnHist();tegnBank();fyllInnst()}
+function tegn(){tegnHvem();tegnIdag();tegnLag();tegnUke();tegnSlik();tegnVedl();tegnHist();tegnBank();fyllInnst()}
 document.getElementById('uke-forrige').onclick=function(){visUke=addDays(visUke,-7);tegnUke()};
 document.getElementById('uke-neste').onclick=function(){visUke=addDays(visUke,7);tegnUke()};
 document.getElementById('uke-naa').onclick=function(){visUke=mandag(NAA);tegnUke()};
