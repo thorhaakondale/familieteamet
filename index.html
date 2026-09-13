@@ -182,6 +182,27 @@ details.om .in{padding:8px 0 0;font-size:14px;max-width:70ch}
 .edit{font:inherit;font-size:12px;padding:2px 8px;border-radius:6px;border:1px solid var(--line);background:var(--card);color:var(--ink2);cursor:pointer}
 .tbl .medis{color:var(--warn);font-weight:800}
 @media (prefers-reduced-motion:reduce){*{transition:none !important}}
+/* Året (v1.11) */
+.aa-tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:8px;margin:6px 0 10px}
+.aa-tile{background:var(--card2);border:1px solid var(--line2);border-radius:10px;padding:8px 10px;display:flex;flex-direction:column;gap:1px}
+.aa-tile b{font-size:22px;line-height:1.1;font-variant-numeric:tabular-nums}
+.aa-tile span{font-size:12.5px;font-weight:700}.aa-tile small{font-size:11px;color:var(--muted)}
+.aa-stripe{display:flex;gap:2px;align-items:flex-end;overflow-x:auto;padding:4px 0 2px;scrollbar-width:thin}
+.aa-col{flex:0 0 18px;cursor:pointer;text-align:center}
+.aa-barwrap{height:66px;display:flex;align-items:flex-end;justify-content:center}
+.aa-bar{width:12px;min-height:2px;background:#b8b5ac;border-radius:3px 3px 0 0}
+.aa-bar.over{background:var(--warn)}.aa-bar.naa{outline:2px solid var(--ink);outline-offset:1px}.aa-bar.valgt{background:var(--accent)}
+.aa-helg{font-size:11px;line-height:1.3;margin-top:2px}.aa-helg.t-fri{opacity:.35}
+.aa-lab{font-size:9.5px;color:var(--muted);height:12px}
+.aa-legend{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12px;color:var(--muted);margin:4px 0 8px;align-items:center}
+.aa-tersk input{width:64px;font:inherit;font-size:12px;padding:2px 6px;border:1px solid var(--line);border-radius:6px;background:var(--card2);color:var(--ink)}
+.aa-helgvalg{margin:4px 0 8px;font-size:14px}.aa-btns{display:inline-flex;flex-wrap:wrap;gap:4px;margin-top:4px}
+.edit.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.aa-tbl td{padding:5px 6px;vertical-align:top}
+.aa-ses{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-start;gap:6px 12px;padding:8px 0;border-top:1px solid var(--line2)}
+.aa-ses>div:first-child{flex:1 1 320px;min-width:0}.aa-ses .aa-btns{align-self:center}
+.aa-ses.passert{opacity:.85}.aa-ses select{font:inherit;font-size:12px;padding:2px 6px;border:1px solid var(--line);border-radius:6px;background:var(--card2);color:var(--ink)}
+@media(max-width:700px){.aa-tile b{font-size:19px}.aa-col{flex-basis:16px}}
 </style>
 </head>
 <body>
@@ -229,6 +250,27 @@ details.om .in{padding:8px 0 0;font-size:14px;max-width:70ch}
   <div class="sveip"><table class="tbl" id="hist-tbl"></table></div>
   <h3 style="margin:14px 0 4px">🔧 Vedlikehold — neste 12 uker</h3><p class="sub">Maks to vedlikeholdsjobber per uke; køen jevnes ut automatisk. Bjørn foreslår lengre intervaller når jobber viser seg å tåle det.</p>
   <div class="sveip"><table class="tbl" id="vedl-tbl"></table></div>
+</section>
+
+<section class="card" id="aaret">
+  <h2>📅 Året — helgene, vedlikeholdet og det som sklir</h2>
+  <p class="sub">Hus og hytte skal klargjøres til hver sesong. Året viser hvor mange helger det faktisk tar, hvilke som allerede er sperret, og hva som kan flyttes. Omtrentlig med vilje: innsats = klokketid per jobb, avrundet til halve timer.</p>
+  <div id="aa-regnskap"></div>
+  <h3>Uke for uke — neste 52</h3>
+  <p class="small">Grå = under terskelen · farget = over · symbolet under viser helga. Trykk på en uke.</p>
+  <div id="aa-stripe"></div>
+  <div id="aa-uke"></div>
+  <h3>🔧 Sesonghelgene — to om høsten, to om våren</h3>
+  <p class="small">Faste helger for vedlikehold og drift. Flytt dem hvis de kolliderer — Familiekalenderen viser dem som stiplede helger. Etterpå: si om det var for tungt, passe eller for lett, så justeres neste år.</p>
+  <div id="aa-ses"></div>
+  <h3>↔ Flytteforslag</h3>
+  <p class="small">Uker over terskelen der noe kan flyttes innenfor sin slakk — helst inn på en sesonghelg, ellers til en lettere uke som ikke er sperret. Dere trykker, ingenting flyttes av seg selv.</p>
+  <div id="aa-forslag"></div>
+  <h3>📥 Slik får vi alt inn her</h3>
+  <p class="small">Alt som ligger i Påminnelser, i hodet eller på lapper: lim det inn i innboksen, én ting per linje. Bjørn sorterer det i neste runde — inn i banken med rytme, hvem og minutter, eller videre til Livsprosjektene (bygging), Kontrolltavla (kjøp og økonomi), klinikkens lister eller «behold i Påminnelser» (medisin, frostalarm). Regelen: <b>Familieteamet = husets rutiner, grovvask, vedlikehold av hus, hage, bil og hytte.</b> Aldri klinikk, økonomi, juss eller trening.</p>
+  <form id="aa-innboks-form" autocomplete="off" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px"><input type="text" id="aa-innboks-tekst" placeholder="f.eks. Rense takrenner hytta, hver høst" maxlength="200" style="flex:1 1 240px;font:inherit;padding:7px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card2);color:var(--ink)"><button class="edit" type="submit" style="font-size:14px;padding:6px 12px">Legg i innboksen</button></form>
+  <div id="aa-innboks-liste"></div>
+  <p class="small" style="margin-top:8px">Fire steg: 1) tøm Påminnelser hit, liste for liste · 2) Bjørn sorterer og foreslår rytme og slakk · 3) dere godkjenner i banken · 4) slett i Påminnelser — behold bare alarmene som må varsle (frost, medisin).</p>
 </section>
 
 <section class="card bank" id="bank">
@@ -283,7 +325,7 @@ details.om .in{padding:8px 0 0;font-size:14px;max-width:70ch}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.11.0';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -885,6 +927,7 @@ var tt=document.getElementById('dale-totop');
 window.addEventListener('scroll',function(){tt.classList.toggle('show',window.scrollY>500)},{passive:true});
 tt.onclick=function(){window.scrollTo({top:0,behavior:'smooth'})};
 </script>
+<script src="aaret.js?v=111"></script>
 <script>
 if('scrollRestoration' in history) history.scrollRestoration='manual';
 (function(){var stop=false;function opp(){if(stop)return;window.scrollTo(0,0);document.documentElement.scrollTop=0;document.body.scrollTop=0}

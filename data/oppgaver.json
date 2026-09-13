@@ -51,8 +51,8 @@
  },
  {
   "id": "h-sko",
-  "navn": "Sko på plass, sekken på rommet",
-  "ikon": "👟",
+  "navn": "Hjem fra skolen: sko og jakke pent på plass, sekken på rommet, lekser før middag",
+  "ikon": "🏠",
   "kat": "Etter skolen",
   "int": "hverdag",
   "hvem": [
@@ -60,8 +60,9 @@
    "vaarin"
   ],
   "poeng": 2,
-  "min": 3,
-  "aktiv": false
+  "min": 5,
+  "aktiv": true,
+  "notat": "Liten pause først er greit. Lekser ferdig = fri lek hele kvelden"
  },
  {
   "id": "k-dekke",
@@ -395,19 +396,21 @@
  },
  {
   "id": "u3-bil",
-  "navn": "Vaske, støvsuge og rydde bilen",
-  "ikon": "🚗",
-  "kat": "Sesong",
-  "int": "4uke",
+  "navn": "Støvsuge og rydde bilene innvendig",
+  "ikon": "🧹",
+  "kat": "Vedlikehold",
+  "int": "uker",
   "dag": 5,
   "hvem": [
-   "thor",
    "erik"
   ],
-  "poeng": 4,
-  "min": 45,
-  "forslag": true,
-  "fra": "2026-W38"
+  "poeng": 3,
+  "min": 30,
+  "forslag": false,
+  "fra": "2026-W38",
+  "hver": 4,
+  "notat": "Samme lørdag som utvendig vask: Erik tar innsiden mens pappa vasker. Thor hjelper første gang",
+  "slakk": 1
  },
  {
   "id": "u3-kjol",
@@ -550,16 +553,17 @@
  },
  {
   "id": "x-orden",
-  "navn": "Gangen og rommet holdt ryddig i dag — hjelm, sko og tøy på plass",
+  "navn": "Etter trening og lek: hjelm, sko og tøy tilbake på plass — gangen og rommet ryddig",
   "ikon": "🧥",
-  "kat": "Dagen",
+  "kat": "Kveld",
   "int": "daglig",
   "hvem": [
    "erik",
    "vaarin"
   ],
   "poeng": 2,
-  "aktiv": true
+  "aktiv": true,
+  "notat": "Inn og ut med utstyr i dag? Alt hjem igjen før leggetid"
  },
  {
   "id": "x-kveld-e",
@@ -611,16 +615,20 @@
   "kat": "Vedlikehold",
   "int": "uker",
   "hver": 52,
-  "slakk": 4,
-  "dag": 5,
-  "fra": "2026-W41",
+  "slakk": 2,
+  "dag": 6,
+  "fra": "2026-W37",
   "poeng": 2,
   "min": 15,
   "aktiv": true,
   "rull": [
    "thor",
    "anniken"
-  ]
+  ],
+  "hvem": [
+   "thor"
+  ],
+  "notat": "Hvert år samme søndag som vannsystemet tømmes — kompressoren er ute uansett"
  },
  {
   "id": "vh-pose",
@@ -684,12 +692,12 @@
   "int": "uker",
   "hver": 2,
   "slakk": 1,
-  "dag": 5,
+  "dag": 1,
   "fra": "2026-W38",
-  "til": "2026-W43",
+  "til": "2026-W40",
   "poeng": 3,
   "min": 30,
-  "notat": "Sesong april–oktober. Erik lærer i 2027",
+  "notat": "Tirsdag 15.9 og SISTE klipp tirsdag 29.9 — høyt (5–6 cm). Ikke ny klipp før våren. Regn meldt 15.9 → bruk ⇄ flytt til onsdag om plenen er våt. Sesong 2027 fra april; Erik lærer i 2027",
   "aktiv": true,
   "rull": [
    "thor",
@@ -745,7 +753,8 @@
   "poeng": 2,
   "min": 15,
   "notat": "Ukeplan: kun normal 18–23, 1 t kl 09 holde varm. Ventilasjon 23, varmepumper 22/23 (årsplan)",
-  "aktiv": true
+  "aktiv": true,
+  "fast": true
  },
  {
   "id": "vh-frikj-v",
@@ -759,22 +768,26 @@
   ],
   "poeng": 2,
   "min": 15,
-  "aktiv": true
+  "aktiv": true,
+  "fast": true
  },
  {
   "id": "hy-vann-h",
   "navn": "Tømme vannsystemet ute før frost",
   "ikon": "🚰",
   "kat": "Vedlikehold",
-  "int": "dato",
+  "int": "uker",
   "dato": "2026-09-20",
   "hvem": [
    "thor"
   ],
   "poeng": 4,
   "min": 60,
-  "notat": "Hjemme. Må gjøres senest søndag 20.9 — ikke utsett. Alarmen i Påminnelser beholdes",
-  "aktiv": true
+  "notat": "Hjemme. Hvert år senest søndag før 1. oktober (2026: gjort 13.9). Samme dag som ekspansjonstanken — kompressoren er ute. Alarmen i Påminnelser beholdes",
+  "aktiv": true,
+  "dag": 6,
+  "fra": "2026-W38",
+  "hver": 52
  },
  {
   "id": "hy-vann-v",
@@ -788,7 +801,9 @@
   ],
   "poeng": 4,
   "min": 60,
-  "aktiv": true
+  "aktiv": true,
+  "notat": "Første søndag i mai",
+  "fast": true
  },
  {
   "id": "hy-dyne",
@@ -924,13 +939,13 @@
   "ikon": "🎨",
   "kat": "Vedlikehold",
   "int": "dato",
-  "dato": "2026-11-07",
+  "dato": "2026-11-14",
   "hvem": [
    "thor"
   ],
   "poeng": 6,
   "min": 240,
-  "notat": "Helgejobb — flytt til en ledig lørdag",
+  "notat": "Helgejobb 4 t. Flyttet fra 7.11 så 7.–8.11 er fri helg etter uteoktober",
   "aktiv": true
  },
  {
@@ -1041,14 +1056,16 @@
   "ikon": "🛞",
   "kat": "Vedlikehold",
   "int": "dato",
-  "dato": "2026-10-24",
+  "dato": "2026-10-31",
   "hvem": [
    "thor",
    "erik"
   ],
   "poeng": 4,
   "min": 60,
-  "aktiv": true
+  "aktiv": true,
+  "notat": "Samme lørdag som løvraking = én utehelg. Bytt når døgnsnittet er under ca. 7 °C — flytt fram med ⇄ hvis kulda kommer tidlig",
+  "fast": true
  },
  {
   "id": "vh-dekk-v",
@@ -1063,7 +1080,8 @@
   ],
   "poeng": 4,
   "min": 60,
-  "aktiv": true
+  "aktiv": true,
+  "fast": true
  },
  {
   "id": "vh-egolf",
@@ -1128,5 +1146,199 @@
   "min": 2,
   "notat": "Tran til barna, vitamin/kreatin/magnesium/K2 til de voksne",
   "aktiv": true
+ },
+ {
+  "aktiv": true,
+  "dag": 5,
+  "fra": "2026-W38",
+  "hvem": [
+   "thor"
+  ],
+  "hver": 4,
+  "id": "vh-bilvask",
+  "ikon": "🚗",
+  "int": "uker",
+  "kat": "Vedlikehold",
+  "min": 40,
+  "navn": "Vaske begge bilene utvendig",
+  "notat": "Lørdag formiddag før lunsj, begge bilene samme dag. Vinter hver 4. uke, sommer hver 3. — Ukesjekken bytter tallet 1. april og 1. november",
+  "poeng": 2,
+  "slakk": 1
+ },
+ {
+  "aktiv": false,
+  "dag": 5,
+  "fra": "2026-W40",
+  "hvem": [
+   "thor"
+  ],
+  "hver": 4,
+  "id": "vh-bilvask-2",
+  "ikon": "🚙",
+  "int": "uker",
+  "kat": "Vedlikehold",
+  "min": 20,
+  "navn": "Vaske e-Golf utvendig",
+  "notat": "Lørdag formiddag, annenhver uke i motfase til Xpeng",
+  "poeng": 2,
+  "slakk": 0
+ },
+ {
+  "aktiv": true,
+  "dato": "2026-10-31",
+  "hvem": [
+   "erik",
+   "vaarin",
+   "oscar",
+   "thor",
+   "anniken"
+  ],
+  "id": "x-hage-lov",
+  "ikon": "🍂",
+  "int": "dato",
+  "kat": "Sesong",
+  "min": 60,
+  "navn": "Rake løv, sjekke takrenner, utemøbler som ikke skal stå inn i boden",
+  "notat": "Siste felles hageøkt. Høstkroken (bord, 2–4 stoler, bålpanne) står ute hele vinteren med trekk",
+  "poeng": 8,
+  "fast": true
+ },
+ {
+  "aktiv": true,
+  "dag": 5,
+  "fra": "2026-W39",
+  "hvem": [
+   "erik",
+   "vaarin",
+   "oscar",
+   "thor",
+   "anniken"
+  ],
+  "hver": 52,
+  "id": "x-hage-puter",
+  "ikon": "🛋️",
+  "int": "uker",
+  "kat": "Sesong",
+  "min": 45,
+  "navn": "Sommerputer, parasoller og hengekøye inn — spyl og tørk først. Høstkroken blir stående",
+  "notat": "FAST FRIST hvert år: helga før 1. oktober. Felles lørdagsøkt kl. 18. Behold settet dere sitter i om høsten — bare putene og parasollene går inn. Alarm i Påminnelser samme dag",
+  "poeng": 6
+ },
+ {
+  "aktiv": true,
+  "dato": "2026-10-03",
+  "hvem": [
+   "erik",
+   "vaarin",
+   "thor",
+   "anniken"
+  ],
+  "id": "x-hage-skraaning",
+  "ikon": "🌿",
+  "int": "dato",
+  "kat": "Sesong",
+  "min": 60,
+  "navn": "Skråningene rundt huset: klippe ned, siste luking og bark — syklene inn",
+  "notat": "Felles lørdagsøkt. Barnene får syklene og hjelmene på plass i boden; de voksne tar skråningene",
+  "poeng": 10
+ },
+ {
+  "aktiv": true,
+  "dato": "2026-10-07",
+  "hvem": [
+   "thor",
+   "anniken"
+  ],
+  "id": "x-hostkrok",
+  "ikon": "🔥",
+  "int": "dato",
+  "kat": "Sesong",
+  "min": 30,
+  "navn": "Rigge høstkroken — lysslynge, bålpanne, pledd i tett boks",
+  "notat": "Onsdag kveld 30 min — ikke en lørdagsjobb. Forutsetter at bålpanne og lys er kjøpt (Ivars liste). Flytt om det ikke er avgjort",
+  "poeng": 3
+ },
+ {
+  "aktiv": true,
+  "dag": 5,
+  "fra": "2026-W39",
+  "hvem": [
+   "thor"
+  ],
+  "hver": 52,
+  "id": "x-hoytrykk",
+  "ikon": "🧊",
+  "int": "uker",
+  "kat": "Vedlikehold",
+  "min": 15,
+  "navn": "Frostsikre høytrykkspyleren — tøm pumpe og slanger, inn i boden",
+  "notat": "Frist hvert år: helga før 1. oktober (samme lørdag som putene). Koble fra vann, kjør pumpa tørr 2–3 sek, tøm slangen, oppbevar frostfritt. Frost sprenger pumpehuset — dyreste enkeltfeilen på hele lista. Alarm i Påminnelser",
+  "poeng": 2
+ },
+ {
+  "aktiv": true,
+  "dag": 5,
+  "fra": "2027-W15",
+  "hvem": [
+   "thor",
+   "anniken"
+  ],
+  "hver": 52,
+  "id": "x-tepperens-h",
+  "ikon": "🧽",
+  "int": "uker",
+  "kat": "Grovvask",
+  "min": 120,
+  "navn": "Tepperens hjemme — stoler og sofa først, så teppene, så rense maskinen",
+  "notat": "Én runde i året. Rekkefølge: stoler/sofa → tepper → maskinen: tøm og skyll tankene, kjør rent vann gjennom, la lokk og slange stå åpne til det er helt tørt (lukta kommer av fuktig maskin, ikke av teppet). Tørk tepper ute på en tørr dag",
+  "poeng": 6
+ },
+ {
+  "aktiv": true,
+  "dag": 5,
+  "fra": "2027-W23",
+  "hvem": [
+   "thor"
+  ],
+  "hver": 52,
+  "id": "x-tepperens-hy",
+  "ikon": "🧽",
+  "int": "uker",
+  "kat": "Hytta",
+  "min": 120,
+  "navn": "Tepperens på hytta — stoler, sofa og tepper, så rense maskinen",
+  "notat": "Én runde i året før sommersesongen. Ta maskinen med opp. Samme rekkefølge som hjemme; maskinen tømmes, skylles og tørkes åpen før den pakkes ned",
+  "poeng": 6
+ },
+ {
+  "aktiv": true,
+  "dato": "2026-10-17",
+  "hvem": [
+   "thor",
+   "erik"
+  ],
+  "id": "x-trampoline",
+  "ikon": "🤸",
+  "int": "dato",
+  "kat": "Sesong",
+  "min": 120,
+  "navn": "Trampolinen ned — nett, stenger, matte og ramme inn i boden",
+  "notat": "Hele trampolinen ned før snø. Legg fjærene i en merket bøtte, ta bilde av rammen før demontering",
+  "poeng": 6
+ },
+ {
+  "aktiv": true,
+  "dato": "2026-09-14",
+  "hvem": [
+   "thor"
+  ],
+  "id": "x-uteteppe",
+  "ikon": "🧶",
+  "int": "dato",
+  "kat": "Vedlikehold",
+  "min": 20,
+  "navn": "Spyle uteteppet og henge det til tørk",
+  "notat": "Tørt søndag 13.9, mandag 14.9 og onsdag 16.9 — tirsdag er regn meldt. Gjør det en tørr kveld, heng over rekkverket",
+  "poeng": 2
  }
 ]

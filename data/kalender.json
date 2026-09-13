@@ -1,0 +1,27 @@
+{
+  "kilde": "Skolerute Notodden 2026/27 bekreftet 13.8.2026 (Telemark). Høytider = norsk kalender. Aktiviteter = anslag, juster i appen.",
+  "perioder": [
+    {"fra": "2026-10-05", "til": "2026-10-09", "navn": "Høstferie", "type": "skoleferie"},
+    {"fra": "2026-12-19", "til": "2027-01-04", "navn": "Juleferie", "type": "skoleferie"},
+    {"fra": "2027-02-22", "til": "2027-02-26", "navn": "Vinterferie", "type": "skoleferie"},
+    {"fra": "2027-03-22", "til": "2027-03-28", "navn": "Påskeferie", "type": "skoleferie"},
+    {"fra": "2027-06-19", "til": "2027-08-15", "navn": "Sommerferie", "type": "skoleferie"},
+    {"fra": "2027-10-11", "til": "2027-10-15", "navn": "Høstferie (anslag)", "type": "skoleferie"}
+  ],
+  "hoytider": [
+    {"dato": "2026-12-24", "navn": "Julaften"}, {"dato": "2026-12-25", "navn": "1. juledag"}, {"dato": "2026-12-26", "navn": "2. juledag"},
+    {"dato": "2026-12-31", "navn": "Nyttårsaften"}, {"dato": "2027-01-01", "navn": "1. nyttårsdag"},
+    {"dato": "2027-03-25", "navn": "Skjærtorsdag"}, {"dato": "2027-03-26", "navn": "Langfredag"}, {"dato": "2027-03-28", "navn": "1. påskedag"}, {"dato": "2027-03-29", "navn": "2. påskedag"},
+    {"dato": "2027-05-01", "navn": "1. mai"}, {"dato": "2027-05-06", "navn": "Kristi himmelfart"}, {"dato": "2027-05-16", "navn": "1. pinsedag"}, {"dato": "2027-05-17", "navn": "17. mai / 2. pinsedag"},
+    {"dato": "2027-12-24", "navn": "Julaften"}, {"dato": "2027-12-25", "navn": "1. juledag"}, {"dato": "2027-12-26", "navn": "2. juledag"}
+  ],
+  "aktiviteter": [
+    {"navn": "Fotball (hverdager, ikke helg)", "fra": "2027-04-12", "til": "2027-10-15", "type": "hverdag"}
+  ],
+  "sesonghelger": [
+    {"id": "host-1", "navn": "Høst 1 · puter, parasoller, høytrykkspyler, vannsystem", "regel": "lørdag før 1. oktober"},
+    {"id": "host-2", "navn": "Høst 2 · trampolinen, skråninger, syklene inn", "regel": "tredje lørdag i oktober"},
+    {"id": "vaar-1", "navn": "Vår 1 · dekkskift, sykler, terrasse", "regel": "tredje lørdag i april"},
+    {"id": "vaar-2", "navn": "Vår 2 · vann på, frikjøling, plen, puter ut", "regel": "lørdag nærmest 1. mai"}
+  ]
+}
