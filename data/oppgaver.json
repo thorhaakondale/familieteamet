@@ -17,7 +17,7 @@
   "navn": "Tannpuss",
   "ikon": "🪥",
   "kat": "Morgen",
-  "int": "hverdag",
+  "int": "daglig",
   "hvem": [
    "vaarin"
   ],
@@ -26,10 +26,10 @@
  },
  {
   "id": "m-tann-e",
-  "navn": "1. Medisin · 2. Tannpuss",
+  "navn": "Tannpuss",
   "ikon": "💊",
   "kat": "Morgen",
-  "int": "hverdag",
+  "int": "daglig",
   "hvem": [
    "erik"
   ],
@@ -60,7 +60,8 @@
    "vaarin"
   ],
   "poeng": 2,
-  "min": 3
+  "min": 3,
+  "aktiv": false
  },
  {
   "id": "k-dekke",
@@ -73,7 +74,8 @@
    "erik"
   ],
   "poeng": 1,
-  "min": 5
+  "min": 5,
+  "aktiv": false
  },
  {
   "id": "k-rydde",
@@ -86,7 +88,8 @@
    "vaarin"
   ],
   "poeng": 1,
-  "min": 5
+  "min": 5,
+  "aktiv": false
  },
  {
   "id": "k-tom",
@@ -99,7 +102,8 @@
    "vaarin"
   ],
   "poeng": 2,
-  "min": 8
+  "min": 8,
+  "aktiv": false
  },
  {
   "id": "k-fyll",
@@ -112,7 +116,8 @@
    "erik"
   ],
   "poeng": 2,
-  "min": 8
+  "min": 8,
+  "aktiv": false
  },
  {
   "id": "k-tallerken",
@@ -526,5 +531,55 @@
   ],
   "poeng": 1,
   "min": 1
+ },
+ {
+  "id": "x-kjokken",
+  "navn": "Hjelpe på kjøkkenet i dag — dekke på/av, inn og ut av maskinen — ryddig til kvelden",
+  "ikon": "🍽️",
+  "kat": "Dagen",
+  "int": "daglig",
+  "hvem": [
+   "erik",
+   "vaarin"
+  ],
+  "poeng": 3,
+  "aktiv": true
+ },
+ {
+  "id": "x-orden",
+  "navn": "Gangen og rommet holdt ryddig i dag — hjelm, sko og tøy på plass",
+  "ikon": "🧥",
+  "kat": "Dagen",
+  "int": "daglig",
+  "hvem": [
+   "erik",
+   "vaarin"
+  ],
+  "poeng": 2,
+  "aktiv": true
+ },
+ {
+  "id": "x-kveld-e",
+  "navn": "1. Medisin · 2. Tannpuss",
+  "ikon": "🪥",
+  "kat": "Kveld",
+  "int": "daglig",
+  "hvem": [
+   "erik"
+  ],
+  "poeng": 1,
+  "aktiv": true
+ },
+ {
+  "id": "x-kveld-v",
+  "navn": "Tannpuss",
+  "ikon": "🪥",
+  "kat": "Kveld",
+  "int": "daglig",
+  "hvem": [
+   "vaarin"
+  ],
+  "poeng": 1,
+  "aktiv": true
  }
 ]
