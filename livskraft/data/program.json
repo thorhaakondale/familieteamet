@@ -1,5 +1,5 @@
 {
- "versjon": "Sprek til 100 v3 · programkort 5.9.2026, oppdatert 13.9 · spesifikasjon v1.1",
+ "versjon": "Sprek til 100 v3 · programkort 5.9.2026 · spesifikasjon v1.1 · Liv-skill v2 (13.9.2026)",
  "kilde": "Dale Livsstil & PT (programkortet) for øvelser og vekter · liv-treningsspesifikasjon.md v1.1 for mål, regler og progresjon",
  "personer": {
   "thor": {
@@ -10,7 +10,11 @@
   "anniken": {
    "navn": "Anniken",
    "har_program": false,
-   "melding": "Denne er din like mye som Thors — men programmet ditt skal lages sammen med deg, ikke gjettes. Loggen for søvn, skritt og vekt virker allerede. Når du og Liv har snakket sammen, dukker øktene dine opp her."
+   "melding": "Denne er din like mye som Thors — men programmet ditt lages sammen med deg, ikke gjettes. Til da er minimumsnivået ditt: ti minutter gange på tunge dager, og én kort styrkeøkt når du vil. Det, søvn, skritt og vekt kan du logge her allerede.",
+   "minimum": {
+    "gange": "10 min gange på tunge dager",
+    "styrke": "Én kort styrkeøkt når du vil"
+   }
   }
  },
  "thor": {
@@ -38,7 +42,8 @@
     "Brystsmerter, uvanlig tungpust eller besvimelsesfølelse under trening"
    ],
    "rode_flagg_tekst": "Stopp økta. Ring fastlegen i dag. Brystsmerter eller besvimelse: 113.",
-   "aldri_1rm_over_reps": 10
+   "aldri_1rm_over_reps": 10,
+   "affekt": "Det som avgjør om vi fortsetter er hvordan økta kjennes mens den pågår. «For hardt» to ganger på rad = intensiteten er lagt feil — ned 5 %, ikke opp."
   },
   "okter": {
    "A": {
@@ -184,7 +189,11 @@
        "maal": "3 × maks tid · mål 60 s, så +2,5 kg i belte",
        "maaling": "sek",
        "sett": 3,
-       "maaltid": 60
+       "maaltid": 60,
+       "varianter": [
+        "Dead hang",
+        "Håndklehang"
+       ]
       }
      },
      {
@@ -214,7 +223,11 @@
         "start": 20,
         "tak": 24,
         "steg": 2
-       }
+       },
+       "varianter": [
+        "Suitcase carry",
+        "Farmer's walk (to manualer)"
+       ]
       }
      },
      {
@@ -384,5 +397,35 @@
    ],
    "rm_test": "3RM knebøy + RDL i januar og august."
   }
+ },
+ "sesonger": [
+  {
+   "id": "host26",
+   "navn": "Høst 2026",
+   "tema": "Ryggen tilbake, grepet på plass",
+   "fra": "2026-W37",
+   "til": "2027-W01",
+   "element": "Dead hang og sideplanke i pausene — det ene nye elementet denne sesongen",
+   "event": "Sprek-test uke 40 (utgangspunktet) · 3RM knebøy og RDL i januar"
+  },
+  {
+   "id": "var27",
+   "navn": "Vår 2027",
+   "tema": "Velges ved sesongstart, sammen med Liv",
+   "fra": "2027-W02",
+   "til": "2027-W14",
+   "element": "Ett nytt element — aldri mer",
+   "event": "Sprek-test ~uke 14"
+  }
+ ],
+ "ukemodus": {
+  "normal": "A + B, 8-minutteren to ganger og to turer. Ikke mer.",
+  "minimum": "Reise, vakt eller kaos: én kort gym-økt (25 min, ett arbeidssett per løft) + én tur på 30 min + trappa daglig teller som gjort. Da overlever vanen uka.",
+  "syk": "Syk = fri uten telling. Uka teller ikke, og det er ingenting å ta igjen. Første økt etterpå er lett — appen setter den opp."
+ },
+ "tilbakefall": {
+  "en": "Én økt ikke gjort er ingenting. Neste økt er neste bokstav.",
+  "to": "To økter på rad ble ikke gjort. Det er et signal, ikke en dom: neste økt er lett — 70 % av sist, ett sett per løft, 25 minutter.",
+  "tre_uker": "Borte i tre uker eller mer: retur på ~70 %, full retur på halve pausetiden. Aldri «ta igjen»."
  }
 }
