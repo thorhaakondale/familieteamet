@@ -311,23 +311,20 @@
  },
  {
   "id": "t-robot",
-  "navn": "Robotstøvsugeren i 1. etasje",
+  "navn": "Robotstøvsugeren i 1. etasje — sett på før jobb",
   "ikon": "🤖",
-  "kat": "Rydding",
+  "kat": "Morgen",
   "int": "uke",
-  "dag": 3,
+  "dag": 4,
   "hvem": [
    "thor"
   ],
   "poeng": 1,
-  "min": 2,
-  "unntak": {
-   "2026-W37": 5
-  }
+  "min": 2
  },
  {
   "id": "t-bad",
-  "navn": "Lett over begge badene",
+  "navn": "Vaske badene",
   "ikon": "🚿",
   "kat": "Rydding",
   "int": "uke",
@@ -335,18 +332,19 @@
   "hvem": [
    "thor"
   ],
-  "poeng": 3,
-  "min": 15,
+  "poeng": 4,
+  "min": 25,
   "unntak": {
    "2026-W37": 5
-  }
+  },
+  "veksle": true
  },
  {
   "id": "t-gulv",
   "navn": "Vaske gulv i kjøkken og gang",
   "ikon": "🧹",
   "kat": "Rydding",
-  "int": "uke",
+  "int": "2uke",
   "dag": 3,
   "hvem": [
    "anniken"

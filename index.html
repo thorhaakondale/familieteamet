@@ -88,6 +88,8 @@ b,strong{font-weight:800}
 .tile .velg button{font:inherit;font-weight:800;font-size:12.5px;padding:4px 9px;border-radius:999px;border:1.5px solid var(--pc);color:var(--pc);background:transparent;cursor:pointer}
 .tile .velg button.orig{border-style:dashed}
 .tile.done .tb{color:var(--ok)}
+.md{display:inline-block;font-size:10.5px;font-weight:900;letter-spacing:.06em;padding:1px 6px;border-radius:999px;vertical-align:1px;margin-left:4px}
+.md.grov{background:var(--warn);color:#fff}.md.lett{background:var(--line2);color:var(--ink2)}
 .tile .avs{display:flex;gap:3px;margin-top:3px}
 .tile .av{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--pc);color:#fff;font-size:10.5px;font-weight:900;border:2px solid var(--card)}
 .tile .av.ok{box-shadow:0 0 0 2px var(--ok)}
@@ -216,6 +218,12 @@ details.om .in{padding:8px 0 0;font-size:14px;max-width:70ch}
   <div class="sveip"><table class="tbl" id="uke-tbl"></table></div>
 </section>
 
+<section class="card" id="slik">
+  <h2>Slik går det</h2>
+  <p class="sub">Siste fire uker — for de voksne.</p>
+  <div class="sveip"><table class="tbl" id="slik-tbl"></table></div>
+  <p class="small" id="slik-txt"></p>
+</section>
 <section class="card" id="historikk">
   <h2>Uke for uke</h2>
   <div class="sveip"><table class="tbl" id="hist-tbl"></table></div>
@@ -256,9 +264,10 @@ details.om .in{padding:8px 0 0;font-size:14px;max-width:70ch}
 <p><b>Poengene</b> er ett lag, ikke fem. Ingen konkurrerer mot søsken. Oscar (2) er med på sine småting, og alt han gjør teller.</p>
 <p><b>Voksne</b> legger inn nye oppgaver, flytter dager og setter belønning under Oppgavebanken. Rader merket «forslag» er tavlas forslag og skal justeres av dere.</p>
 <p><b>Egen lenke og «app» på iPad og mobil.</b> Bruk lenka med <code>&amp;p=erik</code>, <code>&amp;p=vaarin</code>, <code>&amp;p=oscar</code>, <code>&amp;p=thor</code> eller <code>&amp;p=anniken</code>, så åpner tavla ferdig valgt for den personen — også fra hjemskjermen. Legg den på hjemskjermen: iPad/iPhone — Del-knappen → «Legg til på Hjem-skjerm»; Android — menyen ⋮ → «Legg til på startskjermen». Ingen innlogging trengs.</p>
+<p><b>Husøkta torsdag.</b> Alle starter når de kommer hjem fra skolen og gjør sine jobber samtidig — ferdig før fotballen. Badene veksler mellom <b>GROV</b> og lett: appen husker når det sist ble vasket grundig, og blir en uke hoppet over, blir neste automatisk grov. Det som ikke ble gjort torsdag dukker opp én gang til, lørdag morgen, som «Lørdagsøkta». Gikk torsdagen bra, er lørdagen fri.</p>
 <p><b>Glemt eller ikke gjort?</b> Rutiner (morgen, hjemkomst, måltider, kl. 22) er nye hver dag: ble de ikke huket, står dagen tom i uketabellen og poengene mangler — men de hoper seg ikke opp. Ble noe gjort uten hake, viser «Ikke huket i går» det dagen etter, med ett trykk for å rette. Alt annet — ryddedagen, hver 3. uke, sesong — henger igjen under «⏰ Henger igjen» til det faktisk er gjort, for badet er fortsatt skittent.</p>
 <p><b>Bytte eller flytte en oppgave.</b> Trykk ⇄ på ruta: velg hvem som tar den i dag (jobber Anniken, tar Thor middagen), eller flytt den til en annen dag denne uka (rekker du ikke badene lørdag, tar du dem mandag). Vil du skyve den lenger, velg «utsett til» — i morgen, to dager, neste uke eller en dato du velger selv; da dukker den opp den dagen, merket ⏭. Alt kan angres med ↩. Ferdige ruter krymper og legger seg nederst i gruppa, så det som gjenstår står øverst.</p>
-<p><b>Belønningstrappa.</b> Ett ukemål gir spillkveld, to på rad filmkveld hjemme, tre av fire uker gir overnattingsbesøk (huset er helgeklart og de voksne har overskudd), seks av åtte uker en fornøyelsesdag som planlegges i kalenderen, og tolv av seksten uker utløser bossen — den eneste premien som er en ting, og den kommer sjelden med vilje. Linja over lagtabellen ruller gjennom nivåene og viser hvor langt dere er. Voksne endrer tekstene under Oppgavebanken.</p>
+<p><b>Belønningstrappa.</b> Ett ukemål gir ukas familiestund — et forslag fra Bjørn ut fra årstid, vær og kalender (kake i sesong, fjelltur med kakao, SUP, alpint, bildebok, kalender til besteforeldrene), aldri det samme to uker på rad, og alltid noe Liv kan stå inne for. Så: to på rad filmkveld hjemme, tre av fire uker gir overnattingsbesøk (huset er helgeklart og de voksne har overskudd), seks av åtte uker en fornøyelsesdag som planlegges i kalenderen, og tolv av seksten uker utløser bossen — den eneste premien som er en ting, og den kommer sjelden med vilje. Linja over lagtabellen ruller gjennom nivåene og viser hvor langt dere er. Voksne endrer tekstene under Oppgavebanken.</p>
 <p><b>Lagring.</b> Hakene lagres delt (Firebase, EU), så mobil, iPad og PC viser det samme uten innlogging — lenka dere fikk har familiekoden i seg, og enheten husker den. Oppgavebanken og trappa ligger i appens filer og oppdateres av Bjørn og Liv. Mister siden kontakten, lagres det på enheten til den er tilbake.</p>
 </div></details>
 
@@ -275,10 +284,10 @@ var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1
 /* ---------- grunnlag ---------- */
 var PERS=[
  {id:'erik',navn:'Erik',kort:'E',farge:'var(--erik)',dyr:'🦊'},
- {id:'vaarin',navn:'Vårin',kort:'V',farge:'var(--vaarin)',dyr:'🦄'},
+ {id:'vaarin',navn:'Vårin',kort:'V',farge:'var(--vaarin)',dyr:'🦋'},
  {id:'oscar',navn:'Oscar',kort:'O',farge:'var(--oscar)',dyr:'🐥'},
  {id:'thor',navn:'Thor',kort:'T',farge:'var(--thor)',dyr:'🐻'},
- {id:'anniken',navn:'Anniken',kort:'A',farge:'var(--anniken)',dyr:'🦋'}
+ {id:'anniken',navn:'Anniken',kort:'A',farge:'var(--anniken)',dyr:'🌸'}
 ];
 var PMAP={};PERS.forEach(function(p){PMAP[p.id]=p});
 var DAGER=['Mandag','Tirsdag','Onsdag','Torsdag','Fredag','Lørdag','Søndag'];
@@ -286,14 +295,9 @@ var DAGK=['man','tir','ons','tor','fre','lør','søn'];
 var GRUPPER=['Morgen','Etter skolen','Måltider','Kveld','Rydding','Vask','Sesong','Ute'];
 
 /* Seed = fallback hvis databasen ikke svarer. Databasen overstyrer felt for felt. */
-var SEED=[{"id": "m-sekk", "navn": "Sekken klar", "ikon": "🎒", "kat": "Morgen", "int": "hverdag", "hvem": ["erik", "vaarin"], "poeng": 1, "min": 3}, {"id": "m-tann-v", "navn": "Tannpuss", "ikon": "🪥", "kat": "Morgen", "int": "hverdag", "hvem": ["vaarin"], "poeng": 1, "min": 3}, {"id": "m-tann-e", "navn": "1. Medisin · 2. Tannpuss", "ikon": "💊", "kat": "Morgen", "int": "hverdag", "hvem": ["erik"], "poeng": 1, "min": 3}, {"id": "m-frokost", "navn": "Niste smurt, frokost og et glass vann", "ikon": "🥪", "kat": "Morgen", "int": "hverdag", "hvem": ["erik", "vaarin"], "poeng": 2, "min": 15}, {"id": "h-sko", "navn": "Sko på plass, sekken på rommet", "ikon": "👟", "kat": "Etter skolen", "int": "hverdag", "hvem": ["erik", "vaarin"], "poeng": 2, "min": 3}, {"id": "k-dekke", "navn": "Dekke på bordet", "ikon": "🍽️", "kat": "Måltider", "int": "daglig", "rull": ["vaarin", "erik"], "poeng": 1, "min": 5}, {"id": "k-rydde", "navn": "Rydde av bordet", "ikon": "🧽", "kat": "Måltider", "int": "daglig", "rull": ["erik", "vaarin"], "poeng": 1, "min": 5}, {"id": "k-tom", "navn": "Tømme oppvaskmaskinen", "ikon": "🫧", "kat": "Måltider", "int": "daglig", "rull": ["erik", "vaarin"], "poeng": 2, "min": 8}, {"id": "k-fyll", "navn": "Fylle oppvaskmaskinen", "ikon": "🍴", "kat": "Måltider", "int": "daglig", "rull": ["vaarin", "erik"], "poeng": 2, "min": 8}, {"id": "k-tallerken", "navn": "Bære tallerkenen sin til benken", "ikon": "🌱", "kat": "Måltider", "int": "daglig", "hvem": ["oscar"], "poeng": 1, "min": 1}, {"id": "kv-gang", "navn": "Gangen og vaskerommet ryddig — PC-bag og treningsbag på plass", "ikon": "🎒", "kat": "Kveld", "int": "daglig", "hvem": ["thor"], "poeng": 1, "min": 5}, {"id": "kv-bad", "navn": "Sko på plass, håndklær opp fra badegulvet, badet ryddig", "ikon": "🧖", "kat": "Kveld", "int": "daglig", "hvem": ["anniken"], "poeng": 1, "min": 5}, {"id": "kv-kjokken", "navn": "Kjøkkenet klart til neste dag", "ikon": "✨", "kat": "Kveld", "int": "daglig", "hvem": ["thor", "anniken"], "poeng": 1, "min": 5}, {"id": "v-vask", "navn": "Klesvask: vaske, henge opp, brette", "ikon": "🧺", "kat": "Vask", "int": "dager", "dager": [0, 2, 4], "rull": ["anniken", "thor"], "poeng": 2, "min": 20}, {"id": "t-trapp", "navn": "Støvsuge trappa", "ikon": "🪜", "kat": "Rydding", "int": "uke", "dag": 3, "hvem": ["erik"], "poeng": 3, "min": 10, "unntak": {"2026-W37": 5}}, {"id": "t-sofa", "navn": "Støvsuge sofaene", "ikon": "🛋️", "kat": "Rydding", "int": "uke", "dag": 3, "hvem": ["erik"], "poeng": 3, "min": 10, "unntak": {"2026-W37": 5}}, {"id": "t-leker", "navn": "Rydde Oscars leker", "ikon": "🧸", "kat": "Rydding", "int": "uke", "dag": 3, "hvem": ["erik", "oscar"], "poeng": 2, "min": 10, "unntak": {"2026-W37": 5}}, {"id": "t-skap-e", "navn": "Klær på plass i eget skap", "ikon": "👕", "kat": "Rydding", "int": "uke", "dag": 3, "hvem": ["erik"], "poeng": 2, "min": 10, "unntak": {"2026-W37": 5}}, {"id": "t-skap-v", "navn": "Klær på plass i eget skap", "ikon": "👗", "kat": "Rydding", "int": "uke", "dag": 3, "hvem": ["vaarin"], "poeng": 2, "min": 10, "unntak": {"2026-W37": 5}}, {"id": "t-skap-oa", "navn": "Klær på plass i Oscars og mammas skap", "ikon": "🧺", "kat": "Rydding", "int": "uke", "dag": 3, "hvem": ["vaarin"], "poeng": 3, "min": 15, "unntak": {"2026-W37": 5}}, {"id": "t-rom", "navn": "Rydde rommet sitt", "ikon": "🛏️", "kat": "Rydding", "int": "uke", "dag": 3, "hvem": ["erik", "vaarin"], "poeng": 2, "min": 15, "fra": "2026-W38"}, {"id": "t-skap-t", "navn": "Eget skap + klær fra badet til vaskerommet", "ikon": "🧺", "kat": "Rydding", "int": "uke", "dag": 3, "hvem": ["thor"], "poeng": 2, "min": 10, "unntak": {"2026-W37": 5}}, {"id": "t-robot", "navn": "Robotstøvsugeren i 1. etasje", "ikon": "🤖", "kat": "Rydding", "int": "uke", "dag": 3, "hvem": ["thor"], "poeng": 1, "min": 2, "unntak": {"2026-W37": 5}}, {"id": "t-bad", "navn": "Lett over begge badene", "ikon": "🚿", "kat": "Rydding", "int": "uke", "dag": 3, "hvem": ["thor"], "poeng": 3, "min": 15, "unntak": {"2026-W37": 5}}, {"id": "t-gulv", "navn": "Vaske gulv i kjøkken og gang", "ikon": "🧹", "kat": "Rydding", "int": "uke", "dag": 3, "hvem": ["anniken"], "poeng": 3, "min": 20, "forslag": false, "fra": "2026-W38"}, {"id": "v-seng", "navn": "Skifte sengetøy", "ikon": "🛌", "kat": "Vask", "int": "3uke", "dag": 5, "hvem": ["erik", "vaarin", "thor", "anniken"], "poeng": 2, "min": 10, "fra": "2026-W38", "forslag": false}, {"id": "v-soppel", "navn": "Søppel og pant ut", "ikon": "🗑️", "kat": "Vask", "int": "uke", "dag": 6, "hvem": ["erik"], "poeng": 2, "min": 5, "forslag": false, "fra": "2026-W38"}, {"id": "u3-bil", "navn": "Støvsuge og rydde bilen", "ikon": "🚗", "kat": "Sesong", "int": "4uke", "dag": 5, "hvem": ["thor", "erik"], "poeng": 4, "min": 30, "forslag": true, "fra": "2026-W38"}, {"id": "u3-kjol", "navn": "Tørke ut kjøleskapet", "ikon": "🧊", "kat": "Sesong", "int": "4uke", "dag": 5, "hvem": ["anniken", "vaarin"], "poeng": 4, "min": 20, "forslag": true, "fra": "2026-W39"}, {"id": "u3-vaskerom", "navn": "Rydde vaskerommet", "ikon": "🧴", "kat": "Sesong", "int": "4uke", "dag": 5, "hvem": ["thor"], "poeng": 3, "min": 20, "forslag": true, "fra": "2026-W40"}, {"id": "q-garderobe", "navn": "Sesongbytte i garderoben", "ikon": "🧥", "kat": "Sesong", "int": "kvartal", "dag": 5, "hvem": ["erik", "vaarin", "oscar", "thor", "anniken"], "poeng": 5, "min": 45, "lenke": "https://claude.ai/code/artifact/1ff7d097-6449-4340-a8a3-201e50fb912d", "lenkenavn": "Brukskortene", "fra": "2026-W39"}, {"id": "q-vindu", "navn": "Vaske vinduer", "ikon": "🪟", "kat": "Sesong", "int": "kvartal", "dag": 5, "hvem": ["thor", "anniken"], "poeng": 6, "min": 90, "forslag": true, "fra": "2026-W41"}, {"id": "q-bod", "navn": "Rydde bod og garasje", "ikon": "🧰", "kat": "Sesong", "int": "kvartal", "dag": 5, "hvem": ["thor", "erik"], "poeng": 6, "min": 60, "forslag": true, "fra": "2026-W42"}, {"id": "d-ute", "navn": "Hagen, uteputer og utemøbler inn før vinteren", "ikon": "🍂", "kat": "Ute", "int": "dato", "dato": "2026-09-12", "hvem": ["erik", "vaarin", "oscar", "thor", "anniken"], "poeng": 10, "min": 60}, {"id": "m-frokost-o", "navn": "Frokost og et glass vann", "ikon": "🥣", "kat": "Morgen", "int": "hverdag", "hvem": ["oscar"], "poeng": 1, "min": 10}, {"id": "h-sko-o", "navn": "Sko under skobenken", "ikon": "👟", "kat": "Etter skolen", "int": "hverdag", "hvem": ["oscar"], "poeng": 1, "min": 1}];
-var SEED_TRAPP=[
- {ikon:'🎲',navn:'Spillkveld',krav:1,tekst:'Lagmålet nådd én uke: vi setter oss ned i helga og spiller det spillet barna velger'},
- {ikon:'🎬',navn:'Filmkveld hjemme',krav:2,tekst:'To uker på rad: filmkveld med kiosk hjemme — barna velger filmen'},
- {ikon:'🛌',navn:'Overnatting med en venn',krav:3,av:4,tekst:'Tre av de siste fire ukene: huset er helgeklart, og de voksne har overskudd til å si ja til overnattingsbesøk — ikke hver helg, men når laget har levert'},
- {ikon:'🤸',navn:'Fornøyelsesdag',krav:6,av:8,tekst:'Seks av de siste åtte ukene (omtrent hver 8. uke): trampolinepark, bowling eller svømmehall — barna velger, de voksne setter dato i kalenderen'},
- {ikon:'👑',navn:'Bossen',krav:12,av:16,tekst:'Tolv av de siste seksten ukene (hver 8.–16. uke): en liten boss-premie til hver — Pokémon-pakke til Erik, Vårin og Oscar velger noe tilsvarende'}
-];
+var SEED=[{"id": "m-sekk", "navn": "Sekken klar", "ikon": "🎒", "kat": "Morgen", "int": "hverdag", "hvem": ["erik", "vaarin"], "poeng": 1, "min": 3}, {"id": "m-tann-v", "navn": "Tannpuss", "ikon": "🪥", "kat": "Morgen", "int": "hverdag", "hvem": ["vaarin"], "poeng": 1, "min": 3}, {"id": "m-tann-e", "navn": "1. Medisin · 2. Tannpuss", "ikon": "💊", "kat": "Morgen", "int": "hverdag", "hvem": ["erik"], "poeng": 1, "min": 3}, {"id": "m-frokost", "navn": "Niste smurt, frokost og et glass vann", "ikon": "🥪", "kat": "Morgen", "int": "hverdag", "hvem": ["erik", "vaarin"], "poeng": 2, "min": 15}, {"id": "h-sko", "navn": "Sko på plass, sekken på rommet", "ikon": "👟", "kat": "Etter skolen", "int": "hverdag", "hvem": ["erik", "vaarin"], "poeng": 2, "min": 3}, {"id": "k-dekke", "navn": "Dekke på bordet", "ikon": "🍽️", "kat": "Måltider", "int": "daglig", "rull": ["vaarin", "erik"], "poeng": 1, "min": 5}, {"id": "k-rydde", "navn": "Rydde av bordet", "ikon": "🧽", "kat": "Måltider", "int": "daglig", "rull": ["erik", "vaarin"], "poeng": 1, "min": 5}, {"id": "k-tom", "navn": "Tømme oppvaskmaskinen", "ikon": "🫧", "kat": "Måltider", "int": "daglig", "rull": ["erik", "vaarin"], "poeng": 2, "min": 8}, {"id": "k-fyll", "navn": "Fylle oppvaskmaskinen", "ikon": "🍴", "kat": "Måltider", "int": "daglig", "rull": ["vaarin", "erik"], "poeng": 2, "min": 8}, {"id": "k-tallerken", "navn": "Bære tallerkenen sin til benken", "ikon": "🌱", "kat": "Måltider", "int": "daglig", "hvem": ["oscar"], "poeng": 1, "min": 1}, {"id": "kv-gang", "navn": "Gangen og vaskerommet ryddig — PC-bag og treningsbag på plass", "ikon": "🎒", "kat": "Kveld", "int": "daglig", "hvem": ["thor"], "poeng": 1, "min": 5}, {"id": "kv-bad", "navn": "Sko på plass, håndklær opp fra badegulvet, badet ryddig", "ikon": "🧖", "kat": "Kveld", "int": "daglig", "hvem": ["anniken"], "poeng": 1, "min": 5}, {"id": "kv-kjokken", "navn": "Kjøkkenet klart til neste dag", "ikon": "✨", "kat": "Kveld", "int": "daglig", "hvem": ["thor", "anniken"], "poeng": 1, "min": 5}, {"id": "v-vask", "navn": "Klesvask: vaske, henge opp, brette", "ikon": "🧺", "kat": "Vask", "int": "dager", "dager": [0, 2, 4], "rull": ["anniken", "thor"], "poeng": 2, "min": 20}, {"id": "t-trapp", "navn": "Støvsuge trappa", "ikon": "🪜", "kat": "Rydding", "int": "uke", "dag": 3, "hvem": ["erik"], "poeng": 3, "min": 10, "unntak": {"2026-W37": 5}}, {"id": "t-sofa", "navn": "Støvsuge sofaene", "ikon": "🛋️", "kat": "Rydding", "int": "uke", "dag": 3, "hvem": ["erik"], "poeng": 3, "min": 10, "unntak": {"2026-W37": 5}}, {"id": "t-leker", "navn": "Rydde Oscars leker", "ikon": "🧸", "kat": "Rydding", "int": "uke", "dag": 3, "hvem": ["erik", "oscar"], "poeng": 2, "min": 10, "unntak": {"2026-W37": 5}}, {"id": "t-skap-e", "navn": "Klær på plass i eget skap", "ikon": "👕", "kat": "Rydding", "int": "uke", "dag": 3, "hvem": ["erik"], "poeng": 2, "min": 10, "unntak": {"2026-W37": 5}}, {"id": "t-skap-v", "navn": "Klær på plass i eget skap", "ikon": "👗", "kat": "Rydding", "int": "uke", "dag": 3, "hvem": ["vaarin"], "poeng": 2, "min": 10, "unntak": {"2026-W37": 5}}, {"id": "t-skap-oa", "navn": "Klær på plass i Oscars og mammas skap", "ikon": "🧺", "kat": "Rydding", "int": "uke", "dag": 3, "hvem": ["vaarin"], "poeng": 3, "min": 15, "unntak": {"2026-W37": 5}}, {"id": "t-rom", "navn": "Rydde rommet sitt", "ikon": "🛏️", "kat": "Rydding", "int": "uke", "dag": 3, "hvem": ["erik", "vaarin"], "poeng": 2, "min": 15, "fra": "2026-W38"}, {"id": "t-skap-t", "navn": "Eget skap + klær fra badet til vaskerommet", "ikon": "🧺", "kat": "Rydding", "int": "uke", "dag": 3, "hvem": ["thor"], "poeng": 2, "min": 10, "unntak": {"2026-W37": 5}}, {"id": "t-robot", "navn": "Robotstøvsugeren i 1. etasje — sett på før jobb", "ikon": "🤖", "kat": "Morgen", "int": "uke", "dag": 4, "hvem": ["thor"], "poeng": 1, "min": 2}, {"id": "t-bad", "navn": "Vaske badene", "ikon": "🚿", "kat": "Rydding", "int": "uke", "dag": 3, "hvem": ["thor"], "poeng": 4, "min": 25, "unntak": {"2026-W37": 5}, "veksle": true}, {"id": "t-gulv", "navn": "Vaske gulv i kjøkken og gang", "ikon": "🧹", "kat": "Rydding", "int": "2uke", "dag": 3, "hvem": ["anniken"], "poeng": 3, "min": 20, "forslag": false, "fra": "2026-W38"}, {"id": "v-seng", "navn": "Skifte sengetøy", "ikon": "🛌", "kat": "Vask", "int": "3uke", "dag": 5, "hvem": ["erik", "vaarin", "thor", "anniken"], "poeng": 2, "min": 10, "fra": "2026-W38", "forslag": false}, {"id": "v-soppel", "navn": "Søppel og pant ut", "ikon": "🗑️", "kat": "Vask", "int": "uke", "dag": 6, "hvem": ["erik"], "poeng": 2, "min": 5, "forslag": false, "fra": "2026-W38"}, {"id": "u3-bil", "navn": "Støvsuge og rydde bilen", "ikon": "🚗", "kat": "Sesong", "int": "4uke", "dag": 5, "hvem": ["thor", "erik"], "poeng": 4, "min": 30, "forslag": true, "fra": "2026-W38"}, {"id": "u3-kjol", "navn": "Tørke ut kjøleskapet", "ikon": "🧊", "kat": "Sesong", "int": "4uke", "dag": 5, "hvem": ["anniken", "vaarin"], "poeng": 4, "min": 20, "forslag": true, "fra": "2026-W39"}, {"id": "u3-vaskerom", "navn": "Rydde vaskerommet", "ikon": "🧴", "kat": "Sesong", "int": "4uke", "dag": 5, "hvem": ["thor"], "poeng": 3, "min": 20, "forslag": true, "fra": "2026-W40"}, {"id": "q-garderobe", "navn": "Sesongbytte i garderoben", "ikon": "🧥", "kat": "Sesong", "int": "kvartal", "dag": 5, "hvem": ["erik", "vaarin", "oscar", "thor", "anniken"], "poeng": 5, "min": 45, "lenke": "https://claude.ai/code/artifact/1ff7d097-6449-4340-a8a3-201e50fb912d", "lenkenavn": "Brukskortene", "fra": "2026-W39"}, {"id": "q-vindu", "navn": "Vaske vinduer", "ikon": "🪟", "kat": "Sesong", "int": "kvartal", "dag": 5, "hvem": ["thor", "anniken"], "poeng": 6, "min": 90, "forslag": true, "fra": "2026-W41"}, {"id": "q-bod", "navn": "Rydde bod og garasje", "ikon": "🧰", "kat": "Sesong", "int": "kvartal", "dag": 5, "hvem": ["thor", "erik"], "poeng": 6, "min": 60, "forslag": true, "fra": "2026-W42"}, {"id": "d-ute", "navn": "Hagen, uteputer og utemøbler inn før vinteren", "ikon": "🍂", "kat": "Ute", "int": "dato", "dato": "2026-09-12", "hvem": ["erik", "vaarin", "oscar", "thor", "anniken"], "poeng": 10, "min": 60}, {"id": "m-frokost-o", "navn": "Frokost og et glass vann", "ikon": "🥣", "kat": "Morgen", "int": "hverdag", "hvem": ["oscar"], "poeng": 1, "min": 10}, {"id": "h-sko-o", "navn": "Sko under skobenken", "ikon": "👟", "kat": "Etter skolen", "int": "hverdag", "hvem": ["oscar"], "poeng": 1, "min": 1}];
+var SEED_TRAPP=[{"ikon": "🎯", "navn": "Ukas familiestund", "krav": 1, "tekst": "Lagmålet nådd én uke: Bjørn foreslår ukas familiestund ut fra årstid og kalender — dere velger om det passer, eller bytter"}, {"ikon": "🎬", "navn": "Filmkveld hjemme", "krav": 2, "tekst": "To uker på rad: filmkveld med kiosk hjemme — barna velger filmen"}, {"ikon": "🛌", "navn": "Overnatting med en venn", "krav": 3, "av": 4, "tekst": "Tre av de siste fire ukene: huset er helgeklart, og de voksne har overskudd til å si ja til overnattingsbesøk — ikke hver helg, men når laget har levert"}, {"ikon": "🤸", "navn": "Fornøyelsesdag", "krav": 6, "av": 8, "tekst": "Seks av de siste åtte ukene (omtrent hver 8. uke): trampolinepark, bowling eller svømmehall — barna velger, de voksne setter dato i kalenderen"}, {"ikon": "👑", "navn": "Bossen", "krav": 12, "av": 16, "tekst": "Tolv av de siste seksten ukene (hver 8.–16. uke): en liten ting til hver, inntil 100 kroner, som barna velger selv — Pokémon-pakke, bok, småting. Ikke godteri."}];
+var SESONG={"host": [["🍎", "Bake eplekake sammen — epler fra hagen eller gården"], ["🥾", "Fjelltur med pølser, kakao og kjeks i sekken"], ["🍄", "Sopptur i skogen, sopp til middagen"], ["📖", "Starte bildeboka fra 2026 — velg bilder sammen"], ["🚲", "Sykkeltur til Tinnemyra med matpakke"], ["🎣", "Fisketur en ettermiddag"]], "vinter": [["⛷️", "Langrennstur med pølser, kakao og kjeks"], ["🎿", "Alpint i helga"], ["🎨", "Lage kalender til besteforeldrene"], ["🧁", "Bake boller eller lussekatter sammen"], ["⛸️", "Skøyter og kakao"], ["🛷", "Akedag med bål"]], "vaar": [["🚲", "Sykkeltur når veiene er bare"], ["🎣", "Fisketur ved elva"], ["🌱", "Så frø og plante i hagen sammen"], ["🥾", "Fjelltur med matpakke"], ["🏸", "Badminton eller fotball i hagen etterpå"], ["🥞", "Pannekaker og brettspill en regndag"]], "sommer": [["🏄", "SUP-tur i helga"], ["🏊", "Bading og grilling"], ["🎣", "Fisketur på hytta"], ["⛺", "Overnatting i telt i hagen"], ["🚲", "Sykkeltur med is"], ["🥾", "Topptur med hele laget"]]};
 var SEED_INNST={prosent:75,belonning:'Barna velger lørdagsaktiviteten',trapp:SEED_TRAPP,plan:{'2026-09-12':['Formiddag · Ryddejobbene dine','12:00–16:00 · Fri — gjør det du vil','16:00 · Pizza','18:00 · Utejobb, alle sammen, 1 time']}};
 
 /* ---------- uke-matte ---------- */
@@ -398,6 +402,27 @@ function lagreLokalt(){try{localStorage.setItem('ft-uker',JSON.stringify(UKER))}
 
 function ukeDoc(key){if(!UKER[key])UKER[key]={gjort:{}};if(!UKER[key].gjort)UKER[key].gjort={};return UKER[key]}
 function erGjort(key,slot){var u=UKER[key];return !!(u&&u.gjort&&u.gjort[slot])}
+var BELONNING={}, INNLOST={}; /* innlost: '<uke>-<nivå>' -> {ts,by,tekst} — familien merker at belønningen faktisk ble gjort */
+function innlos(key,idx,tekst,person){var id=key+'-'+idx; var dok={ts:new Date().toISOString(),by:person||'familie',tekst:tekst||''};
+  INNLOST[id]=dok; tegn(); toast('🎉 Gjort — '+(tekst||'belønning'));
+  if(db){db.child('innlost/'+id).set(dok).catch(function(){})}}
+function angreInnlos(key,idx){var id=key+'-'+idx; delete INNLOST[id]; tegn(); if(db){db.child('innlost/'+id).set(null).catch(function(){})}} /* uke -> {ikon,tekst,hvorfor,by} — Bjørn/Ukesjekken skriver ukas familiestund */
+function ukasStund(key){
+  var b=BELONNING[key]; if(b&&b.tekst) return {ikon:b.ikon||'🎯',tekst:b.tekst,fra:'Bjørn'};
+  var mnd=ukeFraKey(key).getMonth(); var ses=mnd>=9||mnd<=1?(mnd>=10||mnd<=1?'vinter':'host'):(mnd<=4?'vaar':(mnd<=7?'sommer':'host'));
+  var liste=(INNST.sesong&&INNST.sesong[ses])||SESONG[ses]||[]; if(!liste.length) return null;
+  var n=parseInt(key.slice(-2),10)||0; var v=liste[n%liste.length]; return {ikon:v[0],tekst:v[1],fra:'sesongforslag'};
+}
+var TILSTAND={}; /* oppgave-id -> {sist:'grov'|'lett', dato:'YYYY-MM-DD'} — for oppgaver med veksle:true */
+/* Modus denne gangen: grov hvis det er lenge siden sist grov (≥ 10 dager) eller aldri; ellers lett. En hoppet-over uke gir automatisk grov. */
+function modus(o,dato){
+  if(!o.veksle) return null;
+  var t=TILSTAND[o.id]; if(!t||!t.dato) return 'grov';
+  var d=Math.round((dato-new Date(t.dato+'T00:00:00'))/86400000);
+  if(t.sist==='grov'&&d<10) return 'lett';
+  return 'grov';
+}
+function mdTag(o,dato){if(!o.veksle)return '';var m=modus(o,dato);return ' <span class="md '+m+'">'+(m==='grov'?'GROV':'lett')+'</span>'}
 var PENDING={}; /* slot -> {key,val,ts} — egne trykk som ikke er bekreftet av delt lagring ennå */
 function toggle(key,slot,person){
   var u=ukeDoc(key); var naaGjort=!u.gjort[slot];
@@ -405,7 +430,8 @@ function toggle(key,slot,person){
   if(naaGjort) u.gjort[slot]=val; else delete u.gjort[slot];
   PENDING[key+'#'+slot]={key:key,slot:slot,val:val,ts:Date.now()};
   lagreLokalt(); tegn();
-  if(naaGjort){var p=OPPG.filter(function(o){return slot.indexOf(o.id+'|')===0})[0];toast('+'+(p?p.poeng:1)+' ⭐ '+(PMAP[person]?PMAP[person].navn:''))}
+  if(naaGjort){var p=OPPG.filter(function(o){return slot.indexOf(o.id+'|')===0})[0];toast('+'+(p?p.poeng:1)+' ⭐ '+(PMAP[person]?PMAP[person].navn:''));
+    if(p&&p.veksle){var md=modus(p,NAA);TILSTAND[p.id]={sist:md,dato:ymd(NAA)};if(db){db.child('tilstand/'+p.id).set({sist:md,dato:ymd(NAA),by:person||'familie'}).catch(function(){})}}}
   if(db){
     var upd={}; upd['uker/'+key+'/gjort/'+slot]=val; upd['uker/'+key+'/by']=person||'familie'; upd['uker/'+key+'/ts']=new Date().toISOString();
     db.update(upd).catch(function(e){status('Kunne ikke lagre delt — lagret på enheten. ('+(e&&e.message)+')')});
@@ -452,7 +478,9 @@ function forfalte(){
   for(var w=0;w<13;w++){var m=addDays(man,-7*w), k=ukeKey(m);
     planUke(m).forEach(function(s){
       if(erRutine(s.o)) return;
-      if(s.o.int==='uke'&&w>0) return; /* ukentlige kommer igjen neste uke uansett — henger bare ut uka */
+      if(s.o.int==='uke'&&w>0) return; /* ukentlige kommer igjen neste uke uansett */
+      if(s.o.int==='uke'&&w===0){ /* husøkta torsdag: henger IKKE daglig — lander på lørdag én gang, ellers faller den */
+        if(!(s.dag<dIdx&&dIdx===5)) return; }
       var passert=(w>0)||(s.dag<dIdx); if(!passert) return;
       if(addDays(m,s.dag)<STARTDATO) return; /* ingenting fra før appen fantes */
       if(erGjort(k,s.key)) return;
@@ -478,9 +506,12 @@ function tegnIdag(){
   slots.forEach(function(s){s.ukeKey=key});
   var henger=forfalte();
   var grp={'Henger igjen':henger}; GRUPPER.forEach(function(g){grp[g]=[]});
+  var erTorsdag=(dIdx===3), erLordag=(dIdx===5);
   slots.forEach(function(s){var g=s.o.kat||'Rydding'; (grp[g]||(grp[g]=[])).push(s)});
+  var navnRydding=erTorsdag?'🧹 Husøkta — alle sammen etter skolen':'Ryddejobb';
+  var navnHenger=erLordag?'🧹 Lørdagsøkta — det som ikke ble gjort torsdag':'⏰ Henger igjen — ikke gjort ennå';
   var html='';
-  var navnG={'Morgen':'Morgen','Etter skolen':'Når du kommer hjem','Måltider':'Måltider','Kveld':'Kveld — før legging','Rydding':'Ryddejobb','Vask':'Vask og bestilling','Sesong':'Modent nå','Ute':'Ute','Henger igjen':'⏰ Henger igjen — ikke gjort ennå'};
+  var navnG={'Morgen':'Morgen','Etter skolen':'Når du kommer hjem','Måltider':'Måltider','Kveld':'Kveld — før legging','Rydding':navnRydding,'Vask':'Vask og bestilling','Sesong':'Modent nå','Ute':'Ute','Henger igjen':navnHenger};
   ['Henger igjen'].concat(GRUPPER).forEach(function(g){
     if(!grp[g].length) return;
     html+='<div class="grp'+(g==='Henger igjen'?' hg':'')+'">'+esc(navnG[g]||g)+'</div><div class="tiles">';
@@ -505,7 +536,7 @@ function tegnIdag(){
       if(s.utsatt&&s.fraDato) meta='⏭ utsatt fra '+datoNorsk(s.fraDato)+' · '+meta;
       if(s.forfalt) meta='skulle vært '+DAGK[s.dag]+' '+datoNorsk(s.dato)+' · '+meta;
       var tk=s.ukeKey||key;
-      html+='<div class="tile'+(done?' done':'')+(s.forfalt?' hg':'')+'" style="--pc:'+p.farge+'"><button class="tmain" data-k="'+esc(tk)+'" data-s="'+esc(s.key)+'" data-p="'+esc(s.person)+'" aria-pressed="'+done+'"><span class="chk">✓</span><span class="ik">'+s.o.ikon+'</span><span class="tx"><span class="nm">'+esc(s.o.navn)+'</span><span class="mt">'+meta+'</span></span></button><span class="side"><span class="pt num">+'+s.o.poeng+'</span><button class="tb" title="Bytt oppgaven til en annen" aria-label="Bytt til en annen" data-k="'+esc(tk)+'" data-o="'+esc(s.o.id)+'" data-d="'+s.dag+'" data-fra="'+esc(s.orig)+'" data-naa="'+esc(s.person)+'" data-dag0="'+(s.flyttet?s.fraDag:s.dag)+'"'+(s.utsatt?' data-uts="'+esc(s.fraUke)+'" data-utsk="'+esc(s.fraKey)+'"':'')+'>⇄</button></span></div>';
+      html+='<div class="tile'+(done?' done':'')+(s.forfalt?' hg':'')+'" style="--pc:'+p.farge+'"><button class="tmain" data-k="'+esc(tk)+'" data-s="'+esc(s.key)+'" data-p="'+esc(s.person)+'" aria-pressed="'+done+'"><span class="chk">✓</span><span class="ik">'+s.o.ikon+'</span><span class="tx"><span class="nm">'+esc(s.o.navn)+mdTag(s.o,s.dato||NAA)+'</span><span class="mt">'+meta+'</span></span></button><span class="side"><span class="pt num">+'+s.o.poeng+'</span><button class="tb" title="Bytt oppgaven til en annen" aria-label="Bytt til en annen" data-k="'+esc(tk)+'" data-o="'+esc(s.o.id)+'" data-d="'+s.dag+'" data-fra="'+esc(s.orig)+'" data-naa="'+esc(s.person)+'" data-dag0="'+(s.flyttet?s.fraDag:s.dag)+'"'+(s.utsatt?' data-uts="'+esc(s.fraUke)+'" data-utsk="'+esc(s.fraKey)+'"':'')+'>⇄</button></span></div>';
     });
     html+='</div>';
   });
@@ -601,16 +632,23 @@ function tegnTrapp(t){
   var trapp=(INNST.trapp&&INNST.trapp.length)?INNST.trapp:SEED_TRAPP, st=ukeStatus(), rest=Math.max(0,t.maal-t.gjort);
   var h='<tr><th></th><th>Belønning</th><th class="c">Status</th></tr>';
   var linjer=[];
-  trapp.forEach(function(n){
+  trapp.forEach(function(n,i){
     var krav=n.av?n.krav+' av '+n.av+' uker':(n.krav===1?'lagmålet én uke':n.krav+' uker på rad');
+    if(n.krav===1&&!n.av){var st1=ukasStund(ukeKey(mandag(NAA)));if(st1){n=Object.assign({},n,{ikon:st1.ikon,navn:'Ukas familiestund: '+st1.tekst,tekst:(st1.fra==='Bjørn'?'Bjørns forslag for denne uka':'Sesongforslag — Bjørn bytter det ut søndag')+'. Passer det ikke, velger dere noe annet — poenget er tid sammen.'})}}
     var har=n.av?st.av(n.av):st.rekke;
-    var naadd=har>=n.krav;
-    var status=naadd?'<span class="naadd">✓ opptjent</span>':'<span class="num">'+har+' / '+n.krav+'</span>';
+    var naadd;
+    if(n.krav===1&&!n.av) naadd=st.naaddNaa;                                   /* ukas stund: bare når DENNE uka er nådd */
+    else if(!n.av) naadd=st.naaddNaa&&st.rekke>=n.krav&&(st.rekke%n.krav===0);  /* 2 på rad: uke 2, 4, 6 … i rekka */
+    else { naadd=har>=n.krav;                                                   /* 6 av 8 / 12 av 16: én gang per vindu */
+      if(naadd){for(var w=1;w<n.av;w++){if(INNLOST[ukeKey(addDays(mandag(NAA),-7*w))+'-'+i]){naadd=false;break}}}}
+    var ukeN=ukeKey(mandag(NAA)), idN=ukeN+'-'+i, il=INNLOST[idN];
+    var status=il?'<span class="naadd">🎉 gjort '+datoNorsk(new Date(il.ts))+'</span><br><button class="edit inl" data-a="angre" data-k="'+ukeN+'" data-i="'+i+'">angre</button>':(naadd?'<span class="naadd">✓ opptjent</span><br><button class="edit inl" data-a="gjort" data-k="'+ukeN+'" data-i="'+i+'" data-t="'+esc(n.navn)+'">Vi gjorde det!</button>':(function(){ if(n.av) return '<span class="num">'+har+' av '+n.av+' uker</span>'; if(n.krav===1) return '<span class="small">ikke nådd ennå denne uka</span>'; var neste=(Math.floor(st.rekke/n.krav)+1)*n.krav; return '<span class="num">'+st.rekke+' på rad · neste ved '+neste+'</span>' })());
     h+='<tr><td class="ikon">'+n.ikon+'</td><td class="navn">'+esc(n.navn)+' <span class="pill grey">'+krav+'</span><small>'+esc(n.tekst)+'</small></td><td class="c">'+status+'</td></tr>';
     var linje=naadd?'Opptjent — '+n.navn.toLowerCase()+' står for tur!':(st.naaddNaa?'Denne uka er i boks. '+(n.krav-har)+' uke'+(n.krav-har===1?'':'r')+' til '+n.navn.toLowerCase():rest+' poeng igjen denne uka'+(n.krav>1?' · '+(n.krav-har)+' uke'+(n.krav-har===1?'':'r')+' til '+n.navn.toLowerCase():' → '+n.navn.toLowerCase()));
     linjer.push('<span class="ik">'+n.ikon+'</span><span>'+esc(n.navn)+'<small>'+esc(linje)+'</small></span>');
   });
   document.getElementById('trapp-tbl').innerHTML=h;
+  document.querySelectorAll('#trapp-tbl .inl').forEach(function(b){b.onclick=function(){if(b.dataset.a==='gjort')innlos(b.dataset.k,+b.dataset.i,b.dataset.t,valgt);else angreInnlos(b.dataset.k,+b.dataset.i)}});
   RULL=linjer; visRull();
   if(!rullTimer){var rm=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;rullTimer=setInterval(function(){rullIdx++;visRull()},rm?12000:4500)}
 }
@@ -628,7 +666,7 @@ function tegnUke(){
   var h='<tr><th>Oppgave</th>';DAGK.forEach(function(d,i){h+='<th class="c'+(erNaa&&i===dIdx?' today':'')+'">'+d+'<br><span class="small num">'+datoNorsk(addDays(man,i))+'</span></th>'});h+='<th class="c">P</th></tr>';
   if(!orden.length) h+='<tr><td colspan="9" class="tom">Ingen oppgaver denne uka.</td></tr>';
   orden.forEach(function(rk){var r=rader[rk];
-    h+='<tr><td class="navn">'+r.o.ikon+' '+esc(r.o.navn)+(valgt?'':'<small>'+ptag(r.person)+'</small>')+'</td>';
+    h+='<tr><td class="navn">'+r.o.ikon+' '+esc(r.o.navn)+mdTag(r.o,addDays(man,r.o.dag===undefined?3:r.o.dag))+(valgt?'':'<small>'+ptag(r.person)+'</small>')+'</td>';
     for(var d=0;d<7;d++){var s=r.dager[d];
       if(!s){h+='<td class="c"><span class="cell na"></span></td>';continue}
       var done=erGjort(key,s.key);
@@ -640,12 +678,34 @@ function tegnUke(){
   t.querySelectorAll('.cell').forEach(function(b){b.onclick=function(){toggle(b.dataset.k,b.dataset.s,b.dataset.p)}});
 }
 
+function tegnSlik(){
+  var sec=document.getElementById('slik'); if(!sec) return;
+  var voksen=!valgt||valgt==='thor'||valgt==='anniken'; sec.hidden=!voksen; if(!voksen) return;
+  var man=mandag(NAA), per={}, ikke={}, uts=0, flyt=0, naadd=0, uker=0, dIdx=(NAA.getDay()+6)%7;
+  PERS.forEach(function(p){per[p.id]={g:0,p:0}});
+  for(var i=0;i<4;i++){var m=addDays(man,-7*i), k=ukeKey(m); if(!UKER[k]&&i>0) continue; uker++;
+    var t=ukeTall(m); if(t.maal>0&&t.gjort>=t.maal) naadd++;
+    PERS.forEach(function(p){per[p.id].g+=t.per[p.id].gjort;per[p.id].p+=t.per[p.id].plan});
+    planUke(m).forEach(function(s){if(i===0&&s.dag>=dIdx) return; if(!erGjort(k,s.key)){ikke[s.o.navn]=(ikke[s.o.navn]||0)+1}});
+    var u=UKER[k]||{}; uts+=Object.keys(u.utsett||{}).length; flyt+=Object.keys(u.flytt||{}).length+Object.keys(u.bytt||{}).length;
+  }
+  var h='<tr><th>Spiller</th><th class="c">Gjort av planlagt</th><th class="c">Andel</th></tr>';
+  PERS.forEach(function(p){var x=per[p.id];h+='<tr><td>'+ptag(p.id)+'</td><td class="c num">'+x.g+' / '+x.p+'</td><td class="c num"><b>'+(x.p?Math.round(x.g/x.p*100):0)+' %</b></td></tr>'});
+  var topp=Object.keys(ikke).sort(function(a,b){return ikke[b]-ikke[a]}).slice(0,3);
+  h+='<tr><td>Oftest ikke gjort</td><td colspan="2">'+(topp.length?topp.map(function(n){return esc(n)+' ('+ikke[n]+')'}).join(' · '):'—')+'</td></tr>';
+  h+='<tr><td>Flyttet/byttet · utsatt</td><td colspan="2" class="num">'+flyt+' · '+uts+'</td></tr>';
+  h+='<tr><td>Ukemål nådd</td><td colspan="2" class="num">'+naadd+' av '+uker+' uker</td></tr>';
+  OPPG.filter(function(o){return o.veksle&&o.aktiv!==false}).forEach(function(o){var t=TILSTAND[o.id];h+='<tr><td>'+esc(o.navn)+'</td><td colspan="2">'+(t&&t.dato?'sist '+(t.sist==='grov'?'GROV':'lett')+' '+datoNorsk(new Date(t.dato+'T00:00:00'))+' → neste: '+(modus(o,NAA)==='grov'?'GROV':'lett'):'ikke vasket ennå → GROV')+'</td></tr>'});
+  document.getElementById('slik-tbl').innerHTML=h;
+  var aP=0,aG=0;PERS.forEach(function(p){aG+=per[p.id].g;aP+=per[p.id].p}); var andel=aP?Math.round(aG/aP*100):0;
+  document.getElementById('slik-txt').textContent=andel>=75?'Laget ligger over ukemålet. Vurder om noe kan gjøres sjeldnere — Ukesjekken foreslår det på søndag.':andel>=55?'Laget ligger under ukemålet, men ikke langt. Se hva som oftest ikke blir gjort: er det for mye, feil dag, eller glemte haker?':'Under 55 % over fire uker betyr at planen er for stor for uka deres. Ukesjekken bør fjerne eller flytte — ikke dere jobbe mer.';
+}
 function tegnHist(){
-  var h='<tr><th>Uke</th><th class="c">Poeng</th><th class="c">Mål</th><th class="c">Nådd</th>'+PERS.map(function(p){return '<th class="c">'+esc(p.kort)+'</th>'}).join('')+'</tr>';
+  var h='<tr><th>Uke</th><th class="c">Poeng</th><th class="c">Mål</th><th class="c">Nådd</th><th>Stund</th>'+PERS.map(function(p){return '<th class="c">'+esc(p.kort)+'</th>'}).join('')+'</tr>';
   var man=mandag(NAA), n=0;
   for(var i=0;i<8;i++){var m=addDays(man,-7*i);var key=ukeKey(m);if(i>0&&!UKER[key])continue;var t=ukeTall(m);
-    h+='<tr'+(i===0?' class="today"':'')+'><td class="num">Uke '+isoWeek(m).w+' <span class="small">'+datoNorsk(m)+'</span></td><td class="c num"><b>'+t.gjort+'</b></td><td class="c num">'+t.maal+'</td><td class="c">'+(t.gjort>=t.maal&&t.maal>0?'✅':(i===0?'…':'—'))+'</td>'+PERS.map(function(p){return '<td class="c num">'+t.per[p.id].gjort+'</td>'}).join('')+'</tr>';n++}
-  h+='<tr><td colspan="9" class="small">E = Erik · V = Vårin · O = Oscar · T = Thor · A = Anniken. Uker uten registreringer vises ikke.</td></tr>';
+    h+='<tr'+(i===0?' class="today"':'')+'><td class="num">Uke '+isoWeek(m).w+' <span class="small">'+datoNorsk(m)+'</span></td><td class="c num"><b>'+t.gjort+'</b></td><td class="c num">'+t.maal+'</td><td class="c">'+(t.gjort>=t.maal&&t.maal>0?'✅':(i===0?'…':'—'))+'</td><td class="small">'+(function(){var a=[];for(var j=0;j<5;j++){var x=INNLOST[key+'-'+j];if(x)a.push('🎉 '+esc(x.tekst||''))}return a.join('<br>')||'—'})()+'</td>'+PERS.map(function(p){return '<td class="c num">'+t.per[p.id].gjort+'</td>'}).join('')+'</tr>';n++}
+  h+='<tr><td colspan="10" class="small">E = Erik · V = Vårin · O = Oscar · T = Thor · A = Anniken. Uker uten registreringer vises ikke.</td></tr>';
   document.getElementById('hist-tbl').innerHTML=h;
 }
 
@@ -713,7 +773,7 @@ function fyllInnst(){var tr=(INNST.trapp&&INNST.trapp.length)?INNST.trapp:SEED_T
   document.getElementById('i-prosent').value=INNST.prosent||75;}
 
 /* ---------- samle ---------- */
-function tegn(){tegnHvem();tegnIdag();tegnLag();tegnUke();tegnHist();tegnBank();fyllInnst()}
+function tegn(){tegnHvem();tegnIdag();tegnLag();tegnUke();tegnSlik();tegnHist();tegnBank();fyllInnst()}
 document.getElementById('uke-forrige').onclick=function(){visUke=addDays(visUke,-7);tegnUke()};
 document.getElementById('uke-neste').onclick=function(){visUke=addDays(visUke,7);tegnUke()};
 document.getElementById('uke-naa').onclick=function(){visUke=mandag(NAA);tegnUke()};
@@ -733,7 +793,7 @@ function slaaSammenOppg(liste){
   /* 1) innholdet: data/oppgaver.json + data/innstillinger.json — Bjørn og Liv oppdaterer disse i repoet */
   try{
     var r1=await fetch('data/oppgaver.json?v='+Date.now(),{cache:'no-store'}); if(r1.ok){var lo=await r1.json(); if(lo&&lo.length){OPPG=JSON.parse(JSON.stringify(lo));}}
-    var r2=await fetch('data/innstillinger.json?v='+Date.now(),{cache:'no-store'}); if(r2.ok){var li=await r2.json(); if(li){if(li.prosent)INNST.prosent=li.prosent;if(li.trapp)INNST.trapp=li.trapp;if(li.plan)INNST.plan=Object.assign({},INNST.plan||{},li.plan)}}
+    var r2=await fetch('data/innstillinger.json?v='+Date.now(),{cache:'no-store'}); if(r2.ok){var li=await r2.json(); if(li){if(li.prosent)INNST.prosent=li.prosent;if(li.trapp)INNST.trapp=li.trapp;if(li.sesong)INNST.sesong=li.sesong;if(li.plan)INNST.plan=Object.assign({},INNST.plan||{},li.plan)}}
     tegn();
   }catch(e){}
   /* 2) delt lagring */
@@ -743,6 +803,9 @@ function slaaSammenOppg(liste){
     firebase.initializeApp(FIREBASE);
     db=firebase.database().ref('fam/'+KODE); dbOk=true;
     db.child('oppgaver').on('value',function(snap){var v=snap.val()||{};slaaSammenOppg(Object.keys(v).map(function(k){return v[k]}));tegn()});
+    db.child('innlost').on('value',function(snap){INNLOST=snap.val()||{};tegn()});
+    db.child('belonning').on('value',function(snap){BELONNING=snap.val()||{};tegn()});
+    db.child('tilstand').on('value',function(snap){TILSTAND=snap.val()||{};tegn()});
     db.child('innstillinger').on('value',function(snap){var x=snap.val();if(x){if(x.prosent)INNST.prosent=x.prosent;if(x.plan)INNST.plan=Object.assign({},INNST.plan||{},x.plan);if(x.trapp&&x.trapp.length)INNST.trapp=x.trapp;tegn()}});
     var LOKALT_FOER=JSON.parse(JSON.stringify(UKER)), foersteSnap=true;
     db.child('uker').on('value',function(snap){

@@ -2,10 +2,10 @@
  "prosent": 75,
  "trapp": [
   {
-   "ikon": "🎲",
-   "navn": "Spillkveld",
+   "ikon": "🎯",
+   "navn": "Ukas familiestund",
    "krav": 1,
-   "tekst": "Lagmålet nådd én uke: vi setter oss ned i helga og spiller det spillet barna velger"
+   "tekst": "Lagmålet nådd én uke: Bjørn foreslår ukas familiestund ut fra årstid og kalender — dere velger om det passer, eller bytter"
   },
   {
    "ikon": "🎬",
@@ -32,7 +32,113 @@
    "navn": "Bossen",
    "krav": 12,
    "av": 16,
-   "tekst": "Tolv av de siste seksten ukene (hver 8.–16. uke): en liten boss-premie til hver — Pokémon-pakke til Erik, Vårin og Oscar velger noe tilsvarende"
+   "tekst": "Tolv av de siste seksten ukene (hver 8.–16. uke): en liten ting til hver, inntil 100 kroner, som barna velger selv — Pokémon-pakke, bok, småting. Ikke godteri."
   }
- ]
+ ],
+ "sesong": {
+  "host": [
+   [
+    "🍎",
+    "Bake eplekake sammen — epler fra hagen eller gården"
+   ],
+   [
+    "🥾",
+    "Fjelltur med pølser, kakao og kjeks i sekken"
+   ],
+   [
+    "🍄",
+    "Sopptur i skogen, sopp til middagen"
+   ],
+   [
+    "📖",
+    "Starte bildeboka fra 2026 — velg bilder sammen"
+   ],
+   [
+    "🚲",
+    "Sykkeltur til Tinnemyra med matpakke"
+   ],
+   [
+    "🎣",
+    "Fisketur en ettermiddag"
+   ]
+  ],
+  "vinter": [
+   [
+    "⛷️",
+    "Langrennstur med pølser, kakao og kjeks"
+   ],
+   [
+    "🎿",
+    "Alpint i helga"
+   ],
+   [
+    "🎨",
+    "Lage kalender til besteforeldrene"
+   ],
+   [
+    "🧁",
+    "Bake boller eller lussekatter sammen"
+   ],
+   [
+    "⛸️",
+    "Skøyter og kakao"
+   ],
+   [
+    "🛷",
+    "Akedag med bål"
+   ]
+  ],
+  "vaar": [
+   [
+    "🚲",
+    "Sykkeltur når veiene er bare"
+   ],
+   [
+    "🎣",
+    "Fisketur ved elva"
+   ],
+   [
+    "🌱",
+    "Så frø og plante i hagen sammen"
+   ],
+   [
+    "🥾",
+    "Fjelltur med matpakke"
+   ],
+   [
+    "🏸",
+    "Badminton eller fotball i hagen etterpå"
+   ],
+   [
+    "🥞",
+    "Pannekaker og brettspill en regndag"
+   ]
+  ],
+  "sommer": [
+   [
+    "🏄",
+    "SUP-tur i helga"
+   ],
+   [
+    "🏊",
+    "Bading og grilling"
+   ],
+   [
+    "🎣",
+    "Fisketur på hytta"
+   ],
+   [
+    "⛺",
+    "Overnatting i telt i hagen"
+   ],
+   [
+    "🚲",
+    "Sykkeltur med is"
+   ],
+   [
+    "🥾",
+    "Topptur med hele laget"
+   ]
+  ]
+ }
 }
