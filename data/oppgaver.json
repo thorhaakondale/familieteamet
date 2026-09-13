@@ -1113,5 +1113,20 @@
   "poeng": 1,
   "min": 30,
   "aktiv": true
+ },
+ {
+  "id": "x-tilskudd",
+  "navn": "Vitaminer, kreatin og tran — alle",
+  "ikon": "💊",
+  "kat": "Kveld",
+  "int": "daglig",
+  "hvem": [
+   "thor",
+   "anniken"
+  ],
+  "poeng": 1,
+  "min": 2,
+  "notat": "Tran til barna, vitamin/kreatin/magnesium/K2 til de voksne",
+  "aktiv": true
  }
 ]
