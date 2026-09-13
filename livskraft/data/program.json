@@ -1,0 +1,388 @@
+{
+ "versjon": "Sprek til 100 v3 · programkort 5.9.2026, oppdatert 13.9 · spesifikasjon v1.1",
+ "kilde": "Dale Livsstil & PT (programkortet) for øvelser og vekter · liv-treningsspesifikasjon.md v1.1 for mål, regler og progresjon",
+ "personer": {
+  "thor": {
+   "navn": "Thor",
+   "har_program": true,
+   "kroppsvekt_maal": 85
+  },
+  "anniken": {
+   "navn": "Anniken",
+   "har_program": false,
+   "melding": "Denne er din like mye som Thors — men programmet ditt skal lages sammen med deg, ikke gjettes. Loggen for søvn, skritt og vekt virker allerede. Når du og Liv har snakket sammen, dukker øktene dine opp her."
+  }
+ },
+ "thor": {
+  "standarduke": {
+   "man": "A",
+   "tir": "M",
+   "ons": "B",
+   "tor": "T",
+   "fre": "M",
+   "lor": "F",
+   "son": "S"
+  },
+  "regler": {
+   "maks_styrkeokter_per_uke": 2,
+   "okt_minutter": "45–60",
+   "aldri_to_like_paa_rad": true,
+   "maanedlig_tungt_sett": "Første mandag i måneden: ett tungt sett knebøy 5 × 115–120 kg etter oppvarming — påminnelsen som holder maksstyrken ved like.",
+   "kroppsarbeid": "Tung kroppsarbeidsuke = én gym-økt, ingen progresjon den uka. Aldri RDL dagen etter spadedag.",
+   "sovn": "Søvn under 6 timer tre netter på rad = behold vektene, kutt siste sett.",
+   "rygg": "24-timersregelen: RDL-trappa går ett trinn opp per uke bare hvis morgenen etter er lik eller bedre. Verre = stå. Murring i en uke = hip thrust/ryggekstensjon i stedet for RDL.",
+   "rode_flagg": [
+    "Smerte som stråler ned i beinet under kneet",
+    "Nummenhet eller kraftsvikt",
+    "Endring i vannlating",
+    "Brystsmerter, uvanlig tungpust eller besvimelsesfølelse under trening"
+   ],
+   "rode_flagg_tekst": "Stopp økta. Ring fastlegen i dag. Brystsmerter eller besvimelse: 113.",
+   "aldri_1rm_over_reps": 10
+  },
+  "okter": {
+   "A": {
+    "navn": "A — Underkropp",
+    "dag": "mandag",
+    "varighet": "~50 min",
+    "farge": "#2563eb",
+    "oppvarming": "5 min lett på romaskin eller tredemølle + 2 lette sett knebøy: 40 kg, så 60 kg.",
+    "ovelser": [
+     {
+      "id": "kneboy",
+      "navn": "Knebøy",
+      "hint": "hælklosser eller box ved behov · 3 s ned · så dypt hofta tillater uten at halluxen sier nei",
+      "sett": 3,
+      "reps": [
+       8,
+       8
+      ],
+      "vekt": {
+       "start": 95,
+       "tak": 100,
+       "steg": 2.5
+      },
+      "pause": 180,
+      "type": "hoved"
+     },
+     {
+      "id": "stepup",
+      "navn": "Step-up på kasse",
+      "hint": "kne-høyde, eller bulgarsk splittknebøy · rett etter knebøy mens beina er friske · hurtig opp, rolig ned — dette ER trappa",
+      "sett": 2,
+      "reps": [
+       8,
+       8
+      ],
+      "perSide": true,
+      "vekt": {
+       "start": 10,
+       "tak": 14,
+       "steg": 2,
+       "enhet": "kg per hånd"
+      },
+      "pause": 150,
+      "type": "hoved"
+     },
+     {
+      "id": "rdl",
+      "navn": "Rumensk markløft",
+      "hint": "stangen tett på leggen, nøytral rygg · video av 1 sett til Liv i trinn 1",
+      "sett": 2,
+      "reps": [
+       8,
+       8
+      ],
+      "vekt": {
+       "start": 60,
+       "tak": 90,
+       "steg": 10
+      },
+      "pause": 180,
+      "type": "hoved",
+      "trapp": {
+       "trinn": [
+        60,
+        70,
+        80,
+        90
+       ],
+       "start_uke": "2026-W37",
+       "tekst": "Ryggtrappa: 60 (uke 37–38) → 70 → 80 → 90 kg, ett trinn per uke, kun ved OK morgen etter."
+      },
+      "fyllstoff": {
+       "id": "birddog",
+       "navn": "Bird dog",
+       "maal": "2 × 8 per side, rolig og perfekt",
+       "maaling": "reps",
+       "perSide": true,
+       "sett": 2
+      }
+     },
+     {
+      "id": "taahev",
+      "navn": "Sittende tåhev — isolert",
+      "hint": "maskinen bak knebøystativet · 1 tungt sett (+20 kg) + 3 lette · 2 s pause på topp · hælen ned bare så langt det er smertefritt",
+      "sett": 4,
+      "reps": [
+       8,
+       15
+      ],
+      "settmal": [
+       "1 × 8 tung",
+       "3 × 12–15"
+      ],
+      "vekt": {
+       "start": 50,
+       "tak": 80,
+       "steg": 5
+      },
+      "pause": 90,
+      "type": "tilbehor"
+     },
+     {
+      "id": "taaklem",
+      "navn": "Tåklem + kort fot",
+      "hint": "30 s hver, 2 runder, mens du sitter i maskinen",
+      "sett": 2,
+      "reps": [
+       1,
+       1
+      ],
+      "maaling": "gjort",
+      "pause": 0,
+      "type": "avslutning"
+     }
+    ]
+   },
+   "B": {
+    "navn": "B — Overkropp, bæring og kjerne",
+    "dag": "onsdag",
+    "varighet": "~55 min",
+    "farge": "#7c3aed",
+    "oppvarming": "5 min lett romaskin + armsirkler og brystryggrotasjon + 1 lett sett av første øvelse.",
+    "ovelser": [
+     {
+      "id": "press",
+      "navn": "Incline chest press",
+      "hint": "",
+      "sett": 3,
+      "reps": [
+       8,
+       10
+      ],
+      "vekt": {
+       "start": 50,
+       "tak": 55,
+       "steg": 2.5
+      },
+      "pause": 150,
+      "type": "hoved",
+      "fyllstoff": {
+       "id": "deadhang",
+       "navn": "Dead hang",
+       "maal": "3 × maks tid · mål 60 s, så +2,5 kg i belte",
+       "maaling": "sek",
+       "sett": 3,
+       "maaltid": 60
+      }
+     },
+     {
+      "id": "roing",
+      "navn": "Bent over-roing",
+      "hint": "rygg parallell, ingen rykk",
+      "sett": 3,
+      "reps": [
+       8,
+       10
+      ],
+      "vekt": {
+       "start": 60,
+       "tak": 65,
+       "steg": 2.5
+      },
+      "pause": 150,
+      "type": "hoved",
+      "fyllstoff": {
+       "id": "suitcase",
+       "navn": "Suitcase carry",
+       "maal": "3 × 30 m per side · én manual 20–24 kg · +2 kg når alle sett går rent",
+       "maaling": "m",
+       "sett": 3,
+       "perSide": true,
+       "vekt": {
+        "start": 20,
+        "tak": 24,
+        "steg": 2
+       }
+      }
+     },
+     {
+      "id": "nedtrekk",
+      "navn": "Nedtrekk full ROM",
+      "hint": "",
+      "sett": 3,
+      "reps": [
+       8,
+       10
+      ],
+      "vekt": {
+       "start": 64,
+       "tak": 70,
+       "steg": 2.5
+      },
+      "pause": 150,
+      "type": "hoved",
+      "fyllstoff": {
+       "id": "sideplanke",
+       "navn": "Sideplanke",
+       "maal": "2 × maks per side · mål 60 s, deretter vanskeligere variant — ikke lengre tid",
+       "maaling": "sek",
+       "sett": 2,
+       "perSide": true,
+       "maaltid": 60
+      }
+     },
+     {
+      "id": "albuevern",
+      "navn": "Albuevern",
+      "hint": "eksentrisk håndleddsekstensjon + -fleksjon 2 × 15 med 2–4 kg (løft med frisk hånd, senk 4 s) + skulder utadrotasjon m/strikk 2 × 15",
+      "sett": 2,
+      "reps": [
+       15,
+       15
+      ],
+      "vekt": {
+       "start": 2,
+       "tak": 4,
+       "steg": 1
+      },
+      "pause": 45,
+      "type": "tilbehor"
+     },
+     {
+      "id": "aatte",
+      "navn": "8-minutteren",
+      "hint": "gjøres på gymmet mens du er varm — teller som ukas ene mobilitetsøkt",
+      "sett": 1,
+      "reps": [
+       1,
+       1
+      ],
+      "maaling": "gjort",
+      "pause": 0,
+      "type": "avslutning"
+     }
+    ]
+   },
+   "M": {
+    "navn": "8-minutteren",
+    "dag": "tirsdag og fredag kveld",
+    "varighet": "8 + 2 min",
+    "farge": "#7c3aed",
+    "steg": [
+     [
+      "Katt–ku",
+      "1 min"
+     ],
+     [
+      "Barnestilling → kobra",
+      "1 min"
+     ],
+     [
+      "90/90-hofte",
+      "1 min per side"
+     ],
+     [
+      "Kneling hoftebøyer m/strekk over hodet",
+      "45 s per side"
+     ],
+     [
+      "Hamstring på rygg m/håndkle",
+      "45 s per side"
+     ],
+     [
+      "Legg/akilles mot vegg, rett + bøyd kne",
+      "45 s per side"
+     ],
+     [
+      "Brystryggrotasjon på siden",
+      "45 s per side"
+     ],
+     [
+      "Tåklem + stortå-mobilisering",
+      "1 min"
+     ]
+    ],
+    "tillegg": [
+     [
+      "Håndkle-/FlexBar-vri",
+      "3 × 10 per arm — albue"
+     ],
+     [
+      "«Kort fot»",
+      "2 × 10 per fot — plantarfascie"
+     ]
+    ]
+   },
+   "T": {
+    "navn": "Torsdagsturen",
+    "dag": "torsdag",
+    "varighet": "40–60 min",
+    "farge": "#16a34a",
+    "tekst": "Rask gange med bakker. 4–6 × 1 min hardt oppover = ukas intervall. Ryker den, blir søndagsturen rask."
+   },
+   "S": {
+    "navn": "Søndagsturen",
+    "dag": "søndag",
+    "varighet": "45–60 min",
+    "farge": "#16a34a",
+    "tekst": "Med kamerat eller familie. Lang yoga etterpå hvis det passer — bonus, ikke plikt."
+   },
+   "F": {
+    "navn": "Fri",
+    "dag": "lørdag",
+    "varighet": "",
+    "farge": "#9ca3af",
+    "tekst": "Valgfritt: topptur, sykkel, familie. Ingen plikt."
+   }
+  },
+  "tester": {
+   "intervall_uker": 13,
+   "forste": "2026-W40",
+   "liste": [
+    [
+     "trapp",
+     "Trappa hjemme, 3 etasjer i ett — pust og bein etterpå (0–10)",
+     "0–10"
+    ],
+    [
+     "lype",
+     "2 km-løypa — tid til samme puls",
+     "min:sek"
+    ],
+    [
+     "sts",
+     "Ettbens sit-to-stand ×5 per bein — klart uten støtte?",
+     "ja/nei per bein"
+    ],
+    [
+     "balanse",
+     "Stå på ett bein 30 s med lukkede øyne",
+     "sek per bein"
+    ],
+    [
+     "deadhang",
+     "Dead hang — beste tid",
+     "sek"
+    ],
+    [
+     "sideplanke",
+     "Sideplanke — beste tid per side",
+     "sek"
+    ]
+   ],
+   "rm_test": "3RM knebøy + RDL i januar og august."
+  }
+ }
+}
