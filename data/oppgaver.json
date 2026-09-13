@@ -887,13 +887,13 @@
  },
  {
   "id": "x-hud-t",
-  "navn": "Kveldsrutine hud — rens og krem (tirsdag: også linsene)",
+  "navn": "Kveldsrutine hud — rens og krem (mandag: linsene · torsdag: skjegg)",
   "ikon": "🧴",
   "kat": "Kveld",
   "int": "dager",
   "dager": [
-   1,
-   4
+   0,
+   3
   ],
   "hvem": [
    "thor"
@@ -901,7 +901,7 @@
   "poeng": 1,
   "min": 3,
   "aktiv": true,
-  "notat": "Tirsdag: rens og refresh linsene. Fredag: skjegg, bryn og negler"
+  "notat": "Mandag: rens og refresh linsene. Torsdag: skjegg, bryn og negler. Fredag fri"
  },
  {
   "id": "vh-vp-ramme",
