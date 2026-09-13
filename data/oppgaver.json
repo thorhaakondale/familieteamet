@@ -27,7 +27,7 @@
  {
   "id": "m-tann-e",
   "navn": "Tannpuss",
-  "ikon": "💊",
+  "ikon": "🪥",
   "kat": "Morgen",
   "int": "daglig",
   "hvem": [
@@ -561,7 +561,7 @@
  {
   "id": "x-kveld-e",
   "navn": "1. Medisin · 2. Tannpuss",
-  "ikon": "🪥",
+  "ikon": "💊",
   "kat": "Kveld",
   "int": "daglig",
   "hvem": [
