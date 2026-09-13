@@ -331,7 +331,7 @@
   "id": "t-bad",
   "navn": "Vaske badene",
   "ikon": "🚿",
-  "kat": "Rydding",
+  "kat": "Grovvask",
   "int": "uke",
   "dag": 3,
   "hvem": [
@@ -348,16 +348,17 @@
   "id": "t-gulv",
   "navn": "Vaske gulv i kjøkken og gang",
   "ikon": "🧹",
-  "kat": "Rydding",
+  "kat": "Grovvask",
   "int": "2uke",
   "dag": 3,
-  "hvem": [
-   "anniken"
-  ],
   "poeng": 3,
   "min": 20,
   "forslag": false,
-  "fra": "2026-W38"
+  "fra": "2026-W38",
+  "rull": [
+   "anniken",
+   "thor"
+  ]
  },
  {
   "id": "v-seng",
@@ -394,7 +395,7 @@
  },
  {
   "id": "u3-bil",
-  "navn": "Støvsuge og rydde bilen",
+  "navn": "Vaske, støvsuge og rydde bilen",
   "ikon": "🚗",
   "kat": "Sesong",
   "int": "4uke",
@@ -404,7 +405,7 @@
    "erik"
   ],
   "poeng": 4,
-  "min": 30,
+  "min": 45,
   "forslag": true,
   "fra": "2026-W38"
  },
@@ -496,7 +497,7 @@
   "id": "d-ute",
   "navn": "Hagen, uteputer og utemøbler inn før vinteren",
   "ikon": "🍂",
-  "kat": "Ute",
+  "kat": "Sesong",
   "int": "dato",
   "dato": "2026-09-12",
   "hvem": [
@@ -594,13 +595,14 @@
   "slakk": 4,
   "dag": 5,
   "fra": "2026-W40",
-  "hvem": [
-   "thor"
-  ],
   "poeng": 3,
   "min": 30,
   "notat": "Bare hageslange, lavt trykk. Service hvert 5. år — neste 2027",
-  "aktiv": true
+  "aktiv": true,
+  "rull": [
+   "thor",
+   "anniken"
+  ]
  },
  {
   "id": "vh-eksp",
@@ -612,12 +614,13 @@
   "slakk": 4,
   "dag": 5,
   "fra": "2026-W41",
-  "hvem": [
-   "thor"
-  ],
   "poeng": 2,
   "min": 15,
-  "aktiv": true
+  "aktiv": true,
+  "rull": [
+   "thor",
+   "anniken"
+  ]
  },
  {
   "id": "vh-pose",
@@ -684,13 +687,14 @@
   "dag": 5,
   "fra": "2026-W38",
   "til": "2026-W43",
-  "hvem": [
-   "thor"
-  ],
   "poeng": 3,
   "min": 30,
   "notat": "Sesong april–oktober. Erik lærer i 2027",
-  "aktiv": true
+  "aktiv": true,
+  "rull": [
+   "thor",
+   "anniken"
+  ]
  },
  {
   "id": "vh-drens",
@@ -702,12 +706,13 @@
   "slakk": 3,
   "dag": 5,
   "fra": "2026-W41",
-  "hvem": [
-   "thor"
-  ],
   "poeng": 3,
   "min": 45,
-  "aktiv": true
+  "aktiv": true,
+  "rull": [
+   "thor",
+   "anniken"
+  ]
  },
  {
   "id": "vh-sti",
@@ -719,12 +724,13 @@
   "slakk": 4,
   "dag": 5,
   "fra": "2026-W39",
-  "hvem": [
-   "thor"
-  ],
   "poeng": 2,
   "min": 30,
-  "aktiv": true
+  "aktiv": true,
+  "rull": [
+   "thor",
+   "anniken"
+  ]
  },
  {
   "id": "vh-frikj-h",
@@ -757,9 +763,9 @@
  },
  {
   "id": "hy-vann-h",
-  "navn": "Tømme vannsystemet på hytta før frost",
+  "navn": "Tømme vannsystemet ute før frost",
   "ikon": "🚰",
-  "kat": "Hytta",
+  "kat": "Vedlikehold",
   "int": "dato",
   "dato": "2026-09-20",
   "hvem": [
@@ -767,14 +773,14 @@
   ],
   "poeng": 4,
   "min": 60,
-  "notat": "Alarmen i Påminnelser beholdes som sikkerhet",
+  "notat": "Hjemme. Må gjøres senest søndag 20.9 — ikke utsett. Alarmen i Påminnelser beholdes",
   "aktiv": true
  },
  {
   "id": "hy-vann-v",
-  "navn": "Åpne vannsystemet på hytta",
+  "navn": "Åpne vannsystemet ute",
   "ikon": "🚰",
-  "kat": "Hytta",
+  "kat": "Vedlikehold",
   "int": "dato",
   "dato": "2027-05-02",
   "hvem": [
@@ -895,7 +901,7 @@
   "poeng": 1,
   "min": 3,
   "aktiv": true,
-  "notat": "Tirsdag: rens og refresh linsene samtidig"
+  "notat": "Tirsdag: rens og refresh linsene. Fredag: skjegg, bryn og negler"
  },
  {
   "id": "vh-vp-ramme",
@@ -925,6 +931,187 @@
   "poeng": 6,
   "min": 240,
   "notat": "Helgejobb — flytt til en ledig lørdag",
+  "aktiv": true
+ },
+ {
+  "id": "gv-kjokken",
+  "navn": "Vaske kjøkkenet og rydde skuffer",
+  "ikon": "🧽",
+  "kat": "Grovvask",
+  "int": "3uke",
+  "dag": 3,
+  "rull": [
+   "anniken",
+   "thor"
+  ],
+  "poeng": 3,
+  "min": 30,
+  "fra": "2026-W39",
+  "aktiv": true
+ },
+ {
+  "id": "gv-maskin",
+  "navn": "Rense vaskemaskin og tørketrommel",
+  "ikon": "🫧",
+  "kat": "Grovvask",
+  "int": "uker",
+  "hver": 13,
+  "slakk": 3,
+  "dag": 5,
+  "rull": [
+   "anniken",
+   "thor"
+  ],
+  "poeng": 3,
+  "min": 30,
+  "fra": "2026-W41",
+  "aktiv": true
+ },
+ {
+  "id": "vh-spyler",
+  "navn": "Fylle spylervæske på bilene",
+  "ikon": "🚿",
+  "kat": "Vedlikehold",
+  "int": "uker",
+  "hver": 6,
+  "slakk": 2,
+  "dag": 6,
+  "hvem": [
+   "erik"
+  ],
+  "poeng": 1,
+  "min": 10,
+  "fra": "2026-W40",
+  "aktiv": true
+ },
+ {
+  "id": "v-papp",
+  "navn": "Papp til gjenvinning",
+  "ikon": "📦",
+  "kat": "Vask",
+  "int": "2uke",
+  "dag": 3,
+  "hvem": [
+   "erik"
+  ],
+  "poeng": 1,
+  "min": 10,
+  "fra": "2026-W39",
+  "aktiv": true
+ },
+ {
+  "id": "v-flasker",
+  "navn": "Flasker og glass til gjenvinning",
+  "ikon": "🍾",
+  "kat": "Vask",
+  "int": "uker",
+  "hver": 8,
+  "slakk": 1,
+  "dag": 1,
+  "hvem": [
+   "erik"
+  ],
+  "poeng": 1,
+  "min": 15,
+  "fra": "2026-W40",
+  "aktiv": true
+ },
+ {
+  "id": "x-robot-tom",
+  "navn": "Tømme robotstøvsugeren",
+  "ikon": "🤖",
+  "kat": "Dagen",
+  "int": "dager",
+  "dager": [
+   0,
+   2,
+   4
+  ],
+  "rull": [
+   "erik",
+   "vaarin"
+  ],
+  "poeng": 1,
+  "min": 2,
+  "aktiv": true
+ },
+ {
+  "id": "vh-dekk-h",
+  "navn": "Dekkskift — og henge opp sommerdekkene i garasjen",
+  "ikon": "🛞",
+  "kat": "Vedlikehold",
+  "int": "dato",
+  "dato": "2026-10-24",
+  "hvem": [
+   "thor",
+   "erik"
+  ],
+  "poeng": 4,
+  "min": 60,
+  "aktiv": true
+ },
+ {
+  "id": "vh-dekk-v",
+  "navn": "Dekkskift — og henge opp vinterdekkene",
+  "ikon": "🛞",
+  "kat": "Vedlikehold",
+  "int": "dato",
+  "dato": "2027-04-17",
+  "hvem": [
+   "thor",
+   "erik"
+  ],
+  "poeng": 4,
+  "min": 60,
+  "aktiv": true
+ },
+ {
+  "id": "vh-egolf",
+  "navn": "e-Golf: bestille verksted for lakk og rust (to steder)",
+  "ikon": "🚗",
+  "kat": "Vedlikehold",
+  "int": "dato",
+  "dato": "2026-09-26",
+  "hvem": [
+   "thor"
+  ],
+  "poeng": 2,
+  "min": 15,
+  "aktiv": true
+ },
+ {
+  "id": "x-meny",
+  "navn": "Ukesmeny og bestilling av mat",
+  "ikon": "🍽️",
+  "kat": "Vask",
+  "int": "dager",
+  "dager": [
+   2
+  ],
+  "rull": [
+   "thor",
+   "anniken"
+  ],
+  "poeng": 2,
+  "min": 20,
+  "notat": "Ukeshandel-tavla: meny tirsdag/onsdag, bestill onsdag",
+  "aktiv": true
+ },
+ {
+  "id": "x-henting",
+  "navn": "Hente matvarene",
+  "ikon": "🛒",
+  "kat": "Vask",
+  "int": "dager",
+  "dager": [
+   3
+  ],
+  "rull": [
+   "anniken",
+   "thor"
+  ],
+  "poeng": 1,
+  "min": 30,
   "aktiv": true
  }
 ]
