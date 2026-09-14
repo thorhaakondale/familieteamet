@@ -1,5 +1,5 @@
 {
- "versjon": "Sprek til 100 v3 · programkort 5.9.2026 · spesifikasjon v1.1 · Liv-skill v2 (13.9.2026)",
+ "versjon": "v1.5",
  "kilde": "Dale Livsstil & PT (programkortet) for øvelser og vekter · liv-treningsspesifikasjon.md v1.1 for mål, regler og progresjon",
  "personer": {
   "thor": {
@@ -158,7 +158,34 @@
       "pause": 0,
       "type": "avslutning"
      }
-    ]
+    ],
+    "hensikt": {
+     "tittel": "Hva vi prøver å få til",
+     "linjer": [
+      [
+       "Målet med A",
+       "Ryggen skal tåle RDL 90 kg i programmets normalområde med morgenen etter uendret — og knebøyen skal holdes på 95–100 uten at den koster mer enn den gir."
+      ],
+      [
+       "Sesongen",
+       "Høst 2026 «Ryggen tilbake, grepet på plass» — uke 37 til uke 1. 18 uker, 2 økter i uka: ~18 A-økter og ~18 B-økter."
+      ],
+      [
+       "Slik måles det",
+       "Ryggtallet 0–3 morgenen etter hver A-økt. Det, ikke følelsen i timen etter økta, avgjør neste trinn."
+      ],
+      [
+       "Hvor lang tid",
+       "Ryggtrappa: 4 trinn, ett per uke i beste fall = 4 A-økter. Målbar styrkeendring: 6–8 uker = 12–16 økter, derfor 3RM først i januar. Dead hang 60 s: 8–12 uker med +5 s i uka. 90 → 85 kg: ~10 uker på 0,5 kg i uka."
+      ],
+      [
+       "Hvorfor vektene er tak",
+       "Styrken vedlikeholdes med ~⅓ av volumet så lenge intensiteten holdes (Bickel 2011). Flere reps enn oppgitt gir ikke mer fremgang — det gir tretthet og dårligere form på det løftet som faktisk har skadet deg."
+      ]
+     ],
+     "regel": "Reps stopper på toppen av spennet. Blir det for lett, går VEKTA opp neste gang — aldri repetisjonene.",
+     "mer": "Hvorfor, hvordan og hvor lang tid"
+    }
    },
    "B": {
     "navn": "B — Overkropp, bæring og kjerne",
@@ -286,7 +313,34 @@
       "pause": 0,
       "type": "avslutning"
      }
-    ]
+    ],
+    "hensikt": {
+     "tittel": "Hva vi prøver å få til",
+     "linjer": [
+      [
+       "Målet med B",
+       "Overkroppsstyrken holdes, og det som har vært utrent kommer opp: grep, underarm, kjerne og albuevern — lagt i pausene, aldri sist."
+      ],
+      [
+       "Sesongen",
+       "Høst 2026 «Ryggen tilbake, grepet på plass» — uke 37 til uke 1. 18 uker, ~18 B-økter."
+      ],
+      [
+       "Slik måles det",
+       "Dead hang i sekunder, sideplanke per side, suitcase i kg. Alt logges her."
+      ],
+      [
+       "Hvor lang tid",
+       "Dead hang 60 s: 8–12 uker med +5 s i uka. Sideplanke 60 s per side: samme størrelsesorden. Albuen: 4 uker vern før tennis mer enn én gang i uka."
+      ],
+      [
+       "Hvorfor vektene er tak",
+       "Samme som i A: vedlikehold, ikke maks. Fremgangen i denne sesongen skal komme i grep og kjerne."
+      ]
+     ],
+     "regel": "Reps stopper på toppen av spennet. Blir det for lett, går VEKTA opp neste gang — aldri repetisjonene.",
+     "mer": "Hvorfor, hvordan og hvor lang tid"
+    }
    },
    "M": {
     "navn": "8-minutteren",

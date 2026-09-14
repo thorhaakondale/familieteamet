@@ -1,5 +1,5 @@
 /* Livskraft — appskallet caches så siden åpner uten dekning på gymmet; data/program.json hentes nettverk først */
-var C='lk-v2';
+var C='lk-v6';
 self.addEventListener('install',function(e){e.waitUntil(caches.open(C).then(function(c){return c.addAll(['./','index.html','manifest.webmanifest','icon-192.png','icon-512.png','icon-180.png'])}).then(function(){self.skipWaiting()}))});
 self.addEventListener('activate',function(e){e.waitUntil(caches.keys().then(function(ks){return Promise.all(ks.filter(function(k){return k!==C&&k.indexOf('lk-')===0}) /* rydder BARE egne cacher — Familieteamet (ft-*) bor på samme origin */.map(function(k){return caches.delete(k)}))}).then(function(){return clients.claim()}))});
 self.addEventListener('fetch',function(e){if(e.request.method!=='GET')return;var u=new URL(e.request.url);if(u.origin!==location.origin)return;

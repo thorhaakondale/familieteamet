@@ -34,6 +34,7 @@ body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.45 -apple-system,
 .pill{font-size:11.5px;font-weight:700;padding:3px 9px;border-radius:999px;border:1px solid var(--kant);color:var(--tx2);background:var(--kort);white-space:nowrap}
 .pill.p{background:var(--ag);border-color:var(--ag);color:#fff}
 .pill.p.anniken{background:#b04a6e;border-color:#b04a6e}
+.pill.mangler{background:var(--rodbg);border-color:var(--rod);color:var(--rod);cursor:pointer}
 .chips{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 4px}
 .chip{font-size:12.5px;font-weight:800;padding:6px 10px;border-radius:999px;border:1.5px solid var(--kant);color:var(--mut);background:var(--kort)}
 .chip.p{background:var(--agbg);border-color:var(--agsv);color:var(--ag)}
@@ -71,6 +72,9 @@ button{font-family:inherit}
 .varsel{background:var(--varselbg);border-left:4px solid var(--varsel);border-radius:8px;padding:9px 12px;font-size:13.5px;line-height:1.5;margin:8px 0}
 .rodt{background:var(--rodbg);border-left:4px solid var(--rod);border-radius:8px;padding:9px 12px;font-size:13.5px;line-height:1.5;margin:8px 0}
 .ok{background:var(--agbg);border-left:4px solid var(--ag);border-radius:8px;padding:9px 12px;font-size:13.5px;line-height:1.5;margin:8px 0}
+.middag{border:1.5px dashed var(--kant);border-radius:10px;padding:10px 12px;margin:12px 0 0;font-size:13.5px;line-height:1.5}
+.middag b{font-size:15px}
+.middag input[type=time]{font:inherit;padding:8px 10px;border:1.5px solid var(--kant);border-radius:9px;background:var(--kort);color:var(--tx);min-height:40px}
 /* dagens 5 sekunder */
 .fem{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .fem label{display:block;font-size:12px;font-weight:700;color:var(--mut);margin-bottom:4px}
@@ -121,6 +125,13 @@ input.tekst{width:100%;border:1.5px solid var(--kant);border-radius:10px;padding
 .timer.on{display:flex}
 .timer .tid{font-size:30px;font-weight:900;font-variant-numeric:tabular-nums;min-width:90px}
 .timer .info{flex:1;font-size:12.5px;line-height:1.35;opacity:.9}
+.timer .over{display:block;font-weight:800;opacity:.85}
+.hensikt{border:1.5px solid var(--kant);border-radius:11px;padding:10px 12px;margin:0 0 12px;font-size:13px;line-height:1.5}
+.hensikt .hh{font-size:14px;margin-bottom:2px}
+.hensikt summary{cursor:pointer;font-size:12.5px;font-weight:700;color:var(--ag);margin-top:8px}
+.hensikt dl{margin:8px 0 0}
+.hensikt dt{font-weight:800;font-size:12px;text-transform:uppercase;letter-spacing:.03em;color:var(--mut);margin-top:8px}
+.hensikt dd{margin:2px 0 0}
 .timer button{border:0;border-radius:9px;padding:9px 11px;font-weight:800;background:rgba(255,255,255,.14);color:var(--bg);cursor:pointer;font-size:13px}
 .timer .fyllvarsel{background:var(--b);color:#fff}
 /* tabeller */
@@ -164,7 +175,7 @@ details.om summary{cursor:pointer;font-weight:700;color:var(--ag);font-size:13px
       <div id="fem-albue"><label>Albue / underarm (0–3)</label><div class="seg" id="seg-albue"></div></div>
       <div id="fem-energi" style="display:none"><label>Energi i dag (1 = tom, 5 = full)</label><div class="seg" id="seg-energi"></div></div>
       <div><label>Søvn i natt (timer)</label><input class="tall" id="in-sovn" type="text" inputmode="decimal" placeholder="7,5"></div>
-      <div><label>Skritt i går</label><input class="tall" id="in-skritt" type="text" inputmode="numeric" placeholder="7 500"></div>
+      <div><label>Skritt i går <span id="skritt-dato" class="lit" style="font-weight:400"></span></label><input class="tall" id="in-skritt" type="text" inputmode="numeric" placeholder="7 500"></div>
     </div>
     <p class="lit" style="margin:8px 0 0" id="fem-hjelp">Lagres når du trykker eller skriver. Ryggtallet styrer om neste RDL får gå opp — det er derfor det står først.</p>
   </div>
@@ -220,6 +231,7 @@ details.om summary{cursor:pointer;font-weight:700;color:var(--ag);font-size:13px
   <div class="kort">
     <h3 style="margin-top:0">Kommentar til Liv (valgfritt)</h3>
     <input class="tekst" id="okt-kommentar" placeholder="f.eks. ryggen kjentes fin, video av RDL sendt">
+    <div id="okt-advarsel"></div>
     <div class="rad" style="margin-top:12px"><button class="knapp" id="okt-avslutt">Avslutt og lagre økta</button></div>
     <div class="rad" style="margin-top:8px"><button class="knapp sek lit" id="okt-avbryt">Avbryt uten å lagre</button></div>
   </div>
@@ -263,10 +275,13 @@ details.om summary{cursor:pointer;font-weight:700;color:var(--ag);font-size:13px
     <p class="lit" id="program-versjon"></p>
     <details class="om"><summary>Vis A, B og 8-minutteren</summary><div id="program-vis" style="margin-top:8px"></div></details>
   </div>
-  <div class="kort">
+  <div class="kort" id="k-kode">
     <h2>Lagring</h2>
     <p class="lit" id="lagring-info"></p>
-    <div class="rad"><button class="knapp sek lit" id="eksport">Kopier loggen som tekst</button></div>
+    <label class="lit" for="in-kode" style="display:block;font-weight:700;margin:10px 0 4px">Familiekode</label>
+    <div class="rad"><input class="tall" id="in-kode" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="dale-…" style="flex:1;min-width:170px"><button class="knapp lit" id="kode-lagre">Lagre</button></div>
+    <p class="lit" id="kode-hjelp" style="margin:6px 0 0"></p>
+    <div class="rad" style="margin-top:10px"><button class="knapp sek lit" id="eksport">Kopier loggen som tekst</button></div>
   </div>
 </div>
 
@@ -274,7 +289,7 @@ details.om summary{cursor:pointer;font-weight:700;color:var(--ag);font-size:13px
 
 <div class="timer" id="timer">
   <div class="tid" id="timer-tid">3:00</div>
-  <div class="info" id="timer-info"></div>
+  <div class="info"><span id="timer-info"></span><span id="timer-over" class="over"></span></div>
   <button id="timer-pluss">+30</button>
   <button id="timer-hopp">Ferdig</button>
 </div>
@@ -288,7 +303,7 @@ details.om summary{cursor:pointer;font-weight:700;color:var(--ag);font-size:13px
 
 <script>
 /* ============================================================
-   Livskraft v1.2 — treningsappen til familien Dale (Liv, 13.9.2026)
+   Livskraft v1.6 — treningsappen til familien Dale (Liv, 14.9.2026)
    Program = data/program.json (agentstyrt). Logg = lokalt + Firebase (fam/<kode>/okt/<person>).
    ============================================================ */
 "use strict";
@@ -306,6 +321,8 @@ function isoUke(d){var t=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDat
 function ukeKey(d){var i=isoUke(d);return i.aar+'-W'+pad(i.uke)}
 function mandag(d){var x=new Date(d);var dn=(x.getDay()||7)-1;x.setDate(x.getDate()-dn);x.setHours(0,0,0,0);return x}
 function ukeNr(k){return +k.split('-W')[1]}
+function ukeStart(k){var d=new Date(+k.split('-W')[0],0,4);return mandag(d).getTime()+(ukeNr(k)-1)*604800000}
+function ukerMellom(a,b){return Math.round((ukeStart(b)-ukeStart(a))/604800000)+1}
 function fmt(n,d){if(n===null||n===undefined||n==='')return '—';var s=(Math.round(n*10)/10).toString().replace('.',',');return s}
 function fmtTusen(n){return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g,' ')}
 function tall(s){if(s===null||s===undefined)return null;s=String(s).replace(/\s/g,'').replace(',','.');var v=parseFloat(s);return isNaN(v)?null:v}
@@ -333,7 +350,13 @@ function lagre(sti,obj){
 }
 function koe(sti){if(PENDING.indexOf(sti)<0)PENDING.push(sti);try{localStorage.setItem('lk-pending-'+PERSON,JSON.stringify(PENDING))}catch(e){};dbStatus()}
 function sendKoe(){if(!dbOk)return;var p=PENDING.slice();PENDING=[];p.forEach(function(sti){var d=sti.split('/');var o=S[d[0]]&&S[d[0]][d[1]];if(o)db.child(sti).set(o).catch(function(){koe(sti)})});try{localStorage.setItem('lk-pending-'+PERSON,JSON.stringify(PENDING))}catch(e){};dbStatus()}
-function dbStatus(){var e=$('dbpill');if(!e)return;e.textContent=dbOk?(PENDING.length?'sender '+PENDING.length+'…':'delt lagring'):'lagres på enheten'}
+function dbStatus(){var e=$('dbpill');if(!e)return;
+  if(!KODE||KODE.length<12){e.textContent='mangler familiekode';e.classList.add('mangler')}
+  else{e.classList.remove('mangler');e.textContent=dbOk?(PENDING.length?'sender '+PENDING.length+'…':'delt lagring'):'lagres på enheten'}}
+function settKode(v){ /* koden bor bare på enheten — aldri i repoet */
+  v=(v||'').trim();if(v.length<12)return false;
+  try{localStorage.setItem('ft-kode',v)}catch(x){}
+  KODE=v;if(!dbOk)kobleDb();else sendKoe();dbStatus();tegnMer();return true}
 
 /* ---------- oppslag ---------- */
 function okterSortert(){return Object.keys(S.okter).map(function(k){return S.okter[k]}).filter(function(o){return o&&o.dato}).sort(function(a,b){return a.dato<b.dato?-1:a.dato>b.dato?1:(a.ts||0)-(b.ts||0)})}
@@ -345,6 +368,7 @@ function dagInfo(d){return S.dag[d]||{}}
 function ryggPaa(d){var x=S.dag[d];return (x&&x.rygg!==undefined&&x.rygg!==null)?x.rygg:null}
 function ukeInfo(k){return S.uke[k]||{}}
 function nesteDag(iso){var d=fraIso(iso);d.setDate(d.getDate()+1);return isoDato(d)}
+function forrigeDag(iso){var d=fraIso(iso);d.setDate(d.getDate()-1);return isoDato(d)}
 
 /* ---------- algoritmen (§7 i spesifikasjonen) ---------- */
 function ukeskontekst(){
@@ -376,7 +400,7 @@ function ryggsjekk(){
 }
 function rdlTrinn(){ /* returnerer {naa, neste, grunn} */
   var ov=finnOv('rdl');var tr=ov.trapp.trinn;var l=okterMed('rdl');
-  if(!l.length)return {naa:tr[0],neste:tr[0],grunn:(ukeKey(new Date())<=ov.trapp.start_uke.replace('W37','W38')?'Trinn 1 — teknikk-reset 60 kg (uke 37–38). Video av ett sett til Liv.':'Trinn 1 — 60 kg. Første loggede økt setter startpunktet; trappa går ett trinn per uke derfra, bare ved OK morgen etter.')};
+  if(!l.length)return {idx:0,naa:tr[0],neste:tr[0],grunn:(ukeKey(new Date())<=ov.trapp.start_uke.replace('W37','W38')?'Trinn 1 — teknikk-reset 60 kg (uke 37–38). Video av ett sett til Liv.':'Trinn 1 — 60 kg. Første loggede økt setter startpunktet; trappa går ett trinn per uke derfra, bare ved OK morgen etter.')};
   var sist=l[l.length-1];var kg=arbeidsKg(sist.ovelser.rdl)||tr[0];
   var idx=tr.indexOf(kg);if(idx<0){idx=0;for(var i=0;i<tr.length;i++)if(tr[i]<=kg)idx=i}
   var neste=tr[idx];var grunn='';
@@ -440,6 +464,36 @@ function fyllForslag(f){ /* mål for fyllstoff denne økta */
 }
 function pauseFor(ov){var p=S.innst.pauser;if(ov.pause===0)return 0;if(ov.type==='hoved')return (ov.id==='kneboy'||ov.id==='rdl')?p.hoved:p.over;return p.til}
 
+/* ---------- MIDDAGSKLOKKA (v1.3) ---------- */
+var MIDDAG_MIN=60; /* lett middag: ca. én time før tungt løft. Vindu, ikke frist. */
+function toSiffer(n){return (n<10?'0':'')+n}
+function naaHHMM(){var d=new Date();return toSiffer(d.getHours())+':'+toSiffer(d.getMinutes())}
+function klarTid(hhmm){ /* "17:10" -> Date i dag + MIDDAG_MIN */
+  if(!hhmm||hhmm.indexOf(':')<0)return null;
+  var p=hhmm.split(':');var h=parseInt(p[0],10),m=parseInt(p[1],10);
+  if(isNaN(h)||isNaN(m))return null;
+  var d=new Date();d.setHours(h,m,0,0);d.setMinutes(d.getMinutes()+MIDDAG_MIN);return d}
+function middagTekst(){ /* innmaten i boksen — kalles av tegnIdag og av tikk() */
+  var x=dagInfo(idag());
+  if(!x.middag)return null;
+  var k=klarTid(x.middag);if(!k)return null;
+  var igjen=Math.ceil((k.getTime()-Date.now())/60000);
+  if(igjen>0)return '<b>Klar '+toSiffer(k.getHours())+':'+toSiffer(k.getMinutes())+'</b> — '+igjen+' min igjen.<div class="lit">Middag '+esc(x.middag)+' + én time. Dra hjemmefra nå og bruk minuttene på oppvarmingen — den er ikke venting.</div>';
+  return '<b>Klar nå.</b><div class="lit">Middag '+esc(x.middag)+', over én time siden. Å vente lenger koster ingenting fysisk — men økta bør være ferdig i god tid før leggetid.</div>'}
+function middagBoks(){
+  var x=dagInfo(idag());
+  var h='<div class="middag" id="middag-boks">';
+  if(!x.middag){
+    h+='<b>Når er du klar?</b><div class="lit">Ca. én time etter middag er du klar for tungt løft. Skriv når du spiste, så regner appen.</div>'+
+       '<div class="rad" style="margin-top:8px"><button class="knapp lit sek" id="middag-naa">Spiste nå</button><input id="in-middag" type="time" value="'+naaHHMM()+'" aria-label="Når spiste du middag"></div>'}
+  else{
+    h+='<div id="middag-tekst">'+middagTekst()+'</div>'+
+       '<div class="rad" style="margin-top:8px"><span class="lit">Spiste:</span><input id="in-middag" type="time" value="'+esc(x.middag)+'" aria-label="Når spiste du middag"></div>'}
+  return h+'</div>'}
+function settMiddag(v){var iso=idag();var o=dagInfo(iso);o.middag=v||null;o.dato=iso;lagre('dag/'+iso,o);tegnIdag()}
+function middagTikk(){var e=$('middag-tekst');if(!e)return;var t=middagTekst();if(t)e.innerHTML=t}
+setInterval(middagTikk,30000);
+
 /* ---------- I DAG ---------- */
 function planForDag(d){var k=DAGKEY[(d.getDay()||7)-1];return PROG.thor.standarduke[k]}
 function gjortDag(iso){return okterSortert().filter(function(o){return o.dato===iso})}
@@ -463,6 +517,7 @@ function tegnIdag(){
   if(erGjort)h+='<div class="ok">Gjort i dag.</div>';
   if(bok==='A'||bok==='B'){var lett=ps.nivaa>0||modus==='minimum';
     if(ps.nivaa===2)h+='<div class="varsel">'+esc(PROG.tilbakefall.tre_uker)+'</div>';else if(ps.nivaa===1)h+='<div class="varsel">'+esc(PROG.tilbakefall.to)+'</div>';if(modus==='minimum')h+='<div class="varsel">Minimumsuke: én kort økt og én tur teller som gjort.</div>';
+    if(!erGjort)h+=middagBoks();
     h+='<div class="rad" style="margin-top:12px"><button class="knapp'+(lett?' sek':'')+'" id="start-okt" data-t="'+bok+'">'+(erGjort?'Start '+bok+' en gang til':'Start økt '+bok+(lett?' — full':''))+'</button></div>';
     h+='<div class="rad" style="margin-top:8px"><button class="knapp'+(lett?'':' sek lit')+'" id="start-kort" data-t="'+bok+'">Kort økt '+bok+' — ett sett per løft, ~25 min</button></div>';
     var m=new Date();if(bok==='A'&&m.getDate()<=7&&m.getDay()===1&&!lett)h+='<div class="varsel">Første mandag i måneden: '+esc(PROG.thor.regler.maanedlig_tungt_sett)+'</div>'}
@@ -472,6 +527,8 @@ function tegnIdag(){
   $('idag-kort').innerHTML='<h2>'+dagTittel+'</h2>'+h;
   var b=$('start-okt');if(b)b.onclick=function(){startOkt(b.getAttribute('data-t'),false)};
   var bk=$('start-kort');if(bk)bk.onclick=function(){startOkt(bk.getAttribute('data-t'),true)};
+  var mi=$('in-middag');if(mi)mi.onchange=function(){if(this.value)settMiddag(this.value)};
+  var mn=$('middag-naa');if(mn)mn.onclick=function(){settMiddag(naaHHMM())};
   var g=$('gjort-enkel');if(g)g.onclick=function(){loggEnkel(g.getAttribute('data-t'),tall(($('tur-min')||{}).value));tegnIdag();tegnUka()};
   /* råd */
   var ctx=ukeskontekst(),rs=ryggsjekk();var r='';
@@ -523,9 +580,11 @@ function tegnFem(){
   $('fem-hjelp').textContent=harP?'Lagres når du trykker eller skriver. Ryggtallet styrer om neste RDL får gå opp — det er derfor det står først.':'Lagres når du trykker eller skriver. Energi under 3 to dager på rad er et signal til Liv, ikke en karakter.';
   function seg(id,felt,fra,til){var e=$(id);e.innerHTML='';for(var i=fra;i<=til;i++){var b=document.createElement('button');b.textContent=i;if(x[felt]===i)b.className='on';b.onclick=(function(v){return function(){var o=dagInfo(iso);o[felt]=v;o.dato=iso;lagre('dag/'+iso,o);tegnFem();tegnIdag()}})(i);e.appendChild(b)}}
   if(harP){seg('seg-rygg','rygg',0,3);seg('seg-albue','albue',0,3)}else seg('seg-energi','energi',1,5);
-  $('in-sovn').value=x.sovn!==undefined&&x.sovn!==null?String(x.sovn).replace('.',','):'';$('in-skritt').value=x.skritt?fmtTusen(x.skritt):'';
+  var igaar=forrigeDag(iso),xg=dagInfo(igaar); /* v1.6: «skritt i går» lagres PÅ i går — ikke på i dag */
+  $('in-sovn').value=x.sovn!==undefined&&x.sovn!==null?String(x.sovn).replace('.',','):'';$('in-skritt').value=xg.skritt?fmtTusen(xg.skritt):'';
   $('in-sovn').onchange=function(){var o=dagInfo(iso);o.sovn=tall(this.value);o.dato=iso;lagre('dag/'+iso,o);tegnIdag()};
-  $('in-skritt').onchange=function(){var o=dagInfo(iso);o.skritt=tall(this.value);o.dato=iso;lagre('dag/'+iso,o);this.value=o.skritt?fmtTusen(o.skritt):''};
+  $('in-skritt').onchange=function(){var o=dagInfo(igaar);o.skritt=tall(this.value);o.dato=igaar;lagre('dag/'+igaar,o);this.value=o.skritt?fmtTusen(o.skritt):''};
+  $('skritt-dato').textContent='('+(+igaar.slice(8))+'.'+(+igaar.slice(5,7))+'.)';
   $('rode-flagg').innerHTML=PROG.thor.regler.rode_flagg.map(function(s){return '<li>'+esc(s)+'</li>'}).join('');$('rode-tekst').textContent=PROG.thor.regler.rode_flagg_tekst;
 }
 
@@ -543,8 +602,24 @@ function tegnUka(){
     var valg=harP?[['T','Tur'],['M','8-minutteren']]:[['G','10 min gange'],['K','Kort styrkeøkt'],['T','Tur']];
     var v=$('dag-velger');var vh='<b>'+dagNavn((fraIso(iso).getDay()||7)-1)+' '+iso.slice(8)+'.'+(+iso.slice(5,7))+'</b> — logg: ';
     valg.forEach(function(x){var fins=gj.some(function(o){return o.type===x[0]});vh+='<button class="knapp lit'+(fins?'':' sek')+'" data-logg="'+x[0]+'" style="margin:4px 4px 0 0">'+(fins?'✓ ':'')+x[1]+'</button>'});
-    if(harP)vh+='<span class="lit" style="display:block;margin-top:6px">Gym-økter startes fra «I dag» så settene blir logget.</span>';
+    var gym=gj.filter(function(o){return o.type==='A'||o.type==='B'});
+    if(gym.length)vh+='<div class="rad" style="margin-top:8px">'+gym.map(function(o){return '<button class="knapp lit" data-red="'+o.id+'">Rett økt '+o.type+(o.kort?' (kort)':'')+'</button>'}).join('')+'<span class="lit">glemt et sett eller trykket feil? åpne den på nytt</span></div>';
+    else if(harP)vh+='<span class="lit" style="display:block;margin-top:6px">Gym-økter startes fra «I dag» så settene blir logget.</span>';
+    if(harP)vh+='<div class="fem" style="margin-top:10px">'+
+      '<div><label>Rygg 0–3</label><div class="seg" id="seg-d-rygg"></div></div>'+
+      '<div><label>Albue 0–3</label><div class="seg" id="seg-d-albue"></div></div>'+
+      '<div><label>Søvn (timer)</label><input class="tall" id="in-d-sovn" type="text" inputmode="decimal" placeholder="7,5"></div>'+
+      '<div><label>Skritt denne dagen</label><input class="tall" id="in-d-skritt" type="text" inputmode="numeric" placeholder="7 500"></div></div>'+
+      '<span class="lit" style="display:block;margin-top:6px">Tallene lagres på '+iso.slice(8)+'.'+(+iso.slice(5,7))+'. — her retter du det du glemte eller førte feil dag.</span>';
     v.innerHTML=vh;v.style.display='block';
+    Array.prototype.forEach.call(v.querySelectorAll('button[data-red]'),function(b){b.onclick=function(){redigerOkt(b.getAttribute('data-red'))}});
+    if(harP){
+      (function(){var xd=dagInfo(iso);
+        function seg2(el,felt){var e=v.querySelector('#'+el);if(!e)return;e.innerHTML='';for(var i=0;i<=3;i++){(function(val){var bb=document.createElement('button');bb.textContent=val;if(xd[felt]===val)bb.className='on';bb.onclick=function(){var o=dagInfo(iso);o[felt]=val;o.dato=iso;lagre('dag/'+iso,o);tegnUka();tegnIdag();tegnFem()};e.appendChild(bb)})(i)}}
+        seg2('seg-d-rygg','rygg');seg2('seg-d-albue','albue');
+        var sv=v.querySelector('#in-d-sovn'),sk=v.querySelector('#in-d-skritt');
+        if(sv){sv.value=(xd.sovn!==undefined&&xd.sovn!==null)?String(xd.sovn).replace('.',','):'';sv.onchange=function(){var o=dagInfo(iso);o.sovn=tall(this.value);o.dato=iso;lagre('dag/'+iso,o);tegnFem()}}
+        if(sk){sk.value=xd.skritt?fmtTusen(xd.skritt):'';sk.onchange=function(){var o=dagInfo(iso);o.skritt=tall(this.value);o.dato=iso;lagre('dag/'+iso,o);this.value=o.skritt?fmtTusen(o.skritt):'';tegnFem()}}})()}
     Array.prototype.forEach.call(v.querySelectorAll('button[data-logg]'),function(b){b.onclick=function(){var t=b.getAttribute('data-logg');var fins=gj.filter(function(o){return o.type===t});
       if(fins.length){fins.forEach(function(o){delete S.okter[o.id];skrivLokalt();if(dbOk)db.child('okter/'+o.id).remove()})}
       else{var o={id:nyId(),person:PERSON,dato:iso,uke:ukeKey(fraIso(iso)),type:t,min:null};lagre('okter/'+o.id,o)}
@@ -566,7 +641,23 @@ function tegnUka(){
 $('uke-forrige').onclick=function(){UKEVIS--;tegnUka()};$('uke-neste').onclick=function(){UKEVIS++;tegnUka()};
 
 /* ---------- ØKT ---------- */
-var wake=null;
+function aOkter(){return okterSortert().filter(function(o){return o.type==='A'})}
+function sesongTelling(t){ /* hvor langt inn i sesongen er vi — ekte tall fra loggen */
+  var se=sesongNaa();if(!se)return '';
+  var n=okterSortert().filter(function(o){return o.type===t&&o.uke>=se.fra&&o.uke<=se.til}).length;
+  var uker=ukerMellom(se.fra,se.til);
+  return t+'-økt '+(n+1)+' av ~'+uker+' i sesongen';}
+function hensiktBlokk(okt,t){
+  var h=okt.hensikt;if(!h)return '';
+  var tell=sesongTelling(t);
+  var tr='';if(t==='A'){var rt=rdlTrinn();var i=(rt&&typeof rt.idx==='number'&&!isNaN(rt.idx))?rt.idx:0;tr=' · ryggtrappa trinn '+(i+1)+' av '+finnOv('rdl').trapp.trinn.length;}
+  var forste=h.linjer[0],resten=h.linjer.slice(1);
+  return '<div class="hensikt"><div class="hh"><b>'+esc(h.tittel)+'</b>'+(tell?'<span class="lit"> — '+esc(tell)+esc(tr)+'</span>':'')+'</div>'+
+    '<dl><dt>'+esc(forste[0])+'</dt><dd>'+esc(forste[1])+'</dd></dl>'+
+    '<details><summary>'+esc(h.mer||'Mer')+'</summary><dl>'+resten.map(function(l){return '<dt>'+esc(l[0])+'</dt><dd>'+esc(l[1])+'</dd>'}).join('')+'</dl></details>'+
+    '<div class="varsel" style="margin:8px 0 0">'+esc(h.regel)+'</div></div>';}
+
+var wake=null, BEKREFT=false;
 function startOkt(type,kort){
   var okt=PROG.thor.okter[type];kort=!!kort;
   AKTIV={id:nyId(),person:PERSON,dato:idag(),uke:ukeKey(new Date()),type:type,start:Date.now(),kort:kort,affekt:null,ovelser:{},fyll:{}};
@@ -574,12 +665,31 @@ function startOkt(type,kort){
     if(ov.fyllstoff){var ff=fyllForslag(ov.fyllstoff);var sv=sisteVariant(ov.fyllstoff.id);AKTIV.fyll[ov.fyllstoff.id]={verdier:[],kg:ov.fyllstoff.vekt?ff.maal:null,rent:false,variant:sv,forslag:ff}}});
   try{if(navigator.wakeLock)navigator.wakeLock.request('screen').then(function(w){wake=w}).catch(function(){})}catch(e){}
   Array.prototype.forEach.call(document.querySelectorAll('#seg-affekt button'),function(b){b.className=''});
-  vis('okt');tegnOkt();window.scrollTo(0,0);
+  lagreAktiv();vis('okt');tegnOkt();window.scrollTo(0,0);
 }
+function redigerOkt(id){ /* v1.6: åpne en lagret økt på nytt for å rette eller fylle inn det som mangler */
+  var o=S.okter[id];if(!o||(o.type!=='A'&&o.type!=='B'))return;
+  var okt=PROG.thor.okter[o.type];if(!okt)return;
+  AKTIV=JSON.parse(JSON.stringify(o));AKTIV._rediger=id;
+  if(!AKTIV.ovelser)AKTIV.ovelser={};if(!AKTIV.fyll)AKTIV.fyll={};
+  okt.ovelser.forEach(function(ov){ /* forslagene lagres ikke — bygg dem opp igjen, og fyll inn det som ble hoppet over */
+    var f=forslag(ov);
+    if(!AKTIV.ovelser[ov.id]){var sett=[];for(var i=0;i<ov.sett;i++)sett.push({kg:ov.vekt?f.kg:null,reps:null,ok:false});AKTIV.ovelser[ov.id]={sett:sett,rpe:null}}
+    AKTIV.ovelser[ov.id].forslag=f;
+    if(ov.fyllstoff){var ff=fyllForslag(ov.fyllstoff);
+      if(!AKTIV.fyll[ov.fyllstoff.id])AKTIV.fyll[ov.fyllstoff.id]={verdier:[],kg:ov.fyllstoff.vekt?ff.maal:null,rent:false,variant:sisteVariant(ov.fyllstoff.id)};
+      AKTIV.fyll[ov.fyllstoff.id].forslag=ff}});
+  $('okt-kommentar').value=o.kommentar||'';BEKREFT=false;$('okt-advarsel').innerHTML='';
+  lagreAktiv();vis('okt');tegnOkt();window.scrollTo(0,0);}
+function lagreAktiv(){try{if(AKTIV)localStorage.setItem('lk-aktiv-'+PERSON,JSON.stringify(AKTIV));else localStorage.removeItem('lk-aktiv-'+PERSON)}catch(e){}}
+function hentAktiv(){ /* v1.5: en påbegynt økt overlever at appen lastes på nytt */
+  try{var r=localStorage.getItem('lk-aktiv-'+PERSON);if(!r)return;var a=JSON.parse(r);
+    if(!a||a.dato!==idag()||!PROG.thor.okter[a.type]){localStorage.removeItem('lk-aktiv-'+PERSON);return}
+    AKTIV=a;vis('okt');tegnOkt()}catch(e){}}
 function sisteVariant(fid){var l=okterSortert().filter(function(o){return o.fyll&&o.fyll[fid]&&o.fyll[fid].variant});return l.length?l[l.length-1].fyll[fid].variant:null}
 function tegnOkt(){
   var okt=PROG.thor.okter[AKTIV.type];
-  $('okt-hode').innerHTML='<div class="plan"><div class="bokstav" style="background:'+okt.farge+'">'+AKTIV.type+'</div><div><b>'+esc(okt.navn)+(AKTIV.kort?' — kort':'')+'</b><div class="lit" id="okt-klokke">0 min</div></div></div>'+(AKTIV.kort?'<div class="varsel" style="margin-top:10px">Kort økt: ett arbeidssett per hovedløft, fyllstoffet i pausene, ~25 minutter. Tilbehøret hopper vi over i dag. Dette teller som gjort.</div>':'')+'<div class="ok" style="margin-top:10px"><b>Oppvarming:</b> '+esc(okt.oppvarming)+'</div>';
+  $('okt-hode').innerHTML=(AKTIV._rediger?'<div class="varsel" style="margin:0 0 10px"><b>Retter økta fra '+esc(dato(AKTIV.dato))+'</b> Endre det som er feil eller mangler, og trykk «Avslutt og lagre» — den lagres på samme dag, ikke som en ny økt.</div>':'')+hensiktBlokk(okt,AKTIV.type)+'<div class="plan"><div class="bokstav" style="background:'+okt.farge+'">'+AKTIV.type+'</div><div><b>'+esc(okt.navn)+(AKTIV.kort?' — kort':'')+'</b><div class="lit" id="okt-klokke">0 min</div></div></div>'+(AKTIV.kort?'<div class="varsel" style="margin-top:10px">Kort økt: ett arbeidssett per hovedløft, fyllstoffet i pausene, ~25 minutter. Tilbehøret hopper vi over i dag. Dette teller som gjort.</div>':'')+'<div class="ok" style="margin-top:10px"><b>Oppvarming:</b> '+esc(okt.oppvarming)+'</div>';
   var h='';
   okt.ovelser.forEach(function(ov,oi){var L=AKTIV.ovelser[ov.id];if(!L)return;var f=L.forslag;
     var maal=ov.maaling==='gjort'?'gjort':(ov.settmal?ov.settmal.join(' + '):ov.sett+' × '+(ov.reps[0]===ov.reps[1]?ov.reps[0]:ov.reps[0]+'–'+ov.reps[1]))+(ov.perSide?' /side':'');
@@ -603,7 +713,14 @@ function tegnOkt(){
     h+='</div>'});
   $('okt-liste').innerHTML=h;
   /* hendelser */
-  Array.prototype.forEach.call(document.querySelectorAll('#okt-liste input[data-ov]'),function(inp){inp.onchange=function(){var L=AKTIV.ovelser[inp.getAttribute('data-ov')];var s=L.sett[+inp.getAttribute('data-s')];s[inp.getAttribute('data-f')]=tall(inp.value)}});
+  Array.prototype.forEach.call(document.querySelectorAll('#okt-liste input[data-ov]'),function(inp){
+    var h=function(){var id=inp.getAttribute('data-ov'),si=+inp.getAttribute('data-s'),felt=inp.getAttribute('data-f');
+      var L=AKTIV.ovelser[id];if(!L)return;var v=tall(inp.value);L.sett[si][felt]=v;
+      if(felt==='kg'&&v!==null){ /* v1.6: ny vekt øverst faller ned på settene under som ikke er haket */
+        for(var j=si+1;j<L.sett.length;j++){if(L.sett[j].ok)continue;L.sett[j].kg=v;
+          var e=document.querySelector('#okt-liste input[data-ov="'+id+'"][data-s="'+j+'"][data-f="kg"]');
+          if(e&&document.activeElement!==e)e.value=String(v).replace('.',',')}}};
+    inp.onchange=h;inp.oninput=h}); /* v1.5: også oninput, så et tall ikke går tapt om appen lukkes før feltet forlates */
   Array.prototype.forEach.call(document.querySelectorAll('#okt-liste button[data-hak]'),function(b){b.onclick=function(){var id=b.getAttribute('data-hak'),si=+b.getAttribute('data-s');var ov=finnOv(id);var L=AKTIV.ovelser[id];var s=L.sett[si];
     if(!s.ok){var kgI=document.querySelector('input[data-ov="'+id+'"][data-s="'+si+'"][data-f="kg"]'),rpI=document.querySelector('input[data-ov="'+id+'"][data-s="'+si+'"][data-f="reps"]');
       if(kgI)s.kg=tall(kgI.value);s.reps=tall(rpI.value);if(s.reps===null){s.reps=ov.reps[1];rpI.value=s.reps}s.ok=true;
@@ -623,25 +740,56 @@ Array.prototype.forEach.call(document.querySelectorAll('#seg-affekt button'),fun
 function sisteFor(ovId){var l=okterMed(ovId);if(!l.length)return [];var ov=finnOv(ovId);return (l[l.length-1].ovelser[ovId].sett||[]).map(function(s){return s.ok?((s.kg!==null&&s.kg!==undefined&&ov.vekt)?s.kg+'×':'')+(s.reps||'')+'':'—'})}
 function klokke(){var e=$('okt-klokke');if(!e||!AKTIV)return;e.textContent=Math.round((Date.now()-AKTIV.start)/60000)+' min · '+AKTIV.dato.slice(8)+'.'+AKTIV.dato.slice(5,7)}
 setInterval(klokke,30000);
+function taWake(){if(!AKTIV)return;try{if(navigator.wakeLock&&(!wake||wake.released))navigator.wakeLock.request('screen').then(function(w){wake=w}).catch(function(){})}catch(e){}}
+function tilbakeIForgrunn(){ /* v1.4: iOS fryser setInterval i bakgrunnen — hent alt fra klokka igjen */
+  if(document.visibilityState!=='visible')return;
+  klokke();if(T.slutt)tegnTimer();middagTikk();taWake()}
+document.addEventListener('visibilitychange',tilbakeIForgrunn);
+window.addEventListener('pageshow',tilbakeIForgrunn);
+window.addEventListener('focus',tilbakeIForgrunn);
+['input','change','click'].forEach(function(ev){document.getElementById('v-okt').addEventListener(ev,function(){setTimeout(lagreAktiv,0)},true)});
+window.addEventListener('pagehide',lagreAktiv);
 $('okt-avslutt').onclick=function(){
-  if(!AKTIV)return;var noe=false;Object.keys(AKTIV.ovelser).forEach(function(k){if(AKTIV.ovelser[k].sett.some(function(s){return s.ok}))noe=true});
-  if(!noe&&!confirm('Ingen sett er haket av. Lagre likevel?'))return;
-  var o=JSON.parse(JSON.stringify(AKTIV));o.slutt=Date.now();o.kommentar=$('okt-kommentar').value||'';
+  if(!AKTIV)return;
+  var uhaket=[];Object.keys(AKTIV.ovelser).forEach(function(k){
+    var n=AKTIV.ovelser[k].sett.filter(function(s){return !s.ok&&(s.reps!==null&&s.reps!==undefined&&s.reps!=='')}).length;
+    if(n){var ov=finnOv(k);uhaket.push((ov?ov.navn:k)+' ('+n+')')}});
+  var noe=false;Object.keys(AKTIV.ovelser).forEach(function(k){if(AKTIV.ovelser[k].sett.some(function(s){return s.ok}))noe=true});
+  var adv=$('okt-advarsel');
+  if((uhaket.length||!noe)&&!BEKREFT){BEKREFT=true;
+    adv.innerHTML='<div class="rodt"><b>'+(uhaket.length?'Sett med tall, men uten hake: '+esc(uhaket.join(' · ')):'Ingen sett er haket av')+'.</b><br>Uten haken teller ikke settet — verken i fremgangen eller når neste vekt regnes ut. Hak av, eller trykk «Avslutt» en gang til for å lagre som det står.</div>';
+    adv.scrollIntoView({block:'center'});return}
+  adv.innerHTML='';BEKREFT=false;
+  var red=AKTIV._rediger||null;
+  var o=JSON.parse(JSON.stringify(AKTIV));delete o._rediger;
+  if(red){o.id=red;o.endret=Date.now()}else o.slutt=Date.now();
+  o.kommentar=$('okt-kommentar').value||'';
   Object.keys(o.ovelser).forEach(function(k){delete o.ovelser[k].forslag});Object.keys(o.fyll).forEach(function(k){delete o.fyll[k].forslag;if(!o.fyll[k].verdier.length&&!o.fyll[k].rent)delete o.fyll[k]});
-  lagre('okter/'+o.id,o);AKTIV=null;$('okt-kommentar').value='';stoppTimer();if(wake){try{wake.release()}catch(e){}wake=null}
+  lagre('okter/'+o.id,o);AKTIV=null;lagreAktiv();$('okt-kommentar').value='';stoppTimer();if(wake){try{wake.release()}catch(e){}wake=null}
   vis('idag');tegnIdag();tegnUka();tegnFrem();
 };
-$('okt-avbryt').onclick=function(){if(!AKTIV||confirm('Avbryte økta uten å lagre?')){AKTIV=null;stoppTimer();vis('idag')}};
+$('okt-avbryt').onclick=function(){if(!AKTIV){vis('idag');return}
+  if(!BEKREFT){BEKREFT=true;$('okt-advarsel').innerHTML='<div class="rodt">Da slettes settene du har logget i denne økta. Trykk «Avbryt uten å lagre» en gang til hvis du mener det.</div>';return}
+  AKTIV=null;lagreAktiv();BEKREFT=false;$('okt-advarsel').innerHTML='';stoppTimer();vis('idag')};
 
 /* ---------- pausetimer ---------- */
-var T={rest:0,iv:null,ov:null};
-function startTimer(sek,ov,si){T.rest=sek;T.ov=ov;$('timer').classList.add('on');
+var T={slutt:0,iv:null,ov:null,varslet:false};
+function restSek(){return T.slutt?Math.ceil((T.slutt-Date.now())/1000):0}
+function startTimer(sek,ov,si){T.slutt=Date.now()+sek*1000;T.ov=ov;T.varslet=false;$('timer').classList.add('on');
   var info=esc(ov.navn)+' sett '+(si+1)+' ✓';if(ov.fyllstoff&&si<ov.sett-1){info+='<div class="fyllvarsel" style="display:inline-block;margin-top:3px;padding:2px 8px;border-radius:6px;font-weight:800">I pausen: '+esc(ov.fyllstoff.navn)+'</div>'}
-  $('timer-info').innerHTML=info;tegnTimer();if(T.iv)clearInterval(T.iv);T.iv=setInterval(function(){T.rest--;tegnTimer();if(T.rest<=0){ferdigTimer()}},1000)}
-function tegnTimer(){var r=Math.max(0,T.rest);$('timer-tid').textContent=Math.floor(r/60)+':'+pad(r%60)}
-function ferdigTimer(){clearInterval(T.iv);T.iv=null;$('timer-tid').textContent='Kjør';if(S.innst.lyd){pip();try{if(navigator.vibrate)navigator.vibrate([200,100,200])}catch(e){}}setTimeout(function(){if(T.rest<=0)stoppTimer()},4000)}
-function stoppTimer(){if(T.iv)clearInterval(T.iv);T.iv=null;$('timer').classList.remove('on')}
-$('timer-pluss').onclick=function(){T.rest+=30;tegnTimer();if(!T.iv){T.iv=setInterval(function(){T.rest--;tegnTimer();if(T.rest<=0)ferdigTimer()},1000)}};
+  $('timer-info').innerHTML=info;tegnTimer();if(T.iv)clearInterval(T.iv);T.iv=setInterval(tegnTimer,500)}
+function tegnTimer(){ /* v1.4: regnes alltid fra klokka, aldri fra en teller som fryser i bakgrunnen */
+  if(!T.slutt)return;
+  var r=restSek();
+  if(r>0){$('timer-tid').textContent=Math.floor(r/60)+':'+pad(r%60);$('timer-over').textContent='';return}
+  var over=-r;$('timer-tid').textContent='Kjør';
+  $('timer-over').textContent=over>=5?('ute for '+Math.floor(over/60)+':'+pad(over%60)+' siden'):'';
+  if(!T.varslet){T.varslet=true;ferdigTimer(over)}}
+function ferdigTimer(over){ /* varselet kommer når skjermen er på — iOS gir ingen lyd fra en app i bakgrunnen */
+  if(S.innst.lyd&&document.visibilityState==='visible'){pip();try{if(navigator.vibrate)navigator.vibrate([200,100,200])}catch(e){}}
+  if((over||0)<10)setTimeout(function(){if(restSek()<=0&&(-restSek())<15)stoppTimer()},4000)}
+function stoppTimer(){if(T.iv)clearInterval(T.iv);T.iv=null;T.slutt=0;$('timer-over').textContent='';$('timer').classList.remove('on')}
+$('timer-pluss').onclick=function(){T.slutt=Math.max(T.slutt,Date.now())+30000;T.varslet=false;tegnTimer();if(!T.iv)T.iv=setInterval(tegnTimer,500)};
 $('timer-hopp').onclick=stoppTimer;
 var AC=null;function pip(){try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();var t=AC.currentTime;[0,0.25,0.5].forEach(function(d){var o=AC.createOscillator(),g=AC.createGain();o.frequency.value=880;o.connect(g);g.connect(AC.destination);g.gain.setValueAtTime(0.001,t+d);g.gain.exponentialRampToValueAtTime(0.4,t+d+0.02);g.gain.exponentialRampToValueAtTime(0.001,t+d+0.18);o.start(t+d);o.stop(t+d+0.2)})}catch(e){}}
 document.addEventListener('pointerdown',function(){try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume()}catch(e){}},{once:true});
@@ -739,9 +887,12 @@ function tegnMer(){
   var sk='';PROG.thor.tester.liste.forEach(function(t){sk+='<div style="margin:6px 0"><label class="lit" style="display:block;font-weight:700">'+esc(t[1])+' <span class="mut">('+esc(t[2])+')</span></label><input class="tekst" data-test="'+t[0]+'" placeholder="'+esc(t[2])+'"></div>'});
   $('test-skjema').innerHTML=sk;
   $('test-lagre').onclick=function(){var o={id:nyId(),dato:idag(),person:PERSON};var noe=false;Array.prototype.forEach.call(document.querySelectorAll('input[data-test]'),function(i){if(i.value.trim()){o[i.getAttribute('data-test')]=i.value.trim();noe=true}});if(!noe)return;lagre('tester/'+o.id,o);Array.prototype.forEach.call(document.querySelectorAll('input[data-test]'),function(i){i.value=''});tegnFrem();vis('frem')};
+  $('in-kode').value=KODE||'';
+  $('kode-hjelp').textContent=KODE?'Koden ligger bare på denne enheten — aldri i koden på GitHub. Endre den bare hvis familiekoden faktisk er ny.':'Uten koden lagres økta bare på telefonen. Skriv eller lim inn familiekoden, så sendes alt som ligger i kø opp med én gang — ingenting går tapt.';
+  $('kode-lagre').onclick=function(){var v=$('in-kode').value;if(!settKode(v)){$('kode-hjelp').textContent='Koden ser for kort ut. Den står i lenken du åpner appen med, etter «?k=».'}};
   $('lagring-info').textContent=(dbOk?'Delt lagring er på (Firebase, EU). ':'Delt lagring er ikke tilgjengelig nå — alt ligger på enheten og sendes når nettet er tilbake. ')+'Logget: '+Object.keys(S.okter).length+' økter, '+Object.keys(S.dag).length+' dager, '+Object.keys(S.tester).length+' tester.';
   $('eksport').onclick=function(){var txt='Livskraft — '+PERSON+' — eksport '+idag()+'\n\n';okterSortert().forEach(function(o){txt+=o.dato+' '+o.type+(o.kort?' kort':'')+(o.min?' '+o.min+' min':'')+(o.affekt?' ['+o.affekt+']':'')+'\n';if(o.ovelser)Object.keys(o.ovelser).forEach(function(k){var L=o.ovelser[k];var ok=L.sett.filter(function(s){return s.ok});if(ok.length)txt+='  '+k+': '+ok.map(function(s){return (s.kg!==null&&s.kg!==undefined?s.kg+'×':'')+s.reps}).join(', ')+(L.rpe?' RPE '+L.rpe:'')+'\n'});if(o.fyll)Object.keys(o.fyll).forEach(function(k){var F=o.fyll[k];txt+='  '+k+(F.variant?' ('+F.variant+')':'')+': '+(F.verdier||[]).join(', ')+(F.kg?' @'+F.kg+' kg':'')+(F.rent?' rent':'')+'\n'});if(o.kommentar)txt+='  «'+o.kommentar+'»\n'});
-    txt+='\nUker:\n';Object.keys(S.uke).sort().forEach(function(k){var u=S.uke[k];txt+=k+(u.modus&&u.modus!=='normal'?' '+u.modus:'')+(u.kroppsarbeid?' kroppsarbeid':'')+(u.vekt?' vekt '+u.vekt.join('/'):'')+(u.midje?' midje '+u.midje.join('/'):'')+(u.puls?' puls '+u.puls.join('/'):'')+'\n'});txt+='\nDager:\n';Object.keys(S.dag).sort().forEach(function(d){var x=S.dag[d];txt+=d+(x.rygg!==undefined?' rygg '+x.rygg:'')+(x.albue!==undefined?' albue '+x.albue:'')+(x.energi!==undefined?' energi '+x.energi:'')+' søvn '+(x.sovn||'–')+' skritt '+(x.skritt||'–')+'\n'});
+    txt+='\nUker:\n';Object.keys(S.uke).sort().forEach(function(k){var u=S.uke[k];txt+=k+(u.modus&&u.modus!=='normal'?' '+u.modus:'')+(u.kroppsarbeid?' kroppsarbeid':'')+(u.vekt?' vekt '+u.vekt.join('/'):'')+(u.midje?' midje '+u.midje.join('/'):'')+(u.puls?' puls '+u.puls.join('/'):'')+'\n'});txt+='\nDager:\n';Object.keys(S.dag).sort().forEach(function(d){var x=S.dag[d];txt+=d+(x.middag?' middag '+x.middag:'')+(x.rygg!==undefined?' rygg '+x.rygg:'')+(x.albue!==undefined?' albue '+x.albue:'')+(x.energi!==undefined?' energi '+x.energi:'')+' søvn '+(x.sovn||'–')+' skritt '+(x.skritt||'–')+'\n'});
     try{navigator.clipboard.writeText(txt).then(function(){alert('Kopiert. Lim inn til Liv.')})}catch(e){prompt('Kopier:',txt)}};
 }
 
@@ -757,7 +908,7 @@ function flettInn(server){ /* server-dokumenter vinner ved nyere ts */
   skrivLokalt();
 }
 function kobleDb(){
-  if(!KODE||KODE.length<12){$('dbpill').textContent='mangler familiekode';return}
+  if(!KODE||KODE.length<12){dbStatus();return}
   if(!(window.firebase&&firebase.initializeApp)){$('dbpill').textContent='lagres på enheten';return}
   try{firebase.initializeApp(FIREBASE);db=firebase.database().ref('fam/'+KODE+'/okt/'+PERSON);dbOk=true;
     try{PENDING=JSON.parse(localStorage.getItem('lk-pending-'+PERSON)||'[]')}catch(e){PENDING=[]}
@@ -766,7 +917,8 @@ function kobleDb(){
   }catch(e){dbOk=false;$('dbpill').textContent='lagres på enheten'}
   dbStatus();
 }
-fetch('data/program.json?v='+Math.floor(Date.now()/3600000)).then(function(r){return r.json()}).then(function(p){PROG=p;lesLokalt();$('personpill').textContent=PROG.personer[PERSON].navn;$('personpill').className='pill p '+PERSON;tegnAlt();kobleDb()}).catch(function(e){console.error('Livskraft feil:',e);if(PROG){throw e}document.querySelector('.wrap').innerHTML='<div class="kort"><h2>Fikk ikke lastet programmet</h2><p class="lead">Sjekk nettet og last siden på nytt. Er du på gymmet uten dekning, må siden ha vært åpnet én gang med nett først.</p></div>'});
+fetch('data/program.json?v='+Math.floor(Date.now()/3600000)).then(function(r){return r.json()}).then(function(p){PROG=p;lesLokalt();$('personpill').textContent=PROG.personer[PERSON].navn;$('personpill').className='pill p '+PERSON;tegnAlt();kobleDb();hentAktiv()}).catch(function(e){console.error('Livskraft feil:',e);if(PROG){throw e}document.querySelector('.wrap').innerHTML='<div class="kort"><h2>Fikk ikke lastet programmet</h2><p class="lead">Sjekk nettet og last siden på nytt. Er du på gymmet uten dekning, må siden ha vært åpnet én gang med nett først.</p></div>'});
+$('dbpill').onclick=function(){if(KODE&&KODE.length>=12)return;vis('mer');setTimeout(function(){var e=$('in-kode');if(e){e.focus();e.scrollIntoView({block:'center'})}},60)};
 if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){})})}
 </script>
 </body>
