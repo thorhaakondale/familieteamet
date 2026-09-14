@@ -105,6 +105,22 @@ b,strong{font-weight:800}
 .tile .velg .vdato{font:inherit;font-size:12.5px;padding:3px 6px;border:1.5px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink)}
 .tile .ik{font-size:19px;width:26px;text-align:center;flex:0 0 26px}
 .tile .tx{flex:1;min-width:0}
+.ny-rask{margin-top:14px;border-top:1px solid var(--line);padding-top:10px}
+.ny-rask summary{font-weight:800;font-size:14px;cursor:pointer}
+.ny-rask .nyrad{display:flex;gap:6px;align-items:center;margin:8px 0}
+.ny-rask .nyrad.dager{flex-wrap:wrap}
+.ny-rask .nyrad.dager .dag{flex:1 1 auto}
+.ny-rask .nyrad.hvem{flex-wrap:wrap}
+.ny-rask .nyrad.hvem button{flex:1 1 auto;background:var(--line2);color:var(--ink);padding:9px 10px;border:1.5px solid transparent}
+.ny-rask .nyrad.hvem button.on{background:var(--card);border-color:var(--pc,var(--ink));box-shadow:inset 0 0 0 1px var(--pc,var(--ink))}
+.ny-rask input[type=date]{flex:1 0 100%;font-size:14px}
+.ny-rask input{flex:1;min-width:0;font:inherit;font-size:15px;padding:9px 10px;border:1.5px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink)}
+.ny-rask button{font:inherit;font-weight:700;font-size:14px;padding:9px 12px;border:0;border-radius:10px;background:var(--ink);color:var(--bg);cursor:pointer;min-height:40px}
+.ny-rask button.dag{background:var(--line2);color:var(--ink);padding:9px 10px}
+.ny-rask button.dag.on{background:var(--accent);color:#fff}
+.ny-rask button.mik{background:var(--line2);color:var(--ink);font-size:17px;padding:9px 11px}
+.ny-rask button.mik.paa{background:#c0392b;color:#fff}
+#nr-lagre{width:100%}
 .tile .nm{display:block;font-weight:800;font-size:14px;line-height:1.2;overflow-wrap:anywhere;hyphens:auto}
 .tile .mt{display:block;font-size:11.5px;color:var(--muted);margin-top:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tile .side{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:0 0 34px;gap:0}
@@ -218,6 +234,26 @@ details.om .in{padding:8px 0 0;font-size:14px;max-width:70ch}
   <h2 id="idag-h">I dag</h2>
   <div id="dagplan"></div>
   <div id="idag-liste"></div>
+  <div id="ny-rask-wrap" hidden>
+    <details class="om ny-rask" id="ny-rask">
+      <summary>➕ Legg til noe jeg må huske</summary>
+      <div class="in">
+        <div class="nyrad">
+          <input id="nr-tekst" placeholder="Hva må gjøres?" autocomplete="off">
+          <button type="button" id="nr-mik" class="mik" title="Snakk inn" aria-label="Snakk inn">🎤</button>
+        </div>
+        <div class="nyrad dager">
+          <button type="button" class="dag" data-d="0">I dag</button>
+          <button type="button" class="dag" data-d="1">I morgen</button>
+          <button type="button" class="dag" data-d="7">Neste uke</button>
+          <input id="nr-dato" type="date" aria-label="Annen dato">
+        </div>
+        <div class="nyrad hvem" id="nr-hvem"></div>
+        <button type="button" id="nr-lagre">Legg til</button>
+        <p class="small" id="nr-hjelp">Velg hvem den er til og hvilken dag. Havner som en vanlig oppgave — Bjørn ser den i søndagssjekken.</p>
+      </div>
+    </details>
+  </div>
 </section>
 
 <section class="card" id="lag">
@@ -857,11 +893,69 @@ function fyllInnst(){var tr=(INNST.trapp&&INNST.trapp.length)?INNST.trapp:SEED_T
   document.getElementById('i-prosent').value=INNST.prosent||75;}
 
 /* ---------- samle ---------- */
-function tegn(){tegnHvem();tegnIdag();tegnLag();tegnUke();tegnSlik();tegnVedl();tegnHist();tegnBank();fyllInnst()}
+function tegnNyRask(){
+  var w=document.getElementById('ny-rask-wrap'); if(!w) return;
+  var VOKSNE=['thor','anniken'];
+  w.hidden=!(valgt&&VOKSNE.indexOf(valgt)>=0);
+  if(!w.hidden&&window.__nyRaskHvem)window.__nyRaskHvem();
+}
+function tegn(){tegnHvem();tegnIdag();tegnLag();tegnUke();tegnSlik();tegnVedl();tegnHist();tegnBank();fyllInnst();tegnNyRask()}
 document.getElementById('uke-forrige').onclick=function(){visUke=addDays(visUke,-7);tegnUke()};
 document.getElementById('uke-neste').onclick=function(){visUke=addDays(visUke,7);tegnUke()};
 document.getElementById('uke-naa').onclick=function(){visUke=mandag(NAA);tegnUke()};
 function gaaTil(id){var m=document.getElementById(id);if(!m)return;var off=0;document.querySelectorAll('.dale-nav').forEach(function(n){var cs=getComputedStyle(n);if(cs.position==='sticky'||cs.position==='fixed'){var r=n.getBoundingClientRect();if(r.top<=1)off=Math.max(off,r.height)}});var y=m.getBoundingClientRect().top+window.pageYOffset-off-16;window.scrollTo({top:Math.max(0,y),behavior:'smooth'})}
+/* ---------- «Legg til noe jeg må huske» (voksne): egen oppgave med dato ---------- */
+(function(){
+  var w=document.getElementById('ny-rask'); if(!w) return;
+  var tIn=document.getElementById('nr-tekst'), dIn=document.getElementById('nr-dato'), hRad=document.getElementById('nr-hvem'), tilPerson=null;
+  function byggHvem(){
+    hRad.innerHTML='';
+    ['thor','anniken','erik','vaarin'].forEach(function(id){
+      var q=PMAP[id]; if(!q) return;
+      var b=document.createElement('button'); b.type='button'; b.style.setProperty('--pc',q.farge);
+      b.innerHTML=q.dyr+' '+esc(q.navn); b.dataset.p=id;
+      b.onclick=function(){tilPerson=id;hRad.querySelectorAll('button').forEach(function(x){x.classList.toggle('on',x.dataset.p===id)})};
+      hRad.appendChild(b);
+    });
+    settHvem(valgt||'thor');
+  }
+  function settHvem(id){tilPerson=id;hRad.querySelectorAll('button').forEach(function(x){x.classList.toggle('on',x.dataset.p===id)})}
+  function settDato(n){var d=addDays(NAA,n);dIn.value=ymd(d);
+    w.querySelectorAll('button.dag').forEach(function(b){b.classList.toggle('on',+b.dataset.d===n)})}
+  w.querySelectorAll('button.dag').forEach(function(b){b.onclick=function(){settDato(+b.dataset.d)}});
+  dIn.onchange=function(){w.querySelectorAll('button.dag').forEach(function(b){b.classList.remove('on')})};
+  byggHvem(); window.__nyRaskHvem=function(){settHvem(valgt||'thor')};
+  settDato(0);
+  /* Mikrofon: bruker nettleserens egen talegjenkjenning når den finnes (Safari/Chrome). Ellers skjules knappen —
+     og på iPhone/iPad kan man uansett bruke mikrofonen på tastaturet. */
+  var SR=window.SpeechRecognition||window.webkitSpeechRecognition, mik=document.getElementById('nr-mik'), gj=null;
+  if(!SR){mik.hidden=true}
+  else{
+    mik.onclick=function(){
+      if(gj){try{gj.stop()}catch(e){} return}
+      gj=new SR(); gj.lang='nb-NO'; gj.interimResults=true; gj.continuous=false;
+      var start=tIn.value?tIn.value+' ':'';
+      gj.onresult=function(ev){var t='';for(var i=ev.resultIndex;i<ev.results.length;i++)t+=ev.results[i][0].transcript;tIn.value=start+t};
+      gj.onerror=function(){toast('Fikk ikke tak i mikrofonen — skriv i stedet');};
+      gj.onend=function(){mik.classList.remove('paa');gj=null};
+      try{gj.start();mik.classList.add('paa');toast('Snakk nå …')}catch(e){gj=null}
+    };
+  }
+  document.getElementById('nr-lagre').onclick=function(){
+    var tekst=tIn.value.trim(), dato=dIn.value;
+    if(!tekst){tIn.focus();toast('Skriv hva som må gjøres');return}
+    if(!dato){settDato(0);dato=dIn.value}
+    var person=tilPerson||valgt||'thor';
+    var id='x-'+Date.now().toString(36);
+    var o={id:id,navn:tekst,ikon:'📌',kat:'Vedlikehold',int:'dato',dato:dato,hvem:[person],poeng:1,min:0,egen:true,aktiv:true,by:person,ts:new Date().toISOString()};
+    OPPG.push(o);
+    try{localStorage.setItem('ft-oppg',JSON.stringify(OPPG))}catch(e){}
+    if(db){db.child('oppgaver/'+id).set(o).catch(function(){status('Kunne ikke lagre delt — ligger på denne enheten.')})}
+    tIn.value=''; settDato(0); tegn(); settHvem(valgt||'thor');
+    toast((person===valgt?'Lagt til ':PMAP[person].navn+': ') + (dato===ymd(NAA)?'i dag':datoNorsk(new Date(dato+'T00:00:00'))) + ' ✓');
+  };
+  tIn.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();document.getElementById('nr-lagre').click()}});
+})();
 fyllHvem();
 try{var lo=JSON.parse(localStorage.getItem('ft-oppg')||'null');if(lo&&lo.length)OPPG=lo}catch(e){}
 try{var li=JSON.parse(localStorage.getItem('ft-innst')||'null');if(li)INNST=li}catch(e){}
