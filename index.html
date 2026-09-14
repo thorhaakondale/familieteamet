@@ -365,7 +365,7 @@ details.om .in{padding:8px 0 0;font-size:14px;max-width:70ch}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.11.0';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.12.2';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -591,7 +591,8 @@ function forfalte(){
       var passert=(w>0)||(s.dag<dIdx); if(!passert) return;
       if(addDays(m,s.dag)<STARTDATO) return; /* ingenting fra før appen fantes */
       if(erGjort(k,s.key)) return;
-      if(s.o.int==='dato'&&w>2) return; /* engangsoppgaver eldre enn to uker slipper vi */
+      /* engangsoppgaver med dato henger igjen til de er krysset av (Thors regel 14.9.2026).
+         Ingen utløpsdato — vil du bli kvitt den, kryss den av eller flytt datoen i banken. */
       if(valgt&&s.person!==valgt) return;
       /* periodiske: bare den nyeste ugjorte forekomsten per oppgave og person */
       if(ut.some(function(x){return x.o.id===s.o.id&&x.person===s.person})) return;
@@ -646,7 +647,8 @@ function tegnIdag(){
       if(s.byttet) meta='⇄ for '+PMAP[s.orig].navn+' · '+meta;
       if(s.flyttet) meta='→ fra '+DAGK[s.fraDag]+' · '+meta;
       if(s.utsatt&&s.fraDato) meta='⏭ utsatt fra '+datoNorsk(s.fraDato)+' · '+meta;
-      if(s.forfalt) meta='skulle vært '+DAGK[s.dag]+' '+datoNorsk(s.dato)+' · '+meta;
+      if(s.forfalt){var dg=Math.round((new Date(NAA.getFullYear(),NAA.getMonth(),NAA.getDate())-new Date(s.dato.getFullYear(),s.dato.getMonth(),s.dato.getDate()))/86400000);
+        meta='skulle vært '+DAGK[s.dag]+' '+datoNorsk(s.dato)+(dg>6?' · <b>'+dg+' dager forfalt</b>':'')+' · '+meta;}
       var tk=s.ukeKey||key;
       html+='<div class="tile'+(done?' done':'')+(s.forfalt?' hg':'')+'" style="--pc:'+p.farge+'"><button class="tmain" data-k="'+esc(tk)+'" data-s="'+esc(s.key)+'" data-p="'+esc(s.person)+'" aria-pressed="'+done+'"><span class="chk">✓</span><span class="ik">'+s.o.ikon+'</span><span class="tx"><span class="nm">'+esc(s.o.navn)+mdTag(s.o,s.dato||NAA)+'</span><span class="mt">'+meta+'</span></span></button><span class="side"><span class="pt num">+'+s.o.poeng+'</span><button class="tb" title="Bytt oppgaven til en annen" aria-label="Bytt til en annen" data-k="'+esc(tk)+'" data-o="'+esc(s.o.id)+'" data-d="'+s.dag+'" data-fra="'+esc(s.orig)+'" data-naa="'+esc(s.person)+'" data-dag0="'+(s.flyttet?s.fraDag:s.dag)+'"'+(s.utsatt?' data-uts="'+esc(s.fraUke)+'" data-utsk="'+esc(s.fraKey)+'"':'')+'>⇄</button></span></div>';
     });
