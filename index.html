@@ -92,6 +92,10 @@ b,strong{font-weight:800}
 .tile .tx .pt{margin-left:6px;vertical-align:1px}
 #ark .ark-handling{display:flex;gap:8px;flex-wrap:wrap}
 #ark .ark-handling button{font:inherit;font-weight:800;font-size:14.5px;padding:11px 15px;min-height:44px;border-radius:10px;border:1.5px solid var(--line);background:transparent;color:var(--ink);cursor:pointer}
+#ark .dagrad{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+#ark .dagrad button{font:inherit;font-weight:800;font-size:14.5px;min-height:44px;padding:10px 14px;border-radius:999px;border:1.5px solid var(--line);background:transparent;color:var(--ink);cursor:pointer}
+#ark .dagrad button.naa{border-color:var(--ok);color:var(--ok);border-width:2px}
+#ark .dagrad input[type=date]{font:inherit;font-size:14.5px;min-height:44px;padding:9px 12px;border:1.5px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink)}
 dialog#ark{border:0;border-radius:16px;padding:0;max-width:560px;width:calc(100% - 28px);background:var(--card);color:var(--ink);box-shadow:0 18px 50px rgba(0,0,0,.28)}
 dialog#ark::backdrop{background:rgba(0,0,0,.45)}
 #ark .ark-inn{padding:18px 18px calc(18px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:12px}
@@ -390,7 +394,7 @@ details.om .in{padding:8px 0 0;font-size:14px;max-width:70ch}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.13.2';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.14.0';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -557,10 +561,11 @@ function aapneArk(id,knapp){
   if(voksen){les.hidden=true;ta.hidden=false;lag.hidden=false;ta.value=o.notat||'';
     document.getElementById('ark-hint').textContent='Linjeskift blir egne linjer. Lagre skriver til alle enhetene.'}
   else{les.hidden=false;ta.hidden=true;lag.hidden=true;les.textContent=o.notat||'';
-    document.getElementById('ark-hint').textContent='Du kan bytte oppgaven til noen andre eller flytte dagen med knappen over.'}
+    document.getElementById('ark-hint').textContent='Du kan flytte dagen rett over her, eller bytte oppgaven til noen andre.'}
   var d=document.getElementById('ark');
+  byggDagrad(o,knapp,d);
   var hr=document.getElementById('ark-handling');
-  hr.innerHTML='<button type="button" id="ark-bytt">⇄ Bytt til noen andre eller flytt dagen</button>';
+  hr.innerHTML='<button type="button" id="ark-bytt">⇄ Bytt til noen andre</button>';
   document.getElementById('ark-bytt').onclick=function(ev){
     if(ev)ev.stopPropagation();
     d.close();
@@ -573,6 +578,45 @@ function aapneArk(id,knapp){
   };
   d.dataset.id=id;
   if(!d.open)d.showModal();
+}
+function arkTb(knapp){return knapp&&knapp.parentNode?knapp.parentNode.querySelector('.tb'):null}
+function byggDagrad(o,knapp,d){ /* v1.14: dagen endres rett i kortet — den klart mest brukte handlingen */
+  var rad=document.getElementById('ark-dagrad'); rad.innerHTML='';
+  var tb=arkTb(knapp); if(!tb){return}
+  var ds=tb.dataset, lbl=document.createElement('span');
+  lbl.className='ark-lbl'; lbl.textContent=(o.int==='dato'?'Dag':'Flytt innenfor uka');
+  var v=document.createElement('div'); v.className='dagrad';
+  rad.appendChild(lbl); rad.appendChild(v);
+  function knapp2(tekst,naa,fn){var k=document.createElement('button');k.type='button';k.textContent=tekst;
+    if(naa)k.className='naa';k.onclick=function(ev){ev.stopPropagation();d.close();setTimeout(fn,0)};v.appendChild(k);return k}
+
+  if(o.int==='dato'){
+    var naaDato=o.dato||ymd(NAA);
+    var basis=new Date(naaDato+'T00:00:00');
+    [[0,'I dag'],[1,'I morgen'],[2,'Om 2 dager'],[7,'Neste uke']].forEach(function(x){
+      var mål=ymd(addDays(NAA,x[0]));
+      knapp2(x[1], mål===naaDato, function(){settDagFor(o,ds,mål)});
+    });
+    var di=document.createElement('input'); di.type='date'; di.value=naaDato;
+    di.onclick=function(e){e.stopPropagation()};
+    di.onchange=function(e){e.stopPropagation();if(!di.value)return;var val=di.value;d.close();setTimeout(function(){settDagFor(o,ds,val)},0)};
+    v.appendChild(di);
+  } else {
+    for(var i=0;i<7;i++){(function(i){
+      knapp2(DAGK[i], i===+ds.d, function(){flytt(ds.k,o,+ds.dag0,ds.fra,i===+ds.dag0?null:i)});
+    })(i)}
+  }
+}
+function settDagFor(o,ds,dato){
+  if(o.egen){ /* huskelapp: den flyttes, den «utsettes» ikke — datoen er hele oppgaven */
+    if(ds.uts)utsett(ds.k,o,+ds.dag0,ds.fra,null);
+    o.dato=dato; o.ts=new Date().toISOString();
+    try{localStorage.setItem('ft-oppg',JSON.stringify(OPPG))}catch(e){}
+    if(db){var dok=JSON.parse(JSON.stringify(o));if(!dok.rull)delete dok.rull;db.child('oppgaver/'+o.id).set(dok).catch(function(){status('Kunne ikke lagre delt.')})}
+    tegn(); toast('Flyttet til '+datoNorsk(new Date(dato+'T00:00:00')));
+  } else { /* planlagt engangsoppgave: utsettelsen skal synes, som før */
+    utsett(ds.k,o,+ds.dag0,ds.fra,dato);
+  }
 }
 function lagreArk(){
   var d=document.getElementById('ark'), id=d.dataset.id;
@@ -1154,6 +1198,7 @@ if('serviceWorker' in navigator){window.addEventListener('load',function(){navig
     <div class="ark-topp"><span class="ark-ik" id="ark-ik"></span><h3 id="ark-navn"></h3><button type="button" class="ark-x" id="ark-x" aria-label="Lukk uten å lagre">✕</button></div>
     <p class="ark-meta" id="ark-meta"></p>
     <div id="ark-lenkerad"></div>
+    <div id="ark-dagrad"></div>
     <div class="ark-handling" id="ark-handling"></div>
     <span class="ark-lbl" id="ark-lbl">Notat</span>
     <p class="ark-notat" id="ark-les"></p>
