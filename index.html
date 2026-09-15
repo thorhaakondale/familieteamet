@@ -84,8 +84,14 @@ b,strong{font-weight:800}
 .tile .tmain{display:flex;align-items:center;gap:8px;flex:1;min-width:0;padding:6px 4px 6px 9px;border:0;background:transparent;font:inherit;color:inherit;text-align:left;cursor:pointer;border-radius:10px}
 .tile .tmain:focus-visible{outline:3px solid var(--erik);outline-offset:-3px}
 .tile .tb{border:0;background:transparent;color:var(--muted);font:inherit;font-size:15px;padding:2px 8px;cursor:pointer;border-radius:8px;line-height:1.2}
-.tile .ti{border:0;background:transparent;color:var(--muted);font:inherit;font-size:15px;padding:2px 6px;cursor:pointer;border-radius:8px;line-height:1.2}
+.tile .ti{display:grid;place-items:center;border:0;background:transparent;color:var(--muted);font:inherit;font-size:20px;line-height:1;cursor:pointer;border-radius:12px;flex:none;width:44px;height:44px}
 .tile .ti:hover{background:var(--line2)}
+.tile .ti:active{background:var(--line)}
+.tile .ti:focus-visible{outline:3px solid var(--erik);outline-offset:-3px}
+.tile .side .tb[hidden]{display:none}
+.tile .tx .pt{margin-left:6px;vertical-align:1px}
+#ark .ark-handling{display:flex;gap:8px;flex-wrap:wrap}
+#ark .ark-handling button{font:inherit;font-weight:800;font-size:14.5px;padding:11px 15px;min-height:44px;border-radius:10px;border:1.5px solid var(--line);background:transparent;color:var(--ink);cursor:pointer}
 dialog#ark{border:0;border-radius:16px;padding:0;max-width:560px;width:calc(100% - 28px);background:var(--card);color:var(--ink);box-shadow:0 18px 50px rgba(0,0,0,.28)}
 dialog#ark::backdrop{background:rgba(0,0,0,.45)}
 #ark .ark-inn{padding:18px 18px calc(18px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:12px}
@@ -143,7 +149,7 @@ dialog#ark::backdrop{background:rgba(0,0,0,.45)}
 #nr-lagre{width:100%}
 .tile .nm{display:block;font-weight:800;font-size:14px;line-height:1.2;overflow-wrap:anywhere;hyphens:auto}
 .tile .mt{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;font-size:11.5px;color:var(--muted);margin-top:1px;overflow:hidden;line-height:1.25}
-.tile .side{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:0 0 34px;gap:0}
+.tile .side{display:flex;flex-direction:row;align-items:center;justify-content:flex-end;flex:none;gap:0;margin-left:10px}
 .tile .pt{font-weight:900;font-size:13px;color:var(--pc);white-space:nowrap;line-height:1}
 .tile.done{background:var(--okbg);border-color:var(--ok)}
 .tile.done .nm{text-decoration:line-through;color:var(--ink2)}
@@ -384,7 +390,7 @@ details.om .in{padding:8px 0 0;font-size:14px;max-width:70ch}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.13.0';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.13.2';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -521,7 +527,7 @@ var visUke=mandag(NAA);
 var AAPNE_PAA_TRYKK=false; /* true = trykk på hele ruta åpner arket i stedet for å hake av (Apple Påminnelser-oppførsel) */
 function erVoksen(){return valgt===null||valgt==='thor'||valgt==='anniken'}
 function kortNotat(t){t=String(t).replace(/\s+/g,' ').trim();return t.length>58?t.slice(0,58)+'…':t}
-function arkKnapp(o){return (o.notat||o.lenke)?'<button class="ti" title="Vis detaljer" aria-label="Vis detaljer" data-ark="'+esc(o.id)+'">ⓘ</button>':''}
+function arkKnapp(o){return '<button class="ti" title="Detaljer, bytt og flytt" aria-label="Detaljer, bytt og flytt" data-ark="'+esc(o.id)+'">'+((o.notat||o.lenke)?'ⓘ':'⋯')+'</button>'}
 function rytmeTekst(o){
   var d=DAGER[o.dag||0];
   if(o.int==='daglig')return 'hver dag';
@@ -531,7 +537,7 @@ function rytmeTekst(o){
   if(o.int==='dato')return o.dato?('én gang: '+datoNorsk(new Date(o.dato+'T00:00:00'))+o.dato.slice(0,4)):'én gang';
   return o.int||'';
 }
-function aapneArk(id){
+function aapneArk(id,knapp){
   if(!arkInit())return;
   var o=OPPG.filter(function(x){return x.id===id})[0]; if(!o)return;
   var voksen=erVoksen();
@@ -551,8 +557,21 @@ function aapneArk(id){
   if(voksen){les.hidden=true;ta.hidden=false;lag.hidden=false;ta.value=o.notat||'';
     document.getElementById('ark-hint').textContent='Linjeskift blir egne linjer. Lagre skriver til alle enhetene.'}
   else{les.hidden=false;ta.hidden=true;lag.hidden=true;les.textContent=o.notat||'';
-    document.getElementById('ark-hint').textContent='Vil du bytte oppgaven til noen andre eller flytte den til en annen dag? Bruk ⇄ på ruta.'}
-  var d=document.getElementById('ark'); d.dataset.id=id;
+    document.getElementById('ark-hint').textContent='Du kan bytte oppgaven til noen andre eller flytte dagen med knappen over.'}
+  var d=document.getElementById('ark');
+  var hr=document.getElementById('ark-handling');
+  hr.innerHTML='<button type="button" id="ark-bytt">⇄ Bytt til noen andre eller flytt dagen</button>';
+  document.getElementById('ark-bytt').onclick=function(ev){
+    if(ev)ev.stopPropagation();
+    d.close();
+    var tb=knapp&&knapp.parentNode?knapp.parentNode.querySelector('.tb'):null;
+    if(!tb)return;
+    /* Den gamle ⇄-handleren registrerer «klikk hvor som helst lukker menyen» på document.
+       Bygges menyen mens VÅRT klikk fortsatt bobler, rekker den lytteren å fyre med en gang
+       og menyen forsvinner. Derfor bygges den i en ny oppgave, etter at klikket er helt ferdig. */
+    setTimeout(function(){tb.hidden=false;tb.click();tb.hidden=true},0);
+  };
+  d.dataset.id=id;
   if(!d.open)d.showModal();
 }
 function lagreArk(){
@@ -718,7 +737,7 @@ function tegnIdag(){
         var alleD=s.felles.every(function(x){return erGjort(fk,x.key)}), antD=s.felles.filter(function(x){return erGjort(fk,x.key)}).length;
         var av=s.felles.map(function(x){var q=PMAP[x.person];return '<span class="av'+(erGjort(fk,x.key)?' ok':'')+'" style="--pc:'+q.farge+'" title="'+esc(q.navn)+'">'+esc(q.kort)+'</span>'}).join('');
         var metaF=(s.o.min?s.o.min+' min · ':'')+'alle sammen · '+antD+' av '+s.felles.length+(s.o.notat||s.o.lenke?' · trykk ⓘ for stegene':'');
-        html+='<div class="tile'+(alleD?' done':'')+'" style="--pc:var(--accent)"><button class="tmain" data-k="'+esc(fk)+'" data-f="'+esc(s.felles.map(function(x){return x.key}).join(','))+'" aria-pressed="'+alleD+'"><span class="chk">✓</span><span class="ik">'+s.o.ikon+'</span><span class="tx"><span class="nm">'+esc(s.o.navn)+'</span><span class="mt">'+metaF+'</span><span class="avs">'+av+'</span></span></button><span class="side"><span class="pt num">+'+(s.o.poeng*s.felles.length)+'</span>'+arkKnapp(s.o)+'<button class="tb" title="Utsett for alle" aria-label="Utsett for alle" data-k="'+esc(s.felles[0].ukeKey||key)+'" data-o="'+esc(s.o.id)+'" data-d="'+s.dag+'" data-dag0="'+(s.felles[0].flyttet?s.felles[0].fraDag:s.dag)+'" data-felles="'+esc(s.felles.map(function(x){return x.orig}).join(','))+'">⇄</button></span></div>';
+        html+='<div class="tile'+(alleD?' done':'')+'" style="--pc:var(--accent)"><button class="tmain" data-k="'+esc(fk)+'" data-f="'+esc(s.felles.map(function(x){return x.key}).join(','))+'" aria-pressed="'+alleD+'"><span class="chk">✓</span><span class="ik">'+s.o.ikon+'</span><span class="tx"><span class="nm">'+esc(s.o.navn)+'<span class="pt num">+'+(s.o.poeng*s.felles.length)+'</span></span><span class="mt">'+metaF+'</span><span class="avs">'+av+'</span></span></button><span class="side">'+arkKnapp(s.o)+'<button hidden class="tb" title="Utsett for alle" aria-label="Utsett for alle" data-k="'+esc(s.felles[0].ukeKey||key)+'" data-o="'+esc(s.o.id)+'" data-d="'+s.dag+'" data-dag0="'+(s.felles[0].flyttet?s.felles[0].fraDag:s.dag)+'" data-felles="'+esc(s.felles.map(function(x){return x.orig}).join(','))+'">⇄</button></span></div>';
         return;
       }
       var done=erGjort(s.ukeKey||key,s.key), p=PMAP[s.person];
@@ -731,7 +750,7 @@ function tegnIdag(){
         meta='skulle vært '+DAGK[s.dag]+' '+datoNorsk(s.dato)+(dg>6?' · <b>'+dg+' dager forfalt</b>':'')+' · '+meta;}
       meta=meta.replace(/^(\s*·\s*)+/,'').replace(/(\s*·\s*)+$/,''); /* huskelapper uten minutter skal ikke ende på en ensom prikk */
       var tk=s.ukeKey||key;
-      html+='<div class="tile'+(done?' done':'')+(s.forfalt?' hg':'')+'" style="--pc:'+p.farge+'"><button class="tmain" data-k="'+esc(tk)+'" data-s="'+esc(s.key)+'" data-p="'+esc(s.person)+'" aria-pressed="'+done+'"><span class="chk">✓</span><span class="ik">'+s.o.ikon+'</span><span class="tx"><span class="nm">'+esc(s.o.navn)+mdTag(s.o,s.dato||NAA)+'</span><span class="mt">'+meta+'</span></span></button><span class="side"><span class="pt num">+'+s.o.poeng+'</span>'+arkKnapp(s.o)+'<button class="tb" title="Bytt oppgaven til en annen" aria-label="Bytt til en annen" data-k="'+esc(tk)+'" data-o="'+esc(s.o.id)+'" data-d="'+s.dag+'" data-fra="'+esc(s.orig)+'" data-naa="'+esc(s.person)+'" data-dag0="'+(s.flyttet?s.fraDag:s.dag)+'"'+(s.utsatt?' data-uts="'+esc(s.fraUke)+'" data-utsk="'+esc(s.fraKey)+'"':'')+'>⇄</button></span></div>';
+      html+='<div class="tile'+(done?' done':'')+(s.forfalt?' hg':'')+'" style="--pc:'+p.farge+'"><button class="tmain" data-k="'+esc(tk)+'" data-s="'+esc(s.key)+'" data-p="'+esc(s.person)+'" aria-pressed="'+done+'"><span class="chk">✓</span><span class="ik">'+s.o.ikon+'</span><span class="tx"><span class="nm">'+esc(s.o.navn)+mdTag(s.o,s.dato||NAA)+'<span class="pt num">+'+s.o.poeng+'</span></span><span class="mt">'+meta+'</span></span></button><span class="side">'+arkKnapp(s.o)+'<button hidden class="tb" title="Bytt oppgaven til en annen" aria-label="Bytt til en annen" data-k="'+esc(tk)+'" data-o="'+esc(s.o.id)+'" data-d="'+s.dag+'" data-fra="'+esc(s.orig)+'" data-naa="'+esc(s.person)+'" data-dag0="'+(s.flyttet?s.fraDag:s.dag)+'"'+(s.utsatt?' data-uts="'+esc(s.fraUke)+'" data-utsk="'+esc(s.fraKey)+'"':'')+'>⇄</button></span></div>';
     });
     html+='</div>';
   });
@@ -753,7 +772,7 @@ function tegnIdag(){
   if(!html) html='<p class="tom">Ingen oppgaver i dag — fri! 🎉</p>';
   var el=document.getElementById('idag-liste');el.innerHTML=frem+html;
   el.querySelectorAll('.gk').forEach(function(b){b.onclick=function(){toggle(b.dataset.k,b.dataset.s,b.dataset.p)}});
-  el.querySelectorAll('.ti').forEach(function(b){b.onclick=function(ev){ev.stopPropagation();aapneArk(b.dataset.ark)}});
+  el.querySelectorAll('.ti').forEach(function(b){b.onclick=function(ev){ev.stopPropagation();aapneArk(b.dataset.ark,b)}});
   el.querySelectorAll('.tmain').forEach(function(b){b.onclick=function(){
     if(b.dataset.f){var keys=b.dataset.f.split(','),alle=keys.every(function(k){return erGjort(b.dataset.k,k)});
       keys.forEach(function(k){if(erGjort(b.dataset.k,k)===alle)toggle(b.dataset.k,k,k.split('|')[2])});return}
@@ -1135,6 +1154,7 @@ if('serviceWorker' in navigator){window.addEventListener('load',function(){navig
     <div class="ark-topp"><span class="ark-ik" id="ark-ik"></span><h3 id="ark-navn"></h3><button type="button" class="ark-x" id="ark-x" aria-label="Lukk uten å lagre">✕</button></div>
     <p class="ark-meta" id="ark-meta"></p>
     <div id="ark-lenkerad"></div>
+    <div class="ark-handling" id="ark-handling"></div>
     <span class="ark-lbl" id="ark-lbl">Notat</span>
     <p class="ark-notat" id="ark-les"></p>
     <textarea id="ark-notat" aria-labelledby="ark-lbl"></textarea>
