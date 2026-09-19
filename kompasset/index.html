@@ -1,0 +1,496 @@
+<!doctype html>
+<html lang="nb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#fbeff4">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Kompasset">
+<meta name="robots" content="noindex">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; form-action 'none'; base-uri 'none'">
+<title>Kompasset</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-192.png">
+<style>
+:root{
+  --bg:#fbeff4; --kort:#ffffff; --kant:#efd5e0; --tx:#22141b; --tx2:#4a3340; --mut:#75596a;
+  --ag:#c2417a; --agm:#a8326a; --agbg:rgba(194,65,122,.11); --myk:#f6e1ea;
+  --god:#1f7a4d; --godbg:#e6f4ec; --varsel:#9a5b00; --varselbg:#fdf1dc;
+  --skygge:0 1px 2px rgba(60,20,40,.05),0 3px 10px rgba(60,20,40,.05);
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#1b1317; --kort:#261a20; --kant:#43303a; --tx:#f6eaf0; --tx2:#dcc7d2; --mut:#ab93a0;
+  --ag:#e77aa8; --agm:#f08fb8; --agbg:rgba(231,122,168,.16); --myk:#33232b;
+  --god:#5fcf96; --godbg:#16301f; --varsel:#f0b35a; --varselbg:#36280f;
+  --skygge:0 1px 2px rgba(0,0,0,.35),0 3px 12px rgba(0,0,0,.3);
+}}
+*{box-sizing:border-box}
+html,body{overflow-x:clip;max-width:100%}
+body{margin:0;background:var(--bg);color:var(--tx);font:16.5px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums;padding-bottom:calc(78px + env(safe-area-inset-bottom))}
+.topp{position:sticky;top:0;z-index:50;background:var(--bg);border-bottom:1px solid var(--kant);padding:calc(10px + env(safe-area-inset-top)) 16px 10px;display:flex;align-items:baseline;gap:10px}
+.topp h1{font-size:19px;margin:0;font-weight:800;letter-spacing:-.01em}
+.topp span{font-size:13px;color:var(--mut)}
+main{max-width:620px;margin:0 auto;padding:14px 16px 8px}
+.fane{display:none}.fane.aktiv{display:block}
+h2{font-size:21px;line-height:1.2;margin:4px 0 4px;font-weight:800;letter-spacing:-.01em}
+h3{font-size:16.5px;margin:0 0 6px;font-weight:700;line-height:1.3}
+p{margin:0 0 10px}
+.ing{color:var(--mut);font-size:14.5px;margin:0 0 12px}
+.kort{background:var(--kort);border:1px solid var(--kant);border-radius:14px;padding:14px 16px;margin:0 0 12px;box-shadow:var(--skygge)}
+.kort.rosa{background:var(--agbg);border-color:transparent;box-shadow:none}
+.merk{font-size:11.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--agm);display:block;margin-bottom:2px}
+.liten{font-size:13.5px;color:var(--mut)}
+label.f{display:flex;flex-direction:column;gap:3px;font-size:13.5px;font-weight:600;color:var(--tx2);margin:0 0 10px}
+.to{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
+input[type=text],input[type=time],input[type=number],input[type=date],select,textarea{font:inherit;font-size:16.5px;color:var(--tx);background:var(--bg);border:1px solid var(--kant);border-radius:10px;padding:9px 11px;width:100%;min-width:0;-webkit-appearance:none;appearance:none}
+textarea{min-height:70px;resize:vertical}
+:focus-visible{outline:2px solid var(--ag);outline-offset:2px}
+.knapp{font:inherit;font-size:16px;font-weight:700;border:0;border-radius:11px;padding:11px 18px;background:var(--ag);color:#fff;cursor:pointer;min-height:44px}
+@media (prefers-color-scheme:dark){.knapp{color:#1b1317}}
+.knapp.sek{background:transparent;color:var(--tx);border:1px solid var(--kant);font-weight:600}
+.knapp.sm{font-size:14px;padding:6px 12px;min-height:36px}
+.rad{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.valg{display:flex;flex-wrap:wrap;gap:6px;margin:2px 0 10px}
+.valg label{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--kant);border-radius:999px;padding:8px 14px;font-size:15px;font-weight:600;background:var(--bg);cursor:pointer;min-height:40px}
+.valg input{position:absolute;opacity:0;width:1px;height:1px}
+.valg label:has(input:checked){background:var(--ag);border-color:var(--ag);color:#fff}
+@media (prefers-color-scheme:dark){.valg label:has(input:checked){color:#1b1317}}
+.valg label:has(input:focus-visible){outline:2px solid var(--ag);outline-offset:2px}
+.bryter{display:inline-flex;border:1px solid var(--kant);border-radius:999px;overflow:hidden;margin:0 0 10px;background:var(--kort)}
+.bryter button{font:inherit;font-size:15px;font-weight:700;border:0;background:transparent;color:var(--mut);padding:8px 18px;cursor:pointer;min-height:40px}
+.bryter button[aria-pressed=true]{background:var(--ag);color:#fff}
+@media (prefers-color-scheme:dark){.bryter button[aria-pressed=true]{color:#1b1317}}
+.fliser{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:0 0 10px}
+.flis{background:var(--myk);border-radius:11px;padding:9px 12px}
+.flis .l{font-size:11.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--mut)}
+.flis .v{font-size:21px;font-weight:800;line-height:1.2}
+.flis .s{font-size:12.5px;color:var(--mut);line-height:1.3}
+.liste{list-style:none;margin:0;padding:0}
+.liste li{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-top:1px solid var(--kant);font-size:16px;line-height:1.4}
+.liste li:first-child{border-top:0}
+.liste li .t{flex:1;min-width:0;overflow-wrap:anywhere}
+.liste li.gjort .t{text-decoration:line-through;color:var(--mut)}
+.liste input[type=checkbox]{width:22px;height:22px;margin:1px 0 0;accent-color:var(--ag);flex:none}
+.x{border:0;background:none;color:var(--mut);font-size:17px;cursor:pointer;padding:0 4px;min-height:32px}
+.tanke{font-size:18px;line-height:1.45;font-weight:600;margin:0}
+.steg{display:none}.steg.aktiv{display:block}
+.trinn{display:flex;gap:10px;padding:10px 0;border-top:1px solid var(--kant)}
+.trinn:first-of-type{border-top:0}
+.trinn b{flex:none;width:66px;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--agm);padding-top:2px}
+.trinn div{flex:1}
+details{border-top:1px solid var(--kant);padding:10px 0}
+details:first-of-type{border-top:0}
+summary{cursor:pointer;font-weight:700}
+details>div{padding-top:8px;font-size:15.5px}
+.status{font-size:13.5px;color:var(--mut)}
+.laas{display:flex;gap:10px;align-items:flex-start;background:var(--godbg);color:var(--tx);border-radius:12px;padding:10px 13px;margin:0 0 12px;font-size:14.5px;line-height:1.4}
+.laas i{font-style:normal;font-size:19px;line-height:1.2;flex:none}
+.laas b{color:var(--god)}
+.laas button{font:inherit;font-size:14px;font-weight:700;border:0;background:none;color:var(--god);padding:0;text-decoration:underline;cursor:pointer}
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:60;background:var(--kort);border-top:1px solid var(--kant);display:grid;grid-template-columns:repeat(4,1fr);padding:6px 6px calc(6px + env(safe-area-inset-bottom))}
+.nav button{font:inherit;border:0;background:none;color:var(--mut);display:flex;flex-direction:column;align-items:center;gap:1px;font-size:12px;font-weight:700;padding:5px 2px;border-radius:10px;cursor:pointer;min-height:52px}
+.nav button i{font-style:normal;font-size:21px;line-height:1.1}
+.nav button[aria-current=page]{color:var(--agm);background:var(--agbg)}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<header class="topp"><h1>Kompasset</h1><span id="topp-dato"></span></header>
+<main>
+
+<!-- ================= I DAG ================= -->
+<section class="fane aktiv" id="f-idag">
+  <div class="kort rosa" id="velkommen" hidden>
+    <span class="merk">Første gang</span>
+    <h3>Ti minutter, så er appen din</h3>
+    <p style="margin:0 0 10px">Rådene her blir bedre når de bygger på dine egne ord. Gå til <b>Rytme → Bli kjent</b> når du har ro. Alt du skriver blir liggende på denne telefonen — ingen andre ser det.</p>
+    <button class="knapp sm" type="button" data-gaa="rytme" id="vk-gaa">Ta den nå</button>
+    <button class="knapp sek sm" type="button" id="vk-senere">Senere</button>
+  </div>
+
+  <div class="laas"><i>🔒</i><div><b>Bare på din telefon.</b> Det du skriver her blir aldri sendt noe sted — ingen konto, ingen server, ingen andre ser det. <button type="button" id="laas-mer">Slik vet du det</button></div></div>
+
+  <div class="kort rosa"><span class="merk" id="raad-merk">Dagens råd</span><p class="tanke" id="raad">Fyll inn morgenen, så får du ett råd for dagen.</p></div>
+
+  <div class="bryter" role="group" aria-label="Morgen eller kveld">
+    <button type="button" id="b-morgen" aria-pressed="true">☀️ Morgen</button>
+    <button type="button" id="b-kveld" aria-pressed="false">🌙 Kveld</button>
+  </div>
+
+  <form class="kort" id="s-morgen" autocomplete="off">
+    <h3>Natta — omtrent er godt nok</h3>
+    <p class="liten">Anslå. Ikke se på klokka om natta — det er en av tingene som holder søvnløshet ved like.</p>
+    <div class="to">
+      <label class="f">La meg for å sove<input type="time" id="m-legg"></label>
+      <label class="f">Sto opp<input type="time" id="m-opp"></label>
+      <label class="f">Min. før jeg sovnet<input type="number" id="m-latens" min="0" max="600" inputmode="numeric"></label>
+      <label class="f">Min. våken i natt<input type="number" id="m-vaaken" min="0" max="600" inputmode="numeric"></label>
+    </div>
+    <label class="f">Våknet for godt (hvis før du sto opp)<input type="time" id="m-vaknet"></label>
+    <div class="liten" style="font-weight:600;color:var(--tx2)">Sovemedisin i går kveld</div>
+    <div class="valg"><label><input type="radio" name="m-med" value="nei">Nei</label><label><input type="radio" name="m-med" value="halv">Halv</label><label><input type="radio" name="m-med" value="hel">Hel</label></div>
+    <div class="liten" style="font-weight:600;color:var(--tx2)">Hvordan kjennes natta? 1 = elendig · 5 = uthvilt</div>
+    <div class="valg"><label><input type="radio" name="m-kval" value="1">1</label><label><input type="radio" name="m-kval" value="2">2</label><label><input type="radio" name="m-kval" value="3">3</label><label><input type="radio" name="m-kval" value="4">4</label><label><input type="radio" name="m-kval" value="5">5</label></div>
+    <label class="f">Én ting for meg selv i dag<input type="text" id="m-meg" maxlength="120" placeholder="valgfritt"></label>
+    <div class="rad"><button class="knapp" type="submit">Lagre morgenen</button><span class="status" id="m-status"></span></div>
+  </form>
+
+  <form class="kort" id="s-kveld" autocomplete="off" hidden>
+    <h3>Sett strek</h3>
+    <p class="liten">Rett før mobilen går på lading utenfor soverommet. Overleveringen skrives helst i notatboka — her setter du bare streken.</p>
+    <div class="liten" style="font-weight:600;color:var(--tx2)">Energien i dag</div>
+    <div class="valg"><label><input type="radio" name="k-energi" value="rod">🔴 Tom</label><label><input type="radio" name="k-energi" value="gul">🟡 Grei</label><label><input type="radio" name="k-energi" value="gronn">🟢 Overskudd</label></div>
+    <label class="f">Maks tre ting som MÅ skje i morgen<textarea id="k-tre" maxlength="400" placeholder="én per linje — valgfritt"></textarea></label>
+    <label class="f">Én ting som gikk bra i dag<input type="text" id="k-bra" maxlength="160" placeholder="valgfritt — liten er fint"></label>
+    <label class="f" style="flex-direction:row;align-items:center;gap:10px;font-size:16px;color:var(--tx)"><input type="checkbox" id="k-strek" style="width:24px;height:24px;flex:none;accent-color:var(--ag);-webkit-appearance:auto;appearance:auto"> Streken er satt. Resten står i boka.</label>
+    <div class="rad"><button class="knapp" type="submit">Lagre kvelden</button><span class="status" id="k-status"></span></div>
+  </form>
+
+  <div class="kort">
+    <h3>Siste sju netter</h3>
+    <div class="fliser" id="uke-fliser"></div>
+    <p class="liten" id="uke-vindu" style="margin:0"></p>
+  </div>
+</section>
+
+<!-- ================= TANKER ================= -->
+<section class="fane" id="f-tanker">
+  <h2>Tanker</h2>
+  <p class="ing">Du trenger ikke svare på en tanke for å bli ferdig med den. Du trenger bare å bestemme når den får tid.</p>
+
+  <div class="kort">
+    <span class="merk">Når det kverner</span>
+    <div class="steg aktiv" id="tk-1">
+      <h3>1 · Gi det ett ord</h3>
+      <label class="f">Hva kverner?<input type="text" id="tk-ord" maxlength="60" placeholder="f.eks. «klinikken», «naboen», «søvnen»"></label>
+      <button class="knapp" type="button" id="tk-neste1">Videre</button>
+    </div>
+    <div class="steg" id="tk-2">
+      <h3>2 · Kan du gjøre noe med «<span id="tk-vis"></span>» i morgen?</h3>
+      <div class="rad" style="margin-bottom:6px">
+        <button class="knapp" type="button" id="tk-ja">Ja — parker det</button>
+        <button class="knapp sek" type="button" id="tk-nei">Nei — det er bare kverning</button>
+      </div>
+    </div>
+    <div class="steg" id="tk-3">
+      <h3 id="tk-3h"></h3>
+      <p id="tk-3p"></p>
+      <div class="kort rosa" style="margin:0 0 10px"><span class="merk">Støttetanke</span><p class="tanke" id="tk-stotte"></p></div>
+      <div class="rad"><button class="knapp sek sm" type="button" id="tk-annen">En annen</button><button class="knapp sm" type="button" id="tk-ferdig">Ferdig</button></div>
+    </div>
+  </div>
+
+  <div class="kort">
+    <h3>Bekymringskvarteret</h3>
+    <p class="liten">Et kvarter tidlig på kvelden, et par dager i uka, med penn. Alt som er parkert havner her — og får svar da, ikke i mørket.</p>
+    <ul class="liste" id="park-liste"></ul>
+  </div>
+
+  <div class="kort">
+    <h3>Støttetankene mine</h3>
+    <p class="liten">De som virker er de du kjenner igjen som sanne — ikke de som høres fine ut. Slett dem som ikke treffer, og skriv dine egne.</p>
+    <ul class="liste" id="st-liste"></ul>
+    <form class="rad" id="st-form" autocomplete="off" style="margin-top:8px"><input type="text" id="st-ny" maxlength="200" placeholder="Skriv din egen" style="flex:1;min-width:180px"><button class="knapp sm" type="submit">Legg til</button></form>
+  </div>
+
+  <div class="kort">
+    <h3>Hvorfor dette virker</h3>
+    <details><summary>Tanker er ikke oppgaver</summary><div>Hjernen holder uavsluttede saker varme til de er levert et sted. Å gi tanken ett ord og en tid («den tar jeg torsdag kl. 17:30») er nok til at den slipper — du trenger ikke løse den først.</div></details>
+    <details><summary>«Jeg har tanken at …»</summary><div>Sett de fire ordene foran en vond tanke. «Jeg er en dårlig venn» blir «jeg har tanken at jeg er en dårlig venn». Det høres lite ut, men det flytter deg fra å være inni tanken til å se på den. Tanker er ikke fakta.</div></details>
+    <details><summary>Om natta</summary><div>Tanker kl. 03 er dårligere enn de samme tankene kl. 15 — hjernen er i en annen kjemi. Regelen er derfor: ingenting avgjøres om natta. Våken mer enn omtrent tjue minutter: stå opp, dimmet lys, kjedelig bok, tilbake når du er søvnig.</div></details>
+    <details><summary>Når dette ikke er nok</summary><div>Appen er støtte, ikke behandling. Varer nedstemthet, uro eller søvnløshet ved, er fastlegen og psykologen de riktige — og det er et tegn på styrke å bruke dem.</div></details>
+  </div>
+</section>
+
+<!-- ================= FOLK ================= -->
+<section class="fane" id="f-folk">
+  <h2>Folk</h2>
+  <p class="ing">Invitasjoner følger initiativ — med forsinkelse. Den som inviterer to ganger, blir selv invitert. Ett initiativ i måneden er nok.</p>
+
+  <div class="kort">
+    <span class="merk">Lag en melding</span>
+    <label class="f">Til hvem<input type="text" id="inv-navn" maxlength="40" placeholder="fornavn"></label>
+    <label class="f">Hva<select id="inv-hva">
+      <option value="kaffe">Kaffe — bare oss to</option>
+      <option value="suppe">Suppesøndag hjemme hos oss</option>
+      <option value="tur">Søndagstur med familiene</option>
+      <option value="lek">Lekeavtale for barna</option>
+      <option value="gaa">Gåtur — en halvtime</option>
+    </select></label>
+    <div class="to">
+      <label class="f">Dato 1<input type="date" id="inv-d1"></label>
+      <label class="f">Dato 2<input type="date" id="inv-d2"></label>
+    </div>
+    <div class="kort rosa" style="margin:0 0 10px"><p id="inv-tekst" style="margin:0;font-size:16.5px;white-space:pre-wrap"></p></div>
+    <div class="rad"><button class="knapp" type="button" id="inv-kopier">Kopier meldingen</button><button class="knapp sek" type="button" id="inv-sendt">Sendt ✓</button><span class="status" id="inv-status"></span></div>
+    <p class="liten" style="margin:10px 0 0">To konkrete datoer slår alltid «vi burde ses». Den andre slipper å foreslå — bare velge.</p>
+  </div>
+
+  <div class="kort">
+    <h3>Denne måneden</h3>
+    <div class="fliser" id="folk-fliser"></div>
+    <ul class="liste" id="inv-logg"></ul>
+  </div>
+
+  <div class="kort">
+    <h3>Vennskapet som glapp — en trapp, ikke en samtale</h3>
+    <p class="liten">Skyldfølelse lyver om størrelsen: den som føler at hun sviktet, overvurderer nesten alltid hvor sint den andre er. Huk av trinnet når det kjennes ukomplisert.</p>
+    <ul class="liste" id="trapp"></ul>
+  </div>
+
+  <div class="kort">
+    <h3>Når noen ber om mer enn du har</h3>
+    <details><summary>Du skylder innsats i avtalt tid — ikke tilgjengelighet utenfor den</summary><div>Gjelder jobb, vakter og forventninger. Et nei til en ekstravakt er ikke et svik; det er drift.</div></details>
+    <details><summary>Setningen som kjøper deg tid</summary><div>«Jeg må sjekke uka mi — jeg svarer deg i morgen.» Den er alltid sann, og den flytter svaret fra magefølelsen til et tidspunkt der du har overskudd.</div></details>
+    <details><summary>Gi litt mer faen-testen</summary><div>Er dette mitt ansvar — eller noen andres forventning? Bare det første trenger et ja.</div></details>
+  </div>
+</section>
+
+<!-- ================= RYTME ================= -->
+<section class="fane" id="f-rytme">
+  <h2>Rytme</h2>
+  <p class="ing">Få faste punkter, samme sted hver gang. Blir det et pliktløp: kutt alt unntatt søndagskvarteret.</p>
+
+  <div class="kort">
+    <h3>Søndagskvarteret — 15 min sammen</h3>
+    <ul class="liste" id="sondag"></ul>
+    <p class="liten" style="margin:8px 0 0" id="sondag-uke"></p>
+  </div>
+
+  <div class="kort">
+    <h3>Rytmen</h3>
+    <div class="trinn"><b>Morgen</b><div>To minutter her, med kaffen. Rød dag = stryk noe, ikke press.</div></div>
+    <div class="trinn"><b>Dagslys</b><div>Ti minutter ute før lunsj. Trening og søvntiltak i ett.</div></div>
+    <div class="trinn"><b>Kveld</b><div>Jobb og admin stenger. Overlevering i notatboka, strek her, mobilen ut av soverommet.</div></div>
+    <div class="trinn"><b>Søndag</b><div>Kvarteret over.</div></div>
+    <div class="trinn"><b>Måned</b><div>Verdihjulet i Annikens kompass, ett initiativ under Folk, og månedsmelding til Liv.</div></div>
+  </div>
+
+  <div class="kort">
+    <h3>Søvnløypa</h3>
+    <div class="to">
+      <label class="f">Løypa startet<input type="date" id="lop-start"></label>
+      <label class="f">Fast opp-tid<input type="time" id="lop-opp"></label>
+    </div>
+    <div class="rad" style="margin-bottom:10px"><button class="knapp sek sm" type="button" id="lop-lagre">Lagre</button><span class="status" id="lop-status"></span></div>
+    <div class="kort rosa" style="margin:0 0 10px"><span class="merk" id="lop-uke">Ikke startet</span><p style="margin:0" id="lop-tekst">Snakk med fastlegen om nedtrapping og CBT-i før du starter uke 2. Uke 1 er bare dagbok og fast opp-tid — den kan begynne i morgen.</p></div>
+    <details><summary>Reglene som blir igjen</summary><div>Fast opp-tid alle dager · senga betyr søvn · bekymringskvarteret tidlig på kvelden · koffein før kl. 12 · hard trening ferdig før kl. 19 · slutt aldri brått på sovemedisin på egen hånd.</div></details>
+  </div>
+
+  <div class="kort" id="blikjent">
+    <span class="merk">Bli kjent</span>
+    <h3>Dine ord, ikke Livs</h3>
+    <p class="liten">Fem spørsmål. Svarene brukes bare til å gjøre rådene her til dine — og de forlater aldri denne telefonen.</p>
+    <label class="f">Hva er den typiske tanken som holder deg våken?<textarea id="bk-1" maxlength="300"></textarea></label>
+    <label class="f">Hva ville du sagt til en venninne som hadde akkurat den tanken?<textarea id="bk-2" maxlength="300"></textarea></label>
+    <label class="f">Hva gir deg energi som du har fått for lite av?<textarea id="bk-3" maxlength="300"></textarea></label>
+    <label class="f">Hva vil du være stolt av om fem år?<textarea id="bk-4" maxlength="300"></textarea></label>
+    <label class="f">Én person du vil ha nærmere<input type="text" id="bk-5" maxlength="40" placeholder="fornavn"></label>
+    <div class="rad"><button class="knapp" type="button" id="bk-lagre">Lagre</button><span class="status" id="bk-status"></span></div>
+    <p class="liten" style="margin:10px 0 0">Svar nummer to legges automatisk inn som din første egne støttetanke.</p>
+  </div>
+
+  <div class="kort" id="trygt">
+    <span class="merk" style="color:var(--god)">🔒 Et sikkert sted</span>
+    <h3>Det du skriver forlater aldri telefonen din</h3>
+    <ul style="margin:0 0 10px;padding-left:20px;font-size:15.5px">
+      <li>Appen har <b>ingen server og ingen database</b>. Det finnes ikke noe sted å sende tankene dine til.</li>
+      <li>Den har <b>ingen innlogging</b> og ingen konto — den vet ikke hvem du er.</li>
+      <li>Den er <b>teknisk sperret</b> fra å kontakte andre nettsteder. Sperren står i selve appen, ikke bare i et løfte.</li>
+      <li>Den virker <b>uten nett</b>. Prøv i flymodus — alt er der, fordi alt bor på telefonen.</li>
+      <li>Verken Thor, Liv, Claude eller noen andre kan lese det. Ingenting brukes til å trene kunstig intelligens.</li>
+    </ul>
+    <p class="liten" style="margin:0">Det eneste som kan flytte noe ut, er <b>du selv</b> — med kopier-knappene under. Og fordi alt bor bare her, forsvinner det hvis Safari-data slettes eller du bytter telefon uten å ta en kopi først.</p>
+  </div>
+
+  <div class="kort">
+    <h3>Del og ta vare på</h3>
+    <p class="liten">Bare hvis du vil. Ta gjerne en sikkerhetskopi en gang i måneden, og lim den inn i Notater på telefonen.</p>
+    <div class="rad">
+      <button class="knapp sek sm" type="button" id="del-uke">Kopier ukesoppsummering</button>
+      <button class="knapp sek sm" type="button" id="del-alt">Kopier sikkerhetskopi</button>
+      <button class="knapp sek sm" type="button" id="del-inn">Hent inn kopi</button>
+    </div>
+    <textarea id="del-felt" hidden style="margin-top:10px" placeholder="Lim inn sikkerhetskopien her, og trykk «Hent inn kopi» en gang til"></textarea>
+    <p class="status" id="del-status" style="margin:8px 0 0"></p>
+    <p class="liten" style="margin:10px 0 0">Ukesoppsummeringen inneholder bare søvntall, energi og streker — ingen tanker. Den kan limes inn til Liv eller vises til legen.</p>
+  </div>
+  <p class="liten" style="text-align:center;margin:16px 0 4px" id="versjon"></p>
+</section>
+</main>
+
+<nav class="nav" aria-label="Hovedmeny">
+  <button type="button" data-fane="idag" aria-current="page"><i>☀️</i>I dag</button>
+  <button type="button" data-fane="tanker"><i>💭</i>Tanker</button>
+  <button type="button" data-fane="folk"><i>💌</i>Folk</button>
+  <button type="button" data-fane="rytme"><i>🧭</i>Rytme</button>
+</nav>
+
+<script>
+(function(){
+'use strict';
+var VERSJON='1.0.0', NOKKEL='kp-anniken-v1';
+var START_STOTTE=[
+ 'En dårlig natt er ubehagelig, ikke farlig. Kroppen henter seg inn selv.',
+ 'Jeg trenger ikke sovne. Jeg trenger bare å hvile.',
+ 'Ingenting avgjøres om natta. Den tar jeg i dagslys.',
+ 'Bra nok er ferdig.',
+ 'Skyldfølelse lyver om størrelsen.',
+ 'Jeg skylder god innsats i avtalt tid — ikke tilgjengelighet utenfor den.',
+ 'Jeg har tanken at … — og en tanke er ikke et faktum.',
+ 'Fire tunge år lånte kapasitet. Nå betaler jeg tilbake, litt om gangen.'
+];
+var TRAPP=['Hverdagsvennlighet uten agenda — to minutter, ingen forhistorie','Barnebroen — bruk logistikken som alt finnes, og inviter med på noe','Én kaffe uten forhistorie — «det var aldri et valg fra min side» holder','Slipp kravet om at det skal bli som før — godt naboskap er også hel landing'];
+var SONDAG=['Vakter og henting denne uka — hvem tar hva','Én sosial ting er avtalt','Dette skal IKKE skje denne uka','Treningsøktene har fått en dag'];
+function tom(){return {dag:{},park:[],stotte:null,inv:[],trapp:{},sondag:{},lop:{},kjent:{},sett:{}};}
+var S=tom();
+function les(){try{var r=localStorage.getItem(NOKKEL);if(r){var o=JSON.parse(r),t=tom();Object.keys(t).forEach(function(k){if(o[k]!=null)t[k]=o[k];});S=t;}}catch(e){S=tom();}
+  if(!S.stotte)S.stotte=START_STOTTE.map(function(t,i){return {id:'s'+i,t:t,liv:1};});}
+function skriv(){try{localStorage.setItem(NOKKEL,JSON.stringify(S));return true;}catch(e){return false;}}
+function $(id){return document.getElementById(id);}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function pad(n){return (n<10?'0':'')+n;}
+function iso(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
+function idag(){return iso(new Date());}
+function nyId(){return Date.now().toString(36)+Math.random().toString(36).slice(2,5);}
+var DAGER=['søndag','mandag','tirsdag','onsdag','torsdag','fredag','lørdag'], MND=['januar','februar','mars','april','mai','juni','juli','august','september','oktober','november','desember'];
+function pen(s){var p=s.split('-'),d=new Date(+p[0],+p[1]-1,+p[2]);return DAGER[d.getDay()]+' '+(+p[2])+'. '+MND[d.getMonth()];}
+function kort(s){var p=s.split('-');return (+p[2])+'.'+(+p[1])+'.';}
+function ukeId(d){d=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));var n=d.getUTCDay()||7;d.setUTCDate(d.getUTCDate()+4-n);var y=new Date(Date.UTC(d.getUTCFullYear(),0,1));return d.getUTCFullYear()+'-W'+pad(Math.ceil(((d-y)/864e5+1)/7));}
+function tm(s){if(!s||s.indexOf(':')<0)return null;var p=s.split(':');return (+p[0])*60+(+p[1]);}
+function hm(m){m=((Math.round(m)%1440)+1440)%1440;return pad(Math.floor(m/60))+':'+pad(m%60);}
+function tt(m){var h=Math.floor(m/60);return h+' t '+pad(Math.round(m-h*60));}
+function rv(n){var e=document.getElementsByName(n);for(var i=0;i<e.length;i++)if(e[i].checked)return e[i].value;return '';}
+function rs(n,v){var e=document.getElementsByName(n);for(var i=0;i<e.length;i++)e[i].checked=(e[i].value===String(v));}
+function meld(el,t){el.textContent=t;setTimeout(function(){if(el.textContent===t)el.textContent='';},3500);}
+function lagret(el){meld(el,skriv()?'lagret på telefonen':'fikk ikke lagret — er privat modus på?');}
+function kopier(tekst,el){function ok(){meld(el,'kopiert');}function reserve(){var f=$('del-felt');f.hidden=false;f.value=tekst;f.focus();f.select();try{document.execCommand('copy');ok();}catch(e){meld(el,'marker teksten og kopier selv');}}
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(tekst).then(ok,reserve);else reserve();}
+
+/* ---------- faner ---------- */
+function fane(n){document.querySelectorAll('.fane').forEach(function(f){f.classList.toggle('aktiv',f.id==='f-'+n);});
+  document.querySelectorAll('.nav button').forEach(function(b){if(b.dataset.fane===n)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');});
+  window.scrollTo(0,0);try{sessionStorage.setItem('kp-fane',n);}catch(e){}}
+document.querySelectorAll('.nav button').forEach(function(b){b.addEventListener('click',function(){fane(b.dataset.fane);});});
+
+/* ---------- i dag ---------- */
+function natt(m){if(!m)return null;var a=tm(m.legg),c=tm(m.opp),b=tm(m.vaknet);if(a==null||c==null)return null;if(b==null)b=c;
+  var tib=((c-a)+1440)%1440,tst=((b-a)+1440)%1440-(+m.latens||0)-(+m.vaaken||0);if(tib<=0||tst<=0||tst>tib)return null;return {tib:tib,tst:tst};}
+function siste(n){var ut=[],d=new Date();for(var i=0;i<n;i++){var id=iso(d);ut.push([id,S.dag[id]||{}]);d.setDate(d.getDate()-1);}return ut;}
+function morgenKveld(h){$('s-morgen').hidden=h!=='morgen';$('s-kveld').hidden=h!=='kveld';$('b-morgen').setAttribute('aria-pressed',h==='morgen');$('b-kveld').setAttribute('aria-pressed',h==='kveld');}
+function fyll(){var e=S.dag[idag()]||{},m=e.m||{},k=e.k||{};
+  $('m-legg').value=m.legg||'';$('m-opp').value=m.opp||(S.lop.opp||'');$('m-latens').value=m.latens==null?'':m.latens;$('m-vaaken').value=m.vaaken==null?'':m.vaaken;$('m-vaknet').value=m.vaknet||'';$('m-meg').value=m.meg||'';rs('m-med',m.med||'');rs('m-kval',m.kval||'');
+  rs('k-energi',k.energi||'');$('k-tre').value=k.tre||'';$('k-bra').value=k.bra||'';$('k-strek').checked=!!k.strek;}
+function raad(){var m=(S.dag[idag()]||{}).m||{},kv=+m.kval||0,g=new Date();g.setDate(g.getDate()-1);var ig=((S.dag[iso(g)]||{}).k||{}).energi;
+  var n=0;if(kv)n=kv<=2?1:(kv===3?2:3);if(ig==='rod'&&n>1)n--;if(!kv&&ig)n={rod:1,gul:2,gronn:3}[ig];
+  var merk='Dagens råd',t='Fyll inn morgenen, så får du ett råd for dagen.';
+  if(n===1){merk='🔴 Rød dag';t='Ti minutter ute i dagslys — det er hele planen. Stryk én ting fra dagen. Legg deg til vanlig tid i kveld, ikke tidligere.';}
+  if(n===2){merk='🟡 Gul dag';t='Gåtur 20–30 min, eller styrkeøkta i kortversjon: ett sett per øvelse. Velg det som er lettest å starte på.';}
+  if(n===3){merk='🟢 Grønn dag';t='Står en styrkeøkt igjen i uka, er dette dagen. Ferdig før kl. 19. Har du overskudd til overs: ett initiativ under Folk.';}
+  if(n&&m.meg)t+=' Og i dag, for deg selv: '+m.meg+'.';
+  $('raad-merk').textContent=merk;$('raad').textContent=t;}
+function uke(){var r=siste(7),n=r.map(function(x){return natt(x[1].m);}).filter(Boolean),f=$('uke-fliser'),v=$('uke-vindu');
+  var strek=r.filter(function(x){return (x[1].k||{}).strek;}).length;
+  if(!n.length){f.innerHTML='<div class="flis"><div class="l">Netter ført</div><div class="v">0 av 7</div><div class="s">kommer når dagboka har netter</div></div><div class="flis"><div class="l">Strek satt</div><div class="v">'+strek+' av 7</div><div class="s">kvelder</div></div>';v.textContent='';return;}
+  var tst=n.reduce(function(a,x){return a+x.tst;},0)/n.length,tib=n.reduce(function(a,x){return a+x.tib;},0)/n.length,se=tst/tib;
+  f.innerHTML='<div class="flis"><div class="l">Netter ført</div><div class="v">'+n.length+' av 7</div><div class="s">ukesnitt, aldri natt for natt</div></div>'+
+   '<div class="flis"><div class="l">Sovet, snitt</div><div class="v">'+tt(tst)+'</div><div class="s">i senga '+tt(tib)+'</div></div>'+
+   '<div class="flis"><div class="l">Effektivitet</div><div class="v">'+Math.round(se*100)+' %</div><div class="s">'+(se>=.85?'✓ over målet på 85 %':'målet er 85 %')+'</div></div>'+
+   '<div class="flis"><div class="l">Strek satt</div><div class="v">'+strek+' av 7</div><div class="s">kvelder</div></div>';
+  if(n.length<5){v.textContent='Forslag til søvnvindu kommer når fem av sju netter er ført.';return;}
+  var opp=tm(S.lop.opp)||tm('06:30'),len=se>=.9?tib+15:(se>=.85?tib:Math.max(330,tst+30));len=Math.min(len,510);
+  v.innerHTML='<b>Forslag til søvnvindu:</b> legg deg tidligst '+hm(opp-len)+', opp '+hm(opp)+'. Forslag, ikke fasit — tas i bruk fra uke 2 i løypa, når legen er orientert, og aldri i en vaktuke.';}
+$('b-morgen').addEventListener('click',function(){morgenKveld('morgen');});$('b-kveld').addEventListener('click',function(){morgenKveld('kveld');});
+$('s-morgen').addEventListener('submit',function(ev){ev.preventDefault();var id=idag(),e=S.dag[id]||{};
+  e.m={legg:$('m-legg').value,opp:$('m-opp').value,vaknet:$('m-vaknet').value,latens:$('m-latens').value===''?null:+$('m-latens').value,vaaken:$('m-vaaken').value===''?null:+$('m-vaaken').value,med:rv('m-med'),kval:rv('m-kval'),meg:$('m-meg').value.trim()};
+  S.dag[id]=e;lagret($('m-status'));raad();uke();});
+$('s-kveld').addEventListener('submit',function(ev){ev.preventDefault();var id=idag(),e=S.dag[id]||{};
+  e.k={energi:rv('k-energi'),tre:$('k-tre').value.trim(),bra:$('k-bra').value.trim(),strek:$('k-strek').checked};S.dag[id]=e;lagret($('k-status'));uke();});
+
+/* ---------- tanker ---------- */
+var tkOrd='',tkSist=-1;
+function steg(n){[1,2,3].forEach(function(i){$('tk-'+i).classList.toggle('aktiv',i===n);});}
+function nyStotte(){if(!S.stotte.length){$('tk-stotte').textContent='Legg inn en støttetanke under, så dukker den opp her.';return;}
+  var egne=S.stotte.filter(function(s){return !s.liv;}),pool=(egne.length&&Math.random()<.6)?egne:S.stotte,i;do{i=Math.floor(Math.random()*pool.length);}while(pool.length>1&&pool[i].id===tkSist);tkSist=pool[i].id;$('tk-stotte').textContent=pool[i].t;}
+$('tk-neste1').addEventListener('click',function(){tkOrd=$('tk-ord').value.trim();if(!tkOrd){$('tk-ord').focus();return;}$('tk-vis').textContent=tkOrd;steg(2);});
+$('tk-ja').addEventListener('click',function(){S.park.unshift({id:nyId(),t:tkOrd,d:idag()});skriv();parkTegn();
+  $('tk-3h').textContent='3 · Parkert';$('tk-3p').textContent='«'+tkOrd+'» står nå i bekymringskvarteret. Det får tid der — ikke nå. Dukker det opp igjen: «du står på lista, vi ses da».';nyStotte();steg(3);});
+$('tk-nei').addEventListener('click',function(){$('tk-3h').textContent='3 · Da er det en tanke, ikke en oppgave';$('tk-3p').textContent='Si det inni deg: «Jeg har tanken at '+tkOrd+' …». Du trenger ikke svare den. La den stå der, og flytt oppmerksomheten til noe du kan se eller høre akkurat nå.';nyStotte();steg(3);});
+$('tk-annen').addEventListener('click',nyStotte);
+$('tk-ferdig').addEventListener('click',function(){$('tk-ord').value='';steg(1);});
+function parkTegn(){var u=$('park-liste');u.innerHTML='';if(!S.park.length){u.innerHTML='<li><span class="t liten">Ingenting parkert. Godt.</span></li>';return;}
+  S.park.slice(0,30).forEach(function(p){var li=document.createElement('li');if(p.ok)li.className='gjort';
+    li.innerHTML='<input type="checkbox" '+(p.ok?'checked':'')+' aria-label="Ferdig tenkt: '+esc(p.t)+'"><span class="t">'+esc(p.t)+' <span class="liten">· '+kort(p.d)+'</span></span><button class="x" type="button" aria-label="Fjern">✕</button>';
+    li.querySelector('input').addEventListener('change',function(){p.ok=this.checked;skriv();parkTegn();});
+    li.querySelector('button').addEventListener('click',function(){S.park=S.park.filter(function(x){return x.id!==p.id;});skriv();parkTegn();});u.appendChild(li);});}
+function stTegn(){var u=$('st-liste');u.innerHTML='';S.stotte.forEach(function(s){var li=document.createElement('li');
+    li.innerHTML='<span class="t">'+esc(s.t)+(s.liv?' <span class="liten">· forslag fra Liv</span>':'')+'</span><button class="x" type="button" aria-label="Slett">✕</button>';
+    li.querySelector('button').addEventListener('click',function(){S.stotte=S.stotte.filter(function(x){return x.id!==s.id;});skriv();stTegn();});u.appendChild(li);});}
+$('st-form').addEventListener('submit',function(ev){ev.preventDefault();var t=$('st-ny').value.trim();if(!t)return;S.stotte.unshift({id:nyId(),t:t});skriv();$('st-ny').value='';stTegn();});
+
+/* ---------- folk ---------- */
+function invTekst(){var n=$('inv-navn').value.trim()||'…',h=$('inv-hva').value,d1=$('inv-d1').value,d2=$('inv-d2').value;
+  var nar=(d1&&d2)?pen(d1)+' eller '+pen(d2):(d1?pen(d1):'[to datoer]');
+  var m={kaffe:'Hei '+n+'! Det er altfor lenge siden. Har du lyst på en kaffe, bare oss to? Jeg kan '+nar+' — passer en av dem?',
+    suppe:'Hei '+n+'! Vi har suppesøndag hos oss '+nar+', kl. 15–18. Helt enkelt — suppe, og ungene leker. Har dere lyst til å komme?',
+    tur:'Hei '+n+'! Vi tenker en søndagstur '+nar+' — rolig tempo, bål og kakao. Blir dere med?',
+    lek:'Hei '+n+'! Skal vi få til en lekeavtale? Vi kan '+nar+' — hos oss, så tar jeg henting om det passer best.',
+    gaa:'Hei '+n+'! Har du lyst på en gåtur, en halvtimes tid? Jeg kan '+nar+'.'};
+  return m[h];}
+function invVis(){$('inv-tekst').textContent=invTekst();}
+['inv-navn','inv-hva','inv-d1','inv-d2'].forEach(function(id){$(id).addEventListener('input',invVis);$(id).addEventListener('change',invVis);});
+$('inv-kopier').addEventListener('click',function(){kopier(invTekst(),$('inv-status'));});
+$('inv-sendt').addEventListener('click',function(){var n=$('inv-navn').value.trim();if(!n){$('inv-navn').focus();return;}
+  var s=$('inv-hva');S.inv.unshift({id:nyId(),n:n,h:s.options[s.selectedIndex].text,d:idag()});skriv();folkTegn();meld($('inv-status'),'ført opp — bra');$('inv-navn').value='';invVis();});
+function folkTegn(){var mnd=idag().slice(0,7),dm=S.inv.filter(function(i){return i.d.slice(0,7)===mnd;}),svar=dm.filter(function(i){return i.svar==='ja';}).length;
+  $('folk-fliser').innerHTML='<div class="flis"><div class="l">Initiativ</div><div class="v">'+dm.length+'</div><div class="s">målet er ett — alt over er bonus</div></div><div class="flis"><div class="l">Ble til noe</div><div class="v">'+svar+'</div><div class="s">et nei er ikke et nei til deg</div></div>';
+  var u=$('inv-logg');u.innerHTML='';if(!S.inv.length){u.innerHTML='<li><span class="t liten">Ingen initiativ ført ennå.</span></li>';return;}
+  S.inv.slice(0,12).forEach(function(i){var li=document.createElement('li');
+    li.innerHTML='<input type="checkbox" '+(i.svar==='ja'?'checked':'')+' aria-label="Ble til noe: '+esc(i.n)+'"><span class="t">'+esc(i.n)+' <span class="liten">· '+esc(i.h)+' · '+kort(i.d)+'</span></span><button class="x" type="button" aria-label="Fjern">✕</button>';
+    li.querySelector('input').addEventListener('change',function(){i.svar=this.checked?'ja':'';skriv();folkTegn();});
+    li.querySelector('button').addEventListener('click',function(){S.inv=S.inv.filter(function(x){return x.id!==i.id;});skriv();folkTegn();});u.appendChild(li);});}
+function sjekkliste(el,punkter,lager,etter){el.innerHTML='';punkter.forEach(function(t,i){var li=document.createElement('li');if(lager[i])li.className='gjort';
+    li.innerHTML='<input type="checkbox" id="'+el.id+'-'+i+'" '+(lager[i]?'checked':'')+'><label class="t" for="'+el.id+'-'+i+'">'+esc(t)+'</label>';
+    li.querySelector('input').addEventListener('change',function(){lager[i]=this.checked?1:0;skriv();li.className=this.checked?'gjort':'';if(etter)etter();});el.appendChild(li);});}
+
+/* ---------- rytme ---------- */
+function lopTegn(){$('lop-start').value=S.lop.start||'';$('lop-opp').value=S.lop.opp||'06:30';if(!S.lop.start)return;
+  var u=Math.floor((new Date()-new Date(S.lop.start+'T00:00:00'))/6048e5)+1,m=$('lop-uke'),t=$('lop-tekst');
+  if(u<1){m.textContent='Starter '+kort(S.lop.start);t.textContent='Til da: bare fast opp-tid.';}
+  else if(u===1){m.textContent='Uke 1 av 8';t.textContent='Bare dagbok og fast opp-tid — også etter dårlige netter. Ingen andre endringer.';}
+  else if(u<=3){m.textContent='Uke '+u+' av 8';t.textContent='Søvnvinduet tas i bruk: i senga bare så lenge du faktisk sover, pluss en halvtime. Du blir trøttere på dagen de første ukene — det er meningen, og det går over. Trøtt bak rattet eller på klinikken: utvid en halvtime den natta.';}
+  else if(u<=6){m.textContent='Uke '+u+' av 8';t.textContent='Vinduet utvides et kvarter når ukesnittet er over 90 %. Se forslaget under I dag.';}
+  else if(u<=8){m.textContent='Uke '+u+' av 8';t.textContent='Vinduet står. Snart kan dagboka legges bort — reglene beholdes.';}
+  else{m.textContent='Løypa er ferdig';t.textContent='Dagboka kan legges bort. Reglene under er det som blir igjen.';}}
+$('lop-lagre').addEventListener('click',function(){S.lop={start:$('lop-start').value,opp:$('lop-opp').value||'06:30'};lagret($('lop-status'));lopTegn();uke();});
+function kjentTegn(){[1,2,3,4,5].forEach(function(i){$('bk-'+i).value=S.kjent['s'+i]||'';});}
+$('bk-lagre').addEventListener('click',function(){var forrige=S.kjent.s2||'';[1,2,3,4,5].forEach(function(i){S.kjent['s'+i]=$('bk-'+i).value.trim();});S.kjent.ferdig=1;
+  var ny=S.kjent.s2;if(ny&&ny!==forrige){S.stotte=S.stotte.filter(function(s){return !s.kjent;});S.stotte.unshift({id:nyId(),t:ny,kjent:1});stTegn();}
+  if(S.kjent.s5&&!$('inv-navn').value){$('inv-navn').value=S.kjent.s5;invVis();}
+  lagret($('bk-status'));$('velkommen').hidden=true;});
+$('vk-gaa').addEventListener('click',function(){fane('rytme');setTimeout(function(){var e=$('blikjent'),y=e.getBoundingClientRect().top+window.pageYOffset-document.querySelector('.topp').getBoundingClientRect().height-10;window.scrollTo(0,Math.max(0,y));},50);});
+$('laas-mer').addEventListener('click',function(){fane('rytme');setTimeout(function(){var e=$('trygt'),y=e.getBoundingClientRect().top+window.pageYOffset-document.querySelector('.topp').getBoundingClientRect().height-10;window.scrollTo(0,Math.max(0,y));},50);});
+$('vk-senere').addEventListener('click',function(){S.sett.vkSkjult=1;skriv();$('velkommen').hidden=true;});
+
+/* ---------- del ---------- */
+$('del-uke').addEventListener('click',function(){var l=['Kompasset — siste 14 dager'];siste(14).reverse().forEach(function(x){var m=x[1].m,k=x[1].k||{},n=natt(m);if(!m&&!x[1].k)return;
+    l.push(kort(x[0])+' · '+(n?'sovet '+tt(n.tst)+' av '+tt(n.tib)+' ('+Math.round(n.tst/n.tib*100)+' %)':'natt ikke ført')+(m&&m.kval?' · natta '+m.kval+'/5':'')+(m&&m.med?' · medisin: '+m.med:'')+(k.energi?' · energi: '+({rod:'rød',gul:'gul',gronn:'grønn'}[k.energi]):'')+(k.strek?' · strek ✓':''));});
+  if(l.length===1)l.push('Ingenting ført ennå.');kopier(l.join('\n'),$('del-status'));});
+$('del-alt').addEventListener('click',function(){kopier(JSON.stringify(S),$('del-status'));});
+$('del-inn').addEventListener('click',function(){var f=$('del-felt');if(f.hidden||!f.value.trim()){f.hidden=false;f.value='';f.focus();return;}
+  try{var o=JSON.parse(f.value);if(!o||typeof o!=='object'||!o.dag)throw 0;localStorage.setItem(NOKKEL,JSON.stringify(o));les();alt();f.value='';f.hidden=true;meld($('del-status'),'hentet inn');}catch(e){meld($('del-status'),'det der var ikke en sikkerhetskopi herfra');}});
+
+/* ---------- start ---------- */
+function alt(){fyll();raad();uke();parkTegn();stTegn();invVis();folkTegn();sjekkliste($('trapp'),TRAPP,S.trapp);
+  var u=ukeId(new Date());if(!S.sondag[u])S.sondag[u]={};sjekkliste($('sondag'),SONDAG,S.sondag[u]);$('sondag-uke').textContent='Uke '+(+u.slice(6))+' — lista nullstilles hver mandag.';
+  lopTegn();kjentTegn();$('velkommen').hidden=!!(S.kjent.ferdig||S.sett.vkSkjult);}
+les();$('topp-dato').textContent=pen(idag());$('versjon').textContent='Kompasset '+VERSJON+' · 🔒 alt lagres bare på denne telefonen';
+morgenKveld(new Date().getHours()>=17?'kveld':'morgen');alt();
+try{var ff=sessionStorage.getItem('kp-fane');if(ff)fane(ff);}catch(e){}
+if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}
+})();
+</script>
+</body>
+</html>
