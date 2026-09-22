@@ -95,6 +95,9 @@ b,strong{font-weight:800}
 #ark .dagrad{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 #ark .dagrad button{font:inherit;font-weight:800;font-size:14.5px;min-height:44px;padding:10px 14px;border-radius:999px;border:1.5px solid var(--line);background:transparent;color:var(--ink);cursor:pointer}
 #ark .dagrad button.naa{border-color:var(--ok);color:var(--ok);border-width:2px}
+#ark .dagrad button.kat{border-color:var(--accent);color:var(--accent)}
+#ark .dagrad button:disabled{opacity:.35;cursor:default}
+#ark #ark-dagrad .ark-lbl{display:block;margin:10px 0 4px}
 #ark .dagrad input[type=date]{font:inherit;font-size:14.5px;min-height:44px;padding:9px 12px;border:1.5px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink)}
 dialog#ark{border:0;border-radius:16px;padding:0;max-width:560px;width:calc(100% - 28px);background:var(--card);color:var(--ink);box-shadow:0 18px 50px rgba(0,0,0,.28)}
 dialog#ark::backdrop{background:rgba(0,0,0,.45)}
@@ -381,7 +384,7 @@ details.om .in{padding:8px 0 0;font-size:14px;max-width:70ch}
 <p><b>Egen lenke og «app» på iPad og mobil.</b> Bruk lenka med <code>&amp;p=erik</code>, <code>&amp;p=vaarin</code>, <code>&amp;p=oscar</code>, <code>&amp;p=thor</code> eller <code>&amp;p=anniken</code>, så åpner tavla ferdig valgt for den personen — også fra hjemskjermen. Legg den på hjemskjermen: iPad/iPhone — Del-knappen → «Legg til på Hjem-skjerm»; Android — menyen ⋮ → «Legg til på startskjermen». Ingen innlogging trengs.</p>
 <p><b>Husøkta torsdag.</b> Alle starter når de kommer hjem fra skolen og gjør sine jobber samtidig — ferdig før fotballen. Badene veksler mellom <b>GROV</b> og lett: appen husker når det sist ble vasket grundig, og blir en uke hoppet over, blir neste automatisk grov. Det som ikke ble gjort torsdag dukker opp én gang til, lørdag morgen, som «Lørdagsøkta». Gikk torsdagen bra, er lørdagen fri.</p>
 <p><b>Glemt eller ikke gjort?</b> Rutiner (morgen, hjemkomst, måltider, kl. 22) er nye hver dag: ble de ikke huket, står dagen tom i uketabellen og poengene mangler — men de hoper seg ikke opp. Ble noe gjort uten hake, viser «Ikke huket i går» det dagen etter, med ett trykk for å rette. Alt annet — ryddedagen, hver 3. uke, sesong — henger igjen under «⏰ Henger igjen» til det faktisk er gjort, for badet er fortsatt skittent.</p>
-<p><b>Bytte eller flytte en oppgave.</b> Trykk ⇄ på ruta: velg hvem som tar den i dag (jobber Anniken, tar Thor middagen), eller flytt den til en annen dag denne uka (rekker du ikke badene lørdag, tar du dem mandag). Vil du skyve den lenger, velg «utsett til» — i morgen, to dager, neste uke eller en dato du velger selv; da dukker den opp den dagen, merket ⏭. Alt kan angres med ↩. Ferdige ruter krymper og legger seg nederst i gruppa, så det som gjenstår står øverst.</p>
+<p><b>Bytte eller flytte en oppgave.</b> Trykk ⇄ på ruta: velg hvem som tar den i dag (jobber Anniken, tar Thor middagen), eller flytt den til en annen dag denne uka (rekker du ikke badene lørdag, tar du dem mandag). Trykk ⓘ/⋯ på ruta for å flytte: hurtigknapper (i morgen, lørdagsøkta, neste gang i samme kategori, kontortid), dagene denne uka, eller en dato du velger selv; da dukker den opp den dagen, merket ⏭. En rute som henger igjen flyttes alltid framover — aldri tilbake i uka den kom fra. Alt kan angres med ↩. Ferdige ruter krymper og legger seg nederst i gruppa, så det som gjenstår står øverst.</p>
 <p><b>Belønningstrappa.</b> Ett ukemål gir ukas familiestund — et forslag fra Bjørn ut fra årstid, vær og kalender (kake i sesong, fjelltur med kakao, SUP, alpint, bildebok, kalender til besteforeldrene), aldri det samme to uker på rad, og alltid noe Liv kan stå inne for. Så: to på rad filmkveld hjemme, tre av fire uker gir overnattingsbesøk (huset er helgeklart og de voksne har overskudd), seks av åtte uker en fornøyelsesdag som planlegges i kalenderen, og tolv av seksten uker utløser bossen — den eneste premien som er en ting, og den kommer sjelden med vilje. Linja over lagtabellen ruller gjennom nivåene og viser hvor langt dere er. Voksne endrer tekstene under Oppgavebanken.</p>
 <p><b>Lagring.</b> Hakene lagres delt (Firebase, EU), så mobil, iPad og PC viser det samme uten innlogging — lenka dere fikk har familiekoden i seg, og enheten husker den. Oppgavebanken og trappa ligger i appens filer og oppdateres av Bjørn og Liv. Mister siden kontakten, lagres det på enheten til den er tilbake.</p>
 </div></details>
@@ -394,7 +397,7 @@ details.om .in{padding:8px 0 0;font-size:14px;max-width:70ch}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.14.0';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.15.0';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -580,32 +583,50 @@ function aapneArk(id,knapp){
   if(!d.open)d.showModal();
 }
 function arkTb(knapp){return knapp&&knapp.parentNode?knapp.parentNode.querySelector('.tb'):null}
-function byggDagrad(o,knapp,d){ /* v1.14: dagen endres rett i kortet — den klart mest brukte handlingen */
+function nesteAv(pred,etter){ /* v1.15: neste planlagte dato (strengt etter «etter») for en aktiv oppgave som oppfyller pred */
+  var man=mandag(NAA), best=null;
+  OPPG.forEach(function(o){ if(o.aktiv===false||!pred(o)) return;
+    for(var w=0;w<10;w++){ var m=addDays(man,7*w), dg=dagerIUka(o,m);
+      for(var i=0;i<dg.length;i++){ var d=addDays(m,dg[i]); if(d<=etter) continue; if(!best||d<best) best=d; }
+      if(best&&best<addDays(man,7*(w+1))) break; } });
+  return best;
+}
+function byggDagrad(o,knapp,d){ /* v1.15: én dagvelger for alle typer — hurtigknapper, dagene denne uka, valgfri dato.
+   Regelen: alle valg er EKTE datoer. En rute som henger igjen flyttes til denne uka, aldri innenfor uka den kom fra (feilen i 1.14). */
   var rad=document.getElementById('ark-dagrad'); rad.innerHTML='';
   var tb=arkTb(knapp); if(!tb){return}
-  var ds=tb.dataset, lbl=document.createElement('span');
-  lbl.className='ark-lbl'; lbl.textContent=(o.int==='dato'?'Dag':'Flytt innenfor uka');
-  var v=document.createElement('div'); v.className='dagrad';
-  rad.appendChild(lbl); rad.appendChild(v);
-  function knapp2(tekst,naa,fn){var k=document.createElement('button');k.type='button';k.textContent=tekst;
-    if(naa)k.className='naa';k.onclick=function(ev){ev.stopPropagation();d.close();setTimeout(fn,0)};v.appendChild(k);return k}
-
-  if(o.int==='dato'){
-    var naaDato=o.dato||ymd(NAA);
-    var basis=new Date(naaDato+'T00:00:00');
-    [[0,'I dag'],[1,'I morgen'],[2,'Om 2 dager'],[7,'Neste uke']].forEach(function(x){
-      var mål=ymd(addDays(NAA,x[0]));
-      knapp2(x[1], mål===naaDato, function(){settDagFor(o,ds,mål)});
-    });
-    var di=document.createElement('input'); di.type='date'; di.value=naaDato;
-    di.onclick=function(e){e.stopPropagation()};
-    di.onchange=function(e){e.stopPropagation();if(!di.value)return;var val=di.value;d.close();setTimeout(function(){settDagFor(o,ds,val)},0)};
-    v.appendChild(di);
-  } else {
-    for(var i=0;i<7;i++){(function(i){
-      knapp2(DAGK[i], i===+ds.d, function(){flytt(ds.k,o,+ds.dag0,ds.fra,i===+ds.dag0?null:i)});
-    })(i)}
+  var ds=tb.dataset, i0=new Date(NAA.getFullYear(),NAA.getMonth(),NAA.getDate()), manNaa=mandag(NAA), keyNaa=ukeKey(manNaa), dIdx=(NAA.getDay()+6)%7;
+  var naaDato = o.int==='dato' ? (o.dato||ymd(NAA)) : (ds.k===keyNaa ? ymd(addDays(manNaa,+ds.d)) : null);
+  function gaaTil(dato){ /* dato = ymd */
+    if(o.int==='dato'){settDagFor(o,ds,dato);return}
+    if(ds.uts){var p=ds.utsk.split('|');utsett(ds.uts,o,+p[1],p[2],dato);return}
+    var diff=Math.round((new Date(dato+'T00:00:00')-manNaa)/86400000);
+    if(ds.k===keyNaa&&!ds.forfalt&&diff>=0&&diff<=6){flytt(ds.k,o,+ds.dag0,ds.fra,diff===+ds.dag0?null:diff)}
+    else utsett(ds.k,o,+ds.dag0,ds.fra,dato);
   }
+  function knapp2(v,tekst,naa,fn,cls){var k=document.createElement('button');k.type='button';k.textContent=tekst;if(cls)k.className=cls;
+    if(naa)k.className=(cls?cls+' ':'')+'naa';k.onclick=function(ev){ev.stopPropagation();d.close();setTimeout(fn,0)};v.appendChild(k);return k}
+  function seksjon(tekst){var l=document.createElement('span');l.className='ark-lbl';l.textContent=tekst;rad.appendChild(l);var v=document.createElement('div');v.className='dagrad';rad.appendChild(v);return v}
+  /* A — hurtigknapper: dagene rett fram, lørdagsøkta, neste gang i samme kategori, kontortid */
+  var hk=seksjon('Flytt til'), brukt={};
+  function hkn(tekst,dato,cls){ if(!dato) return; var y=ymd(dato); if(brukt[y]||y===naaDato) return; brukt[y]=1;
+    knapp2(hk,tekst+' · '+DAGK[(dato.getDay()+6)%7]+' '+datoNorsk(dato),false,function(){gaaTil(y)},cls); }
+  var KATNAVN={'Grovvask':'Neste grovvask','Rydding':'Neste ryddedag','Vedlikehold':'Neste vedlikehold','Hytta':'Neste hyttetur','Vask':'Neste vaskedag','Sesong':'Neste sesongjobb'};
+  if(o.id==='vh-bilvask'||o.id==='vh-bilvask-2'||o.id==='u3-bil') hkn('Neste bilvask',nesteAv(function(x){return x.id==='vh-bilvask'},i0),'kat');
+  else if(KATNAVN[o.kat]) hkn(KATNAVN[o.kat],nesteAv(function(x){return x.kat===o.kat&&!erRutine(x)},i0),'kat');
+  if(erVoksen()) hkn('Kontortid',nesteAv(function(x){return x.id==='x-kontortid'},i0),'kat');
+  /* de generelle etterpå, så en kategoriknapp med samme dato vinner */
+  hkn('I morgen',addDays(i0,1)); hkn('Om 2 dager',addDays(i0,2));
+  var lor=addDays(i0,((5-(i0.getDay()+6)%7)+7)%7||7); hkn('Lørdagsøkta',lor);
+  /* B — dagene denne uka (passerte dager kan ikke velges) */
+  var v=seksjon('Denne uka');
+  for(var i=0;i<7;i++){(function(i){ var dato=addDays(manNaa,i), y=ymd(dato);
+    var k=knapp2(v,DAGK[i],y===naaDato,function(){gaaTil(y)}); if(i<dIdx){k.disabled=true;k.title='passert'} })(i)}
+  /* C — valgfri dato */
+  var di=document.createElement('input'); di.type='date'; di.value=naaDato||ymd(i0); di.min=ymd(i0);
+  di.onclick=function(e){e.stopPropagation()};
+  di.onchange=function(e){e.stopPropagation();if(!di.value)return;var val=di.value;d.close();setTimeout(function(){gaaTil(val)},0)};
+  v.appendChild(di);
 }
 function settDagFor(o,ds,dato){
   if(o.egen){ /* huskelapp: den flyttes, den «utsettes» ikke — datoen er hele oppgaven */
@@ -794,7 +815,7 @@ function tegnIdag(){
         meta='skulle vært '+DAGK[s.dag]+' '+datoNorsk(s.dato)+(dg>6?' · <b>'+dg+' dager forfalt</b>':'')+' · '+meta;}
       meta=meta.replace(/^(\s*·\s*)+/,'').replace(/(\s*·\s*)+$/,''); /* huskelapper uten minutter skal ikke ende på en ensom prikk */
       var tk=s.ukeKey||key;
-      html+='<div class="tile'+(done?' done':'')+(s.forfalt?' hg':'')+'" style="--pc:'+p.farge+'"><button class="tmain" data-k="'+esc(tk)+'" data-s="'+esc(s.key)+'" data-p="'+esc(s.person)+'" aria-pressed="'+done+'"><span class="chk">✓</span><span class="ik">'+s.o.ikon+'</span><span class="tx"><span class="nm">'+esc(s.o.navn)+mdTag(s.o,s.dato||NAA)+'<span class="pt num">+'+s.o.poeng+'</span></span><span class="mt">'+meta+'</span></span></button><span class="side">'+arkKnapp(s.o)+'<button hidden class="tb" title="Bytt oppgaven til en annen" aria-label="Bytt til en annen" data-k="'+esc(tk)+'" data-o="'+esc(s.o.id)+'" data-d="'+s.dag+'" data-fra="'+esc(s.orig)+'" data-naa="'+esc(s.person)+'" data-dag0="'+(s.flyttet?s.fraDag:s.dag)+'"'+(s.utsatt?' data-uts="'+esc(s.fraUke)+'" data-utsk="'+esc(s.fraKey)+'"':'')+'>⇄</button></span></div>';
+      html+='<div class="tile'+(done?' done':'')+(s.forfalt?' hg':'')+'" style="--pc:'+p.farge+'"><button class="tmain" data-k="'+esc(tk)+'" data-s="'+esc(s.key)+'" data-p="'+esc(s.person)+'" aria-pressed="'+done+'"><span class="chk">✓</span><span class="ik">'+s.o.ikon+'</span><span class="tx"><span class="nm">'+esc(s.o.navn)+mdTag(s.o,s.dato||NAA)+'<span class="pt num">+'+s.o.poeng+'</span></span><span class="mt">'+meta+'</span></span></button><span class="side">'+arkKnapp(s.o)+'<button hidden class="tb" title="Bytt oppgaven til en annen" aria-label="Bytt til en annen" data-k="'+esc(tk)+'" data-o="'+esc(s.o.id)+'" data-d="'+s.dag+'" data-fra="'+esc(s.orig)+'" data-naa="'+esc(s.person)+'" data-dag0="'+(s.flyttet?s.fraDag:s.dag)+'"'+(s.forfalt?' data-forfalt="1"':'')+(s.utsatt?' data-uts="'+esc(s.fraUke)+'" data-utsk="'+esc(s.fraKey)+'"':'')+'>⇄</button></span></div>';
     });
     html+='</div>';
   });
