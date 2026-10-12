@@ -74,6 +74,10 @@ b,strong{font-weight:800}
 @media(max-width:760px){.row2{grid-template-columns:1fr}}
 .pill{display:inline-block;font-size:11.5px;font-weight:800;padding:2px 8px;border-radius:999px;background:var(--accentbg);color:var(--accent);letter-spacing:.02em;vertical-align:middle}
 .pill.grey{background:var(--line2);color:var(--ink2)}
+.pill.gold{background:#f6e7b8;color:#6b4e00}.tile.bonus{border-style:dashed;border-color:#c9a227}.tile .pt.bo{background:#f6e7b8;color:#6b4e00}
+.barnpoeng{margin:6px 0 10px;padding:8px 12px;border-radius:10px;background:var(--card2);font-size:14px}.barnpoeng b{font-size:18px}
+.ferdigrad{margin:16px 0 4px;text-align:center}.ferdigrad button{font:inherit;font-weight:800;font-size:17px;min-height:52px;padding:12px 22px;border-radius:999px;border:0;background:var(--ok);color:#fff;cursor:pointer;width:100%;max-width:420px}.ferdigrad button.meldt{background:var(--card2);color:var(--ink);border:1.5px solid var(--line)}.ferdigrad .small{display:block;margin-top:6px}
+.ferdigbadge{margin:4px 0 8px;font-size:14px}
 .pill.warn{background:var(--warnbg);color:var(--warn)}
 .ptag{display:inline-block;font-size:11.5px;font-weight:800;padding:1px 7px;border-radius:999px;color:#fff;background:var(--pc);vertical-align:middle;margin-right:4px}
 /* today tiles */
@@ -370,6 +374,12 @@ details.om .in{padding:8px 0 0;font-size:14px;max-width:70ch}
       <div><label for="i-prosent">Ukemål i prosent av planlagte poeng</label><input id="i-prosent" type="text" inputmode="numeric" value="75"></div>
       <div class="full"><label>Belønningstrappa — teksten per nivå (rekkefølgen og kravene ligger fast: 1 uke · 2 på rad · 3 av 4 · 6 av 8 · 12 av 16)</label>
         <input id="i-t0" placeholder="Nivå 1 — én uke"><input id="i-t1" placeholder="Nivå 2 — to uker på rad" style="margin-top:6px"><input id="i-t2" placeholder="Nivå 3 — tre av fire uker" style="margin-top:6px"><input id="i-t3" placeholder="Nivå 4 — seks av åtte uker" style="margin-top:6px"><input id="i-t4" placeholder="Bossen — tolv av seksten uker" style="margin-top:6px"></div>
+      <div class="full"><label>Varsler på mobilen — ett hemmelig ntfy-emne per person (appen «ntfy» på telefonen/iPaden abonnerer på emnet; samme emne kan brukes i Livskraft)</label>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center"><input id="i-ntfy-thor" placeholder="Thors emne" autocomplete="off" style="flex:1 1 180px"><button type="button" class="edit" data-ntfytest="thor">Test Thor</button></div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:6px"><input id="i-ntfy-anniken" placeholder="Annikens emne" autocomplete="off" style="flex:1 1 180px"><button type="button" class="edit" data-ntfytest="anniken">Test Anniken</button></div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:6px"><input id="i-ntfy-erik" placeholder="Eriks emne" autocomplete="off" style="flex:1 1 180px"><button type="button" class="edit" data-ntfytest="erik">Test Erik</button></div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:6px"><input id="i-ntfy-vaarin" placeholder="Vårins emne" autocomplete="off" style="flex:1 1 180px"><button type="button" class="edit" data-ntfytest="vaarin">Test Vårin</button></div>
+        <p class="small" id="i-varsler" style="margin:8px 0 0"></p></div>
       <div class="full"><button type="submit">Lagre</button></div>
     </form>
   </details>
@@ -380,6 +390,10 @@ details.om .in{padding:8px 0 0;font-size:14px;max-width:70ch}
 <p><b>I dag</b> viser bare det som skal gjøres i dag, gruppert etter når på dagen det passer: morgen, etter skolen, måltider, kveld, ryddejobb. Ingen klokkeslett — det viktigste er at det blir gjort i løpet av dagen. Trykk på ruta når du er ferdig. Trykk igjen hvis du bommet.</p>
 <p><b>Rytmen.</b> Morgen- og hjemkomstrutinene går hver hverdag. Måltidsjobbene går hver dag og bytter mellom Erik og Vårin annenhver uke. <b>Torsdag er ryddedagen</b> — da er huset klart til helga og uka etter. Oppgaver som går hver 3. uke og hver 3. måned dukker opp på lørdager når de er modne. Sesongbyttet i garderoben kobles til Brukskortene, og skapsjekken onsdag kobles til Ukeshandel — samme rytme, samme sted.</p>
 <p><b>Poengene</b> er ett lag, ikke fem. Ingen konkurrerer mot søsken. Oscar (2) er med på sine småting, og alt han gjør teller.</p>
+<p><b>Bonus 🎁.</b> Noen jobber er ekstra: vaske i huset i torsdagstimen, hjelpe til med bilene og garasjen. De ligger i sin egen bolk nederst, gir ekstra poeng når de gjøres, men teller aldri i ukemålet — ingen taper noe på å la dem ligge. Det som bare er forventet hjelp (klargjøring, bære, rydde etter seg) gir ikke poeng i det hele tatt.</p>
+<p><b>Varsler — få og faste.</b> Tavla maser ikke. Hver får et varsel på mobilen bare til de faste tidene Bjørn har satt opp — de voksne: fabrikkrunden, torsdagstimen, bestilling av mat, søndagstur og søndagskos, pluss når et barn melder ferdig; barna: morgenrutinen på skoledager og «ferdig for i dag?» om kvelden. Varselet åpner tavla. Varslene sendes gjennom gratistjenesten ntfy (eget emne per voksen under Oppgavebanken) og inneholder verken navn eller familiekode.</p>
+<p><b>Ideer og forslag hører ikke hjemme her.</b> «Legg til noe jeg må huske» er for husoppgaver med dato. Ideer, forslag og alt som ikke er huset går i innboksen på Kontrolltavla — Bjørn sorterer den søndag og sier fra når for mye henger.</p>
+<p><b>Ferdig for i dag ✅.</b> Når barna har gjort sitt, trykker de «Ferdig for i dag» nederst. Da ser de voksne det øverst på tavla og får et varsel på mobilen (via ntfy-appen, emnet settes under Oppgavebanken). Varselet har ingen navn eller klokkeslett i seg.</p>
 <p><b>Voksne</b> legger inn nye oppgaver, flytter dager og setter belønning under Oppgavebanken. Rader merket «forslag» er tavlas forslag og skal justeres av dere.</p>
 <p><b>Egen lenke og «app» på iPad og mobil.</b> Bruk lenka med <code>&amp;p=erik</code>, <code>&amp;p=vaarin</code>, <code>&amp;p=oscar</code>, <code>&amp;p=thor</code> eller <code>&amp;p=anniken</code>, så åpner tavla ferdig valgt for den personen — også fra hjemskjermen. Legg den på hjemskjermen: iPad/iPhone — Del-knappen → «Legg til på Hjem-skjerm»; Android — menyen ⋮ → «Legg til på startskjermen». Ingen innlogging trengs.</p>
 <p><b>Husøkta torsdag.</b> Alle starter når de kommer hjem fra skolen og gjør sine jobber samtidig — ferdig før fotballen. Badene veksler mellom <b>GROV</b> og lett: appen husker når det sist ble vasket grundig, og blir en uke hoppet over, blir neste automatisk grov. Det som ikke ble gjort torsdag dukker opp én gang til, lørdag morgen, som «Lørdagsøkta». Gikk torsdagen bra, er lørdagen fri.</p>
@@ -397,7 +411,7 @@ details.om .in{padding:8px 0 0;font-size:14px;max-width:70ch}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.15.1';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.16.0';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -424,11 +438,12 @@ function ukeKey(d){var i=isoWeek(d);return i.y+'-W'+(i.w<10?'0':'')+i.w}
 function mandag(d){var x=new Date(d.getFullYear(),d.getMonth(),d.getDate());var dn=(x.getDay()+6)%7;x.setDate(x.getDate()-dn);return x}
 function addDays(d,n){var x=new Date(d);x.setDate(x.getDate()+n);return x}
 function ymd(d){return d.getFullYear()+'-'+(d.getMonth()<9?'0':'')+(d.getMonth()+1)+'-'+(d.getDate()<10?'0':'')+d.getDate()}
-function ukeIndex(d){return Math.floor((mandag(d)-new Date(2024,0,1))/(7*86400000))}
+function ukeIndex(d){return Math.round((mandag(d)-new Date(2024,0,1))/(7*86400000))-1} /* v1.16: round−1 — floor mistet én time i sommertid og hoppet over én uke ved tidsbyttet */
 function ukeFraKey(k){var m=k.match(/(\d{4})-W(\d{2})/);var jan4=new Date(+m[1],0,4);var m1=mandag(jan4);return addDays(m1,(+m[2]-1)*7)}
 function datoNorsk(d){return d.getDate()+'.'+(d.getMonth()+1)+'.'}
 function fmt(n){return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g,' ')}
 
+function erFerie(key){return !!(INNST.ferie&&INNST.ferie.indexOf(key)>=0)}
 /* Hvem har oppgaven denne uka (rullering annenhver uke) */
 function hvemUke(o,ukeIdx){
   if(o.rull&&o.rull.length){return [o.rull[ukeIdx%o.rull.length]]}
@@ -441,7 +456,7 @@ function dagerIUka(o,man){
   if(o.fra && key<o.fra) return [];
   if(o.til && key>o.til) return [];
   if(o.int==='dato'){var d=new Date(o.dato+'T00:00:00');var diff=Math.round((d-man)/86400000);return (diff>=0&&diff<7)?[diff]:[]}
-  if(o.int==='hverdag') return [0,1,2,3,4];
+  if(o.int==='hverdag') return (erFerie(key)&&o.iFerie!==true)?[]:[0,1,2,3,4]; /* v1.16: skoleferie = ingen skolerutiner */
   if(o.int==='daglig') return [0,1,2,3,4,5,6];
   if(o.int==='dager') return o.dager||[];
   var dag=(o.unntak&&o.unntak[key]!==undefined)?o.unntak[key]:(o.dag===undefined?3:o.dag);
@@ -457,10 +472,10 @@ function dagerIUka(o,man){
 var VEDL_CACHE={sig:'',plan:{}};
 function vedlPlan(){
   var liste=OPPG.filter(function(o){return o.int==='uker'&&o.aktiv!==false&&(o.kat==='Vedlikehold'||o.kat==='Hytta')});
-  var sig=JSON.stringify(liste.map(function(o){return [o.id,o.hver,o.slakk,o.fra,o.poeng]}))+'|'+(INNST.vedlTak||2);
+  var sig=JSON.stringify(liste.map(function(o){return [o.id,o.hver,o.slakk,o.fra,o.til,o.poeng]}))+'|'+(INNST.vedlTak||2);
   if(sig===VEDL_CACHE.sig) return VEDL_CACHE.plan;
   var tak=INNST.vedlTak||2, start=ukeIndex(STARTDATO), slutt=start+160, ev=[];
-  liste.forEach(function(o){var n=Math.max(1,o.hver||4), st=o.fra?ukeIndex(ukeFraKey(o.fra)):start; for(var w=st;w<slutt;w+=n){if(w>=start-1)ev.push({o:o,w:w})}});
+  liste.forEach(function(o){var n=Math.max(1,o.hver||4), st=o.fra?ukeIndex(ukeFraKey(o.fra)):start, sl=o.til?Math.min(slutt,ukeIndex(ukeFraKey(o.til))+1):slutt; for(var w=st;w<sl;w+=n){if(w>=start-1)ev.push({o:o,w:w})}}); /* v1.16: `til` respekteres */
   ev.sort(function(a,b){return a.w-b.w||(b.o.poeng||0)-(a.o.poeng||0)||(a.o.id<b.o.id?-1:1)});
   var last={}, plan={}; liste.forEach(function(o){plan[o.id]={}});
   OPPG.forEach(function(o){if(o.int==='dato'&&o.aktiv!==false&&(o.kat==='Vedlikehold'||o.kat==='Hytta')&&o.dato){var w=ukeIndex(new Date(o.dato+'T00:00:00'));last[w]=(last[w]||0)+1}});
@@ -636,10 +651,13 @@ function settDagFor(o,ds,dato){
     try{localStorage.setItem('ft-oppg',JSON.stringify(OPPG))}catch(e){}
     if(db){var dok=JSON.parse(JSON.stringify(o));if(!dok.rull)delete dok.rull;db.child('oppgaver/'+o.id).set(dok).catch(function(){status('Kunne ikke lagre delt.')})}
     tegn(); toast('Flyttet til '+datoNorsk(new Date(dato+'T00:00:00')));
-  } else if(ds.uts){ /* v1.15.1: allerede utsatt — flytt den opprinnelige utsettelsen, ikke lag en ny kjede fra landingsdagen */
-    var pu=ds.utsk.split('|'); utsett(ds.uts,o,+pu[1],pu[2],dato);
-  } else { /* planlagt engangsoppgave: utsettelsen skal synes, som før */
-    utsett(ds.k,o,+ds.dag0,ds.fra,dato);
+  } else { /* v1.16: en engangsoppgave med flere på laget (brannøvelsen, hageøkta) er ÉN hendelse — flyttes den for én, flyttes den for alle */
+    var alle=(o.int==='dato'&&(o.hvem||[]).length>1)?o.hvem.slice():[ds.fra];
+    if(ds.uts){ /* v1.15.1: allerede utsatt — flytt den opprinnelige utsettelsen, ikke lag en ny kjede fra landingsdagen */
+      var pu=ds.utsk.split('|'); alle.forEach(function(pp){utsett(ds.uts,o,+pu[1],pp,dato)});
+    } else { /* planlagt engangsoppgave: utsettelsen skal synes, som før */
+      alle.forEach(function(pp){utsett(ds.k,o,+ds.dag0,pp,dato)});
+    }
   }
 }
 function lagreArk(){
@@ -727,6 +745,60 @@ function feir(){var f=['#2560a8','#b03a6e','#c9820c','#6a4fc4','#1a9463','#e0a33
 var toastT;function toast(t){var el=document.getElementById('toast');el.textContent=t;el.classList.add('show');clearTimeout(toastT);toastT=setTimeout(function(){el.classList.remove('show')},1400)}
 function status(t){document.getElementById('dbstat').textContent=t}
 
+/* ---------- v1.16: «Ferdig for i dag» og varsler ---------- */
+var FERDIG={}; /* 'YYYY-MM-DD' -> {person:{ts,gjort,av}} — barnet melder at dagen er gjort; de voksne får varsel */
+try{FERDIG=JSON.parse(localStorage.getItem('ft-ferdig')||'{}')||{}}catch(e){}
+function ferdigFor(person){var d=FERDIG[ymd(NAA)];return !!(d&&d[person])}
+function ferdigIDag(){var d=FERDIG[ymd(NAA)]||{};return ['erik','vaarin','oscar'].filter(function(id){return d[id]})}
+function meldFerdig(person,angre,gjort,av){
+  var dag=ymd(NAA); if(!FERDIG[dag])FERDIG[dag]={};
+  if(angre){delete FERDIG[dag][person]}else{FERDIG[dag][person]={ts:Date.now(),gjort:gjort,av:av}}
+  try{localStorage.setItem('ft-ferdig',JSON.stringify(FERDIG))}catch(e){}
+  tegn(); toast(angre?'Angret':'✅ Ferdig meldt!');
+  if(db){db.child('ferdig/'+dag+'/'+person).set(angre?null:FERDIG[dag][person]).catch(function(){status('Kunne ikke lagre «ferdig» delt.')})}
+  if(!angre){var q=PMAP[person];varsle('Ferdig for i dag',(q?q.dyr+' '+q.kort:'')+' er ferdig for i dag · '+gjort+' av '+av+' gjort','white_check_mark')}
+}
+/* Varsel til de voksne via ntfy. Emnet er hemmelig og ligger bare i delt lagring (innstillinger.ntfy), aldri i repoet.
+   Teksten holdes uten navn og uten klokkeslett: bare dyr + forbokstav og tallene. */
+var NTFY_URL='https://ntfy.sh/';
+function lesNtfy(x){ if(!x) return null; if(typeof x==='string') return {thor:x}; return x }
+function appLenke(person){ /* lenke uten familiekode — Safari husker koden etter første åpning (Thor 13.10: varslene skal åpne tavla) */
+  try{return location.origin+location.pathname+'?p='+encodeURIComponent(person||'alle')}catch(e){return ''}}
+function ntfyPost(topic,tittel,tekst,tag,atUnix,prio,click){ /* samme form som Livskraft v1.9 (verifisert på iPhone): spørring i adressen, teksten i kroppen */
+  if(!topic||!window.fetch) return Promise.resolve(false);
+  var u=NTFY_URL+encodeURIComponent(topic)+'?title='+encodeURIComponent('Familieteamet · '+tittel)+'&tags='+encodeURIComponent(tag||'bell')+'&priority='+(prio||4)+(atUnix?'&delay='+atUnix:'')+(click?'&click='+encodeURIComponent(click):'');
+  try{return fetch(u,{method:'POST',body:tekst,keepalive:true}).then(function(r){return r.ok}).catch(function(){return false})}catch(e){return Promise.resolve(false)}
+}
+function varsle(tittel,tekst,tag){ /* til begge voksne nå */
+  var n=lesNtfy(INNST.ntfy)||{}, ps=['thor','anniken'].filter(function(p){return n[p]}); if(!ps.length) return Promise.resolve(false);
+  return Promise.all(ps.map(function(p){return ntfyPost(n[p],tittel,tekst,tag,null,null,appLenke(p))})).then(function(a){return a.some(Boolean)});
+}
+/* Strategiske varsler (Thor 12.10): få, faste tider — ikke «heng». Planen ligger i innstillinger/varsler i delt lagring:
+   [{id, navn, tekst, dager:[0–6], tid:'HH:MM', til:['thor','anniken'], tags, aktiv}]. ntfy leverer forsinket (inntil 3 døgn),
+   så hver enhet som åpner tavla bestiller de neste tre dagene; varsler/sendt/<dato>_<id> sørger for at bare én enhet bestiller. */
+var VARSLET_NAA=false;
+function planleggVarsler(){
+  if(VARSLET_NAA||!db||!INNST.varsler||!INNST.ntfy) return; VARSLET_NAA=true;
+  var naa=new Date(), n=lesNtfy(INNST.ntfy)||{};
+  var liste=Array.isArray(INNST.varsler)?INNST.varsler:Object.keys(INNST.varsler).map(function(k){return INNST.varsler[k]});
+  for(var d=0;d<3;d++){(function(d){var dag=addDays(naa,d), yd=ymd(dag), wd=(dag.getDay()+6)%7;
+    liste.forEach(function(v){ if(!v||v.aktiv===false||!v.id||!v.tid||(v.dager||[]).indexOf(wd)<0) return;
+      if(v.skoledag&&erFerie(ukeKey(dag))) return; /* skolerutine-varsler er stille i ferieuker */
+      var hm=String(v.tid).split(':'); var t=new Date(dag.getFullYear(),dag.getMonth(),dag.getDate(),+hm[0],+hm[1]||0,0);
+      if(t.getTime()-naa.getTime()<120000) return; /* passert, eller for nær til å bestilles */
+      var key=yd+'_'+v.id, ref=db.child('varsler/sendt/'+key);
+      ref.transaction(function(cur){ if(cur) return; return {ts:Date.now(),by:valgt||'familie'} },function(err,committed){
+        if(err||!committed) return;
+        var ps=(v.til&&v.til.length?v.til:['thor','anniken']).filter(function(p){return n[p]});
+        Promise.all(ps.map(function(p){return ntfyPost(n[p],v.navn||'Påminnelse',v.tekst||'',v.tags||'bell',Math.floor(t.getTime()/1000),v.prio||4,v.click===false?'':(v.click||appLenke(p)))}))
+          .then(function(a){ if(!a.some(Boolean)) ref.set(null).catch(function(){}) }); /* gikk det ikke: la neste enhet prøve */
+      });
+    })})(d)}
+  /* rydd: bestillinger eldre enn 7 dager */
+  var grense=ymd(addDays(naa,-7));
+  db.child('varsler/sendt').once('value',function(snap){var v=snap.val()||{};Object.keys(v).forEach(function(k){if(k.slice(0,10)<grense)db.child('varsler/sendt/'+k).set(null).catch(function(){})})});
+}
+
 /* ---------- tegning ---------- */
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
 function ptag(p){var x=PMAP[p];return x?'<span class="ptag" style="--pc:'+x.farge+'">'+(x.dyr?x.dyr+' ':'')+esc(x.navn)+'</span>':''}
@@ -751,6 +823,7 @@ function forfalte(){
   for(var w=0;w<13;w++){var m=addDays(man,-7*w), k=ukeKey(m);
     planUke(m).forEach(function(s){
       if(erRutine(s.o)) return;
+      if(s.o.bonus) return; /* v1.16: bonus er frivillig — maser aldri */
       if(s.o.int==='uke'&&w>0) return; /* ukentlige kommer igjen neste uke uansett */
       if(s.o.int==='uke'&&w===0){ /* husøkta torsdag: henger IKKE daglig — lander på lørdag én gang, ellers faller den */
         if(!(s.dag<dIdx&&dIdx===5)) return; }
@@ -769,12 +842,12 @@ function forfalte(){
 }
 function glemtIGaar(){
   var ig=addDays(NAA,-1), m=mandag(ig), k=ukeKey(m), d=(ig.getDay()+6)%7;
-  return planUke(m).filter(function(s){return erRutine(s.o)&&s.dag===d&&!erGjort(k,s.key)&&(!valgt||s.person===valgt)}).map(function(s){s.ukeKey=k;return s});
+  return planUke(m).filter(function(s){return erRutine(s.o)&&!s.o.bonus&&s.dag===d&&!erGjort(k,s.key)&&(!valgt||s.person===valgt)}).map(function(s){s.ukeKey=k;return s});
 }
 function tegnIdag(){
   var man=mandag(NAA), key=ukeKey(man), dIdx=(NAA.getDay()+6)%7;
   var pv=valgt?PMAP[valgt]:null;
-  document.getElementById('idag-h').innerHTML=(pv?'Hei '+esc(pv.navn)+' '+pv.dyr:'Hele laget 👨‍👩‍👧‍👦')+' <span class="small">· '+DAGER[dIdx].toLowerCase()+' '+datoNorsk(NAA)+'</span>';
+  document.getElementById('idag-h').innerHTML=(pv?'Hei '+esc(pv.navn)+' '+pv.dyr:'Hele laget 👨‍👩‍👧‍👦')+' <span class="small">· '+DAGER[dIdx].toLowerCase()+' '+datoNorsk(NAA)+(erFerie(key)?' · ferieuke':'')+'</span>';
   document.getElementById('dagplan').innerHTML=''; /* ingen dagsplan: tavla er ikke en kalender — det viktigste er at det blir gjort i løpet av dagen */
   var slots=planUke(man).filter(function(s){return s.dag===dIdx&&(!valgt||s.person===valgt)});
   slots.forEach(function(s){s.ukeKey=key});
@@ -782,15 +855,17 @@ function tegnIdag(){
   var grp={'Henger igjen':henger}; GRUPPER.forEach(function(g){grp[g]=[]});
   var erTorsdag=(dIdx===3), erLordag=(dIdx===5);
   /* Huskelapper (lagt inn med «+ Legg til noe jeg må huske») får sin egen bolk, uansett kategori. */
-  slots.forEach(function(s){var g=s.o.egen?'Huskelapper':(s.o.kat||'Rydding'); (grp[g]||(grp[g]=[])).push(s)});
+  grp['Bonus']=[];
+  slots.forEach(function(s){var g=s.o.bonus?'Bonus':(s.o.egen?'Huskelapper':(s.o.kat||'Rydding')); (grp[g]||(grp[g]=[])).push(s)});
   var navnRydding=erTorsdag?'🧹 Husøkta — alle sammen etter skolen':'Ryddejobb';
   var navnHenger=erLordag?'🧹 Lørdagsøkta — det som henger igjen fra uka':'⏰ Henger igjen — ikke gjort ennå';
   var html='';
-  var navnG={'Morgen':'Morgen','Etter skolen':'Når du kommer hjem','Dagen':'I løpet av dagen','Vedlikehold':'🔧 Vedlikehold hus, hage og bil','Hytta':'🏔️ Hytta og Airbnb','Grovvask':'🧽 Grovvask','Måltider':'Måltider','Kveld':'Kveld — før legging','Rydding':navnRydding,'Vask':'Vask og bestilling','Sesong':'Modent nå','Sikkerhet':'🛟 Sikkerhet — brann, varslere og førstehjelp','Huskelapper':'📌 Huskelapper','Henger igjen':navnHenger};
+  var navnG={'Morgen':'Morgen','Etter skolen':'Når du kommer hjem','Dagen':'I løpet av dagen','Vedlikehold':'🔧 Vedlikehold hus, hage og bil','Hytta':'🏔️ Hytta og Airbnb','Grovvask':'🧽 Grovvask','Måltider':'Måltider','Kveld':'Kveld — før legging','Rydding':navnRydding,'Vask':'Vask og bestilling','Sesong':'Modent nå','Sikkerhet':'🛟 Sikkerhet — brann, varslere og førstehjelp','Huskelapper':'📌 Huskelapper','Bonus':'🎁 Bonus — ekstra poeng, utenfor ukemålet','Henger igjen':navnHenger};
   /* Barna ser dagen i dagens rekkefolge: morgen forst, og det som henger igjen til slutt.
      Voksne ser det som henger igjen overst, fordi de planlegger uka. */
   var BARN=['erik','vaarin','oscar'];
-  var rekke=(valgt&&BARN.indexOf(valgt)>=0)?GRUPPER.concat(['Henger igjen']):['Henger igjen'].concat(GRUPPER);
+  var erBarn=!!(valgt&&BARN.indexOf(valgt)>=0);
+  var rekke=erBarn?GRUPPER.concat(['Bonus','Henger igjen']):['Henger igjen'].concat(GRUPPER,['Bonus']);
   rekke.forEach(function(g){
     if(!grp[g].length) return;
     html+='<div class="grp'+(g==='Henger igjen'?' hg':'')+'">'+esc(navnG[g]||g)+'</div><div class="tiles">';
@@ -805,7 +880,7 @@ function tegnIdag(){
         var alleD=s.felles.every(function(x){return erGjort(fk,x.key)}), antD=s.felles.filter(function(x){return erGjort(fk,x.key)}).length;
         var av=s.felles.map(function(x){var q=PMAP[x.person];return '<span class="av'+(erGjort(fk,x.key)?' ok':'')+'" style="--pc:'+q.farge+'" title="'+esc(q.navn)+'">'+esc(q.kort)+'</span>'}).join('');
         var metaF=(s.o.min?s.o.min+' min · ':'')+'alle sammen · '+antD+' av '+s.felles.length+(s.o.notat||s.o.lenke?' · trykk ⓘ for stegene':'');
-        html+='<div class="tile'+(alleD?' done':'')+'" style="--pc:var(--accent)"><button class="tmain" data-k="'+esc(fk)+'" data-f="'+esc(s.felles.map(function(x){return x.key}).join(','))+'" aria-pressed="'+alleD+'"><span class="chk">✓</span><span class="ik">'+s.o.ikon+'</span><span class="tx"><span class="nm">'+esc(s.o.navn)+'<span class="pt num">+'+(s.o.poeng*s.felles.length)+'</span></span><span class="mt">'+metaF+'</span><span class="avs">'+av+'</span></span></button><span class="side">'+arkKnapp(s.o)+'<button hidden class="tb" title="Utsett for alle" aria-label="Utsett for alle" data-k="'+esc(s.felles[0].ukeKey||key)+'" data-o="'+esc(s.o.id)+'" data-d="'+s.dag+'" data-dag0="'+(s.felles[0].flyttet?s.felles[0].fraDag:s.dag)+'" data-felles="'+esc(s.felles.map(function(x){return x.orig}).join(','))+'">⇄</button></span></div>';
+        html+='<div class="tile'+(alleD?' done':'')+(s.o.bonus?' bonus':'')+'" style="--pc:var(--accent)"><button class="tmain" data-k="'+esc(fk)+'" data-f="'+esc(s.felles.map(function(x){return x.key}).join(','))+'" aria-pressed="'+alleD+'"><span class="chk">✓</span><span class="ik">'+s.o.ikon+'</span><span class="tx"><span class="nm">'+esc(s.o.navn)+'<span class="pt num">+'+(s.o.poeng*s.felles.length)+'</span></span><span class="mt">'+metaF+'</span><span class="avs">'+av+'</span></span></button><span class="side">'+arkKnapp(s.o)+'<button hidden class="tb" title="Utsett for alle" aria-label="Utsett for alle" data-k="'+esc(s.felles[0].ukeKey||key)+'" data-o="'+esc(s.o.id)+'" data-d="'+s.dag+'" data-dag0="'+(s.felles[0].flyttet?s.felles[0].fraDag:s.dag)+'" data-felles="'+esc(s.felles.map(function(x){return x.orig}).join(','))+'">⇄</button></span></div>';
         return;
       }
       var done=erGjort(s.ukeKey||key,s.key), p=PMAP[s.person];
@@ -818,15 +893,18 @@ function tegnIdag(){
         meta='skulle vært '+DAGK[s.dag]+' '+datoNorsk(s.dato)+(dg>6?' · <b>'+dg+' dager forfalt</b>':'')+' · '+meta;}
       meta=meta.replace(/^(\s*·\s*)+/,'').replace(/(\s*·\s*)+$/,''); /* huskelapper uten minutter skal ikke ende på en ensom prikk */
       var tk=s.ukeKey||key;
-      html+='<div class="tile'+(done?' done':'')+(s.forfalt?' hg':'')+'" style="--pc:'+p.farge+'"><button class="tmain" data-k="'+esc(tk)+'" data-s="'+esc(s.key)+'" data-p="'+esc(s.person)+'" aria-pressed="'+done+'"><span class="chk">✓</span><span class="ik">'+s.o.ikon+'</span><span class="tx"><span class="nm">'+esc(s.o.navn)+mdTag(s.o,s.dato||NAA)+'<span class="pt num">+'+s.o.poeng+'</span></span><span class="mt">'+meta+'</span></span></button><span class="side">'+arkKnapp(s.o)+'<button hidden class="tb" title="Bytt oppgaven til en annen" aria-label="Bytt til en annen" data-k="'+esc(tk)+'" data-o="'+esc(s.o.id)+'" data-d="'+s.dag+'" data-fra="'+esc(s.orig)+'" data-naa="'+esc(s.person)+'" data-dag0="'+(s.flyttet?s.fraDag:s.dag)+'"'+(s.forfalt?' data-forfalt="1"':'')+(s.utsatt?' data-uts="'+esc(s.fraUke)+'" data-utsk="'+esc(s.fraKey)+'"':'')+'>⇄</button></span></div>';
+      html+='<div class="tile'+(done?' done':'')+(s.forfalt?' hg':'')+(s.o.bonus?' bonus':'')+'" style="--pc:'+p.farge+'"><button class="tmain" data-k="'+esc(tk)+'" data-s="'+esc(s.key)+'" data-p="'+esc(s.person)+'" aria-pressed="'+done+'"><span class="chk">✓</span><span class="ik">'+s.o.ikon+'</span><span class="tx"><span class="nm">'+esc(s.o.navn)+mdTag(s.o,s.dato||NAA)+(s.o.bonus?'<span class="pt num bo">+'+s.o.poeng+' bonus</span>':'<span class="pt num">+'+s.o.poeng+'</span>')+'</span><span class="mt">'+meta+'</span></span></button><span class="side">'+arkKnapp(s.o)+'<button hidden class="tb" title="Bytt oppgaven til en annen" aria-label="Bytt til en annen" data-k="'+esc(tk)+'" data-o="'+esc(s.o.id)+'" data-d="'+s.dag+'" data-fra="'+esc(s.orig)+'" data-naa="'+esc(s.person)+'" data-dag0="'+(s.flyttet?s.fraDag:s.dag)+'"'+(s.forfalt?' data-forfalt="1"':'')+(s.utsatt?' data-uts="'+esc(s.fraUke)+'" data-utsk="'+esc(s.fraKey)+'"':'')+'>⇄</button></span></div>';
     });
     html+='</div>';
   });
   /* dagsframdrift + feiring */
-  var antAlle=slots.length, antGjort=slots.filter(function(s){return erGjort(key,s.key)}).length;
+  var pl=slots.filter(function(s){return !s.o.bonus});
+  var antAlle=pl.length, antGjort=pl.filter(function(s){return erGjort(key,s.key)}).length;
   var frem='';
+  if(erBarn){var tp=ukeTall(man).per[valgt];frem+='<div class="barnpoeng">Denne uka: <b class="num">'+tp.gjort+'</b> poeng <span class="small">· '+tp.antG+' av '+tp.ant+' oppgaver gjort'+(tp.bonus?' · 🎁 +'+tp.bonus+' bonus':'')+'</span></div>'}
+  else{var fb=ferdigIDag();if(fb.length)frem+='<div class="ferdigbadge">✅ Ferdig for i dag: '+fb.map(function(id){var q=PMAP[id];return q?q.dyr+' '+esc(q.navn):''}).join(', ')+'</div>'}
   if(antAlle){var pct=Math.round(antGjort/antAlle*100);
-    frem='<div class="dagbar"><div class="dagfill" style="width:'+pct+'%"></div></div><p class="dagtxt">'+(antGjort===antAlle?'<b>Alt gjort i dag!</b> 🎉 Kjempebra.':'<b>'+antGjort+' av '+antAlle+'</b> gjort · '+(antAlle-antGjort)+' igjen')+'</p>';
+    frem+='<div class="dagbar"><div class="dagfill" style="width:'+pct+'%"></div></div><p class="dagtxt">'+(antGjort===antAlle?'<b>Alt gjort i dag!</b> 🎉 Kjempebra.':'<b>'+antGjort+' av '+antAlle+'</b> gjort · '+(antAlle-antGjort)+' igjen')+'</p>';
     if(antGjort===antAlle&&!window.__feiret){window.__feiret=true;feir()}else if(antGjort<antAlle)window.__feiret=false;}
   var gl=glemtIGaar();
   if(gl.length){
@@ -838,7 +916,9 @@ function tegnIdag(){
       : '<div class="glemt">Ikke huket i går: '+gkn+gsm+'</div>';
   }
   if(!html) html='<p class="tom">Ingen oppgaver i dag — fri! 🎉</p>';
+  if(erBarn){var fm=ferdigFor(valgt);html+='<div class="ferdigrad">'+(fm?'<button id="ferdig-btn" class="meldt" data-angre="1">✓ Du meldte ferdig for i dag</button><span class="small">Mamma og pappa har fått beskjed. Trykk igjen hvis du angret.</span>':'<button id="ferdig-btn">✅ Ferdig for i dag</button><span class="small">Trykk når alt ditt er gjort — da får mamma og pappa beskjed.</span>')+'</div>'}
   var el=document.getElementById('idag-liste');el.innerHTML=frem+html;
+  var fbtn=document.getElementById('ferdig-btn');if(fbtn)fbtn.onclick=function(){meldFerdig(valgt,!!fbtn.dataset.angre,antGjort,antAlle)};
   el.querySelectorAll('.gk').forEach(function(b){b.onclick=function(){toggle(b.dataset.k,b.dataset.s,b.dataset.p)}});
   el.querySelectorAll('.ti').forEach(function(b){b.onclick=function(ev){ev.stopPropagation();aapneArk(b.dataset.ark,b)}});
   el.querySelectorAll('.tmain').forEach(function(b){b.onclick=function(){
@@ -890,8 +970,10 @@ function tegnIdag(){
 
 function ukeTall(man){
   var key=ukeKey(man), slots=planUke(man), sum=0, gjort=0, per={};
-  PERS.forEach(function(p){per[p.id]={plan:0,gjort:0,ant:0,antG:0}});
-  slots.forEach(function(s){sum+=s.o.poeng;per[s.person].plan+=s.o.poeng;per[s.person].ant++;if(erGjort(key,s.key)){gjort+=s.o.poeng;per[s.person].gjort+=s.o.poeng;per[s.person].antG++}});
+  PERS.forEach(function(p){per[p.id]={plan:0,gjort:0,ant:0,antG:0,bonus:0}});
+  /* v1.16: bonus:true = ekstra poeng utenfor ukemålet — teller i «gjort», aldri i «planlagt» eller målet */
+  slots.forEach(function(s){var pp=s.o.poeng||0,bo=!!s.o.bonus;if(!bo){sum+=pp;per[s.person].plan+=pp;per[s.person].ant++}
+    if(erGjort(key,s.key)){gjort+=pp;per[s.person].gjort+=pp;if(bo)per[s.person].bonus+=pp;else per[s.person].antG++}});
   var maal=Math.round(sum*(INNST.prosent||75)/100);
   return {key:key,sum:sum,gjort:gjort,maal:maal,per:per};
 }
@@ -905,7 +987,7 @@ function tegnLag(){
   var rest=t.maal-t.gjort;
   document.getElementById('lag-txt').innerHTML=(rest<=0?'<b>Ukemålet er nådd!</b>':'<b>'+fmt(rest)+' poeng igjen</b> til ukemålet')+' <span class="small">· planlagt i alt '+fmt(t.sum)+' poeng</span>';
   var h='<tr><th>Spiller</th><th class="c">Poeng</th><th class="c">Av planlagt</th><th class="c">Oppgaver</th></tr>';
-  PERS.forEach(function(p){var x=t.per[p.id];h+='<tr><td>'+ptag(p.id)+'</td><td class="c num"><b>'+x.gjort+'</b></td><td class="c num">'+x.plan+'</td><td class="c num">'+x.antG+' / '+x.ant+'</td></tr>'});
+  PERS.forEach(function(p){var x=t.per[p.id];h+='<tr><td>'+ptag(p.id)+'</td><td class="c num"><b>'+x.gjort+'</b>'+(x.bonus?' <span class="small">(+'+x.bonus+' bonus)</span>':'')+'</td><td class="c num">'+x.plan+'</td><td class="c num">'+x.antG+' / '+x.ant+'</td></tr>'});
   document.getElementById('lag-tbl').innerHTML=h;
   tegnTrapp(t);
 }
@@ -963,7 +1045,7 @@ function tegnUke(){
       var done=erGjort(key,s.key);
       h+='<td class="c'+(erNaa&&d===dIdx?' today':'')+'"><button class="cell'+(done?' done':'')+'" data-k="'+esc(key)+'" data-s="'+esc(s.key)+'" data-p="'+esc(s.person)+'" aria-label="'+esc(r.o.navn+' '+DAGER[d])+'" aria-pressed="'+done+'">'+(done?'✓':'')+'</button></td>';
     }
-    h+='<td class="c num">'+r.o.poeng+'</td></tr>';
+    h+='<td class="c num">'+r.o.poeng+(r.o.bonus?' 🎁':'')+'</td></tr>';
   });
   var t=document.getElementById('uke-tbl');t.innerHTML=h;
   t.querySelectorAll('.cell').forEach(function(b){b.onclick=function(){toggle(b.dataset.k,b.dataset.s,b.dataset.p)}});
@@ -1009,6 +1091,9 @@ function tegnVedl(){
     h+='<tr'+(w===0?' class="today"':'')+'><td class="num">Uke '+isoWeek(m).w+' <span class="small">'+datoNorsk(m)+'</span></td><td>'+(navn.length?navn.join('<br>'):'<span class="small">—</span>')+'</td><td class="c num">'+(min||'')+'</td></tr>';
   }
   h+='<tr><td colspan="3" class="small">Til sammen '+tot+' min de neste 12 ukene ≈ '+Math.round(tot/12)+' min per uke.</td></tr>';
+  /* v1.16: jobber merket 💼 i notatet er kandidater for å sette bort — synlig så beslutningen kan tas, ikke glemmes */
+  var sb=OPPG.filter(function(o){return o.aktiv!==false&&o.notat&&o.notat.indexOf('💼')>=0});
+  if(sb.length){var sm=0;h+='<tr><td colspan="3"><b>💼 Kandidater for å sette bort</b> <span class="small">— timer per år hjemme mot pris ute. Dere bestemmer; Bjørn fjerner raden når det er avgjort.</span><br>'+sb.map(function(o){var g=o.int==='uker'?Math.round(52/(o.hver||4)):({hverdag:260,daglig:365,uke:52,'2uke':26,'3uke':17,'4uke':13,kvartal:4,dager:52*((o.dager||[]).length||1)}[o.int]||1);var tm=Math.round((o.min||0)*g/60);sm+=tm;return o.ikon+' '+esc(o.navn)+' <span class="small num">· '+intNavn(o)+' · ≈ '+tm+' t/år</span>'}).join('<br>')+'<br><span class="small num">Til sammen ≈ '+sm+' timer i året.</span></td></tr>'}
   el.innerHTML=h;
 }
 
@@ -1029,14 +1114,14 @@ function tegnBank(){
     else if(o.int==='dato')ryt=o.dato.split('-').reverse().join('.');
     var hv=o.rull?o.rull.map(ptag).join('')+'<span class="small">bytter</span>':(o.hvem||[]).map(ptag).join('');
     var ng=nesteGang(o);
-    h+='<tr style="'+(o.aktiv===false?'opacity:.5':'')+'"><td class="ikon">'+o.ikon+'</td><td class="navn">'+esc(o.navn)+(o.forslag?' <span class="pill grey">forslag</span>':'')+(o.aktiv===false?' <span class="pill warn">av</span>':'')+(o.lenke?' <a href="'+o.lenke+'">'+esc(o.lenkenavn)+' →</a>':'')+(o.notat?'<br><span class="small">'+esc(o.notat)+'</span>':'')+'<small>'+esc(o.kat)+'</small></td><td>'+ryt+'</td><td>'+hv+'</td><td class="c num">'+o.poeng+'</td><td class="c num">'+(o.min||'')+'</td><td class="num">'+(ng?DAGK[(ng.getDay()+6)%7]+' '+datoNorsk(ng):'—')+'</td><td><button class="edit" data-id="'+esc(o.id)+'">endre</button></td></tr>';
+    h+='<tr style="'+(o.aktiv===false?'opacity:.5':'')+'"><td class="ikon">'+o.ikon+'</td><td class="navn">'+esc(o.navn)+(o.forslag?' <span class="pill grey">forslag</span>':'')+(o.bonus?' <span class="pill gold">bonus</span>':'')+(o.aktiv===false?' <span class="pill warn">av</span>':'')+(o.lenke?' <a href="'+o.lenke+'">'+esc(o.lenkenavn)+' →</a>':'')+(o.notat?'<br><span class="small">'+esc(o.notat)+'</span>':'')+'<small>'+esc(o.kat)+'</small></td><td>'+ryt+'</td><td>'+hv+'</td><td class="c num">'+o.poeng+'</td><td class="c num">'+(o.min||'')+'</td><td class="num">'+(ng?DAGK[(ng.getDay()+6)%7]+' '+datoNorsk(ng):'—')+'</td><td><button class="edit" data-id="'+esc(o.id)+'">endre</button></td></tr>';
   });
   var t=document.getElementById('bank-tbl');t.innerHTML=h;
   t.querySelectorAll('.edit').forEach(function(b){b.onclick=function(){fyllSkjema(b.dataset.id)}});
 }
 
 /* ---------- skjema ---------- */
-function fyllHvem(){var d=document.getElementById('f-hvem');d.innerHTML=PERS.map(function(p){return '<label style="display:inline-flex;gap:4px;align-items:center;color:var(--ink)"><input type="checkbox" name="hv" value="'+p.id+'"> '+esc(p.navn)+'</label>'}).join('')+'<label style="display:inline-flex;gap:4px;align-items:center;color:var(--ink)"><input type="checkbox" id="f-rull"> bytter annenhver uke</label><label style="display:inline-flex;gap:4px;align-items:center;color:var(--ink)"><input type="checkbox" id="f-aktiv" checked> aktiv</label>'}
+function fyllHvem(){var d=document.getElementById('f-hvem');d.innerHTML=PERS.map(function(p){return '<label style="display:inline-flex;gap:4px;align-items:center;color:var(--ink)"><input type="checkbox" name="hv" value="'+p.id+'"> '+esc(p.navn)+'</label>'}).join('')+'<label style="display:inline-flex;gap:4px;align-items:center;color:var(--ink)"><input type="checkbox" id="f-rull"> bytter annenhver uke</label><label style="display:inline-flex;gap:4px;align-items:center;color:var(--ink)"><input type="checkbox" id="f-aktiv" checked> aktiv</label><label style="display:inline-flex;gap:4px;align-items:center;color:var(--ink)"><input type="checkbox" id="f-bonus"> 🎁 bonus — ekstra poeng utenfor ukemålet</label>'}
 function fyllSkjema(id){
   var o=OPPG.filter(function(x){return x.id===id})[0];if(!o)return;
   document.getElementById('ny-wrap').open=true;
@@ -1046,7 +1131,7 @@ function fyllSkjema(id){
   document.getElementById('f-poeng').value=o.poeng;document.getElementById('f-min').value=o.min||'';
   document.getElementById('f-hver').value=o.hver||'';document.getElementById('f-slakk').value=o.slakk||'';document.getElementById('f-notat').value=o.notat||'';
   var hv=o.rull||o.hvem||[];document.querySelectorAll('#f-hvem input[name=hv]').forEach(function(c){c.checked=hv.indexOf(c.value)>=0});
-  document.getElementById('f-rull').checked=!!o.rull;document.getElementById('f-aktiv').checked=o.aktiv!==false;
+  document.getElementById('f-rull').checked=!!o.rull;document.getElementById('f-aktiv').checked=o.aktiv!==false;document.getElementById('f-bonus').checked=!!o.bonus;
   gaaTil('ny-wrap');
 }
 document.getElementById('f-avbryt').onclick=function(){document.getElementById('ny').reset();document.getElementById('f-id').value=''};
@@ -1059,6 +1144,7 @@ document.getElementById('ny').onsubmit=function(e){
   if(o.int==='dato'){o.dato=document.getElementById('f-dato').value;if(!o.dato){alert('Velg dato.');return}}
   if(o.int==='uker'){o.hver=+(document.getElementById('f-hver').value.replace(/\s/g,''))||4;o.slakk=+(document.getElementById('f-slakk').value.replace(/\s/g,''))||0;var g0=OPPG.filter(function(x){return x.id===id})[0];if(!(g0&&g0.fra))o.fra=ukeKey(NAA)}
   var nt=document.getElementById('f-notat').value.trim();if(nt)o.notat=nt;
+  o.bonus=document.getElementById('f-bonus').checked;
   if(document.getElementById('f-rull').checked&&hv.length>1){o.rull=hv;o.hvem=[]}else{o.hvem=hv;o.rull=null}
   var gammel=OPPG.filter(function(x){return x.id===id})[0];
   if(gammel){Object.keys(o).forEach(function(k){gammel[k]=o[k]});if(!o.rull)delete gammel.rull;delete gammel.forslag}else OPPG.push(o);
@@ -1072,12 +1158,17 @@ document.getElementById('innst').onsubmit=function(e){
   var trapp=JSON.parse(JSON.stringify((INNST.trapp&&INNST.trapp.length)?INNST.trapp:SEED_TRAPP));
   for(var i=0;i<5;i++){var v=(document.getElementById('i-t'+i).value||'').trim();if(v&&trapp[i]){var d=v.split(':');if(d.length>1){trapp[i].navn=d[0].trim();trapp[i].tekst=d.slice(1).join(':').trim()}else trapp[i].tekst=v}}
   INNST.trapp=trapp;
+  INNST.ntfy={};['thor','anniken','erik','vaarin'].forEach(function(p){INNST.ntfy[p]=(document.getElementById('i-ntfy-'+p).value||'').trim()});
   try{localStorage.setItem('ft-innst',JSON.stringify(INNST))}catch(e){}
-  if(db){db.child('innstillinger').set({id:'main',prosent:INNST.prosent,plan:INNST.plan||null,trapp:INNST.trapp,by:valgt||'familie',ts:new Date().toISOString()}).catch(function(er){status('Kunne ikke lagre innstillinger delt.')})}
+  if(db){db.child('innstillinger').set({id:'main',prosent:INNST.prosent,plan:INNST.plan||null,trapp:INNST.trapp,ferie:INNST.ferie||null,ntfy:INNST.ntfy||null,varsler:INNST.varsler||null,by:valgt||'familie',ts:new Date().toISOString()}).catch(function(er){status('Kunne ikke lagre innstillinger delt.')})}
   toast('Lagret ✓');tegn();
 };
 function fyllInnst(){var tr=(INNST.trapp&&INNST.trapp.length)?INNST.trapp:SEED_TRAPP;for(var i=0;i<5;i++){var el=document.getElementById('i-t'+i);if(el&&tr[i]&&document.activeElement!==el)el.value=tr[i].navn+': '+tr[i].tekst}
-  document.getElementById('i-prosent').value=INNST.prosent||75;}
+  document.getElementById('i-prosent').value=INNST.prosent||75;
+  var n=lesNtfy(INNST.ntfy)||{};['thor','anniken','erik','vaarin'].forEach(function(p){var ni=document.getElementById('i-ntfy-'+p);if(ni&&document.activeElement!==ni)ni.value=n[p]||''});
+  var vl=document.getElementById('i-varsler');if(vl){var liste=INNST.varsler?(Array.isArray(INNST.varsler)?INNST.varsler:Object.keys(INNST.varsler).map(function(k){return INNST.varsler[k]})):[];
+    vl.innerHTML=liste.length?'<b>Faste varsler</b> (Bjørn endrer dem i søndagssjekken): '+liste.filter(function(v){return v&&v.aktiv!==false}).map(function(v){return esc(v.navn||v.id)+' · '+(v.dager||[]).map(function(d){return DAGK[d]}).join('/')+' '+esc(v.tid||'')+' → '+(v.til||['thor','anniken']).map(function(p){return PMAP[p]?PMAP[p].kort:p}).join('+')}).join(' · '):'Ingen faste varsler ennå.'}}
+document.querySelectorAll('[data-ntfytest]').forEach(function(b){b.onclick=function(){var p=b.dataset.ntfytest,t=(document.getElementById('i-ntfy-'+p).value||'').trim();if(!t){toast('Skriv inn et emne først');return}ntfyPost(t,'Test','Varsler virker ✓ — '+(PMAP[p]?PMAP[p].navn:p),'bell',null,null,appLenke(p)).then(function(ok){toast(ok?'Sendt — sjekk ntfy-appen':'Fikk ikke sendt (nett?)')})}});
 
 /* ---------- samle ---------- */
 function tegnNyRask(){
@@ -1158,7 +1249,7 @@ function slaaSammenOppg(liste){
   /* 1) innholdet: data/oppgaver.json + data/innstillinger.json — Bjørn og Liv oppdaterer disse i repoet */
   try{
     var r1=await fetch('data/oppgaver.json?v='+Date.now(),{cache:'no-store'}); if(r1.ok){var lo=await r1.json(); if(lo&&lo.length){OPPG=JSON.parse(JSON.stringify(lo));}}
-    var r2=await fetch('data/innstillinger.json?v='+Date.now(),{cache:'no-store'}); if(r2.ok){var li=await r2.json(); if(li){if(li.prosent)INNST.prosent=li.prosent;if(li.trapp)INNST.trapp=li.trapp;if(li.sesong)INNST.sesong=li.sesong;if(li.plan)INNST.plan=Object.assign({},INNST.plan||{},li.plan)}}
+    var r2=await fetch('data/innstillinger.json?v='+Date.now(),{cache:'no-store'}); if(r2.ok){var li=await r2.json(); if(li){if(li.prosent)INNST.prosent=li.prosent;if(li.trapp)INNST.trapp=li.trapp;if(li.sesong)INNST.sesong=li.sesong;if(li.ferie)INNST.ferie=li.ferie;if(li.plan)INNST.plan=Object.assign({},INNST.plan||{},li.plan)}}
     tegn();
   }catch(e){}
   /* 2) delt lagring */
@@ -1171,7 +1262,8 @@ function slaaSammenOppg(liste){
     db.child('innlost').on('value',function(snap){INNLOST=snap.val()||{};tegn()});
     db.child('belonning').on('value',function(snap){BELONNING=snap.val()||{};tegn()});
     db.child('tilstand').on('value',function(snap){TILSTAND=snap.val()||{};tegn()});
-    db.child('innstillinger').on('value',function(snap){var x=snap.val();if(x){if(x.prosent)INNST.prosent=x.prosent;if(x.plan)INNST.plan=Object.assign({},INNST.plan||{},x.plan);if(x.trapp&&x.trapp.length)INNST.trapp=x.trapp;tegn()}});
+    db.child('ferdig').on('value',function(snap){var v=snap.val()||{};Object.keys(v).forEach(function(d){FERDIG[d]=v[d]||{}});try{localStorage.setItem('ft-ferdig',JSON.stringify(FERDIG))}catch(e){};tegn()});
+    db.child('innstillinger').on('value',function(snap){var x=snap.val();if(x){if(x.prosent)INNST.prosent=x.prosent;if(x.plan)INNST.plan=Object.assign({},INNST.plan||{},x.plan);if(x.trapp&&x.trapp.length)INNST.trapp=x.trapp;if(x.ferie)INNST.ferie=x.ferie;INNST.ntfy=lesNtfy(x.ntfy);if(x.varsler)INNST.varsler=x.varsler;tegn();planleggVarsler()}});
     var LOKALT_FOER=JSON.parse(JSON.stringify(UKER)), foersteSnap=true;
     db.child('uker').on('value',function(snap){
       var v=snap.val()||{}; var n=0;
