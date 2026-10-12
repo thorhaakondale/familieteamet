@@ -334,7 +334,7 @@ details.om summary{cursor:pointer;font-weight:700;color:var(--ag);font-size:13px
 
 <script>
 /* ============================================================
-   Livskraft v1.10 — treningsappen til familien Dale (Liv, 14.9.2026 · v1.8 28.9: alarm maks 10 s, slipper lyden · v1.9 29.9: varsel i bakgrunnen via ntfy · v1.10 12.10: pauseøvelsene synlige med bilde og «slik gjør du den», hovedøvelse/pauseøvelse/tilbehør merket, ærlig tidsanslag per økt)
+   Livskraft v1.11 — treningsappen til familien Dale (Liv, 14.9.2026 · v1.8 28.9: alarm maks 10 s, slipper lyden · v1.9 29.9: varsel i bakgrunnen via ntfy · v1.10 12.10: pauseøvelsene synlige med bilde og «slik gjør du den», hovedøvelse/pauseøvelse/tilbehør merket, ærlig tidsanslag per økt · v1.11 13.10: push-varselet bestilles 5 s før pausen er over)
    Program = data/program.json (agentstyrt). Logg = lokalt + Firebase (fam/<kode>/okt/<person>).
    ============================================================ */
 "use strict";
@@ -865,7 +865,7 @@ function ntfyNyttEmne(){var a='abcdefghijkmnpqrstuvwxyz23456789',t='lk-';try{var
 function ntfyLagre(){var n=ntfyN();lagre('innst/ntfy',{on:n.on?1:0,topic:n.topic||''})}
 function ntfyPlan(sek,ov,si){ /* bestill en forsinket push når pausen starter — bare hvis varselet er slått på */
   if(!ntfyPaa()||!window.fetch)return;
-  var d=Math.max(10,Math.round(sek||0));if(d<10)return;
+  var d=Math.max(10,Math.round((sek||0)-5));if(d<10)return; /* v1.11 (Thor 13.10): bestilles 5 s før pausen er over — ntfy + Apple bruker 5–15 s på leveringen */
   var navn=ov&&ov.navn?ov.navn:'';var tekst='Pausen er over'+(navn?' — '+navn+(si!==undefined&&si!==null?' sett '+(si+2):''):'')+'. Kjør.';
   var topic=S.innst.ntfy.topic;NT.topic=topic;
   var u=NTFY_URL+encodeURIComponent(topic)+'?delay='+d+'s&priority=5&title='+encodeURIComponent('Livskraft')+'&tags=alarm_clock';
