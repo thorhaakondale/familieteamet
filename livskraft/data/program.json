@@ -1,6 +1,6 @@
 {
- "versjon": "v1.5",
- "kilde": "Dale Livsstil & PT (programkortet) for øvelser og vekter · liv-treningsspesifikasjon.md v1.1 for mål, regler og progresjon",
+ "versjon": "v1.6",
+ "kilde": "Dale Livsstil & PT (programkortet) for øvelser og vekter · liv-treningsspesifikasjon.md v1.1 for mål, regler og progresjon · v1.6 12.10.2026: pauseøvelsene synlige, lette og med bilde",
  "personer": {
   "thor": {
    "navn": "Thor",
@@ -29,7 +29,7 @@
   },
   "regler": {
    "maks_styrkeokter_per_uke": 2,
-   "okt_minutter": "45–60",
+   "okt_minutter": "37–42 min med standardpausene (3 min knebøy/RDL, 2,5 min overkropp) — regnes ut fra settene og pausene dine og vises på hver økt",
    "aldri_to_like_paa_rad": true,
    "maanedlig_tungt_sett": "Første mandag i måneden: ett tungt sett knebøy 5 × 115–120 kg etter oppvarming — påminnelsen som holder maksstyrken ved like.",
    "kroppsarbeid": "Tung kroppsarbeidsuke = én gym-økt, ingen progresjon den uka. Aldri RDL dagen etter spadedag.",
@@ -43,20 +43,21 @@
    ],
    "rode_flagg_tekst": "Stopp økta. Ring fastlegen i dag. Brystsmerter eller besvimelse: 113.",
    "aldri_1rm_over_reps": 10,
-   "affekt": "Det som avgjør om vi fortsetter er hvordan økta kjennes mens den pågår. «For hardt» to ganger på rad = intensiteten er lagt feil — ned 5 %, ikke opp."
+   "affekt": "Det som avgjør om vi fortsetter er hvordan økta kjennes mens den pågår. «For hardt» to ganger på rad = intensiteten er lagt feil — ned 5 %, ikke opp.",
+   "pauseovelse": "Pauseøvelsen gjøres i pausen mellom settene på hovedøvelsen. Den er LETT og stopper langt før utmattelse — den skal ikke koste hovedsettet noe. Hovedløftene er vedlikeholdssett med vektene som tak; målet er ikke 180 kg, det er en rygg, et grep og en albue som tåler livet."
   },
   "okter": {
    "A": {
     "navn": "A — Underkropp",
     "dag": "mandag",
-    "varighet": "~50 min",
+    "varighet": "~37 min",
     "farge": "#2563eb",
     "oppvarming": "5 min lett på romaskin eller tredemølle + 2 lette sett knebøy: 40 kg, så 60 kg.",
     "ovelser": [
      {
       "id": "kneboy",
       "navn": "Knebøy",
-      "hint": "hælklosser eller box ved behov · 3 s ned · så dypt hofta tillater uten at halluxen sier nei",
+      "hint": "vedlikeholdssett — vektene er tak · hælklosser eller box ved behov · 3 s ned, 1 s stopp i bunn · så dypt hofta tillater uten at halluxen sier nei",
       "sett": 3,
       "reps": [
        8,
@@ -92,7 +93,7 @@
      {
       "id": "rdl",
       "navn": "Rumensk markløft",
-      "hint": "stangen tett på leggen, nøytral rygg · video av 1 sett til Liv i trinn 1",
+      "hint": "stangen tett på leggen, nøytral rygg · helt ned til du kjenner bakside lår · video av 1 sett til Liv i trinn 1",
       "sett": 2,
       "reps": [
        8,
@@ -118,10 +119,17 @@
       "fyllstoff": {
        "id": "birddog",
        "navn": "Bird dog",
-       "maal": "2 × 8 per side, rolig og perfekt",
+       "maal": "2 × 6 per side — rolig, 3 s hold på topp",
        "maaling": "reps",
        "perSide": true,
-       "sett": 2
+       "sett": 2,
+       "bilde": "img/birddog.webp",
+       "slik": [
+        "På alle fire, hendene under skuldrene, knærne under hofta.",
+        "Strekk høyre arm fram og venstre bein bak samtidig — til de er i høyde med ryggen, ikke høyere.",
+        "Hold 3 sekunder uten at hofta vrir seg, tilbake, bytt side. 6 per side."
+       ],
+       "hvorfor": "Ryggen: lærer korsryggen å holde seg i ro mens armer og bein jobber — McGill Big 3."
       }
      },
      {
@@ -190,14 +198,14 @@
    "B": {
     "navn": "B — Overkropp, bæring og kjerne",
     "dag": "onsdag",
-    "varighet": "~55 min",
+    "varighet": "~42 min",
     "farge": "#7c3aed",
     "oppvarming": "5 min lett romaskin + armsirkler og brystryggrotasjon + 1 lett sett av første øvelse.",
     "ovelser": [
      {
       "id": "press",
       "navn": "Incline chest press",
-      "hint": "",
+      "hint": "vedlikeholdssett — vektene er tak · skulderbladene ned og bak",
       "sett": 3,
       "reps": [
        8,
@@ -213,20 +221,27 @@
       "fyllstoff": {
        "id": "deadhang",
        "navn": "Dead hang",
-       "maal": "3 × maks tid · mål 60 s, så +2,5 kg i belte",
+       "maal": "2 × 20–40 s — slipp lenge før du mister grepet",
        "maaling": "sek",
-       "sett": 3,
+       "sett": 2,
        "maaltid": 60,
        "varianter": [
         "Dead hang",
         "Håndklehang"
-       ]
+       ],
+       "bilde": "img/deadhang.webp",
+       "slik": [
+        "Grip stanga litt bredere enn skuldrene, heng med strake armer.",
+        "Skuldrene får henge — ingen trekk. Pust rolig.",
+        "Slipp mens du fortsatt har god kontroll. Maks tid måles bare på testdagen."
+       ],
+       "hvorfor": "Grep og albue: senene i underarmen tåler mer når de belastes jevnt og rolig."
       }
      },
      {
       "id": "roing",
       "navn": "Bent over-roing",
-      "hint": "rygg parallell, ingen rykk",
+      "hint": "rygg parallell, ingen rykk · vedlikeholdssett",
       "sett": 3,
       "reps": [
        8,
@@ -242,25 +257,32 @@
       "fyllstoff": {
        "id": "suitcase",
        "navn": "Suitcase carry",
-       "maal": "3 × 30 m per side · én manual 20–24 kg · +2 kg når alle sett går rent",
+       "maal": "2 × 20 m per side · én manual 16–20 kg · +2 kg når alle sett går rent",
        "maaling": "m",
-       "sett": 3,
+       "sett": 2,
        "perSide": true,
        "vekt": {
-        "start": 20,
+        "start": 16,
         "tak": 24,
         "steg": 2
        },
        "varianter": [
         "Suitcase carry",
         "Farmer's walk (to manualer)"
-       ]
+       ],
+       "bilde": "img/suitcase.webp",
+       "slik": [
+        "Én manual i én hånd, hengende rett ned. Den andre hånda tom.",
+        "Gå 20 m helt rett i overkroppen — skuldrene like høye, ikke len deg fra vekta.",
+        "Bytt hånd, gå tilbake. Det er ett sett."
+       ],
+       "hvorfor": "Kjerne og rygg: trener siden av kroppen til å holde deg oppreist mot en skjev last — anti-sidebøy."
       }
      },
      {
       "id": "nedtrekk",
       "navn": "Nedtrekk full ROM",
-      "hint": "",
+      "hint": "full bevegelsesbane — strake armer øverst, stanga til brystet · vedlikeholdssett",
       "sett": 3,
       "reps": [
        8,
@@ -276,17 +298,24 @@
       "fyllstoff": {
        "id": "sideplanke",
        "navn": "Sideplanke",
-       "maal": "2 × maks per side · mål 60 s, deretter vanskeligere variant — ikke lengre tid",
+       "maal": "2 × 20–30 s per side — stopp 10 s før du må",
        "maaling": "sek",
        "sett": 2,
        "perSide": true,
-       "maaltid": 60
+       "maaltid": 60,
+       "bilde": "img/sideplanke.webp",
+       "slik": [
+        "Ligg på siden, albuen rett under skulderen, føttene oppå hverandre.",
+        "Løft hofta til kroppen er én rett linje fra hode til føtter. Øverste hånd på hofta.",
+        "Hold 20–30 s rolig pust, ned, bytt side. Blir det tungt: nederste kne i gulvet."
+       ],
+       "hvorfor": "Kjerne og korsrygg: sidemusklene som holder ryggen stabil — McGill Big 3."
       }
      },
      {
       "id": "albuevern",
       "navn": "Albuevern",
-      "hint": "eksentrisk håndleddsekstensjon + -fleksjon 2 × 15 med 2–4 kg (løft med frisk hånd, senk 4 s) + skulder utadrotasjon m/strikk 2 × 15",
+      "hint": "underarmen hviler på låret, hånda utenfor kneet med 2–4 kg: løft opp med den friske hånda, senk sakte på 4 s · 2 × 15 med håndflata ned, 2 × 15 med håndflata opp · så skulder utadrotasjon med strikk 2 × 15",
       "sett": 2,
       "reps": [
        15,
@@ -298,7 +327,13 @@
        "steg": 1
       },
       "pause": 45,
-      "type": "tilbehor"
+      "type": "tilbehor",
+      "slik": [
+       "Sitt, legg hele underarmen på låret med hånda og manualen utenfor kneet.",
+       "Løft hånda opp med den friske hånda — senk den SAKTE alene, tell til 4.",
+       "15 ganger håndflata ned, 15 ganger håndflata opp. Så strikk: albuen inntil siden, roter underarmen utover."
+      ],
+      "hvorfor": "Albuen: senen tåler mer når den bremser last sakte — det er dette som gjør noe med murringen, ikke de tunge settene."
      },
      {
       "id": "aatte",
