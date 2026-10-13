@@ -154,6 +154,10 @@ dialog#ark::backdrop{background:rgba(0,0,0,.45)}
 .ny-rask .nyrad.dager{flex-wrap:wrap}
 .ny-rask .nyrad.dager .dag{flex:1 1 auto}
 .ny-rask .nyrad.hvem{flex-wrap:wrap}
+.ny-rask .nyrad.minn{flex-wrap:wrap;font-size:14px;color:var(--muted)}
+.ny-rask .nyrad.minn label{display:inline-flex;align-items:center;gap:6px}
+.ny-rask .nyrad.minn input[type=checkbox]{width:22px;height:22px;accent-color:var(--ok)}
+.ny-rask .nyrad.minn input[type=time]{font:inherit;padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink)}
 .ny-rask .nyrad.hvem button{flex:1 1 auto;background:var(--line2);color:var(--ink);padding:9px 10px;border:1.5px solid transparent}
 .ny-rask .nyrad.hvem button.on{background:var(--card);border-color:var(--pc,var(--ink));box-shadow:inset 0 0 0 1px var(--pc,var(--ink))}
 .ny-rask input[type=date]{flex:1 0 100%;font-size:14px}
@@ -296,6 +300,7 @@ details.om .in{padding:8px 0 0;font-size:14px;max-width:70ch}
           <input id="nr-dato" type="date" aria-label="Annen dato">
         </div>
         <div class="nyrad hvem" id="nr-hvem"></div>
+        <div class="nyrad minn"><label><input type="checkbox" id="nr-minn"> Minn p&#xE5; kl.</label><input id="nr-tid" type="time" value="18:00" aria-label="Klokkeslett"><label id="nr-megl"><input type="checkbox" id="nr-meg"> og meg</label></div>
         <button type="button" id="nr-lagre">Legg til</button>
         <p class="small" id="nr-hjelp">Velg hvem den er til og hvilken dag. Havner som en vanlig oppgave — Bjørn ser den i søndagssjekken.</p>
       </div>
@@ -413,6 +418,7 @@ details.om .in{padding:8px 0 0;font-size:14px;max-width:70ch}
 <p><b>Rytmen.</b> Morgen- og hjemkomstrutinene går hver hverdag. Måltidsjobbene går hver dag og bytter mellom Erik og Vårin annenhver uke. <b>Torsdag er ryddedagen</b> — da er huset klart til helga og uka etter. Oppgaver som går hver 3. uke og hver 3. måned dukker opp på lørdager når de er modne. Sesongbyttet i garderoben kobles til Brukskortene, og skapsjekken onsdag kobles til Ukeshandel — samme rytme, samme sted.</p>
 <p><b>Pakkelistene</b> &#xE9;n liste per turtype pluss &#xAB;Alltid med&#xBB;. Turene (fra kalenderen, eller lagt inn av dere) styrer alt: pakkeslagene havner p&#xE5; tavla til hver som reiser &#x2014; start tidlig i uka, pakk ferdig dagen f&#xF8;r, restene p&#xE5; avreisedagen &#x2014; med ett varsel per slag. N&#xE5;r en tur er n&#xE6;r, flytter Pakkelistene opp under I dag. Hak av mens dere pakker; grupper som er ferdige trekker seg sammen, og de to siste punktene (s&#xF8;ppel &#x2192; l&#xE5;s) st&#xE5;r for seg selv. Endre linjene selv med &#x270E; &#x2014; Bj&#xF8;rn g&#xE5;r gjennom dem hvert kvartal.</p>
 <p><b>Trykk p&#xE5; teksten</b> i en rute for &#xE5; &#xE5;pne detaljene; haken tas i venstre del (boksen og ikonet). Overskriftene trekker seksjonene sammen &#x2014; enheten husker hva du har &#xE5;pent. <b>Ajourhet</b> nederst viser tre tall: vedlikehold, vask og sesong.</p>
+<p><b>Minn p&#xE5;.</b> En huskelapp kan f&#xE5; ett klokkeslett: da kommer &#xE9;n p&#xE5;minnelse p&#xE5; telefonen til den lappen gjelder &#x2014; og til deg selv om du vil. Ingen tid = ingen varsel. Det er m&#xE5;ten dere minner hverandre p&#xE5; ting til tider dere selv velger.</p>
 <p><b>Poengene</b> er ett lag, ikke fem. Ingen konkurrerer mot søsken. Oscar (2) er med på sine småting, og alt han gjør teller.</p>
 <p><b>Bonus 🎁.</b> Noen jobber er ekstra: vaske i huset i torsdagstimen, hjelpe til med bilene og garasjen. De ligger i sin egen bolk nederst, gir ekstra poeng når de gjøres, men teller aldri i ukemålet — ingen taper noe på å la dem ligge. Det som bare er forventet hjelp (klargjøring, bære, rydde etter seg) gir ikke poeng i det hele tatt.</p>
 <p><b>Varsler — få og faste.</b> Tavla maser ikke. Hver får et varsel på mobilen bare til de faste tidene Bjørn har satt opp — de voksne: fabrikkrunden, torsdagstimen, bestilling av mat, søndagstur og søndagskos, pluss når et barn melder ferdig; barna: morgenrutinen på skoledager og «ferdig for i dag?» om kvelden. Varselet åpner tavla. Varslene sendes gjennom gratistjenesten ntfy (eget emne per voksen under Oppgavebanken) og inneholder verken navn eller familiekode.</p>
@@ -435,7 +441,7 @@ details.om .in{padding:8px 0 0;font-size:14px;max-width:70ch}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.19.1';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.20.0';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -598,6 +604,7 @@ function aapneArk(id,knapp){
   if(hvem)bit.push(hvem);
   if(o.min)bit.push(o.min+' min');
   if(o.poeng)bit.push(o.poeng+' poeng');
+  if(o.minn&&o.minn.tid)bit.push('\u23F0 minner kl. '+o.minn.tid+((o.minn.til||[]).length>1?' \u2014 begge':''));
   document.getElementById('ark-meta').innerHTML=bit.map(function(x){return '<span>'+esc(x)+'</span>'}).join('');
   document.getElementById('ark-lenkerad').innerHTML=o.lenke?'<a class="ark-lenkeknapp" href="'+esc(o.lenke)+'" target="_blank" rel="noopener">'+esc(o.lenkenavn||'Åpne')+' →</a>':'';
   var les=document.getElementById('ark-les'), ta=document.getElementById('ark-notat'), lag=document.getElementById('ark-lagre');
@@ -814,6 +821,19 @@ function planleggVarsler(){
       });
     });
     planleggPakk(naa,n,yd); /* v1.18 */
+    /* v1.20: huskelapper med \u00abMinn p\u00e5\u00bb \u2014 ett varsel per lapp og person p\u00e5 lappens dato og klokkeslett; flyttes lappen, f\u00f8lger varselet datoen (ny n\u00f8kkel) */
+    OPPG.forEach(function(o){ if(!o.egen||!o.minn||!o.minn.tid||o.aktiv===false||o.dato!==yd) return;
+      var hm3=String(o.minn.tid).split(':'); var t3=new Date(dag.getFullYear(),dag.getMonth(),dag.getDate(),+hm3[0],+hm3[1]||0,0);
+      if(t3.getTime()-naa.getTime()<120000) return;
+      var key3=yd+'_minn_'+o.id, ref3=db.child('varsler/sendt/'+key3);
+      ref3.transaction(function(cur){ if(cur) return; return {ts:Date.now(),by:valgt||'familie'} },function(err,committed){
+        if(err||!committed) return;
+        var ps=(o.minn.til&&o.minn.til.length?o.minn.til:(o.hvem||[])).filter(function(p){return n[p]}); if(!ps.length){ ref3.set(null).catch(function(){}); return; }
+        var fra=(o.minn.av&&PMAP[o.minn.av]&&ps.length>1)?' fra '+PMAP[o.minn.av].navn:'';
+        Promise.all(ps.map(function(p){return ntfyPost(n[p],'Huskelapp'+fra,o.navn,'pushpin',Math.floor(t3.getTime()/1000),4,appLenke(p))}))
+          .then(function(a){ if(!a.some(Boolean)) ref3.set(null).catch(function(){}) });
+      });
+    });
     liste.forEach(function(v){ if(!v||v.aktiv===false||!v.id||!v.tid||(v.dager||[]).indexOf(wd)<0) return;
       if(v.skoledag&&erFerie(ukeKey(dag))) return; /* skolerutine-varsler er stille i ferieuker */
       var hm=String(v.tid).split(':'); var t=new Date(dag.getFullYear(),dag.getMonth(),dag.getDate(),+hm[0],+hm[1]||0,0);
@@ -842,8 +862,8 @@ function turListe(){return Object.keys(TURER).map(function(k){var t=TURER[k]||{}
 function turDager(t){return Math.round((new Date((t.til||t.fra)+'T00:00:00')-new Date(t.fra+'T00:00:00'))/86400000)+1}
 function pakkeslag(t){ /* n\u00e5r pakkingen skjer (Thor 13.10: ikke dagen f\u00f8r \u2014 start tidlig i uka, s\u00e5 ferien ikke starter med pakking) */
   var D=new Date(t.fra+'T00:00:00'), n=turDager(t), wd=(D.getDay()+6)%7, ut=[];
-  if(t.type==='forretning'||t.type==='dag'||n<=1){ ut.push({n:1,dato:ymd(addDays(D,-1)),tid:'19:00',navn:'Pakk i kveld',tekst:'I morgen: '+t.navn+'. '+(TUR_BAG[t.type]||'bag')+' \u2014 \u00e5pne lista og hak av.'}); return ut; }
-  var start=addDays(D,n>=5?-5:-3); if(wd>=3&&wd<=6&&n<5){ start=addDays(D,-(wd-1)); } /* avreise tor\u2013s\u00f8n: start tirsdag samme uke */
+  if(t.type==='forretning'||t.type==='dag'||(n<=1&&t.type!=='solo'&&t.type!=='par')){ ut.push({n:1,dato:ymd(addDays(D,-1)),tid:'19:00',navn:'Pakk i kveld',tekst:'I morgen: '+t.navn+'. '+(TUR_BAG[t.type]||'bag')+' \u2014 \u00e5pne lista og hak av.'}); return ut; }
+  var start=addDays(D,n>=5?-5:-3); if(wd>=3&&wd<=6&&n<5&&n>2){ start=addDays(D,-(wd-1)); } /* avreise tor\u2013s\u00f8n: start tirsdag samme uke; korte solo-/parturer (1\u20132 netter) starter tre dager f\u00f8r */
   if(ymd(start)>=t.fra) start=addDays(D,-1);
   var ferdig=addDays(D,-1);
   ut.push({n:1,dato:ymd(start),tid:'19:00',navn:'Start pakkingen \u2014 15 min',tekst:t.navn+' '+datoNorsk(D)+': legg fram kl\u00e6r p\u00e5 senga og hent fram '+(TUR_BAG[t.type]||'bagen')+'. Lista ligger p\u00e5 tavla.'});
@@ -1392,12 +1412,12 @@ function gaaTil(id){var m=document.getElementById(id);if(!m)return;var off=0;doc
       var q=PMAP[id]; if(!q) return;
       var b=document.createElement('button'); b.type='button'; b.style.setProperty('--pc',q.farge);
       b.innerHTML=q.dyr+' '+esc(q.navn); b.dataset.p=id;
-      b.onclick=function(){tilPerson=id;hRad.querySelectorAll('button').forEach(function(x){x.classList.toggle('on',x.dataset.p===id)})};
+      b.onclick=function(){settHvem(id)};
       hRad.appendChild(b);
     });
     settHvem(valgt||'thor');
   }
-  function settHvem(id){tilPerson=id;hRad.querySelectorAll('button').forEach(function(x){x.classList.toggle('on',x.dataset.p===id)})}
+  function settHvem(id){tilPerson=id;hRad.querySelectorAll('button').forEach(function(x){x.classList.toggle('on',x.dataset.p===id)}); var ml=document.getElementById('nr-megl'); if(ml) ml.hidden=(id===(valgt||'thor'));}
   function settDato(n){var d=addDays(NAA,n);dIn.value=ymd(d);
     w.querySelectorAll('button.dag').forEach(function(b){b.classList.toggle('on',+b.dataset.d===n)})}
   w.querySelectorAll('button.dag').forEach(function(b){b.onclick=function(){settDato(+b.dataset.d)}});
@@ -1426,11 +1446,15 @@ function gaaTil(id){var m=document.getElementById(id);if(!m)return;var off=0;doc
     var person=tilPerson||valgt||'thor';
     var id='x-'+Date.now().toString(36);
     var o={id:id,navn:tekst,ikon:'📌',kat:'Huskelapper',int:'dato',dato:dato,hvem:[person],poeng:1,min:0,egen:true,aktiv:true,by:person,ts:new Date().toISOString()};
+    /* v1.20: valgfri p\u00e5minnelse \u2014 ett ntfy-varsel p\u00e5 valgt klokkeslett til den lappen gjelder (og evt. den som skrev den). Ingen tid valgt = som f\u00f8r. */
+    var mk=document.getElementById('nr-minn'), mt=document.getElementById('nr-tid'), mm=document.getElementById('nr-meg');
+    if(mk&&mk.checked&&mt&&mt.value){ var til=[person]; var meg=valgt||'thor'; if(mm&&mm.checked&&meg!==person) til.push(meg); o.minn={tid:mt.value,til:til,av:meg}; }
     OPPG.push(o);
     try{localStorage.setItem('ft-oppg',JSON.stringify(OPPG))}catch(e){}
     if(db){db.child('oppgaver/'+id).set(o).catch(function(){status('Kunne ikke lagre delt — ligger på denne enheten.')})}
-    tIn.value=''; settDato(0); tegn(); settHvem(valgt||'thor');
-    toast((person===valgt?'Lagt til ':PMAP[person].navn+': ') + (dato===ymd(NAA)?'i dag':datoNorsk(new Date(dato+'T00:00:00'))) + ' ✓');
+    tIn.value=''; settDato(0); if(mk){mk.checked=false} if(mm){mm.checked=false} tegn(); settHvem(valgt||'thor');
+    toast((person===valgt?'Lagt til ':PMAP[person].navn+': ') + (dato===ymd(NAA)?'i dag':datoNorsk(new Date(dato+'T00:00:00'))) + (o.minn?' \u00b7 minner kl. '+o.minn.tid:'') + ' \u2713');
+    if(o.minn&&db) VARSLET_NAA=false, planleggVarsler();
   };
   tIn.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();document.getElementById('nr-lagre').click()}});
 })();
