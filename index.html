@@ -78,6 +78,7 @@ b,strong{font-weight:800}
 .barnpoeng{margin:6px 0 10px;padding:8px 12px;border-radius:10px;background:var(--card2);font-size:14px}.barnpoeng b{font-size:18px}
 .ferdigrad{margin:16px 0 4px;text-align:center}.ferdigrad button{font:inherit;font-weight:800;font-size:17px;min-height:52px;padding:12px 22px;border-radius:999px;border:0;background:var(--ok);color:#fff;cursor:pointer;width:100%;max-width:420px}.ferdigrad button.meldt{background:var(--card2);color:var(--ink);border:1.5px solid var(--line)}.ferdigrad .small{display:block;margin-top:6px}
 .ferdigbadge{margin:4px 0 8px;font-size:14px}
+.dagrad button.full{border-color:var(--nei);color:var(--nei)}
 .frav{margin:4px 0 12px;padding:10px 12px;border-radius:12px;background:var(--card2);border:1px solid var(--line)}.frav h3{margin:0 0 6px;font-size:15px}.frav ul{list-style:none;margin:0;padding:0}.frav li{padding:3px 0;font-size:15px;color:var(--muted)}.frav li.hard{color:var(--ink);font-weight:700}.frav li .t{display:inline-block;min-width:52px;font-variant-numeric:tabular-nums}.frav li a{color:inherit}.frav .fravfot{margin-top:6px;font-size:13px;color:var(--muted)}.fravchip{display:inline-block;margin:0 0 8px;padding:4px 10px;border-radius:999px;background:var(--card2);font-size:13px}
 .pill.warn{background:var(--warnbg);color:var(--warn)}
 .ptag{display:inline-block;font-size:11.5px;font-weight:800;padding:1px 7px;border-radius:999px;color:#fff;background:var(--pc);vertical-align:middle;margin-right:4px}
@@ -414,7 +415,7 @@ details.om .in{padding:8px 0 0;font-size:14px;max-width:70ch}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.17.0';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.17.1';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -625,6 +626,8 @@ function byggDagrad(o,knapp,d){ /* v1.15: én dagvelger for alle typer — hurti
     if(ds.k===keyNaa&&!ds.forfalt&&diff>=0&&diff<=6){flytt(ds.k,o,+ds.dag0,ds.fra,diff===+ds.dag0?null:diff)}
     else utsett(ds.k,o,+ds.dag0,ds.fra,dato);
   }
+  /* v1.17.1: hvor mange oppgaver personen alt har på en dag (planlagte + det som er utsatt dit) — vises i dagvalget så ingen dag hoper seg opp */
+  function antallDag(person,y){var dt=new Date(y+'T00:00:00'),m=mandag(dt),di=Math.round((dt-m)/86400000);return planUke(m).filter(function(x){return x.person===person&&x.dag===di&&!erRutine(x.o)}).length}
   function knapp2(v,tekst,naa,fn,cls){var k=document.createElement('button');k.type='button';k.textContent=tekst;if(cls)k.className=cls;
     if(naa)k.className=(cls?cls+' ':'')+'naa';k.onclick=function(ev){ev.stopPropagation();d.close();setTimeout(fn,0)};v.appendChild(k);return k}
   function seksjon(tekst){var l=document.createElement('span');l.className='ark-lbl';l.textContent=tekst;rad.appendChild(l);var v=document.createElement('div');v.className='dagrad';rad.appendChild(v);return v}
@@ -642,7 +645,7 @@ function byggDagrad(o,knapp,d){ /* v1.15: én dagvelger for alle typer — hurti
   /* B — dagene denne uka (passerte dager kan ikke velges) */
   var v=seksjon('Denne uka');
   for(var i=0;i<7;i++){(function(i){ var dato=addDays(manNaa,i), y=ymd(dato);
-    var k=knapp2(v,DAGK[i],y===naaDato,function(){gaaTil(y)}); if(i<dIdx){k.disabled=true;k.title='passert'} })(i)}
+    var n=antallDag(ds.naa||ds.fra||valgt||'thor',y); var k=knapp2(v,DAGK[i]+(n?' ·'+n:''),y===naaDato,function(){gaaTil(y)}); if(n>=3)k.classList.add('full'); if(i<dIdx){k.disabled=true;k.title='passert'} else if(n) k.title=n+' oppgaver ligger der alt'; })(i)}
   /* C — valgfri dato */
   var di=document.createElement('input'); di.type='date'; di.value=naaDato||ymd(i0); di.min=ymd(i0);
   di.onclick=function(e){e.stopPropagation()};
@@ -855,6 +858,8 @@ function forfalte(){
       if(s.o.int==='uke'&&w===0){ /* husøkta torsdag: henger IKKE daglig — lander på lørdag én gang, ellers faller den */
         if(!(s.dag<dIdx&&dIdx===5)) return; }
       var passert=(w>0)||(s.dag<dIdx); if(!passert) return;
+      /* v1.17.1 (Thor 13.10): periodiske oppgaver henger maks 3 dager — glemte du den, venter du til neste runde. Datooppgaver og huskelapper henger til de er gjort. */
+      if(s.o.int!=='dato'&&!s.o.egen&&(NAA-addDays(m,s.dag))>3*86400000) return;
       if(addDays(m,s.dag)<STARTDATO) return; /* ingenting fra før appen fantes */
       if(erGjort(k,s.key)) return;
       /* engangsoppgaver med dato henger igjen til de er krysset av (Thors regel 14.9.2026).
