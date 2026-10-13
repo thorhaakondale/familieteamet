@@ -78,7 +78,8 @@ b,strong{font-weight:800}
 .barnpoeng{margin:6px 0 10px;padding:8px 12px;border-radius:10px;background:var(--card2);font-size:14px}.barnpoeng b{font-size:18px}
 .ferdigrad{margin:16px 0 4px;text-align:center}.ferdigrad button{font:inherit;font-weight:800;font-size:17px;min-height:52px;padding:12px 22px;border-radius:999px;border:0;background:var(--ok);color:#fff;cursor:pointer;width:100%;max-width:420px}.ferdigrad button.meldt{background:var(--card2);color:var(--ink);border:1.5px solid var(--line)}.ferdigrad .small{display:block;margin-top:6px}
 .ferdigbadge{margin:4px 0 8px;font-size:14px}
-.dagrad button.full{border-color:var(--nei);color:var(--nei)}
+.dagrad button.full{border-color:var(--warn);color:var(--warn)}
+.pk details{border:1px solid var(--line);border-radius:10px;padding:8px 12px;margin:0 0 8px;background:var(--card2)}.pk summary{cursor:pointer;list-style:none;font-weight:800;font-size:15px}.pk summary::-webkit-details-marker{display:none}.pk summary .small{font-weight:600;margin-left:6px}.pk .chips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}.pk .chips .edit.on{background:var(--ink);color:var(--bg)}.pk h4{margin:10px 0 2px;font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}.pk .pl{display:flex;align-items:center;gap:8px;padding:6px 0;border-top:1px solid var(--line);font-size:15px}.pk .pl:first-of-type{border-top:0}.pk .pl button.hk{flex:0 0 auto;width:28px;height:28px;border-radius:8px;border:1.5px solid var(--line);background:var(--card);font-size:16px;cursor:pointer}.pk .pl.ja button.hk{background:var(--ok);border-color:var(--ok);color:#fff}.pk .pl.ja .tx{text-decoration:line-through;color:var(--muted)}.pk .pl .tx{flex:1 1 auto}.pk .pl .x{flex:0 0 auto;font-size:13px;color:var(--warn);background:none;border:0;cursor:pointer}.pk .ny{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.pk .ny input[type=text]{flex:1 1 180px;font:inherit;padding:7px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink)}.pk .ny select{font:inherit;font-size:13px;padding:6px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink)}
 .frav{margin:4px 0 12px;padding:10px 12px;border-radius:12px;background:var(--card2);border:1px solid var(--line)}.frav h3{margin:0 0 6px;font-size:15px}.frav ul{list-style:none;margin:0;padding:0}.frav li{padding:3px 0;font-size:15px;color:var(--muted)}.frav li.hard{color:var(--ink);font-weight:700}.frav li .t{display:inline-block;min-width:52px;font-variant-numeric:tabular-nums}.frav li a{color:inherit}.frav .fravfot{margin-top:6px;font-size:13px;color:var(--muted)}.fravchip{display:inline-block;margin:0 0 8px;padding:4px 10px;border-radius:999px;background:var(--card2);font-size:13px}
 .pill.warn{background:var(--warnbg);color:var(--warn)}
 .ptag{display:inline-block;font-size:11.5px;font-weight:800;padding:1px 7px;border-radius:999px;color:#fff;background:var(--pc);vertical-align:middle;margin-right:4px}
@@ -351,6 +352,12 @@ details.om .in{padding:8px 0 0;font-size:14px;max-width:70ch}
   <p class="small" style="margin-top:8px">Fire steg: 1) tøm Påminnelser hit, liste for liste · 2) Bjørn sorterer og foreslår rytme og slakk · 3) dere godkjenner i banken · 4) slett i Påminnelser — behold bare alarmene som må varsle (frost, medisin).</p>
 </section>
 
+<section class="card pk" id="pakk">
+  <h2>&#x1F9F3; Pakkelistene</h2>
+  <p class="sub">Én liste per turtype. «Alltid med» gjelder alle turer. Sesongen velges av seg selv, bytt om det er feil. Hak av mens dere pakker; sett dato, så kommer ett varsel kvelden før. Endre fritt — Bjørn går gjennom listene hvert kvartal etter barnas alder.</p>
+  <div id="pk-liste"></div>
+</section>
+
 <section class="card bank" id="bank">
   <h2>Oppgavebanken</h2>
   <p class="sub">Alle oppgavene med rytme, hvem og poeng. Rader merket <span class="pill grey">forslag</span> er ikke avtalt ennå — endre eller slå av.</p>
@@ -393,6 +400,7 @@ details.om .in{padding:8px 0 0;font-size:14px;max-width:70ch}
 <p><b>Hvem er du?</b> Velg navnet ditt øverst — iPaden husker det. «Alle» viser hele laget.</p>
 <p><b>I dag</b> viser bare det som skal gjøres i dag, gruppert etter når på dagen det passer: morgen, etter skolen, måltider, kveld, ryddejobb. Ingen klokkeslett — det viktigste er at det blir gjort i løpet av dagen. Trykk på ruta når du er ferdig. Trykk igjen hvis du bommet.</p>
 <p><b>Rytmen.</b> Morgen- og hjemkomstrutinene går hver hverdag. Måltidsjobbene går hver dag og bytter mellom Erik og Vårin annenhver uke. <b>Torsdag er ryddedagen</b> — da er huset klart til helga og uka etter. Oppgaver som går hver 3. uke og hver 3. måned dukker opp på lørdager når de er modne. Sesongbyttet i garderoben kobles til Brukskortene, og skapsjekken onsdag kobles til Ukeshandel — samme rytme, samme sted.</p>
+<p><b>Pakkelistene</b> (nederst) er én liste per turtype pluss «Alltid med». Sett reisedato, så kommer ett varsel kvelden før kl. 19. Hak av mens dere pakker; «Nullstill» etter turen. Endre linjene selv med &#x270E; — Bjørn går gjennom dem hvert kvartal.</p>
 <p><b>Poengene</b> er ett lag, ikke fem. Ingen konkurrerer mot søsken. Oscar (2) er med på sine småting, og alt han gjør teller.</p>
 <p><b>Bonus 🎁.</b> Noen jobber er ekstra: vaske i huset i torsdagstimen, hjelpe til med bilene og garasjen. De ligger i sin egen bolk nederst, gir ekstra poeng når de gjøres, men teller aldri i ukemålet — ingen taper noe på å la dem ligge. Det som bare er forventet hjelp (klargjøring, bære, rydde etter seg) gir ikke poeng i det hele tatt.</p>
 <p><b>Varsler — få og faste.</b> Tavla maser ikke. Hver får et varsel på mobilen bare til de faste tidene Bjørn har satt opp — de voksne: fabrikkrunden, torsdagstimen, bestilling av mat, søndagstur og søndagskos, pluss når et barn melder ferdig; barna: morgenrutinen på skoledager og «ferdig for i dag?» om kvelden. Varselet åpner tavla. Varslene sendes gjennom gratistjenesten ntfy (eget emne per voksen under Oppgavebanken) og inneholder verken navn eller familiekode.</p>
@@ -415,7 +423,7 @@ details.om .in{padding:8px 0 0;font-size:14px;max-width:70ch}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.17.1';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.18.0';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -811,6 +819,7 @@ function planleggVarsler(){
           .then(function(ok){ if(!ok) ref2.set(null).catch(function(){}) });
       });
     });
+    planleggPakk(naa,n,yd); /* v1.18 */
     liste.forEach(function(v){ if(!v||v.aktiv===false||!v.id||!v.tid||(v.dager||[]).indexOf(wd)<0) return;
       if(v.skoledag&&erFerie(ukeKey(dag))) return; /* skolerutine-varsler er stille i ferieuker */
       var hm=String(v.tid).split(':'); var t=new Date(dag.getFullYear(),dag.getMonth(),dag.getDate(),+hm[0],+hm[1]||0,0);
@@ -827,6 +836,76 @@ function planleggVarsler(){
   /* rydd: bestillinger eldre enn 7 dager */
   var grense=ymd(addDays(naa,-7));
   db.child('varsler/sendt').once('value',function(snap){var v=snap.val()||{};Object.keys(v).forEach(function(k){if(k.slice(0,10)<grense)db.child('varsler/sendt/'+k).set(null).catch(function(){})})});
+}
+
+/* ---------- v1.18 Pakkelistene (Thor 13.10): pakkelister/<type> = {navn,ikon,rekke,linjer:{id:{x,kat,ses,sted,rekke}}}; pakk/<type> = {dato,ses,sted,haket:{id:ts}} ---------- */
+var PAKKL={}, PAKK={}, PK_EDIT={};
+function pkSesong(){var m=NAA.getMonth();return (m>=9||m<=2)?'vinter':'sommer'} /* okt–mar = vinter */
+function pkSet(type,obj){if(!db)return;db.child('pakk/'+type).update(obj).catch(function(){})}
+function pkLinjer(type){var l=(PAKKL[type]||{}).linjer||{};return Object.keys(l).map(function(k){var x=l[k]||{};return {id:k,x:x.x||'',kat:x.kat||'',ses:x.ses||'',sted:x.sted||'',rekke:x.rekke||0}}).sort(function(a,b){return a.rekke-b.rekke})}
+function tegnPakk(){
+  var w=document.getElementById('pk-liste'); if(!w) return;
+  var typer=Object.keys(PAKKL).filter(function(t){return t!=='basis'}).sort(function(a,b){return (PAKKL[a].rekke||0)-(PAKKL[b].rekke||0)});
+  if(!typer.length){w.innerHTML='<p class="small">Ingen lister ennå — Bjørn legger dem inn.</p>';return}
+  var naaY=ymd(NAA), h='';
+  typer.forEach(function(t){
+    var L=PAKKL[t]||{}, st=PAKK[t]||{}, hk=st.haket||{}, ses=st.ses||pkSesong(), sted=st.sted||'';
+    if(st.dato&&st.dato<ymd(addDays(NAA,-1))){pkSet(t,{dato:null,haket:null});st={};hk={}} /* turen er over: nullstill */
+    var alle=pkLinjer('basis').map(function(l){l.basis=true;l.lid=l.id;l.id='b_'+l.id;return l}).concat(pkLinjer(t).map(function(l){l.lid=l.id;return l})); /* hakene nøkles per liste; basislinjer får b_-prefiks så id-ene ikke kolliderer */
+    var harSted=alle.some(function(l){return l.sted});
+    var vis=alle.filter(function(l){return (!l.ses||l.ses===ses)&&(!l.sted||l.sted===sted)});
+    var n=vis.length, m=vis.filter(function(l){return hk[l.id]}).length;
+    var sum=(L.ikon||'\uD83E\uDDF3')+' '+esc(L.navn||t)+'<span class="small">'+(st.dato?'· pakkes til '+st.dato+' · ':'· ')+m+' av '+n+'</span>';
+    var chips='<div class="chips">'
+      +'<button class="edit'+(ses==='vinter'?' on':'')+'" data-pk="ses" data-t="'+t+'" data-v="vinter">\u2744\uFE0F Vinter</button>'
+      +'<button class="edit'+(ses==='sommer'?' on':'')+'" data-pk="ses" data-t="'+t+'" data-v="sommer">\u2600\uFE0F Sommer</button>'
+      +(harSted?'<button class="edit'+(sted==='hytte'?' on':'')+'" data-pk="sted" data-t="'+t+'" data-v="hytte">Hytta</button><button class="edit'+(sted==='hotell'?' on':'')+'" data-pk="sted" data-t="'+t+'" data-v="hotell">Hotell</button>':'')
+      +'<button class="edit'+(PK_EDIT[t]?' on':'')+'" data-pk="edit" data-t="'+t+'">\u270E Endre</button>'
+      +'<button class="edit" data-pk="null" data-t="'+t+'">\u21BA Nullstill</button>'
+      +'</div>'
+      +'<div class="chips"><label class="small">Reisedato <input type="date" data-pk="dato" data-t="'+t+'" value="'+esc(st.dato||'')+'" min="'+naaY+'" style="font:inherit;font-size:13px;padding:4px 6px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink)"></label>'+(st.dato?'<span class="small">varsel kvelden før kl. 19</span>':'')+'</div>';
+    var grp={}, rk=[]; vis.forEach(function(l){var k=l.basis?'Alltid med':(l.kat||'Annet');if(!grp[k]){grp[k]=[];rk.push(k)}grp[k].push(l)});
+    var body=rk.map(function(k){return '<h4>'+esc(k)+'</h4>'+grp[k].map(function(l){return '<div class="pl'+(hk[l.id]?' ja':'')+'"><button class="hk" data-pk="hak" data-t="'+t+'" data-id="'+l.id+'" aria-label="hak">'+(hk[l.id]?'\u2713':'')+'</button><span class="tx">'+esc(l.x)+(l.ses?' <span class="pill grey">'+(l.ses==='vinter'?'\u2744\uFE0F':'\u2600\uFE0F')+'</span>':'')+'</span>'+(PK_EDIT[t]?'<button class="x" data-pk="slett" data-t="'+(l.basis?'basis':t)+'" data-id="'+l.lid+'">\u2715 fjern</button>':'')+'</div>'}).join('')}).join('');
+    var ny=PK_EDIT[t]?'<form class="ny" data-pk="ny" data-t="'+t+'" autocomplete="off"><input type="text" placeholder="Ny linje …" maxlength="120" required><select name="ses"><option value="">Alle sesonger</option><option value="vinter">Bare vinter</option><option value="sommer">Bare sommer</option></select><select name="til"><option value="'+t+'">Denne lista</option><option value="basis">Alltid med</option></select><button class="edit" type="submit">\uFF0B Legg til</button></form>':'';
+    h+='<details'+(PK_OPEN[t]?' open':'')+' data-pkt="'+t+'"><summary>'+sum+'</summary>'+chips+body+ny+'</details>';
+  });
+  w.innerHTML=h;
+  w.querySelectorAll('details').forEach(function(d){d.addEventListener('toggle',function(){PK_OPEN[d.getAttribute('data-pkt')]=d.open})});
+}
+var PK_OPEN={};
+document.addEventListener('click',function(e){
+  var b=e.target.closest&&e.target.closest('[data-pk]'); if(!b||b.tagName==='INPUT'||b.tagName==='FORM') return;
+  var a=b.getAttribute('data-pk'), t=b.getAttribute('data-t'); if(!a||!t) return;
+  if(!db){toast('Trenger delt lagring');return}
+  if(a==='hak'){var id=b.getAttribute('data-id'), st=PAKK[t]||{}, ja=!(st.haket&&st.haket[id]); var u={};u['haket/'+id]=ja?Date.now():null; pkSet(t,u);}
+  else if(a==='ses'||a==='sted'){var v=b.getAttribute('data-v'), cur=(PAKK[t]||{})[a]||(a==='ses'?pkSesong():''); var u2={};u2[a]=(cur===v&&a==='sted')?'':v; pkSet(t,u2);}
+  else if(a==='edit'){PK_EDIT[t]=!PK_EDIT[t];tegnPakk()}
+  else if(a==='null'){pkSet(t,{haket:null,dato:null});toast('Lista er nullstilt')}
+  else if(a==='slett'){var id2=b.getAttribute('data-id');db.child('pakkelister/'+t+'/linjer/'+id2).set(null).then(function(){toast('Linja er fjernet')}).catch(function(){})}
+});
+document.addEventListener('change',function(e){
+  var i=e.target; if(!i||i.getAttribute('data-pk')!=='dato') return; var t=i.getAttribute('data-t'); if(!db) return;
+  var u={dato:i.value||null}; if(!i.value) u.haket=null; pkSet(t,u); if(i.value){toast('Varsel kvelden før kl. 19');VARSLET_NAA=false;setTimeout(planleggVarsler,800)}
+});
+document.addEventListener('submit',function(e){
+  var f=e.target; if(!f||f.getAttribute('data-pk')!=='ny') return; e.preventDefault(); if(!db) return;
+  var t=f.getAttribute('data-t'), tx=f.querySelector('input[type=text]'), til=f.querySelector('[name=til]').value, ses=f.querySelector('[name=ses]').value;
+  var x=(tx.value||'').trim(); if(!x) return;
+  var id='n'+Date.now().toString(36), rk=pkLinjer(til).length+10;
+  db.child('pakkelister/'+til+'/linjer/'+id).set({x:x,kat:til==='basis'?'Pakk':'Egne',ses:ses,sted:'',rekke:rk,by:valgt||'familie',ts:new Date().toISOString()}).then(function(){toast('Lagt til');tx.value=''}).catch(function(){});
+});
+function planleggPakk(naa,n,yd){ /* ett varsel kvelden før reisedato, 19:00, til begge voksne */
+  Object.keys(PAKK).forEach(function(t){var st=PAKK[t]||{}; if(!st.dato) return; if(ymd(addDays(new Date(st.dato+'T00:00:00'),-1))!==yd) return;
+    var dag=new Date(yd+'T00:00:00'), tt=new Date(dag.getFullYear(),dag.getMonth(),dag.getDate(),19,0,0); if(tt.getTime()-naa.getTime()<120000) return;
+    var key=yd+'_pakk_'+t, ref=db.child('varsler/sendt/'+key), L=PAKKL[t]||{};
+    ref.transaction(function(cur){ if(cur) return; return {ts:Date.now(),by:valgt||'familie'} },function(err,committed){
+      if(err||!committed) return;
+      var ps=['thor','anniken'].filter(function(p){return n[p]}); if(!ps.length){ref.set(null).catch(function(){});return}
+      var ant=pkLinjer('basis').length+pkLinjer(t).length;
+      Promise.all(ps.map(function(p){return ntfyPost(n[p],'Pakkelista · '+(L.navn||t),'I morgen: '+(L.navn||t)+'. Åpne lista og hak av mens dere pakker ('+ant+' linjer).','luggage',Math.floor(tt.getTime()/1000),4,appLenke(p)+'#pakk')}))
+        .then(function(a){ if(!a.some(Boolean)) ref.set(null).catch(function(){}) });
+    });
+  });
 }
 
 /* ---------- tegning ---------- */
@@ -1218,7 +1297,7 @@ function tegnNyRask(){
   w.hidden=!(valgt&&VOKSNE.indexOf(valgt)>=0);
   if(!w.hidden&&window.__nyRaskHvem)window.__nyRaskHvem();
 }
-function tegn(){tegnHvem();tegnIdag();tegnLag();tegnUke();tegnSlik();tegnVedl();tegnHist();tegnBank();fyllInnst();tegnNyRask()}
+function tegn(){tegnHvem();tegnIdag();tegnLag();tegnUke();tegnSlik();tegnVedl();tegnHist();tegnBank();fyllInnst();tegnNyRask();tegnPakk()}
 document.getElementById('uke-forrige').onclick=function(){visUke=addDays(visUke,-7);tegnUke()};
 document.getElementById('uke-neste').onclick=function(){visUke=addDays(visUke,7);tegnUke()};
 document.getElementById('uke-naa').onclick=function(){visUke=mandag(NAA);tegnUke()};
@@ -1304,6 +1383,8 @@ function slaaSammenOppg(liste){
     db.child('belonning').on('value',function(snap){BELONNING=snap.val()||{};tegn()});
     db.child('tilstand').on('value',function(snap){TILSTAND=snap.val()||{};tegn()});
     db.child('ferdig').on('value',function(snap){var v=snap.val()||{};Object.keys(v).forEach(function(d){FERDIG[d]=v[d]||{}});try{localStorage.setItem('ft-ferdig',JSON.stringify(FERDIG))}catch(e){};tegn()});
+    db.child('pakkelister').on('value',function(snap){PAKKL=snap.val()||{};tegnPakk()});
+    db.child('pakk').on('value',function(snap){PAKK=snap.val()||{};tegnPakk()});
     db.child('fravaer').on('value',function(snap){FRAVAER=snap.val()||{};FRAV_LASTET=true;try{localStorage.setItem('ft-fravaer',JSON.stringify(FRAVAER))}catch(e){};tegn();planleggVarsler()});
     db.child('innstillinger').on('value',function(snap){var x=snap.val();if(x){if(x.prosent)INNST.prosent=x.prosent;if(x.plan)INNST.plan=Object.assign({},INNST.plan||{},x.plan);if(x.trapp&&x.trapp.length)INNST.trapp=x.trapp;if(x.ferie)INNST.ferie=x.ferie;INNST.ntfy=lesNtfy(x.ntfy);if(x.varsler)INNST.varsler=x.varsler;tegn();planleggVarsler()}});
     var LOKALT_FOER=JSON.parse(JSON.stringify(UKER)), foersteSnap=true;
