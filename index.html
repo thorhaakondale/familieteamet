@@ -421,7 +421,7 @@ details.om .in{padding:8px 0 0;font-size:14px;max-width:70ch}
 <p><b>Minn p&#xE5;.</b> En huskelapp kan f&#xE5; ett klokkeslett: da kommer &#xE9;n p&#xE5;minnelse p&#xE5; telefonen til den lappen gjelder &#x2014; og til deg selv om du vil. Ingen tid = ingen varsel. Det er m&#xE5;ten dere minner hverandre p&#xE5; ting til tider dere selv velger.</p>
 <p><b>Poengene</b> er ett lag, ikke fem. Ingen konkurrerer mot søsken. Oscar (2) er med på sine småting, og alt han gjør teller.</p>
 <p><b>Bonus 🎁.</b> Noen jobber er ekstra: vaske i huset i torsdagstimen, hjelpe til med bilene og garasjen. De ligger i sin egen bolk nederst, gir ekstra poeng når de gjøres, men teller aldri i ukemålet — ingen taper noe på å la dem ligge. Det som bare er forventet hjelp (klargjøring, bære, rydde etter seg) gir ikke poeng i det hele tatt.</p>
-<p><b>Varsler — få og faste.</b> Tavla maser ikke. Hver får et varsel på mobilen bare til de faste tidene Bjørn har satt opp — de voksne: fabrikkrunden, torsdagstimen, bestilling av mat, søndagstur og søndagskos, pluss når et barn melder ferdig; barna: morgenrutinen på skoledager og «ferdig for i dag?» om kvelden. Varselet åpner tavla. Varslene sendes gjennom gratistjenesten ntfy (eget emne per voksen under Oppgavebanken) og inneholder verken navn eller familiekode.</p>
+<p><b>Varsler — få og faste.</b> Tavla maser ikke. Hver får et varsel på mobilen bare til de faste tidene Bjørn har satt opp — de voksne: fabrikkrunden, torsdagstimen, bestilling av mat, søndagstur og søndagskos, pluss når et barn melder ferdig; barna: morgenrutinen på skoledager og «ferdig for i dag?» om kvelden. Varselet åpner tavla. Varslene sendes gjennom gratistjenesten ntfy (eget emne per voksen under Oppgavebanken) og inneholder ikke navn. Lenka i varselet har familiekoden i seg, slik at den åpner riktig tavle også i Safari — derfor skal emnene holdes hemmelige.</p>
 <p><b>Ideer og forslag hører ikke hjemme her.</b> «Legg til noe jeg må huske» er for husoppgaver med dato. Ideer, forslag og alt som ikke er huset går i innboksen på Kontrolltavla — Bjørn sorterer den søndag og sier fra når for mye henger.</p>
 <p><b>Ferdig for i dag ✅.</b> Når barna har gjort sitt, trykker de «Ferdig for i dag» nederst. Da ser de voksne det øverst på tavla og får et varsel på mobilen (via ntfy-appen, emnet settes under Oppgavebanken). Varselet har ingen navn eller klokkeslett i seg.</p>
 <p><b>Voksne</b> legger inn nye oppgaver, flytter dager og setter belønning under Oppgavebanken. Rader merket «forslag» er tavlas forslag og skal justeres av dere.</p>
@@ -441,7 +441,7 @@ details.om .in{padding:8px 0 0;font-size:14px;max-width:70ch}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.20.0';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.21.0';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -789,8 +789,8 @@ function meldFerdig(person,angre,gjort,av){
    Teksten holdes uten navn og uten klokkeslett: bare dyr + forbokstav og tallene. */
 var NTFY_URL='https://ntfy.sh/';
 function lesNtfy(x){ if(!x) return null; if(typeof x==='string') return {thor:x}; return x }
-function appLenke(person){ /* lenke uten familiekode — Safari husker koden etter første åpning (Thor 13.10: varslene skal åpne tavla) */
-  try{return location.origin+location.pathname+'?p='+encodeURIComponent(person||'alle')}catch(e){return ''}}
+function appLenke(person){ /* v1.21: lenka har både personen og familiekoden. Et varsel åpnes i Safari, som har et annet minne enn hjemskjerm-appen, så uten koden i lenka fikk Safari ingen delt lagring og viste gamle haker (Thor 14.10). Emnet er hemmelig, så koden er like godt vernet som før. */
+  try{return location.origin+location.pathname+'?p='+encodeURIComponent(person||'alle')+(KODE?'&k='+encodeURIComponent(KODE):'')}catch(e){return ''}}
 function ntfyPost(topic,tittel,tekst,tag,atUnix,prio,click){ /* samme form som Livskraft v1.9 (verifisert på iPhone): spørring i adressen, teksten i kroppen */
   if(!topic||!window.fetch) return Promise.resolve(false);
   var u=NTFY_URL+encodeURIComponent(topic)+'?title='+encodeURIComponent('Familieteamet · '+tittel)+'&tags='+encodeURIComponent(tag||'bell')+'&priority='+(prio||4)+(atUnix?'&delay='+atUnix:'')+(click?'&click='+encodeURIComponent(click):'');
@@ -1057,6 +1057,7 @@ function tegnIdag(){
   var pv=valgt?PMAP[valgt]:null;
   var fv=valgt?fravFor(NAA,valgt):null;
   document.getElementById('idag-h').innerHTML=(pv?pv.dyr+' '+esc(pv.navn)+'s dag':'Hele laget 👨‍👩‍👧‍👦')+(fv?' · '+esc(fv.navn||'Borte'):'')+' <span class="small">· '+DAGER[dIdx].toLowerCase()+' '+datoNorsk(NAA)+(erFerie(key)?' · ferieuke':'')+'</span>';
+  if(!KODE){document.getElementById('idag-liste').innerHTML='<p class="small" style="padding:10px 0;line-height:1.5"><b>Denne fanen mangler familiekoden</b>, så den kan ikke se hva som er huket av — listene her ville vært gamle. Åpne Familieteamet fra hjem-skjermen, eller lenka dere fikk med koden i seg.</p>';return} /* v1.21: aldri vis haker uten delt lagring */
   document.getElementById('dagplan').innerHTML=''; /* ingen dagsplan: tavla er ikke en kalender — det viktigste er at det blir gjort i løpet av dagen */
   var slots=planUke(man).filter(function(s){return s.dag===dIdx&&(!valgt||s.person===valgt)});
   slots.forEach(function(s){s.ukeKey=key});
