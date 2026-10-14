@@ -1,6 +1,6 @@
 {
- "versjon": "v1.6",
- "kilde": "Dale Livsstil & PT (programkortet) for øvelser og vekter · liv-treningsspesifikasjon.md v1.1 for mål, regler og progresjon · v1.6 12.10.2026: pauseøvelsene synlige, lette og med bilde",
+ "versjon": "v1.7",
+ "kilde": "Dale Livsstil & PT (programkortet) for øvelser og vekter · liv-treningsspesifikasjon.md v1.1 for mål, regler og progresjon · v1.6 12.10.2026: pauseøvelsene synlige, lette og med bilde · v1.7 14.10.2026: Annikens program (Liv) — to gymøkter, hjemmeøkt og månedssjekk",
  "personer": {
   "thor": {
    "navn": "Thor",
@@ -9,12 +9,7 @@
   },
   "anniken": {
    "navn": "Anniken",
-   "har_program": false,
-   "melding": "Denne er din like mye som Thors — men programmet ditt lages sammen med deg, ikke gjettes. Til da er minimumsnivået ditt: ti minutter gange på tunge dager, og én kort styrkeøkt når du vil. Det, søvn, skritt og vekt kan du logge her allerede.",
-   "minimum": {
-    "gange": "10 min gange på tunge dager",
-    "styrke": "Én kort styrkeøkt når du vil"
-   }
+   "har_program": true
   }
  },
  "thor": {
@@ -516,5 +511,566 @@
   "en": "Én økt ikke gjort er ingenting. Neste økt er neste bokstav.",
   "to": "To økter på rad ble ikke gjort. Det er et signal, ikke en dom: neste økt er lett — 70 % av sist, ett sett per løft, 25 minutter.",
   "tre_uker": "Borte i tre uker eller mer: retur på ~70 %, full retur på halve pausetiden. Aldri «ta igjen»."
+ },
+ "anniken": {
+  "standarduke": {
+   "man": "F",
+   "tir": "A",
+   "ons": "T",
+   "tor": "B",
+   "fre": "F",
+   "lor": "H",
+   "son": "S"
+  },
+  "ukeplan": [
+   [
+    "gym",
+    "Styrkeøkt"
+   ],
+   [
+    "gym",
+    "Styrkeøkt"
+   ],
+   [
+    "tur",
+    "Tur"
+   ],
+   [
+    "tur",
+    "Tur"
+   ]
+  ],
+  "ukeplan_min": [
+   [
+    "gym",
+    "Én styrkeøkt (gym kort eller hjemme)"
+   ],
+   [
+    "tur",
+    "Tur 30 min"
+   ]
+  ],
+  "regler": {
+   "rode_flagg": [
+    "Smerter i brystet, uvanlig tungpust eller besvimelsesfølelse",
+    "Smerte som stråler ned i beinet",
+    "Smerte i bekken eller nedre mage som ikke går over",
+    "Blødning eller annet uvanlig — og alt legen har sagt du skal stoppe for"
+   ],
+   "rode_flagg_tekst": "Stopp økta. Ring fastlegen i dag. Brystsmerter eller besvimelse: 113.",
+   "aldri_1rm_over_reps": 10,
+   "pauseovelse": "Mageøvelsen gjøres i pausen mellom settene på hovedøvelsen. Den er lett og stopper før det blir slitsomt — da får magen 6 runder i uka uten at økta blir lengre.",
+   "kroppsarbeid": "",
+   "energi": "Energi under 3 to dager på rad: ta kort økt eller hjemmeøkt — ikke dropp, ikke press."
+  },
+  "okter": {
+   "A": {
+    "navn": "A — Bein, rumpe og mage",
+    "dag": "tirsdag",
+    "varighet": "~40 min",
+    "farge": "#db2777",
+    "oppvarming": "5 min lett på sykkel eller tredemølle + 10 hoftehev på matta + 1 lett sett goblet knebøy.",
+    "ferdigtekst": "Bein, rumpe og mage har fått sitt.",
+    "hensikt": {
+     "tittel": "Hva vi prøver å få til",
+     "linjer": [
+      [
+       "Målet med A",
+       "Sterke bein og en sterk rumpe — de største musklene du har, og de som gjør mest for forbrenning, holdning og overskudd. Magen jobber i hver pause."
+      ],
+      [
+       "Fram mot januar",
+       "Uke 43–46 grunnmur og teknikk · uke 47–50 tyngre · uke 51–1 julemodus (minimumsuke er lov) · siste uke før januarpausen lett."
+      ],
+      [
+       "Slik måles det",
+       "Kiloene og repsene du skriver inn. Når alle sett når toppen av spennet, går vekta opp neste gang — appen sier fra."
+      ],
+      [
+       "Magen",
+       "Fasthet og holdning kommer av styrken og mageøvelsene i hver økt. Synlige magemuskler avgjøres mest av fettprosenten — ikke av flere mageøvelser."
+      ]
+     ],
+     "mer": "Mer om målet",
+     "regel": "Tungt, men trygt: de to siste repsene skal være tunge, teknikken skal holde. Aldri til du «dør»."
+    },
+    "ovelser": [
+     {
+      "id": "goblet",
+      "navn": "Goblet knebøy",
+      "hint": "manual mot brystet · sitt ned mellom hælene, brystet opp · knærne følger tærne",
+      "sett": 3,
+      "reps": [
+       8,
+       12
+      ],
+      "vekt": {
+       "start": null,
+       "tak": 999,
+       "steg": 2,
+       "enhet": "kg manual"
+      },
+      "pause": 120,
+      "type": "hoved",
+      "tung": true,
+      "bilde": "img/goblet.webp",
+      "slik": [
+       "Hold én manual loddrett mot brystet med begge hender. Føttene litt bredere enn hoftene.",
+       "Sitt rett ned — brystet opp, knærne ut over tærne — så dypt du klarer med flat rygg.",
+       "Press opp gjennom hele foten. Pust ut på vei opp."
+      ],
+      "fyllstoff": {
+       "id": "deadbug",
+       "navn": "Dead bug",
+       "maal": "2 × 6 per side — sakte, korsryggen presset ned i matta",
+       "maaling": "reps",
+       "perSide": true,
+       "sett": 2,
+       "slik": [
+        "Ligg på ryggen, armene rett opp mot taket, hofter og knær i 90 grader.",
+        "Press korsryggen ned i matta og pust ut. Senk motsatt arm og bein sakte mot gulvet — bare så langt ryggen holder seg nede.",
+        "Tilbake, bytt side. Rolig tempo, 6 per side."
+       ],
+       "hvorfor": "Den dype magen (transversus) — det som gir flat, fast mage og en rygg som tåler løftene."
+      }
+     },
+     {
+      "id": "hipthrust",
+      "navn": "Hip thrust",
+      "hint": "stang med pute eller maskin · skulderbladene mot benken · stopp 1 s på toppen og klem rumpa",
+      "sett": 3,
+      "reps": [
+       8,
+       12
+      ],
+      "vekt": {
+       "start": null,
+       "tak": 999,
+       "steg": 2.5
+      },
+      "pause": 120,
+      "type": "hoved",
+      "tung": true,
+      "slik": [
+       "Sitt på gulvet med øvre del av ryggen mot kanten av en benk og stanga (med pute) over hofta.",
+       "Føttene i gulvet, knærne bøyd. Press hofta opp til kroppen er rett fra skuldre til knær.",
+       "Klem rumpa 1 sekund på toppen, ned rolig. Haka litt inn — ikke svai i korsryggen."
+      ],
+      "fyllstoff": {
+       "id": "pallof",
+       "navn": "Pallof press",
+       "maal": "2 × 8 per side — 2 s hold med armene rette",
+       "maaling": "reps",
+       "perSide": true,
+       "sett": 2,
+       "slik": [
+        "Stå sidelengs til kabelmaskinen (eller en strikk festet i høyde med brystet), håndtaket mot brystet med begge hender.",
+        "Spenn magen og rumpa, press armene rett fram og hold 2 sekunder — ikke la kabelen vri deg.",
+        "Inn igjen rolig. 8 reps, snu deg og ta andre siden."
+       ],
+       "hvorfor": "Skrå magemuskler som holder midjen stram uten å bygge den bredere — og som beskytter ryggen."
+      }
+     },
+     {
+      "id": "rdlm",
+      "navn": "Rumensk markløft med manualer",
+      "hint": "hofta bakover, flat rygg · manualene tett langs beina · kjenn det bak på lårene",
+      "sett": 3,
+      "reps": [
+       8,
+       12
+      ],
+      "vekt": {
+       "start": null,
+       "tak": 999,
+       "steg": 2,
+       "enhet": "kg per hånd"
+      },
+      "pause": 90,
+      "type": "hoved",
+      "bilde": "img/rdlmanual.webp",
+      "slik": [
+       "Stå med en manual i hver hånd foran lårene, knærne litt bøyd.",
+       "Skyv hofta bakover og senk manualene tett langs beina med flat rygg — til du kjenner strekk bak på lårene.",
+       "Press hofta fram og reis deg. Det er rumpa som løfter, ikke ryggen."
+      ]
+     },
+     {
+      "id": "splitt",
+      "navn": "Splittknebøy",
+      "hint": "én fot fram, én bak · rett ned, ikke fram · manualer i hendene når kroppsvekt blir lett",
+      "sett": 2,
+      "reps": [
+       8,
+       12
+      ],
+      "perSide": true,
+      "vekt": {
+       "start": null,
+       "tak": 999,
+       "steg": 2,
+       "enhet": "kg per hånd"
+      },
+      "pause": 60,
+      "type": "tilbehor",
+      "slik": [
+       "Stå i et langt steg, bakre fot på tærne.",
+       "Senk bakre kne rett ned mot gulvet til begge knærne er ca. 90 grader. Overkroppen rett.",
+       "Press opp gjennom fremre hæl. Alle reps på én side, så bytt."
+      ]
+     },
+     {
+      "id": "utrulling",
+      "navn": "Utrulling på knærne (ab wheel)",
+      "hint": "eller planke med hendene på en ball · bare så langt ryggen holder seg rett",
+      "sett": 2,
+      "reps": [
+       6,
+       10
+      ],
+      "pause": 60,
+      "type": "tilbehor",
+      "slik": [
+       "Stå på knærne på matta med hjulet (eller en vektstang med runde skiver) under skuldrene.",
+       "Spenn magen og rull rolig fram — stopp før korsryggen svaier.",
+       "Trekk deg tilbake med magen, ikke med armene. Start kort; lengden kommer."
+      ]
+     }
+    ]
+   },
+   "B": {
+    "navn": "B — Rygg, armer og mage",
+    "dag": "torsdag",
+    "varighet": "~40 min",
+    "farge": "#9333ea",
+    "oppvarming": "5 min lett på romaskin + 10 strikkdrag fra hverandre + 1 lett sett nedtrekk.",
+    "ferdigtekst": "Rygg, armer og mage har fått sitt.",
+    "hensikt": {
+     "tittel": "Hva vi prøver å få til",
+     "linjer": [
+      [
+       "Målet med B",
+       "En sterk rygg og sterke skuldre — holdningen som får magen til å se flatere ut, og styrken som gjør hverdagen med tre barn lettere."
+      ],
+      [
+       "Fram mot januar",
+       "En sterk rygg og sterke skuldre gjør hverdagen lettere — og gjør det enklere å komme tilbake etter en pause fra trening."
+      ],
+      [
+       "Slik måles det",
+       "Kiloene og repsene du skriver inn. Alle sett på toppen av spennet = vekta opp neste gang."
+      ]
+     ],
+     "mer": "Mer om målet",
+     "regel": "Tungt, men trygt. Kjenner du skuldrene, ta ned vekta — aldri press gjennom smerte."
+    },
+    "ovelser": [
+     {
+      "id": "nedtrekk",
+      "navn": "Nedtrekk",
+      "hint": "bredt grep · dra stanga ned til øvre del av brystet · albuene ned mot lommene",
+      "sett": 3,
+      "reps": [
+       8,
+       12
+      ],
+      "vekt": {
+       "start": null,
+       "tak": 999,
+       "steg": 2.5
+      },
+      "pause": 90,
+      "type": "hoved",
+      "slik": [
+       "Sitt med lårene under puta og ta et grep litt bredere enn skuldrene.",
+       "Len deg litt bakover, brystet opp, og dra stanga ned til øvre del av brystet — tenk albuene ned i lommene.",
+       "Slipp opp rolig til armene er strake."
+      ],
+      "fyllstoff": {
+       "id": "sideplanke",
+       "navn": "Sideplanke",
+       "maal": "2 × 20–30 s per side — stopp mens formen er fin",
+       "maaling": "sek",
+       "perSide": true,
+       "sett": 2,
+       "maaltid": 45,
+       "bilde": "img/sideplanke.webp",
+       "slik": [
+        "Ligg på siden med albuen rett under skulderen. Knærne bøyd (lettere) eller beina strake.",
+        "Løft hofta til kroppen er en rett linje fra hode til knær/føtter.",
+        "Hold, pust rolig. Senk før hofta synker — bytt side."
+       ],
+       "hvorfor": "Midjen og sidene av magen. Gir holdning og en stram midje."
+      }
+     },
+     {
+      "id": "roing",
+      "navn": "Sittende roing i kabel",
+      "hint": "rett rygg · dra håndtaket inn mot navlen · klem skulderbladene sammen",
+      "sett": 3,
+      "reps": [
+       8,
+       12
+      ],
+      "vekt": {
+       "start": null,
+       "tak": 999,
+       "steg": 2.5
+      },
+      "pause": 90,
+      "type": "hoved",
+      "slik": [
+       "Sitt med føttene mot platene, knærne litt bøyd og ryggen rett.",
+       "Dra håndtaket inn mot navlen og klem skulderbladene sammen bak.",
+       "Slipp rolig fram uten å runde ryggen."
+      ],
+      "fyllstoff": {
+       "id": "birddog",
+       "navn": "Bird dog",
+       "maal": "2 × 6 per side — rolig, 3 s hold på topp",
+       "maaling": "reps",
+       "perSide": true,
+       "sett": 2,
+       "bilde": "img/birddog.webp",
+       "slik": [
+        "På alle fire, hendene under skuldrene, knærne under hofta.",
+        "Strekk høyre arm fram og venstre bein bak samtidig — til de er i høyde med ryggen, ikke høyere.",
+        "Hold 3 sekunder uten at hofta vrir seg, tilbake, bytt side. 6 per side."
+       ],
+       "hvorfor": "Ryggen: lærer korsryggen å holde seg i ro mens armer og bein jobber — McGill Big 3."
+      }
+     },
+     {
+      "id": "skraapress",
+      "navn": "Skrå manualpress",
+      "hint": "benken på 30 grader · manualene ned til siden av brystet · press rett opp",
+      "sett": 3,
+      "reps": [
+       8,
+       12
+      ],
+      "vekt": {
+       "start": null,
+       "tak": 999,
+       "steg": 2,
+       "enhet": "kg per hånd"
+      },
+      "pause": 90,
+      "type": "hoved",
+      "slik": [
+       "Ligg på en benk med ryggstøtten på ca. 30 grader, en manual i hver hånd over brystet.",
+       "Senk manualene rolig til siden av brystet, albuene litt inn mot kroppen.",
+       "Press rett opp. Skuldrene ned og bak hele veien."
+      ]
+     },
+     {
+      "id": "skulderpress",
+      "navn": "Skulderpress med manualer, sittende",
+      "hint": "ryggstøtten rett opp · press over hodet uten å svaie",
+      "sett": 2,
+      "reps": [
+       8,
+       12
+      ],
+      "vekt": {
+       "start": null,
+       "tak": 999,
+       "steg": 2,
+       "enhet": "kg per hånd"
+      },
+      "pause": 60,
+      "type": "tilbehor",
+      "slik": [
+       "Sitt med ryggen mot støtten og manualene i skulderhøyde.",
+       "Press rett opp til armene nesten er strake.",
+       "Ned rolig til skulderhøyde. Magen spent — ikke svai."
+      ]
+     },
+     {
+      "id": "kneloft",
+      "navn": "Kneløft i stativ",
+      "hint": "underarmene på putene · løft knærne mot brystet og rull bekkenet opp · ingen sving",
+      "sett": 2,
+      "reps": [
+       8,
+       12
+      ],
+      "pause": 60,
+      "type": "tilbehor",
+      "slik": [
+       "Stå i kneløftstativet med underarmene på putene og ryggen mot puta.",
+       "Løft knærne mot brystet og vipp bekkenet litt opp — det er der magen jobber.",
+       "Senk rolig uten å svinge. For tungt: ett kne om gangen."
+      ]
+     }
+    ]
+   },
+   "H": {
+    "navn": "H — Hjemmeøkt",
+    "dag": "når tirsdag eller torsdag ryker · eller lørdag",
+    "varighet": "~25 min",
+    "farge": "#0891b2",
+    "oppvarming": "2 min marsj på stedet + 10 armsirkler + 10 knebøy uten vekt.",
+    "ferdigtekst": "Hjemmeøkta er gjort — den teller like mye som gymmet.",
+    "hensikt": {
+     "tittel": "Hva denne er til",
+     "linjer": [
+      [
+       "Når den brukes",
+       "Ryker tirsdag eller torsdag, tar du denne hjemme i stedet. Valgfritt også på lørdag. Den teller som en styrkeøkt."
+      ],
+      [
+       "Utstyr",
+       "Yogamatte, strikk og vektvesten. Ingenting annet."
+      ]
+     ],
+     "mer": "Mer",
+     "regel": "Korte pauser — 45–60 sekunder. Hele økta tar 25 minutter."
+    },
+    "ovelser": [
+     {
+      "id": "h-kneboy",
+      "navn": "Knebøy med vektvest",
+      "hint": "uten vest til 15 reps er lett, så på med vesten · sitt ned mellom hælene",
+      "sett": 3,
+      "reps": [
+       12,
+       15
+      ],
+      "pause": 60,
+      "pauseFast": 60,
+      "type": "hoved",
+      "slik": [
+       "Stå med føttene litt bredere enn hoftene, armene fram for balanse.",
+       "Sitt ned så dypt du klarer med brystet opp og knærne ut over tærne.",
+       "Press opp. Bli for lett: på med vektvesten."
+      ]
+     },
+     {
+      "id": "h-hoftehev",
+      "navn": "Hoftehev på ett bein",
+      "hint": "på matta · hold 1 s på toppen · to bein hvis ett er for tungt",
+      "sett": 3,
+      "reps": [
+       10,
+       12
+      ],
+      "perSide": true,
+      "pause": 45,
+      "pauseFast": 45,
+      "type": "hoved",
+      "bilde": "img/hoftehev.webp",
+      "slik": [
+       "Ligg på ryggen, knærne bøyd og føttene i matta. (Bildet viser to bein — start der.)",
+       "Løft det ene beinet, press hofta opp gjennom hælen på det andre til kroppen er rett.",
+       "Hold 1 sekund, ned rolig. Alle reps, så bytt."
+      ]
+     },
+     {
+      "id": "h-roing",
+      "navn": "Strikkroing",
+      "hint": "strikken rundt et dørhåndtak eller rundt føttene · klem skulderbladene",
+      "sett": 3,
+      "reps": [
+       12,
+       15
+      ],
+      "pause": 45,
+      "pauseFast": 45,
+      "type": "hoved",
+      "slik": [
+       "Fest strikken i et dørhåndtak (dør lukket!) eller sitt med strikken rundt føttene.",
+       "Dra hendene inn mot magen og klem skulderbladene sammen.",
+       "Slipp rolig tilbake."
+      ],
+      "fyllstoff": {
+       "id": "sideplanke",
+       "navn": "Sideplanke",
+       "maal": "2 × 20–30 s per side — stopp mens formen er fin",
+       "maaling": "sek",
+       "perSide": true,
+       "sett": 2,
+       "maaltid": 45,
+       "bilde": "img/sideplanke.webp",
+       "slik": [
+        "Ligg på siden med albuen rett under skulderen. Knærne bøyd (lettere) eller beina strake.",
+        "Løft hofta til kroppen er en rett linje fra hode til knær/føtter.",
+        "Hold, pust rolig. Senk før hofta synker — bytt side."
+       ],
+       "hvorfor": "Midjen og sidene av magen. Gir holdning og en stram midje."
+      }
+     },
+     {
+      "id": "h-push",
+      "navn": "Push-ups på knærne eller mot benk",
+      "hint": "kroppen rett fra hode til knær · ned til brystet nesten treffer",
+      "sett": 2,
+      "reps": [
+       6,
+       12
+      ],
+      "pause": 45,
+      "pauseFast": 45,
+      "type": "tilbehor",
+      "slik": [
+       "Hendene litt bredere enn skuldrene på gulvet (eller på en benk/sofa — lettere).",
+       "Knærne i matta, kroppen rett. Senk brystet ned mot gulvet.",
+       "Press opp. Når 12 er lett: høyere vanskelighetsgrad (lavere benk, så fra tærne)."
+      ]
+     },
+     {
+      "id": "h-deadbug",
+      "navn": "Dead bug",
+      "hint": "korsryggen presset ned i matta hele tiden",
+      "sett": 2,
+      "reps": [
+       6,
+       8
+      ],
+      "perSide": true,
+      "pause": 30,
+      "pauseFast": 30,
+      "type": "tilbehor",
+      "slik": [
+       "Ligg på ryggen, armene rett opp mot taket, hofter og knær i 90 grader.",
+       "Press korsryggen ned i matta og pust ut. Senk motsatt arm og bein sakte mot gulvet — bare så langt ryggen holder seg nede.",
+       "Tilbake, bytt side. Rolig tempo, 6 per side."
+      ]
+     }
+    ]
+   },
+   "T": {
+    "navn": "Gåtur",
+    "dag": "onsdag",
+    "varighet": "30–45 min",
+    "farge": "#16a34a",
+    "tekst": "Rask gange, gjerne med bakker. Teller som ukas første tur."
+   },
+   "S": {
+    "navn": "Søndagstur",
+    "dag": "søndag",
+    "varighet": "45–60 min",
+    "farge": "#16a34a",
+    "tekst": "Med familien eller en venninne. Rolig tempo er helt greit — det er bevegelse og luft, ikke trening."
+   },
+   "F": {
+    "navn": "Fri",
+    "dag": "",
+    "varighet": "",
+    "farge": "#9ca3af",
+    "tekst": "Fri. Ti minutter gange hvis det passer — ingen plikt."
+   }
+  },
+  "sesonger": [
+   {
+    "id": "ann-host26",
+    "navn": "Høst 2026",
+    "tema": "Sterk og i balanse fram mot januar",
+    "fra": "2026-W43",
+    "til": "2027-W04",
+    "element": "Mage i hver økt — dead bug, pallof og sideplanke i pausene",
+    "event": "Lett siste uke før januarpausen · månedssjekk i begynnelsen av hver måned"
+   }
+  ]
  }
 }
