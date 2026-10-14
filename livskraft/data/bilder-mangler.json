@@ -1,0 +1,299 @@
+{
+ "oppdatert": "2026-10-14",
+ "regel": "Én oppføring = ett bilde. Fjern oppføringen når bildet er pushet og 'bilde' er satt på alle stedene i brukes_av. Anniken først (prio 1–3), så Thor (4–5).",
+ "stil": "Samme stil som img/goblet.webp: flat vektor, ansiktsløs figur, marineblå klær, kremhvit bakgrunn, sidevisning, ingen tekst.",
+ "liste": [
+  {
+   "prio": 1,
+   "fil": "img/hipthrust.webp",
+   "navn": "Hip thrust",
+   "brukes_av": [
+    {
+     "person": "anniken",
+     "okt": "A",
+     "id": "hipthrust",
+     "pauseovelse": false
+    }
+   ],
+   "prompt": "Flat vector illustration, faceless woman with dark ponytail in navy blue tank top and navy leggings, navy sneakers, plain cream off-white background, side view, full body visible, minimal clean style, no text, no logos. She sits on the floor with upper back resting on a flat gym bench, a barbell with a thick pad across her hips, feet flat, knees bent 90 degrees, hips pushed up so torso is level with the bench."
+  },
+  {
+   "prio": 1,
+   "fil": "img/splitt.webp",
+   "navn": "Splittknebøy",
+   "brukes_av": [
+    {
+     "person": "anniken",
+     "okt": "A",
+     "id": "splitt",
+     "pauseovelse": false
+    }
+   ],
+   "prompt": "Flat vector illustration, faceless woman with dark ponytail in navy blue tank top and navy leggings, navy sneakers, plain cream off-white background, side view, full body visible, minimal clean style, no text, no logos. Split squat: one foot forward, one foot back, holding a dumbbell in each hand at her sides, lowered so the back knee almost touches the floor, torso upright."
+  },
+  {
+   "prio": 1,
+   "fil": "img/utrulling.webp",
+   "navn": "Utrulling på knærne",
+   "brukes_av": [
+    {
+     "person": "anniken",
+     "okt": "A",
+     "id": "utrulling",
+     "pauseovelse": false
+    }
+   ],
+   "prompt": "Flat vector illustration, faceless woman with dark ponytail in navy blue tank top and navy leggings, navy sneakers, plain cream off-white background, side view, full body visible, minimal clean style, no text, no logos. Kneeling on a yoga mat holding an ab wheel with both hands, arms extended forward, body leaning forward in a straight line from knees to shoulders."
+  },
+  {
+   "prio": 1,
+   "fil": "img/deadbug.webp",
+   "navn": "Dead bug",
+   "brukes_av": [
+    {
+     "person": "anniken",
+     "okt": "A",
+     "id": "deadbug",
+     "pauseovelse": true
+    },
+    {
+     "person": "anniken",
+     "okt": "H",
+     "id": "h-deadbug",
+     "pauseovelse": false
+    }
+   ],
+   "prompt": "Flat vector illustration, faceless woman with dark ponytail in navy blue tank top and navy leggings, navy sneakers, plain cream off-white background, side view, full body visible, minimal clean style, no text, no logos. Lying on her back on a yoga mat, one arm reaching overhead and the opposite leg extended straight just above the floor, the other arm pointing to the ceiling and the other knee bent 90 degrees."
+  },
+  {
+   "prio": 1,
+   "fil": "img/pallof.webp",
+   "navn": "Pallof press",
+   "brukes_av": [
+    {
+     "person": "anniken",
+     "okt": "A",
+     "id": "pallof",
+     "pauseovelse": true
+    }
+   ],
+   "prompt": "Flat vector illustration, faceless woman with dark ponytail in navy blue tank top and navy leggings, navy sneakers, plain cream off-white background, side view, full body visible, minimal clean style, no text, no logos. Standing sideways to a cable machine, holding the cable handle with both hands pressed straight out in front of her chest, feet shoulder width, torso upright and not rotating."
+  },
+  {
+   "prio": 2,
+   "fil": "img/nedtrekk.webp",
+   "navn": "Nedtrekk",
+   "brukes_av": [
+    {
+     "person": "anniken",
+     "okt": "B",
+     "id": "nedtrekk",
+     "pauseovelse": false
+    },
+    {
+     "person": "thor",
+     "okt": "B",
+     "id": "nedtrekk",
+     "pauseovelse": false
+    }
+   ],
+   "prompt": "Flat vector illustration, faceless woman with dark ponytail in navy blue tank top and navy leggings, navy sneakers, plain cream off-white background, side view, full body visible, minimal clean style, no text, no logos. Seated at a lat pulldown machine, knees under the pad, pulling the wide bar down to her upper chest, elbows pointing down, chest up."
+  },
+  {
+   "prio": 2,
+   "fil": "img/kabelroing.webp",
+   "navn": "Sittende roing i kabel",
+   "brukes_av": [
+    {
+     "person": "anniken",
+     "okt": "B",
+     "id": "roing",
+     "pauseovelse": false
+    }
+   ],
+   "prompt": "Flat vector illustration, faceless woman with dark ponytail in navy blue tank top and navy leggings, navy sneakers, plain cream off-white background, side view, full body visible, minimal clean style, no text, no logos. Seated cable row machine, feet on the platform, knees slightly bent, pulling the V-handle to her stomach, back straight, shoulders back."
+  },
+  {
+   "prio": 2,
+   "fil": "img/skraapress.webp",
+   "navn": "Skrå manualpress",
+   "brukes_av": [
+    {
+     "person": "anniken",
+     "okt": "B",
+     "id": "skraapress",
+     "pauseovelse": false
+    }
+   ],
+   "prompt": "Flat vector illustration, faceless woman with dark ponytail in navy blue tank top and navy leggings, navy sneakers, plain cream off-white background, side view, full body visible, minimal clean style, no text, no logos. Lying on an incline bench set to about 30 degrees, pressing two dumbbells up above her chest, arms almost straight."
+  },
+  {
+   "prio": 2,
+   "fil": "img/skulderpress.webp",
+   "navn": "Skulderpress sittende",
+   "brukes_av": [
+    {
+     "person": "anniken",
+     "okt": "B",
+     "id": "skulderpress",
+     "pauseovelse": false
+    }
+   ],
+   "prompt": "Flat vector illustration, faceless woman with dark ponytail in navy blue tank top and navy leggings, navy sneakers, plain cream off-white background, side view, full body visible, minimal clean style, no text, no logos. Seated on an upright bench, pressing two dumbbells overhead, arms nearly straight above shoulders, back against the backrest."
+  },
+  {
+   "prio": 2,
+   "fil": "img/kneloft.webp",
+   "navn": "Kneløft i stativ",
+   "brukes_av": [
+    {
+     "person": "anniken",
+     "okt": "B",
+     "id": "kneloft",
+     "pauseovelse": false
+    }
+   ],
+   "prompt": "Flat vector illustration, faceless woman with dark ponytail in navy blue tank top and navy leggings, navy sneakers, plain cream off-white background, side view, full body visible, minimal clean style, no text, no logos. In a vertical knee raise station (captain's chair), forearms on the pads, back against the backrest, both knees lifted to hip height."
+  },
+  {
+   "prio": 3,
+   "fil": "img/vestkneboy.webp",
+   "navn": "Knebøy med vektvest",
+   "brukes_av": [
+    {
+     "person": "anniken",
+     "okt": "H",
+     "id": "h-kneboy",
+     "pauseovelse": false
+    }
+   ],
+   "prompt": "Flat vector illustration, faceless woman with dark ponytail in navy blue tank top and navy leggings, navy sneakers, plain cream off-white background, side view, full body visible, minimal clean style, no text, no logos. Wearing a black weighted vest, bodyweight squat at home on a yoga mat, hips down to knee height, arms forward for balance."
+  },
+  {
+   "prio": 3,
+   "fil": "img/strikkroing.webp",
+   "navn": "Strikkroing",
+   "brukes_av": [
+    {
+     "person": "anniken",
+     "okt": "H",
+     "id": "h-roing",
+     "pauseovelse": false
+    }
+   ],
+   "prompt": "Flat vector illustration, faceless woman with dark ponytail in navy blue tank top and navy leggings, navy sneakers, plain cream off-white background, side view, full body visible, minimal clean style, no text, no logos. Seated on a yoga mat with legs straight, a resistance band looped around her feet, pulling both band ends to her stomach, elbows back, back straight."
+  },
+  {
+   "prio": 3,
+   "fil": "img/pushknaer.webp",
+   "navn": "Push-ups på knærne",
+   "brukes_av": [
+    {
+     "person": "anniken",
+     "okt": "H",
+     "id": "h-push",
+     "pauseovelse": false
+    }
+   ],
+   "prompt": "Flat vector illustration, faceless woman with dark ponytail in navy blue tank top and navy leggings, navy sneakers, plain cream off-white background, side view, full body visible, minimal clean style, no text, no logos. Knee push-up on a yoga mat, hands under shoulders, body straight from knees to head, chest lowered close to the floor."
+  },
+  {
+   "prio": 4,
+   "fil": "img/kneboy-thor.webp",
+   "navn": "Knebøy",
+   "brukes_av": [
+    {
+     "person": "thor",
+     "okt": "A",
+     "id": "kneboy",
+     "pauseovelse": false
+    }
+   ],
+   "prompt": "Flat vector illustration, faceless short-haired man in navy blue t-shirt and navy shorts, navy sneakers, plain cream off-white background, side view, full body visible, minimal clean style, no text, no logos. Barbell back squat, bar on upper back, squatting to parallel, chest up, knees over toes."
+  },
+  {
+   "prio": 4,
+   "fil": "img/rdl-thor.webp",
+   "navn": "Rumensk markløft",
+   "brukes_av": [
+    {
+     "person": "thor",
+     "okt": "A",
+     "id": "rdl",
+     "pauseovelse": false
+    }
+   ],
+   "prompt": "Flat vector illustration, faceless short-haired man in navy blue t-shirt and navy shorts, navy sneakers, plain cream off-white background, side view, full body visible, minimal clean style, no text, no logos. Romanian deadlift with a barbell, hinging at the hips, bar at mid-shin, back flat, knees slightly bent."
+  },
+  {
+   "prio": 4,
+   "fil": "img/stepup.webp",
+   "navn": "Step-up på kasse",
+   "brukes_av": [
+    {
+     "person": "thor",
+     "okt": "A",
+     "id": "stepup",
+     "pauseovelse": false
+    }
+   ],
+   "prompt": "Flat vector illustration, faceless short-haired man in navy blue t-shirt and navy shorts, navy sneakers, plain cream off-white background, side view, full body visible, minimal clean style, no text, no logos. Stepping up onto a wooden plyo box with one foot, holding dumbbells at his sides, torso upright."
+  },
+  {
+   "prio": 4,
+   "fil": "img/roing-thor.webp",
+   "navn": "Bent over-roing",
+   "brukes_av": [
+    {
+     "person": "thor",
+     "okt": "B",
+     "id": "roing",
+     "pauseovelse": false
+    }
+   ],
+   "prompt": "Flat vector illustration, faceless short-haired man in navy blue t-shirt and navy shorts, navy sneakers, plain cream off-white background, side view, full body visible, minimal clean style, no text, no logos. Bent over barbell row, torso hinged forward about 45 degrees, pulling the bar to the lower ribs, back flat."
+  },
+  {
+   "prio": 4,
+   "fil": "img/press-thor.webp",
+   "navn": "Incline chest press",
+   "brukes_av": [
+    {
+     "person": "thor",
+     "okt": "B",
+     "id": "press",
+     "pauseovelse": false
+    }
+   ],
+   "prompt": "Flat vector illustration, faceless short-haired man in navy blue t-shirt and navy shorts, navy sneakers, plain cream off-white background, side view, full body visible, minimal clean style, no text, no logos. Seated incline chest press machine, pushing both handles forward and upward, back against the pad."
+  },
+  {
+   "prio": 5,
+   "fil": "img/albuevern.webp",
+   "navn": "Albuevern",
+   "brukes_av": [
+    {
+     "person": "thor",
+     "okt": "B",
+     "id": "albuevern",
+     "pauseovelse": false
+    }
+   ],
+   "prompt": "Flat vector illustration, faceless short-haired man in navy blue t-shirt and navy shorts, navy sneakers, plain cream off-white background, side view, full body visible, minimal clean style, no text, no logos. Seated on a bench, forearm resting on his thigh, palm down, slowly lowering a light dumbbell by bending the wrist (eccentric wrist extension), close-up on the arm."
+  },
+  {
+   "prio": 5,
+   "fil": "img/taahev.webp",
+   "navn": "Sittende tåhev",
+   "brukes_av": [
+    {
+     "person": "thor",
+     "okt": "A",
+     "id": "taahev",
+     "pauseovelse": false
+    }
+   ],
+   "prompt": "Flat vector illustration, faceless short-haired man in navy blue t-shirt and navy shorts, navy sneakers, plain cream off-white background, side view, full body visible, minimal clean style, no text, no logos. Seated calf raise: sitting on a bench with a dumbbell resting on his knees, balls of the feet on a weight plate, heels lifted high."
+  }
+ ]
+}
