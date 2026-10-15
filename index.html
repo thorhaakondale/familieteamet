@@ -451,7 +451,7 @@ details.om .in{padding:8px 0 0;font-size:14px;max-width:70ch}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.22.0';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.23.0';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -819,6 +819,47 @@ function varsle(tittel,tekst,tag){ /* til begge voksne nå */
    [{id, navn, tekst, dager:[0–6], tid:'HH:MM', til:['thor','anniken'], tags, aktiv}]. ntfy leverer forsinket (inntil 3 døgn),
    så hver enhet som åpner tavla bestiller de neste tre dagene; varsler/sendt/<dato>_<id> sørger for at bare én enhet bestiller. */
 var VARSLET_NAA=false;
+/* v1.23 (Thor 15.10): BACKUP-LUKA-VARSELET. Bare når noe faktisk ligger på lørdagsblokka — ellers ingen varsel.
+   Statussjekken gjøres første gang tavla åpnes etter fredag kl. 18 (da er uka avgjort), og ett varsel bestilles til lørdag morgen.
+   Hus = torsdagstimen som ikke ble tatt + det som er lagt på luka med knappen. Bil = bilvasken fra tirsdag som ikke ble tatt.
+   Teksten er kort og gir tida: «ca. 30 min, så er resten av dagen fri». */
+var UKER_LASTET=false, OPPG_LASTET=false, BACKUP_NAA=false;
+function backupLuka(lor){
+  var man=mandag(lor), key=ukeKey(man), voksne=['thor','anniken'], hus={}, bil={}, harHus=false, harBil=false;
+  planUke(man).forEach(function(s){
+    if(erRutine(s.o)||s.o.bonus||s.o.egen||erGjort(key,s.key)) return;
+    var erBil=s.o.luka==='bil';
+    var paaLuka=s.dag===5&&s.utsatt;
+    var torsdag=!erBil&&s.dag===3&&['uke','2uke','3uke','4uke'].indexOf(s.o.int)>=0&&['Rydding','Grovvask','Vask'].indexOf(s.o.kat)>=0;
+    var bilUka=erBil&&s.dag<5;
+    if(!paaLuka&&!torsdag&&!bilUka) return;
+    if(voksne.indexOf(s.person)<0&&!erBil) return; /* barna har sin egen tavle */
+    var mal=erBil?bil:hus; mal[s.person]=(mal[s.person]||0)+(s.o.min||15); if(erBil)harBil=true; else harHus=true;
+  });
+  if(!harHus&&!harBil) return null;
+  var til={}; Object.keys(hus).forEach(function(p){if(voksne.indexOf(p)>=0)til[p]=(til[p]||0)+hus[p]});
+  if(harBil) til.thor=(til.thor||0)+Object.keys(bil).reduce(function(a,p){return a+bil[p]},0);
+  var ps=Object.keys(til); if(!ps.length) return null;
+  var maks=Math.max.apply(null,ps.map(function(p){return til[p]})), min=Math.max(15,Math.ceil(maks/15)*15);
+  var tid='ca. '+min+' min'+(ps.length>1?' hver':''), hva=harHus&&harBil?'Husvasken og bilvasken':(harHus?'Husvasken':'Bilvasken');
+  var tekst=hva+' ligger på lørdagsblokka — '+tid+(ps.length>1?', ta det sammen':'')+', så er resten av dagen fri.';
+  return {til:ps, tekst:tekst, tag:harBil&&!harHus?'red_car':'sparkles'};
+}
+function planleggBackup(){
+  if(BACKUP_NAA||!db||!INNST.ntfy||!FRAV_LASTET||!UKER_LASTET||!OPPG_LASTET) return;
+  var naa=new Date(), man=mandag(naa), fre18=addDays(man,4); fre18.setHours(18,0,0,0);
+  var lor=addDays(man,5), hm=String(INNST.backupTid||'09:30').split(':'), t=new Date(lor.getFullYear(),lor.getMonth(),lor.getDate(),+hm[0],+hm[1]||0,0);
+  if(naa<fre18||t.getTime()-naa.getTime()<120000) return;
+  BACKUP_NAA=true;
+  var b=backupLuka(lor); if(!b) return;
+  var n=lesNtfy(INNST.ntfy)||{}, ly=ymd(lor), ref=db.child('varsler/sendt/'+ly+'_backup');
+  ref.transaction(function(cur){ if(cur) return; return {ts:Date.now(),by:valgt||'familie'} },function(err,committed){
+    if(err||!committed) return;
+    var ps=b.til.filter(function(p){return n[p]&&!fravFor(ly,p)}); if(!ps.length){ ref.set(null).catch(function(){}); return; }
+    Promise.all(ps.map(function(p){return ntfyPost(n[p],'Backup-luka',b.tekst,b.tag,Math.floor(t.getTime()/1000),3,appLenke(p))}))
+      .then(function(a){ if(!a.some(Boolean)) ref.set(null).catch(function(){}) });
+  });
+}
 function planleggVarsler(){
   if(VARSLET_NAA||!db||!INNST.varsler||!INNST.ntfy||!FRAV_LASTET) return; VARSLET_NAA=true; /* v1.17: vent til fraværet er lest, ellers går faste varsler til den som er borte */
   var naa=new Date(), n=lesNtfy(INNST.ntfy)||{};
@@ -1050,7 +1091,7 @@ function forfalte(){
         if(!(s.dag<dIdx&&dIdx===5)) return; }
       var passert=(w>0)||(s.dag<dIdx); if(!passert) return;
       /* v1.17.1 (Thor 13.10): periodiske oppgaver henger maks 3 dager — glemte du den, venter du til neste runde. Datooppgaver og huskelapper henger til de er gjort. */
-      if(s.o.int!=='dato'&&!s.o.egen&&(NAA-addDays(m,s.dag))>3*86400000) return;
+      if(s.o.int!=='dato'&&!s.o.egen&&(NAA-addDays(m,s.dag))>3*86400000&&!(s.o.luka==='bil'&&w===0&&dIdx===5)) return; /* v1.23: bilvask fra tirsdag lander på lørdagsblokka én gang */
       if(addDays(m,s.dag)<STARTDATO) return; /* ingenting fra før appen fantes */
       if(erGjort(k,s.key)) return;
       /* engangsoppgaver med dato henger igjen til de er krysset av (Thors regel 14.9.2026).
@@ -1503,7 +1544,7 @@ function slaaSammenOppg(liste){
   try{
     firebase.initializeApp(FIREBASE);
     db=firebase.database().ref('fam/'+KODE); dbOk=true;
-    db.child('oppgaver').on('value',function(snap){var v=snap.val()||{};var li=Object.keys(v).map(function(k){return v[k]});try{localStorage.setItem('ft-oppg-delt',JSON.stringify(li))}catch(e){};slaaSammenOppg(li);synkTurOppg();tegn()});
+    db.child('oppgaver').on('value',function(snap){var v=snap.val()||{};OPPG_LASTET=true;setTimeout(planleggBackup,0);var li=Object.keys(v).map(function(k){return v[k]});try{localStorage.setItem('ft-oppg-delt',JSON.stringify(li))}catch(e){};slaaSammenOppg(li);synkTurOppg();tegn()});
     db.child('innlost').on('value',function(snap){INNLOST=snap.val()||{};tegn()});
     db.child('belonning').on('value',function(snap){BELONNING=snap.val()||{};tegn()});
     db.child('tilstand').on('value',function(snap){TILSTAND=snap.val()||{};tegn()});
@@ -1512,7 +1553,7 @@ function slaaSammenOppg(liste){
     db.child('turer').on('value',function(snap){TURER=snap.val()||{};synkTurOppg();tegn();VARSLET_NAA=false;planleggVarsler()});
     db.child('dyner').on('value',function(snap){DYNER=snap.val()||{};synkTurOppg();tegn()});
     db.child('pakk').on('value',function(snap){PAKK=snap.val()||{};tegnPakk()});
-    db.child('fravaer').on('value',function(snap){FRAVAER=snap.val()||{};FRAV_LASTET=true;try{localStorage.setItem('ft-fravaer',JSON.stringify(FRAVAER))}catch(e){};tegn();planleggVarsler()});
+    db.child('fravaer').on('value',function(snap){FRAVAER=snap.val()||{};FRAV_LASTET=true;setTimeout(planleggBackup,0);try{localStorage.setItem('ft-fravaer',JSON.stringify(FRAVAER))}catch(e){};tegn();planleggVarsler()});
     db.child('innstillinger').on('value',function(snap){var x=snap.val();if(x){if(x.prosent)INNST.prosent=x.prosent;if(x.plan)INNST.plan=Object.assign({},INNST.plan||{},x.plan);if(x.trapp&&x.trapp.length)INNST.trapp=x.trapp;if(x.ferie)INNST.ferie=x.ferie;INNST.ntfy=lesNtfy(x.ntfy);if(x.varsler)INNST.varsler=x.varsler;tegn();planleggVarsler()}});
     var LOKALT_FOER=JSON.parse(JSON.stringify(UKER)), foersteSnap=true;
     db.child('uker').on('value',function(snap){
@@ -1525,7 +1566,7 @@ function slaaSammenOppg(liste){
         if(ant){upd['uker/'+Object.keys(LOKALT_FOER)[0]+'/ts']=new Date().toISOString();db.update(upd).then(function(){toast('☁️ '+ant+' haker fra enheten lastet opp')}).catch(function(){})}
       }
       Object.keys(v).forEach(function(id){var x=v[id]||{};taInnUke(id,x.gjort||{});var bt={};Object.keys(x.bytt||{}).forEach(function(k){if(x.bytt[k])bt[k]=x.bytt[k]});UKER[id].bytt=bt;var fl={};Object.keys(x.flytt||{}).forEach(function(k){if(x.flytt[k]!==null&&x.flytt[k]!==undefined)fl[k]=x.flytt[k]});UKER[id].flytt=fl;var ut2={};Object.keys(x.utsett||{}).forEach(function(k){if(x.utsett[k])ut2[k]=x.utsett[k]});UKER[id].utsett=ut2;n++});
-      lagreLokalt();tegn();
+      lagreLokalt();tegn();UKER_LASTET=true;planleggBackup();
       document.getElementById('dbpill').textContent='lagres delt';
       status('Delt lagring tilkoblet · '+n+' uke'+(n===1?'':'r')+' registrert.');
     },function(e){status('Delt lagring avviste tilkoblingen — er familiekoden riktig? ('+(e&&e.message)+')');document.getElementById('dbpill').textContent='lagres på enheten'});
