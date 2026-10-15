@@ -106,6 +106,7 @@ b,strong{font-weight:800}
 #ark .dagrad button{font:inherit;font-weight:800;font-size:14.5px;min-height:44px;padding:10px 14px;border-radius:999px;border:1.5px solid var(--line);background:transparent;color:var(--ink);cursor:pointer}
 #ark .dagrad button.naa{border-color:var(--ok);color:var(--ok);border-width:2px}
 #ark .dagrad button.kat{border-color:var(--accent);color:var(--accent)}
+#ark .dagrad button.backup{border-color:var(--accent);background:var(--accentbg);color:var(--accent);border-width:2px} /* v1.22 backup-luka */
 #ark .dagrad button:disabled{opacity:.35;cursor:default}
 #ark #ark-dagrad .ark-lbl{display:block;margin:10px 0 4px}
 #ark .dagrad input[type=date]{font:inherit;font-size:14.5px;min-height:44px;padding:9px 12px;border:1.5px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink)}
@@ -218,6 +219,15 @@ dialog#ark::backdrop{background:rgba(0,0,0,.45)}
 .cell.na{visibility:hidden}
 .cell.p{border-style:dashed}
 .sveip{overflow-x:auto}
+/* v1.22 (Thor 15.10): Uka — titlene fryses: dagene øverst og oppgavenavnet til venstre står når du blar */
+#uka .sveip{max-height:72vh;overflow:auto;-webkit-overflow-scrolling:touch}
+#uke-tbl th{position:sticky;top:0;z-index:2;background:var(--card)}
+#uke-tbl td.navn{position:sticky;left:0;z-index:1;background:var(--card);min-width:150px;max-width:220px}
+#uke-tbl th:first-child{left:0;z-index:3}
+#uke-tbl tr.today td.navn{background:var(--accentbg)}
+.uke-red{all:unset;cursor:pointer;display:block;font:inherit;color:inherit}
+.uke-red:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+.uke-red:hover .uke-navn{text-decoration:underline}
 .hint{display:none;font-size:12px;color:var(--muted)}
 @media(max-width:700px){.hint{display:block}}
 .ukenav{display:flex;align-items:center;gap:8px;margin:0 0 8px;flex-wrap:wrap}
@@ -441,7 +451,7 @@ details.om .in{padding:8px 0 0;font-size:14px;max-width:70ch}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.21.0';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.22.0';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -652,6 +662,11 @@ function byggDagrad(o,knapp,d){ /* v1.15: én dagvelger for alle typer — hurti
   var v=seksjon('Flytt til'), brukt={};
   function hkn(tekst,dato){ var y=ymd(dato); if(brukt[y]||y===naaDato) return; brukt[y]=1; var n=antallDag(ds.naa||ds.fra||valgt||'thor',y);
     var k=knapp2(v,tekst+' · '+DAGK[(dato.getDay()+6)%7]+' '+datoNorsk(dato)+(n?' ·'+n:''),false,function(){gaaTil(y)}); if(n>=3)k.classList.add('full'); }
+  /* v1.22 (Thor 15.10): backup-luka — lørdagen er fast reservedag for det som ryker i uka (torsdagstimen, bilvasken).
+     Står først og tydelig: åpne oppgaven, trykk én gang, så ligger den på lørdagsblokken uten at noen må tenke dato. */
+  (function(){ var bd=(INNST.backupDag===undefined?5:INNST.backupDag), b=addDays(i0,1); while(((b.getDay()+6)%7)!==bd) b=addDays(b,1);
+    var y=ymd(b); if(y===naaDato) return; brukt[y]=1; var n=antallDag(ds.naa||ds.fra||valgt||'thor',y);
+    var k=knapp2(v,'\u21AA Backup-luka · '+DAGK[bd]+' '+datoNorsk(b)+(n?' ·'+n:''),false,function(){gaaTil(y);setTimeout(function(){toast('Lagt på backup-luka '+DAGK[bd]+' '+datoNorsk(b))},50)},'backup'); })();
   hkn('I morgen',addDays(i0,1)); hkn('Om 2 dager',addDays(i0,2));
   var di=document.createElement('input'); di.type='date'; di.value=naaDato||ymd(i0); di.min=ymd(i0); di.setAttribute('aria-label','Velg dato');
   di.onclick=function(e){e.stopPropagation()};
@@ -1259,7 +1274,8 @@ function tegnUke(){
   var h='<tr><th>Oppgave</th>';DAGK.forEach(function(d,i){h+='<th class="c'+(erNaa&&i===dIdx?' today':'')+'">'+d+'<br><span class="small num">'+datoNorsk(addDays(man,i))+'</span></th>'});h+='<th class="c">P</th></tr>';
   if(!orden.length) h+='<tr><td colspan="9" class="tom">Ingen oppgaver denne uka.</td></tr>';
   orden.forEach(function(rk){var r=rader[rk];
-    h+='<tr><td class="navn">'+r.o.ikon+' '+esc(r.o.navn)+mdTag(r.o,addDays(man,r.o.dag===undefined?3:r.o.dag))+(valgt?'':'<small>'+ptag(r.person)+'</small>')+'</td>';
+    var kanRed=erVoksen()&&!r.o.tur, inn=r.o.ikon+' <span class="uke-navn">'+esc(r.o.navn)+'</span>'+mdTag(r.o,addDays(man,r.o.dag===undefined?3:r.o.dag))+(valgt?'':'<small>'+ptag(r.person)+'</small>');
+    h+='<tr><td class="navn">'+(kanRed?'<button type="button" class="uke-red" data-id="'+esc(r.o.id)+'" title="Endre oppgaven">'+inn+'</button>':inn)+'</td>';
     for(var d=0;d<7;d++){var s=r.dager[d];
       if(!s){h+='<td class="c"><span class="cell na"></span></td>';continue}
       var done=erGjort(key,s.key);
@@ -1269,6 +1285,7 @@ function tegnUke(){
   });
   var t=document.getElementById('uke-tbl');t.innerHTML=h;
   t.querySelectorAll('.cell').forEach(function(b){b.onclick=function(){toggle(b.dataset.k,b.dataset.s,b.dataset.p)}});
+  t.querySelectorAll('.uke-red').forEach(function(b){b.onclick=function(){fyllSkjema(b.dataset.id)}}); /* v1.22: endre rett fra Uka */
 }
 
 function tegnSlik(){
@@ -1474,6 +1491,9 @@ function slaaSammenOppg(liste){
   /* 1) innholdet: data/oppgaver.json + data/innstillinger.json — Bjørn og Liv oppdaterer disse i repoet */
   try{
     var r1=await fetch('data/oppgaver.json?v='+Date.now(),{cache:'no-store'}); if(r1.ok){var lo=await r1.json(); if(lo&&lo.length){OPPG=JSON.parse(JSON.stringify(lo));}}
+    /* v1.22 (Thor 15.10): repo-banken kan være eldre enn delt lagring — oppgaver som er flyttet eller skrudd av blinket inn et halvt sekund.
+       Legg på det enheten sist så fra delt lagring før første tegning; delt lagring overstyrer like etter som før. */
+    try{var hu=JSON.parse(localStorage.getItem('ft-oppg-delt')||'null'); if(hu&&hu.length) slaaSammenOppg(hu)}catch(e){}
     var r2=await fetch('data/innstillinger.json?v='+Date.now(),{cache:'no-store'}); if(r2.ok){var li=await r2.json(); if(li){if(li.prosent)INNST.prosent=li.prosent;if(li.trapp)INNST.trapp=li.trapp;if(li.sesong)INNST.sesong=li.sesong;if(li.ferie)INNST.ferie=li.ferie;if(li.plan)INNST.plan=Object.assign({},INNST.plan||{},li.plan)}}
     tegn();
   }catch(e){}
@@ -1483,7 +1503,7 @@ function slaaSammenOppg(liste){
   try{
     firebase.initializeApp(FIREBASE);
     db=firebase.database().ref('fam/'+KODE); dbOk=true;
-    db.child('oppgaver').on('value',function(snap){var v=snap.val()||{};slaaSammenOppg(Object.keys(v).map(function(k){return v[k]}));synkTurOppg();tegn()});
+    db.child('oppgaver').on('value',function(snap){var v=snap.val()||{};var li=Object.keys(v).map(function(k){return v[k]});try{localStorage.setItem('ft-oppg-delt',JSON.stringify(li))}catch(e){};slaaSammenOppg(li);synkTurOppg();tegn()});
     db.child('innlost').on('value',function(snap){INNLOST=snap.val()||{};tegn()});
     db.child('belonning').on('value',function(snap){BELONNING=snap.val()||{};tegn()});
     db.child('tilstand').on('value',function(snap){TILSTAND=snap.val()||{};tegn()});
