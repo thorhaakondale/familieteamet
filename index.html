@@ -451,7 +451,7 @@ details.om .in{padding:8px 0 0;font-size:14px;max-width:70ch}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.23.0';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.24.0';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -664,7 +664,7 @@ function byggDagrad(o,knapp,d){ /* v1.15: én dagvelger for alle typer — hurti
     var k=knapp2(v,tekst+' · '+DAGK[(dato.getDay()+6)%7]+' '+datoNorsk(dato)+(n?' ·'+n:''),false,function(){gaaTil(y)}); if(n>=3)k.classList.add('full'); }
   /* v1.22 (Thor 15.10): backup-luka — lørdagen er fast reservedag for det som ryker i uka (torsdagstimen, bilvasken).
      Står først og tydelig: åpne oppgaven, trykk én gang, så ligger den på lørdagsblokken uten at noen må tenke dato. */
-  (function(){ var bd=(INNST.backupDag===undefined?5:INNST.backupDag), b=addDays(i0,1); while(((b.getDay()+6)%7)!==bd) b=addDays(b,1);
+  (function(){ var bd=(o.luka==='bil'?(INNST.backupDagBil===undefined?6:INNST.backupDagBil):(INNST.backupDag===undefined?5:INNST.backupDag)), b=addDays(i0,1); /* v1.24: hus = lørdag, bil = søndag */ while(((b.getDay()+6)%7)!==bd) b=addDays(b,1);
     var y=ymd(b); if(y===naaDato) return; brukt[y]=1; var n=antallDag(ds.naa||ds.fra||valgt||'thor',y);
     var k=knapp2(v,'\u21AA Backup-luka · '+DAGK[bd]+' '+datoNorsk(b)+(n?' ·'+n:''),false,function(){gaaTil(y);setTimeout(function(){toast('Lagt på backup-luka '+DAGK[bd]+' '+datoNorsk(b))},50)},'backup'); })();
   hkn('I morgen',addDays(i0,1)); hkn('Om 2 dager',addDays(i0,2));
@@ -821,43 +821,43 @@ function varsle(tittel,tekst,tag){ /* til begge voksne nå */
 var VARSLET_NAA=false;
 /* v1.23 (Thor 15.10): BACKUP-LUKA-VARSELET. Bare når noe faktisk ligger på lørdagsblokka — ellers ingen varsel.
    Statussjekken gjøres første gang tavla åpnes etter fredag kl. 18 (da er uka avgjort), og ett varsel bestilles til lørdag morgen.
-   Hus = torsdagstimen som ikke ble tatt + det som er lagt på luka med knappen. Bil = bilvasken fra tirsdag som ikke ble tatt.
+   Hus (lørdag) = torsdagstimen som ikke ble tatt + det som er lagt på luka med knappen. Bil (søndag, v1.24) = bilvasken fra tirsdag som ikke ble tatt.
    Teksten er kort og gir tida: «ca. 30 min, så er resten av dagen fri». */
 var UKER_LASTET=false, OPPG_LASTET=false, BACKUP_NAA=false;
-function backupLuka(lor){
-  var man=mandag(lor), key=ukeKey(man), voksne=['thor','anniken'], hus={}, bil={}, harHus=false, harBil=false;
+function backupLuka(dag,type){ /* v1.24: type 'hus' (lørdag) eller 'bil' (søndag) */
+  var man=mandag(dag), key=ukeKey(man), di=(dag.getDay()+6)%7, voksne=['thor','anniken'], til={};
   planUke(man).forEach(function(s){
     if(erRutine(s.o)||s.o.bonus||s.o.egen||erGjort(key,s.key)) return;
-    var erBil=s.o.luka==='bil';
-    var paaLuka=s.dag===5&&s.utsatt;
-    var torsdag=!erBil&&s.dag===3&&['uke','2uke','3uke','4uke'].indexOf(s.o.int)>=0&&['Rydding','Grovvask','Vask'].indexOf(s.o.kat)>=0;
-    var bilUka=erBil&&s.dag<5;
-    if(!paaLuka&&!torsdag&&!bilUka) return;
-    if(voksne.indexOf(s.person)<0&&!erBil) return; /* barna har sin egen tavle */
-    var mal=erBil?bil:hus; mal[s.person]=(mal[s.person]||0)+(s.o.min||15); if(erBil)harBil=true; else harHus=true;
+    var erBil=s.o.luka==='bil'; if((type==='bil')!==erBil) return;
+    var paaLuka=s.dag===di&&s.utsatt;
+    var igjen=erBil?(s.dag<di):(s.dag===3&&['uke','2uke','3uke','4uke'].indexOf(s.o.int)>=0&&['Rydding','Grovvask','Vask'].indexOf(s.o.kat)>=0);
+    if(!paaLuka&&!igjen) return;
+    var p=erBil?'thor':s.person; if(voksne.indexOf(p)<0) return; /* barna har sin egen tavle; bilvask går til Thor */
+    til[p]=(til[p]||0)+(s.o.min||15);
   });
-  if(!harHus&&!harBil) return null;
-  var til={}; Object.keys(hus).forEach(function(p){if(voksne.indexOf(p)>=0)til[p]=(til[p]||0)+hus[p]});
-  if(harBil) til.thor=(til.thor||0)+Object.keys(bil).reduce(function(a,p){return a+bil[p]},0);
   var ps=Object.keys(til); if(!ps.length) return null;
   var maks=Math.max.apply(null,ps.map(function(p){return til[p]})), min=Math.max(15,Math.ceil(maks/15)*15);
-  var tid='ca. '+min+' min'+(ps.length>1?' hver':''), hva=harHus&&harBil?'Husvasken og bilvasken':(harHus?'Husvasken':'Bilvasken');
-  var tekst=hva+' ligger på lørdagsblokka — '+tid+(ps.length>1?', ta det sammen':'')+', så er resten av dagen fri.';
-  return {til:ps, tekst:tekst, tag:harBil&&!harHus?'red_car':'sparkles'};
+  var tekst=type==='bil'
+    ?'Bilvasken ligger på søndagsblokka — ca. '+min+' min, så er bilene fine og resten av dagen fri.'
+    :'Husvasken ligger på lørdagsblokka — ca. '+min+' min'+(ps.length>1?' hver, ta det sammen':'')+', så er resten av dagen fri.';
+  return {til:ps, tekst:tekst, tag:type==='bil'?'red_car':'sparkles'};
 }
 function planleggBackup(){
   if(BACKUP_NAA||!db||!INNST.ntfy||!FRAV_LASTET||!UKER_LASTET||!OPPG_LASTET) return;
   var naa=new Date(), man=mandag(naa), fre18=addDays(man,4); fre18.setHours(18,0,0,0);
-  var lor=addDays(man,5), hm=String(INNST.backupTid||'09:30').split(':'), t=new Date(lor.getFullYear(),lor.getMonth(),lor.getDate(),+hm[0],+hm[1]||0,0);
-  if(naa<fre18||t.getTime()-naa.getTime()<120000) return;
-  BACKUP_NAA=true;
-  var b=backupLuka(lor); if(!b) return;
-  var n=lesNtfy(INNST.ntfy)||{}, ly=ymd(lor), ref=db.child('varsler/sendt/'+ly+'_backup');
-  ref.transaction(function(cur){ if(cur) return; return {ts:Date.now(),by:valgt||'familie'} },function(err,committed){
-    if(err||!committed) return;
-    var ps=b.til.filter(function(p){return n[p]&&!fravFor(ly,p)}); if(!ps.length){ ref.set(null).catch(function(){}); return; }
-    Promise.all(ps.map(function(p){return ntfyPost(n[p],'Backup-luka',b.tekst,b.tag,Math.floor(t.getTime()/1000),3,appLenke(p))}))
-      .then(function(a){ if(!a.some(Boolean)) ref.set(null).catch(function(){}) });
+  if(naa<fre18) return; BACKUP_NAA=true;
+  var n=lesNtfy(INNST.ntfy)||{}, hm=String(INNST.backupTid||'09:30').split(':');
+  [['hus',5],['bil',6]].forEach(function(x){
+    var dag=addDays(man,x[1]), t=new Date(dag.getFullYear(),dag.getMonth(),dag.getDate(),+hm[0],+hm[1]||0,0);
+    if(t.getTime()-naa.getTime()<120000) return;
+    var b=backupLuka(dag,x[0]); if(!b) return;
+    var ly=ymd(dag), ref=db.child('varsler/sendt/'+ly+'_backup_'+x[0]);
+    ref.transaction(function(cur){ if(cur) return; return {ts:Date.now(),by:valgt||'familie'} },function(err,committed){
+      if(err||!committed) return;
+      var ps=b.til.filter(function(p){return n[p]&&!fravFor(ly,p)}); if(!ps.length){ ref.set(null).catch(function(){}); return; }
+      Promise.all(ps.map(function(p){return ntfyPost(n[p],'Backup-luka',b.tekst,b.tag,Math.floor(t.getTime()/1000),3,appLenke(p))}))
+        .then(function(a){ if(!a.some(Boolean)) ref.set(null).catch(function(){}) });
+    });
   });
 }
 function planleggVarsler(){
@@ -1091,7 +1091,7 @@ function forfalte(){
         if(!(s.dag<dIdx&&dIdx===5)) return; }
       var passert=(w>0)||(s.dag<dIdx); if(!passert) return;
       /* v1.17.1 (Thor 13.10): periodiske oppgaver henger maks 3 dager — glemte du den, venter du til neste runde. Datooppgaver og huskelapper henger til de er gjort. */
-      if(s.o.int!=='dato'&&!s.o.egen&&(NAA-addDays(m,s.dag))>3*86400000&&!(s.o.luka==='bil'&&w===0&&dIdx===5)) return; /* v1.23: bilvask fra tirsdag lander på lørdagsblokka én gang */
+      if(s.o.int!=='dato'&&!s.o.egen&&(NAA-addDays(m,s.dag))>3*86400000&&!(s.o.luka==='bil'&&w===0&&dIdx===6)) return; /* v1.24: bilvask fra tirsdag lander på søndagsblokka én gang (huset har lørdag) */
       if(addDays(m,s.dag)<STARTDATO) return; /* ingenting fra før appen fantes */
       if(erGjort(k,s.key)) return;
       /* engangsoppgaver med dato henger igjen til de er krysset av (Thors regel 14.9.2026).
