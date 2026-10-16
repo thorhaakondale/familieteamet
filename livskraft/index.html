@@ -167,6 +167,16 @@ details.om summary{cursor:pointer;font-weight:700;color:var(--ag);font-size:13px
 .steg{margin:0;padding-left:20px;font-size:14px;line-height:1.6}
 .steg li b{color:var(--tx)}
 @media(max-width:400px){.sett{grid-template-columns:24px 1fr 1fr 1fr 46px}.setthode{grid-template-columns:24px 1fr 1fr 1fr 46px}}
+.prot summary{list-style:none;cursor:pointer;display:flex;align-items:baseline;gap:8px}
+.prot summary::-webkit-details-marker{display:none}
+.prot .pbar{display:flex;gap:3px;height:8px;margin:10px 0 4px}
+.prot .pbar i{display:block;border-radius:3px;background:var(--ag)}
+.prot .pbar i.mid{background:var(--kant)}
+.prot .prad{border-top:1px solid var(--kant2);padding:9px 0}
+.prot details[open] .phint{display:none}
+.prot .prad b{display:flex;justify-content:space-between;font-size:14px}
+.prot .prad.mid b{color:var(--mut)}
+.prot .prad div{font-size:13px;color:var(--tx2);line-height:1.5;margin-top:2px}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
@@ -181,6 +191,7 @@ details.om summary{cursor:pointer;font-weight:700;color:var(--ag);font-size:13px
   <div id="anniken-melding"></div>
   <div id="mnd-paaminn"></div>
   <div id="seier-kort"></div>
+  <div class="kort prot" id="protein-kort" hidden></div>
   <div class="kort" id="idag-kort"></div>
   <div class="kort" id="uka-kort"></div>
   <div class="kort" id="raad-kort"></div>
@@ -349,7 +360,7 @@ details.om summary{cursor:pointer;font-weight:700;color:var(--ag);font-size:13px
 
 <script>
 /* ============================================================
-   Livskraft v1.14 — treningsappen til familien Dale (Liv, 14.9.2026 · v1.8 28.9: alarm maks 10 s, slipper lyden · v1.9 29.9: varsel i bakgrunnen via ntfy · v1.10 12.10: pauseøvelsene synlige med bilde og «slik gjør du den», hovedøvelse/pauseøvelse/tilbehør merket, ærlig tidsanslag per økt · v1.11 13.10: push-varselet bestilles 5 s før pausen er over · v1.12 14.10: Annikens program (A, B, hjemmeøkt H), bilde på hovedøvelsene, månedssjekken · v1.13 16.10: neste styrkeøkt følger rekkefølgen, ikke ukedagen — valgbar alle dager uka ikke er fullført · v1.14 16.10: variantvalget på pauseøvelsene står og huskes)
+   Livskraft v1.15 — treningsappen til familien Dale (Liv, 14.9.2026 · v1.8 28.9: alarm maks 10 s, slipper lyden · v1.9 29.9: varsel i bakgrunnen via ntfy · v1.10 12.10: pauseøvelsene synlige med bilde og «slik gjør du den», hovedøvelse/pauseøvelse/tilbehør merket, ærlig tidsanslag per økt · v1.11 13.10: push-varselet bestilles 5 s før pausen er over · v1.12 14.10: Annikens program (A, B, hjemmeøkt H), bilde på hovedøvelsene, månedssjekken · v1.13 16.10: neste styrkeøkt følger rekkefølgen, ikke ukedagen — valgbar alle dager uka ikke er fullført · v1.14 16.10: variantvalget på pauseøvelsene står og huskes)
    Program = data/program.json (agentstyrt). Logg = lokalt + Firebase (fam/<kode>/okt/<person>).
    ============================================================ */
 "use strict";
@@ -1112,7 +1123,17 @@ function vis(v){Array.prototype.forEach.call(document.querySelectorAll('.view'),
 Array.prototype.forEach.call(document.querySelectorAll('.tab button'),function(b){b.onclick=function(){var v=b.getAttribute('data-v');if(AKTIV&&v==='idag'){vis('okt');return}vis(v);if(v==='frem')tegnFrem();if(v==='mer')tegnMer();if(v==='uka')tegnUka();if(v==='idag')tegnIdag()}});
 
 /* ---------- oppstart ---------- */
-function tegnAlt(){tegnIdag();tegnUka();tegnFrem();tegnMer()}
+/* v1.15 (Thor 16.10.2026): proteinkortet — hva lunsj og kvelds må gi for å nå dagsmålet. Innholdet ligger i data/program.json (protein), så tall og eksempler endres uten ny appversjon. */
+function tegnProtein(){var e=$('protein-kort');var P=PROG.protein&&PROG.protein[PERSON];if(!P||!P.maaltider){e.hidden=true;return}
+  var sum=P.maaltider.reduce(function(s,m){return s+m.g},0);
+  var bar=P.maaltider.map(function(m){return '<i class="'+(m.middag?'mid':'')+'" style="flex:'+m.g+'" title="'+esc(m.navn)+' '+m.g+' g"></i>'}).join('');
+  var kort=P.maaltider.filter(function(m){return !m.middag}).map(function(m){return esc(m.navn.toLowerCase())+' '+m.g}).join(' · ');
+  var rader=P.maaltider.map(function(m){return '<div class="prad'+(m.middag?' mid':'')+'"><b><span>'+esc(m.navn)+'</span><span>'+m.g+' g</span></b>'+m.eks.map(function(x,i){return '<div>'+(i?'eller: ':'')+esc(x)+'</div>'}).join('')+'</div>'}).join('');
+  e.innerHTML='<details><summary><h2 style="margin:0">Protein i dag</h2><span class="lit" style="margin-left:auto">'+P.maal+' g · '+esc(P.tekst)+'</span></summary>'
+    +'<div class="pbar">'+bar+'</div><p class="lit" style="margin:0 0 4px">'+kort+' g'+(sum!==P.maal?' (sum '+sum+' g)':'')+'<span class="phint"> — trykk for eksempler</span></p>'
+    +rader+(P.merk?'<p class="lit" style="margin:8px 0 0">'+esc(P.merk)+'</p>':'')+(PROG.protein.fotnote?'<p class="lit" style="margin:6px 0 0">'+esc(PROG.protein.fotnote)+'</p>':'')+'</details>';
+  e.hidden=false}
+function tegnAlt(){tegnProtein();tegnIdag();tegnUka();tegnFrem();tegnMer()}
 function flettInn(server){ /* server-dokumenter vinner ved nyere ts */
   if(!server)return;['okter','dag','uke','tester','maaned'].forEach(function(k){var m=server[k]||{};Object.keys(m).forEach(function(id){var l=S[k][id];if(!l||(m[id].ts||0)>=(l.ts||0))S[k][id]=m[id]})});
   if(server.innst){if(server.innst.pauser)S.innst.pauser=server.innst.pauser;if(server.innst.lyd&&server.innst.lyd.v!==undefined)S.innst.lyd=server.innst.lyd.v;if(server.innst.ntfy&&server.innst.ntfy.topic!==undefined)S.innst.ntfy={on:server.innst.ntfy.on?1:0,topic:server.innst.ntfy.topic}}

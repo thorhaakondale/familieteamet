@@ -1,6 +1,6 @@
 {
- "versjon": "v1.7",
- "kilde": "Dale Livsstil & PT (programkortet) for øvelser og vekter · liv-treningsspesifikasjon.md v1.1 for mål, regler og progresjon · v1.6 12.10.2026: pauseøvelsene synlige, lette og med bilde · v1.7 14.10.2026: Annikens program (Liv) — to gymøkter, hjemmeøkt og månedssjekk",
+ "versjon": "v1.8",
+ "kilde": "Dale Livsstil & PT (programkortet) for øvelser og vekter · liv-treningsspesifikasjon.md v1.1 for mål, regler og progresjon · v1.6 12.10.2026: pauseøvelsene synlige, lette og med bilde · v1.7 14.10.2026: Annikens program (Liv) — to gymøkter, hjemmeøkt og månedssjekk · v1.8 16.10.2026: proteinkortet — lunsj og kvelds mot dagsmålet (Liv)",
  "personer": {
   "thor": {
    "navn": "Thor",
@@ -1072,5 +1072,77 @@
     "event": "Lett siste uke før januarpausen · månedssjekk i begynnelsen av hver måned"
    }
   ]
+ },
+ "protein": {
+  "thor": {
+   "maal": 160,
+   "tekst": "3 måltider",
+   "maaltider": [
+    {
+     "navn": "Lunsj",
+     "g": 50,
+     "eks": [
+      "3 grove skiver med kyllingpålegg + 2 egg + skyr 170 g",
+      "middagsrester + cottage cheese 200 g"
+     ]
+    },
+    {
+     "navn": "Middag",
+     "g": 55,
+     "middag": true,
+     "eks": [
+      "Fra ukesmenyen — sjekkes hver søndag"
+     ]
+    },
+    {
+     "navn": "Kvelds",
+     "g": 55,
+     "eks": [
+      "skyr 300 g med bær + 2 skiver med kalkun og ost",
+      "cottage cheese 300 g + 2 skiver med makrell i tomat"
+     ]
+    }
+   ]
+  },
+  "anniken": {
+   "maal": 120,
+   "tekst": "4 måltider",
+   "maaltider": [
+    {
+     "navn": "Frokost",
+     "g": 25,
+     "eks": [
+      "havregrøt på lettmelk + skyr 150 g",
+      "2 egg + 1 skive med ost + et glass melk"
+     ]
+    },
+    {
+     "navn": "Lunsj",
+     "g": 30,
+     "eks": [
+      "salat med 100 g kylling + 1 egg",
+      "middagsrester"
+     ]
+    },
+    {
+     "navn": "Middag",
+     "g": 38,
+     "middag": true,
+     "eks": [
+      "Fra ukesmenyen — sjekkes hver søndag"
+     ]
+    },
+    {
+     "navn": "Kvelds",
+     "g": 27,
+     "eks": [
+      "skyr 200 g med bær + 1 skive med ost",
+      "2 skiver med kalkun og ost + et glass melk"
+     ]
+    }
+   ],
+   "merk": "Reagerer magen på skyr eller cottage cheese, finnes laktosefrie varianter med samme protein."
+  },
+  "fotnote": "Omtrentlige gram, avrundet til nærmeste 5. Det er uka som teller, ikke hver dag."
  }
 }
