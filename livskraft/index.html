@@ -55,7 +55,7 @@ body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.45 -apple-system,
 .kort h3{font-size:13.5px;margin:12px 0 6px;font-weight:800;color:var(--tx2)}
 .lead{font-size:13.5px;color:var(--mut);margin:0 0 10px}
 .mut{color:var(--mut)}.lit{font-size:12.5px;color:var(--mut);line-height:1.5}
-button{font-family:inherit}
+button{font-family:inherit;touch-action:manipulation}
 .knapp{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:12px;padding:14px 18px;font-size:16px;font-weight:800;background:var(--ag);color:#fff;cursor:pointer;width:100%;min-height:52px}
 .knapp.sek{background:var(--kort);color:var(--tx);border:1.5px solid var(--kant)}
 .knapp.lit{padding:9px 12px;font-size:14px;min-height:40px;width:auto}
@@ -349,7 +349,7 @@ details.om summary{cursor:pointer;font-weight:700;color:var(--ag);font-size:13px
 
 <script>
 /* ============================================================
-   Livskraft v1.13 — treningsappen til familien Dale (Liv, 14.9.2026 · v1.8 28.9: alarm maks 10 s, slipper lyden · v1.9 29.9: varsel i bakgrunnen via ntfy · v1.10 12.10: pauseøvelsene synlige med bilde og «slik gjør du den», hovedøvelse/pauseøvelse/tilbehør merket, ærlig tidsanslag per økt · v1.11 13.10: push-varselet bestilles 5 s før pausen er over · v1.12 14.10: Annikens program (A, B, hjemmeøkt H), bilde på hovedøvelsene, månedssjekken · v1.13 16.10: neste styrkeøkt følger rekkefølgen, ikke ukedagen — valgbar alle dager uka ikke er fullført)
+   Livskraft v1.14 — treningsappen til familien Dale (Liv, 14.9.2026 · v1.8 28.9: alarm maks 10 s, slipper lyden · v1.9 29.9: varsel i bakgrunnen via ntfy · v1.10 12.10: pauseøvelsene synlige med bilde og «slik gjør du den», hovedøvelse/pauseøvelse/tilbehør merket, ærlig tidsanslag per økt · v1.11 13.10: push-varselet bestilles 5 s før pausen er over · v1.12 14.10: Annikens program (A, B, hjemmeøkt H), bilde på hovedøvelsene, månedssjekken · v1.13 16.10: neste styrkeøkt følger rekkefølgen, ikke ukedagen — valgbar alle dager uka ikke er fullført · v1.14 16.10: variantvalget på pauseøvelsene står og huskes)
    Program = data/program.json (agentstyrt). Logg = lokalt + Firebase (fam/<kode>/okt/<person>).
    ============================================================ */
 "use strict";
@@ -768,7 +768,7 @@ function hentAktiv(){ /* v1.5: en påbegynt økt overlever at appen lastes på n
   try{var r=localStorage.getItem('lk-aktiv-'+PERSON);if(!r)return;var a=JSON.parse(r);
     if(!a||a.dato!==idag()||!erStyrke(a.type)){localStorage.removeItem('lk-aktiv-'+PERSON);return}
     AKTIV=a;vis('okt');tegnOkt()}catch(e){}}
-function sisteVariant(fid){var l=okterSortert().filter(function(o){return o.fyll&&o.fyll[fid]&&o.fyll[fid].variant});return l.length?l[l.length-1].fyll[fid].variant:null}
+function sisteVariant(fid){var hv=S.innst&&S.innst.varianter&&S.innst.varianter[fid];if(hv)return hv;var l=okterSortert().filter(function(o){return o.fyll&&o.fyll[fid]&&o.fyll[fid].variant});return l.length?l[l.length-1].fyll[fid].variant:null}
 function tegnOkt(){
   var okt=PP().okter[AKTIV.type];
   $('okt-hode').innerHTML=(AKTIV._rediger?'<div class="varsel" style="margin:0 0 10px"><b>Retter økta fra '+esc(dato(AKTIV.dato))+'</b> Endre det som er feil eller mangler, og trykk «Avslutt og lagre» — den lagres på samme dag, ikke som en ny økt.</div>':'')+hensiktBlokk(okt,AKTIV.type)+'<div class="plan"><div class="bokstav" style="background:'+okt.farge+'">'+AKTIV.type+'</div><div><b>'+esc(okt.navn)+(AKTIV.kort?' — kort':'')+'</b><div class="lit" id="okt-klokke">0 min</div><div class="tidest">Anslag ~'+estMin(okt,AKTIV.kort)+' min med pausene dine — pauseøvelsene ligger inni pausene og koster ikke tid</div></div></div>'+(AKTIV.kort?'<div class="varsel" style="margin-top:10px">Kort økt: ett arbeidssett per hovedløft, fyllstoffet i pausene, ~25 minutter. Tilbehøret hopper vi over i dag. Dette teller som gjort.</div>':'')+'<div class="ok" style="margin-top:10px"><b>Oppvarming:</b> '+esc(okt.oppvarming)+'</div>';
@@ -784,7 +784,7 @@ function tegnOkt(){
     else{var forr=sisteFor(ov.id);h+='<div class="setthode"><span></span><span>forrige</span><span>'+(ov.vekt?(ov.vekt.enhet?'kg/hånd':'kg'):'')+'</span><span>reps</span><span></span></div>';
       L.sett.forEach(function(s,si){h+='<div class="sett'+(s.ok?' ferdig':'')+'"><span class="nr">'+(si+1)+'</span><span class="forr">'+(forr[si]?esc(forr[si]):'—')+'</span>'+(ov.vekt?'<input type="text" inputmode="decimal" data-ov="'+ov.id+'" data-s="'+si+'" data-f="kg" value="'+(s.kg!==null&&s.kg!==undefined?String(s.kg).replace('.',','):'')+'">':'<span></span>')+'<input type="text" inputmode="numeric" data-ov="'+ov.id+'" data-s="'+si+'" data-f="reps" value="'+(s.reps!==null&&s.reps!==undefined?s.reps:'')+'" placeholder="'+ov.reps[1]+'"><button class="hak'+(s.ok?' p':'')+'" data-hak="'+ov.id+'" data-s="'+si+'">✓</button></div>'});
       h+='<div class="rpe"><span>RPE</span>'+[6,7,8,9,10].map(function(v){return '<button data-rpe="'+ov.id+'" data-v="'+v+'"'+(L.rpe===v?' class="on"':'')+'>'+v+'</button>'}).join('')+'</div>'}
-    if(ov.fyllstoff){var fs=ov.fyllstoff;var F=AKTIV.fyll[fs.id];var vNavn=F.variant||fs.navn;h+='<div class="fyll"><span class="typ pau">Pauseøvelse — lett</span><div class="t">I pausene mellom settene: '+esc(vNavn)+'</div><div class="m">'+esc(fs.maal)+(F.forslag.tekst&&F.forslag.tekst!==fs.maal?'<br>'+esc(F.forslag.tekst):'')+'</div>'+fyllBlokk(fs,{aapen:!okterSortert().some(function(o){return o.fyll&&o.fyll[fs.id]})});
+    if(ov.fyllstoff){var fs=ov.fyllstoff;var F=AKTIV.fyll[fs.id];var vNavn=F.variant||fs.navn;h+='<div class="fyll"><span class="typ pau">Pauseøvelse — lett</span><div class="t" data-vt="'+fs.id+'">I pausene mellom settene: '+esc(vNavn)+'</div><div class="m">'+esc(fs.maal)+(F.forslag.tekst&&F.forslag.tekst!==fs.maal?'<br>'+esc(F.forslag.tekst):'')+'</div>'+fyllBlokk(fs,{aapen:!okterSortert().some(function(o){return o.fyll&&o.fyll[fs.id]})});
       if(fs.varianter)h+='<div class="rad" style="margin:0 0 6px">'+fs.varianter.map(function(v){return '<button class="knapp lit'+(v===vNavn?'':' sek')+'" data-var="'+fs.id+'" data-v="'+esc(v)+'" style="min-height:32px;padding:5px 10px;font-size:12.5px">'+esc(v)+'</button>'}).join('')+'<span class="lit">ditt valg — samme mål</span></div>';
       var rader=(fs.maaling==='sek'&&fs.perSide)?fs.sett*2:fs.sett;if(AKTIV.kort)rader=(fs.maaling==='sek'&&fs.perSide)?2:1;
       for(var i=0;i<rader;i++){var v=F.verdier[i];var side=(fs.maaling==='sek'&&fs.perSide)?(i%2===0?'høyre':'venstre'):'';h+='<div class="fyllrad"><span class="nr">'+(side?Math.floor(i/2)+1:(i+1))+'</span>';
@@ -817,7 +817,12 @@ function tegnOkt(){
   Array.prototype.forEach.call(document.querySelectorAll('#okt-liste input[data-fyll]'),function(inp){inp.onchange=function(){AKTIV.fyll[inp.getAttribute('data-fyll')].verdier[+inp.getAttribute('data-i')]=tall(inp.value)}});
   Array.prototype.forEach.call(document.querySelectorAll('#okt-liste input[data-fyllkg]'),function(inp){inp.onchange=function(){AKTIV.fyll[inp.getAttribute('data-fyllkg')].kg=tall(inp.value)}});
   Array.prototype.forEach.call(document.querySelectorAll('#okt-liste button[data-rent]'),function(b){b.onclick=function(){var F=AKTIV.fyll[b.getAttribute('data-rent')];F.rent=!F.rent;tegnOkt()}});
-  Array.prototype.forEach.call(document.querySelectorAll('#okt-liste button[data-var]'),function(b){b.onclick=function(){AKTIV.fyll[b.getAttribute('data-var')].variant=b.getAttribute('data-v');tegnOkt()}});
+  /* v1.14 (Thor 16.10.2026): variantvalget byttet tilbake på iPhone. Nå tegnes ikke skjermen på nytt ved trykk (bare knappene og tittelen oppdateres), valget lagres med en gang og huskes som ditt valg til neste økt. */
+  Array.prototype.forEach.call(document.querySelectorAll('#okt-liste button[data-var]'),function(b){b.onclick=function(e){if(e){e.preventDefault();e.stopPropagation()}
+    var fid=b.getAttribute('data-var'),v=b.getAttribute('data-v');if(!AKTIV||!AKTIV.fyll[fid])return;AKTIV.fyll[fid].variant=v;lagreAktiv();
+    if(!S.innst.varianter)S.innst.varianter={};S.innst.varianter[fid]=v;skrivLokalt();
+    Array.prototype.forEach.call(document.querySelectorAll('#okt-liste button[data-var]'),function(x){if(x.getAttribute('data-var')===fid)x.className='knapp lit'+(x.getAttribute('data-v')===v?'':' sek')});
+    var t=document.querySelector('#okt-liste [data-vt="'+fid+'"]');if(t)t.textContent='I pausene mellom settene: '+v}});
   klokke();
 }
 Array.prototype.forEach.call(document.querySelectorAll('#seg-affekt button'),function(b){b.onclick=function(){if(!AKTIV)return;AKTIV.affekt=b.getAttribute('data-a');Array.prototype.forEach.call(document.querySelectorAll('#seg-affekt button'),function(x){x.className=x===b?'on':''})}});

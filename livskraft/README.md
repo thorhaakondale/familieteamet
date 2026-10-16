@@ -32,3 +32,6 @@ Anniken har eget program (data/program.json → "anniken"): A tirsdag (bein, rum
 
 ## v1.13 — 16.10.2026
 Styrkeøktene følger rekkefølgen A → B → A, ikke ukedagen (Thor). På dager uten A/B (8-minutteren, tur, fri) vises «Ikke fått tatt styrkeøkta denne uka?» øverst i I dag så lenge ukas gym-økter ikke er tatt (2 vanlig uke, 1 minimumsuke): neste bokstav som hovedknapp, den andre som liten knapp under. På A/B-dager ligger «Eller ta økt X i stedet» under startknappen. Gjelder Thor og Anniken. Tilbakefallsvarselet vises også i valget. SW lk-v13.
+
+## v1.14 — 16.10.2026
+Variantknappene på pauseøvelsene (dead hang ↔ håndklehang, suitcase ↔ farmer's walk) byttet tilbake på iPhone (Thor). Trykk tegner ikke lenger hele økta på nytt — bare knappene og tittelen oppdateres — valget lagres i den aktive økta med en gang, og huskes som ditt valg (`innst.varianter`, lokalt) til neste økt. `touch-action:manipulation` på alle knapper. SW lk-v14.
