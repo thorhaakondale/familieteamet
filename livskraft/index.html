@@ -60,6 +60,7 @@ button{font-family:inherit}
 .knapp.sek{background:var(--kort);color:var(--tx);border:1.5px solid var(--kant)}
 .knapp.lit{padding:9px 12px;font-size:14px;min-height:40px;width:auto}
 .knapp:disabled{opacity:.45}
+.ta-igjen{margin:4px 0 14px;padding-bottom:14px;border-bottom:1px dashed var(--kant)}
 .rad{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .tab{position:fixed;left:0;right:0;bottom:0;z-index:60;background:var(--kort);border-top:1px solid var(--kant);display:flex;padding:6px 6px calc(6px + env(safe-area-inset-bottom))}
 .tab button{flex:1;border:0;background:none;color:var(--mut);font-size:11.5px;font-weight:700;padding:6px 2px 4px;border-radius:10px;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer}
@@ -348,7 +349,7 @@ details.om summary{cursor:pointer;font-weight:700;color:var(--ag);font-size:13px
 
 <script>
 /* ============================================================
-   Livskraft v1.12 — treningsappen til familien Dale (Liv, 14.9.2026 · v1.8 28.9: alarm maks 10 s, slipper lyden · v1.9 29.9: varsel i bakgrunnen via ntfy · v1.10 12.10: pauseøvelsene synlige med bilde og «slik gjør du den», hovedøvelse/pauseøvelse/tilbehør merket, ærlig tidsanslag per økt · v1.11 13.10: push-varselet bestilles 5 s før pausen er over · v1.12 14.10: Annikens program (A, B, hjemmeøkt H), bilde på hovedøvelsene, månedssjekken)
+   Livskraft v1.13 — treningsappen til familien Dale (Liv, 14.9.2026 · v1.8 28.9: alarm maks 10 s, slipper lyden · v1.9 29.9: varsel i bakgrunnen via ntfy · v1.10 12.10: pauseøvelsene synlige med bilde og «slik gjør du den», hovedøvelse/pauseøvelse/tilbehør merket, ærlig tidsanslag per økt · v1.11 13.10: push-varselet bestilles 5 s før pausen er over · v1.12 14.10: Annikens program (A, B, hjemmeøkt H), bilde på hovedøvelsene, månedssjekken · v1.13 16.10: neste styrkeøkt følger rekkefølgen, ikke ukedagen — valgbar alle dager uka ikke er fullført)
    Program = data/program.json (agentstyrt). Logg = lokalt + Firebase (fam/<kode>/okt/<person>).
    ============================================================ */
 "use strict";
@@ -559,6 +560,10 @@ function middagTikk(){var e=$('middag-tekst');if(!e)return;var t=middagTekst();i
 setInterval(middagTikk,30000);
 
 /* ---------- I DAG ---------- */
+/* v1.13 (Thor 16.10.2026): styrkeøktene følger rekkefølgen A → B → A, ikke ukedagen. Ble en økt ikke tatt, ligger neste bokstav klar som et valg alle dager uka ikke er fullført. */
+function nesteGymBokstav(){var l=okterSortert().filter(function(o){return o.type==='A'||o.type==='B'});return l.length&&l[l.length-1].type==='A'?'B':'A'}
+function gymMaalUke(modus){if(modus==='minimum')return 1;var su=PP().standarduke,n=0;Object.keys(su).forEach(function(k){if(su[k]==='A'||su[k]==='B')n++});return n||2}
+function gymDenneUka(){var k=ukeKey(new Date());return okterSortert().filter(function(o){return o.uke===k&&(o.type==='A'||o.type==='B'||o.type==='H')}).length}
 function planForDag(d){var k=DAGKEY[(d.getDay()||7)-1];return PP().standarduke[k]}
 function gjortDag(iso){return okterSortert().filter(function(o){return o.dato===iso})}
 function tegnIdag(){
@@ -583,13 +588,22 @@ function tegnIdag(){
     if(ps.nivaa===2)h+='<div class="varsel">'+esc(PROG.tilbakefall.tre_uker)+'</div>';else if(ps.nivaa===1)h+='<div class="varsel">'+esc(PROG.tilbakefall.to)+'</div>';if(modus==='minimum')h+='<div class="varsel">Minimumsuke: én kort økt og én tur teller som gjort.</div>';
     if(!erGjort)h+=middagBoks();
     h+='<div class="rad" style="margin-top:12px"><button class="knapp'+(lett?' sek':'')+'" id="start-okt" data-t="'+bok+'">'+(erGjort?'Start '+bok+' en gang til':'Start økt '+bok+(lett?' — full':''))+' · ~'+estMin(PP().okter[bok],false)+' min</button></div>';
+    if((bok==='A'||bok==='B')&&!erGjort){var altB=bok==='A'?'B':'A';h+='<div class="rad" style="margin-top:8px"><button class="knapp sek lit" id="start-annen" data-t="'+altB+'">Eller ta økt '+altB+' i stedet · ~'+estMin(PP().okter[altB],false)+' min</button></div>'}
     h+='<div class="rad" style="margin-top:8px"><button class="knapp'+(lett?'':' sek lit')+'" id="start-kort" data-t="'+bok+'">Kort økt '+bok+' — ett sett per løft, ~25 min</button></div>';
     if(bok!=='H'&&PP().okter.H&&!erGjort)h+='<div class="rad" style="margin-top:8px"><button class="knapp sek lit" id="start-hjemme">Kommer du deg ikke på gymmet? Hjemmeøkt i stedet · ~'+estMin(PP().okter.H,false)+' min</button></div>';
     var m=new Date();if(PP().regler.maanedlig_tungt_sett&&bok==='A'&&m.getDate()<=7&&m.getDay()===1&&!lett)h+='<div class="varsel">Første mandag i måneden: '+esc(PROG.thor.regler.maanedlig_tungt_sett)+'</div>'}
   else if(bok==='M'){h+='<ol class="steg" style="margin:10px 0">'+okt.steg.map(function(s){return '<li><b>'+esc(s[0])+'</b> — '+esc(s[1])+'</li>'}).join('')+'</ol><p class="lit">+ senetillegget: '+okt.tillegg.map(function(s){return esc(s[0])+' '+esc(s[1])}).join(' · ')+'</p><div class="rad"><button class="knapp" id="gjort-enkel" data-t="M">'+(erGjort?'Gjort ✓':'8-minutteren gjort')+'</button></div>'}
   else if(bok==='T'||bok==='S'){h+='<p class="lit" style="margin:8px 0">'+esc(okt.tekst)+'</p><div class="rad"><input class="tall" id="tur-min" type="text" inputmode="numeric" placeholder="min" style="max-width:100px"><button class="knapp lit" id="gjort-enkel" data-t="'+bok+'">'+(erGjort?'Gjort ✓':'Turen er gått')+'</button></div>'}
   else{h+='<p class="lit" style="margin:8px 0">'+esc(okt.tekst)+'</p>'}
+  if(bok!=='A'&&bok!=='B'&&gymDenneUka()<gymMaalUke(modus)&&!gj.some(function(o){return o.type==='A'||o.type==='B'||o.type==='H'})){
+    var nb=nesteGymBokstav(),ab=nb==='A'?'B':'A';var h0=h;h='';
+    h+='<div class="ta-igjen"><b>Ikke fått tatt styrkeøkta denne uka?</b><div class="lit">Ta den i dag — neste i rekkefølgen er '+nb+'.</div>';
+    if(ps.nivaa===2)h+='<div class="varsel">'+esc(PROG.tilbakefall.tre_uker)+'</div>';else if(ps.nivaa===1)h+='<div class="varsel">'+esc(PROG.tilbakefall.to)+'</div>';
+    h+='<div class="rad" style="margin-top:10px"><button class="knapp" id="start-neste" data-t="'+nb+'">Start økt '+nb+' · '+esc(PP().okter[nb].navn)+' · ~'+estMin(PP().okter[nb],false)+' min</button></div>';
+    h+='<div class="rad" style="margin-top:8px"><button class="knapp sek lit" id="start-annen" data-t="'+ab+'">Eller økt '+ab+' · ~'+estMin(PP().okter[ab],false)+' min</button></div></div>'+h0}
   $('idag-kort').innerHTML='<h2>'+dagTittel+'</h2>'+h;
+  var bn=$('start-neste');if(bn)bn.onclick=function(){startOkt(bn.getAttribute('data-t'),false)};
+  var ba=$('start-annen');if(ba)ba.onclick=function(){startOkt(ba.getAttribute('data-t'),false)};
   var b=$('start-okt');if(b)b.onclick=function(){startOkt(b.getAttribute('data-t'),false)};
   var bk=$('start-kort');if(bk)bk.onclick=function(){startOkt(bk.getAttribute('data-t'),true)};
   var bh=$('start-hjemme');if(bh)bh.onclick=function(){startOkt('H',false)};

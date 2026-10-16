@@ -29,3 +29,6 @@ v1.10 (12.10.2026, Thor: «jeg gjør ikke de målrettede øvelsene fordi jeg er 
 
 ## v1.12 — 14.10.2026
 Anniken har eget program (data/program.json → "anniken"): A tirsdag (bein, rumpe, mage), B torsdag (rygg, armer, mage), H hjemmeøkt (25 min, når gymmet ryker eller lørdag). Hovedøvelsene kan ha bilde (`bilde`). Ny månedssjekk under Fremgang (midje, energi, fornøyd 1–5) lagres i `maaned/<ÅÅÅÅ-MM>`; bilder lagres aldri i appen. Kortere standardpauser for Anniken (120/90/60 s). SW lk-v12.
+
+## v1.13 — 16.10.2026
+Styrkeøktene følger rekkefølgen A → B → A, ikke ukedagen (Thor). På dager uten A/B (8-minutteren, tur, fri) vises «Ikke fått tatt styrkeøkta denne uka?» øverst i I dag så lenge ukas gym-økter ikke er tatt (2 vanlig uke, 1 minimumsuke): neste bokstav som hovedknapp, den andre som liten knapp under. På A/B-dager ligger «Eller ta økt X i stedet» under startknappen. Gjelder Thor og Anniken. Tilbakefallsvarselet vises også i valget. SW lk-v13.
