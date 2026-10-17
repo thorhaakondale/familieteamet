@@ -41,3 +41,6 @@ Søndagsreserven (Thor): `thor.okter.H` i program.json, bundet til søndag med `
 
 ## v1.17 — 17.10.2026
 Reserveøkta hjemme (tidligere «søndagsreserven») er tilgjengelig torsdag–søndag (Thor): `visDag:["tor","fre","lor","son"]`, `utenGym:["son"]`. Torsdag–lørdag ligger den som en ekstra knapp i «Ikke fått tatt styrkeøkta denne uka?» under A/B-valget; søndag står den alene under turen (ingen gym-økt dagen før mandag). På tur-dagene står «<turen> går foran». Fortsatt bare når uka mangler en styrkeøkt. SW lk-v17.
+
+## v1.18 — 17.10.2026
+Én-trykks turlogg hver dag (Thor og Anniken): «Tur» og «Tur med Oscar», tomt minuttfelt = 60 min. På tur-dagene (T/S) erstatter den den gamle «Turen er gått»-raden; andre dager står den nederst i I dag under «Gikk en tur i dag?». Lagres som type T (S på søndagsturdagen) med `oscar:true` når det gjelder. Allerede logget tur vises med ✓; flere turer samme dag kan legges til. Målet er fortsatt to turer i uka — ekstra turer er bonus. SW lk-v18.

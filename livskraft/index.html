@@ -360,7 +360,7 @@ details.om summary{cursor:pointer;font-weight:700;color:var(--ag);font-size:13px
 
 <script>
 /* ============================================================
-   Livskraft v1.17 — treningsappen til familien Dale (Liv, 14.9.2026 · v1.8 28.9: alarm maks 10 s, slipper lyden · v1.9 29.9: varsel i bakgrunnen via ntfy · v1.10 12.10: pauseøvelsene synlige med bilde og «slik gjør du den», hovedøvelse/pauseøvelse/tilbehør merket, ærlig tidsanslag per økt · v1.11 13.10: push-varselet bestilles 5 s før pausen er over · v1.12 14.10: Annikens program (A, B, hjemmeøkt H), bilde på hovedøvelsene, månedssjekken · v1.13 16.10: neste styrkeøkt følger rekkefølgen, ikke ukedagen — valgbar alle dager uka ikke er fullført · v1.14 16.10: variantvalget på pauseøvelsene står og huskes · v1.16 17.10: søndagsreserven · v1.17 17.10: reserveøkta hjemme tilgjengelig torsdag–søndag når uka mangler en styrkeøkt)
+   Livskraft v1.18 — treningsappen til familien Dale (Liv, 14.9.2026 · v1.8 28.9: alarm maks 10 s, slipper lyden · v1.9 29.9: varsel i bakgrunnen via ntfy · v1.10 12.10: pauseøvelsene synlige med bilde og «slik gjør du den», hovedøvelse/pauseøvelse/tilbehør merket, ærlig tidsanslag per økt · v1.11 13.10: push-varselet bestilles 5 s før pausen er over · v1.12 14.10: Annikens program (A, B, hjemmeøkt H), bilde på hovedøvelsene, månedssjekken · v1.13 16.10: neste styrkeøkt følger rekkefølgen, ikke ukedagen — valgbar alle dager uka ikke er fullført · v1.14 16.10: variantvalget på pauseøvelsene står og huskes · v1.16 17.10: søndagsreserven · v1.17 17.10: reserveøkta hjemme tor–søn · v1.18 17.10: én-trykks turlogg hver dag, med eller uten Oscar)
    Program = data/program.json (agentstyrt). Logg = lokalt + Firebase (fam/<kode>/okt/<person>).
    ============================================================ */
 "use strict";
@@ -576,6 +576,11 @@ function nesteGymBokstav(){var l=okterSortert().filter(function(o){return o.type
 function gymMaalUke(modus){if(modus==='minimum')return 1;var su=PP().standarduke,n=0;Object.keys(su).forEach(function(k){if(su[k]==='A'||su[k]==='B')n++});return n||2}
 function gymDenneUka(){var k=ukeKey(new Date());return okterSortert().filter(function(o){return o.uke===k&&(o.type==='A'||o.type==='B'||o.type==='H')}).length}
 function planForDag(d){var k=DAGKEY[(d.getDay()||7)-1];return PP().standarduke[k]}
+/* v1.18 (Thor 17.10.2026): én-trykks turlogg hver dag — med eller uten Oscar, ~1 time som standard. Bonusturer er bonus: målet er fortsatt to turer i uka. */
+function turRad(gj,type){var t=gj.filter(function(o){return o.type==='T'||o.type==='S'});var h='';
+  if(t.length)h+='<div class="ok">✓ '+t.map(function(o){return 'Tur'+(o.min?' '+o.min+' min':'')+(o.oscar?' med Oscar':'')}).join(' · ')+'</div>';
+  h+='<div class="rad" style="margin-top:8px;align-items:center"><input class="tall" id="tur-min" type="text" inputmode="numeric" placeholder="60" style="max-width:72px"><span class="lit">min</span><button class="knapp lit'+(t.length?' sek':'')+'" data-tur="'+type+'" data-oscar="0">'+(t.length?'+ tur':'Tur')+'</button><button class="knapp sek lit" data-tur="'+type+'" data-oscar="1">'+(t.length?'+ med Oscar':'Tur med Oscar')+'</button></div><div class="lit" style="margin-top:4px">Tomt felt = 60 min.</div>';
+  return h}
 function gjortDag(iso){return okterSortert().filter(function(o){return o.dato===iso})}
 function tegnIdag(){
   var p=PROG.personer[PERSON];
@@ -604,7 +609,7 @@ function tegnIdag(){
     if(bok!=='H'&&PP().okter.H&&!PP().okter.H.visDag&&!erGjort)h+='<div class="rad" style="margin-top:8px"><button class="knapp sek lit" id="start-hjemme">Kommer du deg ikke på gymmet? Hjemmeøkt i stedet · ~'+estMin(PP().okter.H,false)+' min</button></div>';
     var m=new Date();if(PP().regler.maanedlig_tungt_sett&&bok==='A'&&m.getDate()<=7&&m.getDay()===1&&!lett)h+='<div class="varsel">Første mandag i måneden: '+esc(PROG.thor.regler.maanedlig_tungt_sett)+'</div>'}
   else if(bok==='M'){h+='<ol class="steg" style="margin:10px 0">'+okt.steg.map(function(s){return '<li><b>'+esc(s[0])+'</b> — '+esc(s[1])+'</li>'}).join('')+'</ol><p class="lit">+ senetillegget: '+okt.tillegg.map(function(s){return esc(s[0])+' '+esc(s[1])}).join(' · ')+'</p><div class="rad"><button class="knapp" id="gjort-enkel" data-t="M">'+(erGjort?'Gjort ✓':'8-minutteren gjort')+'</button></div>'}
-  else if(bok==='T'||bok==='S'){h+='<p class="lit" style="margin:8px 0">'+esc(okt.tekst)+'</p><div class="rad"><input class="tall" id="tur-min" type="text" inputmode="numeric" placeholder="min" style="max-width:100px"><button class="knapp lit" id="gjort-enkel" data-t="'+bok+'">'+(erGjort?'Gjort ✓':'Turen er gått')+'</button></div>'}
+  else if(bok==='T'||bok==='S'){h+='<p class="lit" style="margin:8px 0">'+esc(okt.tekst)+'</p>'+turRad(gj,bok)}
   else{h+='<p class="lit" style="margin:8px 0">'+esc(okt.tekst)+'</p>'}
   if(bok!=='A'&&bok!=='B'&&gymDenneUka()<gymMaalUke(modus)&&!gj.some(function(o){return o.type==='A'||o.type==='B'||o.type==='H'})){
     /* v1.16–1.17 (Thor 17.10.2026): reserveøkta hjemme — overskudd, ikke krav. Tilgjengelig dagene i visDag (tor–søn); på utenGym-dager (søndag) står den alene under turen. */
@@ -623,6 +628,7 @@ function tegnIdag(){
     if(resDag){h+='<div class="rad" style="margin-top:8px"><button class="knapp sek lit" id="start-reserve">Eller reserveøkt hjemme — yoga og kroppsvekt · ~'+estMin(hr,false)+' min</button></div>';
       h+='<ul class="lit" style="margin:8px 0 0;padding-left:18px">'+turForan+'<li>Overskudd, ikke krav: hopper du over, skal ingenting tas igjen.</li></ul>'}
     h+='</div>'+h0}}
+  if(bok!=='T'&&bok!=='S'&&planForDag(d)!=='T'&&planForDag(d)!=='S')h+='<div style="margin-top:14px;padding-top:12px;border-top:1px dashed var(--kant)"><b>Gikk en tur i dag?</b>'+turRad(gj,'T')+'</div>';
   $('idag-kort').innerHTML='<h2>'+dagTittel+'</h2>'+h;
   var bn=$('start-neste');if(bn)bn.onclick=function(){startOkt(bn.getAttribute('data-t'),false)};
   var ba=$('start-annen');if(ba)ba.onclick=function(){startOkt(ba.getAttribute('data-t'),false)};
@@ -632,7 +638,8 @@ function tegnIdag(){
   var br=$('start-reserve');if(br)br.onclick=function(){startOkt('H',false)};
   var mi=$('in-middag');if(mi)mi.onchange=function(){if(this.value)settMiddag(this.value)};
   var mn=$('middag-naa');if(mn)mn.onclick=function(){settMiddag(naaHHMM())};
-  var g=$('gjort-enkel');if(g)g.onclick=function(){loggEnkel(g.getAttribute('data-t'),tall(($('tur-min')||{}).value));tegnIdag();tegnUka()};
+  Array.prototype.forEach.call(document.querySelectorAll('#idag-kort button[data-tur]'),function(tb){tb.onclick=function(){var mi=tall(($('tur-min')||{}).value)||60;var ob=tb.getAttribute('data-oscar')==='1';var o={id:nyId(),person:PERSON,dato:idag(),uke:ukeKey(new Date()),type:tb.getAttribute('data-tur'),min:mi};if(ob){o.oscar=true;o.kommentar='Med Oscar'}lagre('okter/'+o.id,o);tegnIdag();tegnUka()}});
+  var g=$('gjort-enkel');if(g)g.onclick=function(){loggEnkel(g.getAttribute('data-t'),null);tegnIdag();tegnUka()};
   /* råd */
   var ctx=ukeskontekst(),rs=ryggsjekk();var r='';
   if(rs.stopp)r+='<div class="rodt">'+esc(rs.tekst)+'</div>';else if(rs.hold)r+='<div class="varsel">'+esc(rs.tekst)+'</div>';
