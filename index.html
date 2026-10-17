@@ -483,7 +483,7 @@ details.om .in{padding:8px 0 0;font-size:14px;max-width:70ch}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.33.0';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.34.0';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -899,24 +899,33 @@ function dagFerdig(p,yd){
   var sl=planUke(m).filter(function(s){return s.person===p&&s.dag===di&&!s.o.bonus});
   return sl.length>0&&sl.every(function(s){return erGjort(key,s.key)});
 }
+/* v1.34 (Thor 17.10.2026): et varsel kan peke på én oppgave (oppg:'<id>') — da stoppes det når den oppgaven er hakket av denne uka, uansett dag eller hvem. Brukes for «Bestill maten» onsdag 20:10. */
+function oppgGjort(id,yd){
+  if(!UKER_LASTET||!OPPG_LASTET) return false;
+  var m=mandag(new Date(yd+'T00:00:00')), key=ukeKey(m), sl=planUke(m).filter(function(s){return s.o.id===id});
+  return sl.length>0&&sl.every(function(s){return erGjort(key,s.key)});
+}
+function varselFerdig(v,p,yd){return v.oppg?oppgGjort(v.oppg,yd):dagFerdig(p,yd)}
 function ntfySlett(topic,seq){if(!topic||!seq||!window.fetch)return Promise.resolve(false);try{return fetch(NTFY_URL+encodeURIComponent(topic)+'/'+seq,{method:'DELETE',keepalive:true}).then(function(r){return r.ok}).catch(function(){return false})}catch(e){return Promise.resolve(false)}}
 var KVELD_T=null;
 function kveldStopp(){
   if(!db||!INNST.varsler||!INNST.ntfy) return; clearTimeout(KVELD_T);
   KVELD_T=setTimeout(function(){
-    var naa=new Date(), yd=ymd(naa), wd=(naa.getDay()+6)%7, n=lesNtfy(INNST.ntfy)||{};
+    var naa=new Date(), n=lesNtfy(INNST.ntfy)||{};
     var liste=Array.isArray(INNST.varsler)?INNST.varsler:Object.keys(INNST.varsler).map(function(k){return INNST.varsler[k]});
+    [0,1,2].forEach(function(dd){ var dag=addDays(naa,dd), yd=ymd(dag), wd=(dag.getDay()+6)%7; /* v1.34: hele bestillingsvinduet, ikke bare i dag */
     liste.forEach(function(v){
       if(!v||!v.stopp||v.aktiv===false||!v.id||!v.tid||(v.dager||[]).indexOf(wd)<0) return;
-      if(v.skoledag&&erFerie(ukeKey(naa))) return;
-      var hm=String(v.tid).split(':'), t=new Date(naa.getFullYear(),naa.getMonth(),naa.getDate(),+hm[0],+hm[1]||0,0);
+      if(dd>0&&!v.oppg) return; /* «ferdig for i dag» gjelder bare i dag; oppgave-varsler kan stoppes før dagen */
+      if(v.skoledag&&erFerie(ukeKey(dag))) return;
+      var hm=String(v.tid).split(':'), t=new Date(dag.getFullYear(),dag.getMonth(),dag.getDate(),+hm[0],+hm[1]||0,0);
       if(t.getTime()-naa.getTime()<60000) return; /* gått av, eller for nær */
       var ref=db.child('varsler/sendt/'+yd+'_'+v.id);
       ref.once('value').then(function(snap){
         var e=snap.val(); if(!e) return; /* ikke bestilt ennå — planleggVarsler tar hensyn til ferdig når den bestiller */
         var stopp=e.stopp||{};
         (v.til&&v.til.length?v.til:['thor','anniken']).forEach(function(p){
-          if(!n[p]||fravFor(yd,p)) return; var seq=ntfySeq('ft',yd,v.id,p), f=dagFerdig(p,yd);
+          if(!n[p]||fravFor(yd,p)) return; var seq=ntfySeq('ft',yd,v.id,p), f=varselFerdig(v,p,yd);
           if(f&&!stopp[p]){ ntfySlett(n[p],seq).then(function(ok){ if(ok) ref.child('stopp/'+p).set(true).catch(function(){}) }); }
           else if(!f&&stopp[p]&&t.getTime()-naa.getTime()>120000){
             ntfyPost(n[p],v.navn||'Påminnelse',v.tekst||'',v.tags||'bell',Math.floor(t.getTime()/1000),v.prio||4,v.click===false?'':(v.click||appLenke(p)),seq)
@@ -924,6 +933,7 @@ function kveldStopp(){
           }
         });
       }).catch(function(){});
+    });
     });
     flyttGamleKveld();
   },1200);
@@ -1063,8 +1073,8 @@ function planleggVarsler(){
       ref.transaction(function(cur){ if(cur) return; return {ts:Date.now(),by:valgt||'familie'} },function(err,committed){
         if(err||!committed) return;
         var ps=(v.til&&v.til.length?v.til:['thor','anniken']).filter(function(p){return n[p]&&!fravFor(yd,p)}); /* v1.17: ingen faste varsler til den som er borte */
-        if(v.stopp&&yd===ymd(new Date())){var st={};ps=ps.filter(function(p){if(dagFerdig(p,yd)){st[p]=true;return false}return true});if(Object.keys(st).length)ref.child('stopp').update(st).catch(function(){})} /* v1.33: ferdig allerede — ikke bestill */
-        if(!ps.length){ if(!v.stopp||yd!==ymd(new Date())) ref.set(null).catch(function(){}); return; }
+        if(v.stopp&&(yd===ymd(new Date())||v.oppg)){var st={};ps=ps.filter(function(p){if(varselFerdig(v,p,yd)){st[p]=true;return false}return true});if(Object.keys(st).length)ref.child('stopp').update(st).catch(function(){})} /* v1.33: ferdig allerede — ikke bestill */
+        if(!ps.length){ if(!v.stopp||(yd!==ymd(new Date())&&!v.oppg)) ref.set(null).catch(function(){}); return; }
         Promise.all(ps.map(function(p){return ntfyPost(n[p],v.navn||'Påminnelse',v.tekst||'',v.tags||'bell',Math.floor(t.getTime()/1000),v.prio||4,v.click===false?'':(v.click||appLenke(p)),ntfySeq('ft',yd,v.id,p))}))
           .then(function(a){ if(!a.some(Boolean)) ref.set(null).catch(function(){}) }); /* gikk det ikke: la neste enhet prøve */
       });
