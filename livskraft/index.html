@@ -401,12 +401,12 @@ details.om summary{cursor:pointer;font-weight:700;color:var(--ag);font-size:13px
 
 <script>
 /* ============================================================
-   Livskraft v1.19 — treningsappen til familien Dale (Liv, 14.9.2026 · v1.8 28.9: alarm maks 10 s, slipper lyden · v1.9 29.9: varsel i bakgrunnen via ntfy · v1.10 12.10: pauseøvelsene synlige med bilde og «slik gjør du den», hovedøvelse/pauseøvelse/tilbehør merket, ærlig tidsanslag per økt · v1.11 13.10: push-varselet bestilles 5 s før pausen er over · v1.12 14.10: Annikens program (A, B, hjemmeøkt H), bilde på hovedøvelsene, månedssjekken · v1.13 16.10: neste styrkeøkt følger rekkefølgen, ikke ukedagen — valgbar alle dager uka ikke er fullført · v1.14 16.10: variantvalget på pauseøvelsene står og huskes · v1.16 17.10: søndagsreserven · v1.17 17.10: reserveøkta hjemme tor–søn · v1.18 17.10: én-trykks turlogg hver dag, med eller uten Oscar · v1.19 17.10: ukesrapport kropp 0–5 og styrkebildet — e1RM-trend og indeks)
+   Livskraft v1.20 — treningsappen til familien Dale (Liv, 14.9.2026 · v1.8 28.9: alarm maks 10 s, slipper lyden · v1.9 29.9: varsel i bakgrunnen via ntfy · v1.10 12.10: pauseøvelsene synlige med bilde og «slik gjør du den», hovedøvelse/pauseøvelse/tilbehør merket, ærlig tidsanslag per økt · v1.11 13.10: push-varselet bestilles 5 s før pausen er over · v1.12 14.10: Annikens program (A, B, hjemmeøkt H), bilde på hovedøvelsene, månedssjekken · v1.13 16.10: neste styrkeøkt følger rekkefølgen, ikke ukedagen — valgbar alle dager uka ikke er fullført · v1.14 16.10: variantvalget på pauseøvelsene står og huskes · v1.16 17.10: søndagsreserven · v1.17 17.10: reserveøkta hjemme tor–søn · v1.18 17.10: én-trykks turlogg hver dag, med eller uten Oscar · v1.19 17.10: ukesrapport kropp 0–5 og styrkebildet — e1RM-trend og indeks · v1.20 17.10: øvelsesbildene hentes fra Firebase)
    Program = data/program.json (agentstyrt). Logg = lokalt + Firebase (fam/<kode>/okt/<person>).
    ============================================================ */
 "use strict";
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
-var VERSJON='1.19.0'; /* v1.19: appversjonen, vises under Mer → Programmet */
+var VERSJON='1.20.0'; /* v1.20: appversjonen, vises under Mer → Programmet */
 var KODE=null, PERSON='thor', PROG=null, S=null, db=null, dbOk=false, PENDING=[];
 var AKTIV=null; /* pågående økt */
 var UKEVIS=0;   /* uke-offset i Uka-fanen */
@@ -1312,7 +1312,37 @@ function kobleDb(){
   }catch(e){dbOk=false;$('dbpill').textContent='lagres på enheten'}
   dbStatus();
 }
-fetch('data/program.json?v='+Math.floor(Date.now()/3600000)).then(function(r){return r.json()}).then(function(p){PROG=p;lesLokalt();$('personpill').textContent=PROG.personer[PERSON].navn;$('personpill').className='pill p '+PERSON;tegnAlt();kobleDb();hentAktiv();hashRute()}).catch(function(e){console.error('Livskraft feil:',e);if(PROG){throw e}document.querySelector('.wrap').innerHTML='<div class="kort"><h2>Fikk ikke lastet programmet</h2><p class="lead">Sjekk nettet og last siden på nytt. Er du på gymmet uten dekning, må siden ha vært åpnet én gang med nett først.</p></div>'});
+/* v1.20 (Liv 17.10.2026): øvelsesbildene hentes fra Firebase — fam/<kode>/livskraft/bilder/<person>/<id>.
+   Nye bilder kommer inn uten ny appversjon. img/*.webp i repoet står som fallback.
+   Bildene er atskilt per person: Annikens nedtrekk og Thors nedtrekk er to ulike bilder. */
+function leggInnBilder(kart){
+  if(!kart||!PROG||!PROG.personer)return 0;
+  var pp=PROG.personer[PERSON];
+  var tre=(pp&&pp.har_program&&PROG[PERSON])?PROG[PERSON]:null;
+  if(!tre)return 0;
+  var n=0;
+  (function walk(o){
+    if(!o||typeof o!=='object')return;
+    if(typeof o.id==='string'&&kart[o.id]&&kart[o.id].d){o.bilde=kart[o.id].d;n++}
+    for(var k in o)if(Object.prototype.hasOwnProperty.call(o,k))walk(o[k]);
+  })(tre);
+  return n;
+}
+function hentBilder(){
+  if(!KODE)return;
+  try{var c=JSON.parse(localStorage.getItem('lk-bilder-'+PERSON)||'null');
+    if(c&&c.kart&&(Date.now()-c.ts)<43200000&&leggInnBilder(c.kart))tegnAlt();
+  }catch(e){}
+  fetch(FIREBASE.databaseURL+'/fam/'+KODE+'/livskraft/bilder/'+PERSON+'.json')
+    .then(function(r){return r.ok?r.json():null})
+    .then(function(kart){
+      if(!kart)return;
+      if(leggInnBilder(kart))tegnAlt();
+      try{localStorage.setItem('lk-bilder-'+PERSON,JSON.stringify({ts:Date.now(),kart:kart}))}catch(e){}
+    })
+    .catch(function(){});
+}
+fetch('data/program.json?v='+Math.floor(Date.now()/3600000)).then(function(r){return r.json()}).then(function(p){PROG=p;lesLokalt();$('personpill').textContent=PROG.personer[PERSON].navn;$('personpill').className='pill p '+PERSON;tegnAlt();kobleDb();hentAktiv();hashRute();hentBilder()}).catch(function(e){console.error('Livskraft feil:',e);if(PROG){throw e}document.querySelector('.wrap').innerHTML='<div class="kort"><h2>Fikk ikke lastet programmet</h2><p class="lead">Sjekk nettet og last siden på nytt. Er du på gymmet uten dekning, må siden ha vært åpnet én gang med nett først.</p></div>'});
 $('dbpill').onclick=function(){if(KODE&&KODE.length>=12)return;vis('mer');setTimeout(function(){var e=$('in-kode');if(e){e.focus();e.scrollIntoView({block:'center'})}},60)};
 if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){})})}
 </script>
