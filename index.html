@@ -116,7 +116,17 @@ b,strong{font-weight:800}
 #ark .dagrad input[type=date]{font:inherit;font-size:14.5px;min-height:44px;padding:9px 12px;border:1.5px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink)}
 dialog#ark{border:0;border-radius:16px;padding:0;max-width:560px;width:calc(100% - 28px);background:var(--card);color:var(--ink);box-shadow:0 18px 50px rgba(0,0,0,.28)}
 dialog#ark::backdrop{background:rgba(0,0,0,.45)}
-#ark .ark-inn{padding:18px 18px calc(18px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:12px}
+#ark .ark-inn{padding:0 16px calc(18px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:12px}
+#ark .ark-bar{position:sticky;top:0;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 -16px 2px;padding:10px 12px;background:var(--card);border-bottom:1px solid var(--line)}
+#ark .ark-bar .ark-tittel{font-weight:800;font-size:15px;color:var(--ink)}
+#ark .ark-bar button{font:inherit;font-size:16px;min-height:40px;padding:6px 10px;border:0;background:transparent;cursor:pointer;border-radius:10px}
+#ark #ark-avbryt{color:var(--ink2);font-weight:600}
+#ark #ark-lagre{color:#fff;background:#1a73e8;font-weight:800;padding:6px 14px}
+#ark .ark-felt{display:flex;flex-direction:column;gap:6px;background:var(--card2);border-radius:12px;padding:10px 12px}
+#ark .ark-felt .ark-topp{align-items:center}
+#ark .ark-felt textarea{min-height:96px;border:0;background:var(--card);border-radius:8px}
+#ark .ark-felt #ark-navn-inn{border:0;background:var(--card);font-size:17px}
+#ark .ark-felt .ark-lbl{margin-top:4px}
 #ark .ark-topp{display:flex;align-items:flex-start;gap:10px}
 #ark .ark-ik{font-size:26px;line-height:1.1}
 #ark h3{margin:0;font-size:19px;line-height:1.25;flex:1}#ark #ark-navn-inn{flex:1;font:inherit;font-size:17px;font-weight:800;line-height:1.25;padding:4px 8px;border:1.5px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);min-width:0}
@@ -127,10 +137,7 @@ dialog#ark::backdrop{background:rgba(0,0,0,.45)}
 #ark textarea{font:inherit;font-size:15.5px;line-height:1.5;width:100%;min-height:150px;padding:10px 12px;border:1.5px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);resize:vertical}
 #ark .ark-lenkeknapp{display:inline-block;font-weight:800;font-size:14px;padding:9px 14px;border-radius:999px;border:1.5px solid var(--ok);color:var(--ok);text-decoration:none}
 #ark .ark-hint{margin:0;font-size:13px;color:var(--muted)}
-#ark .ark-knapper{display:flex;gap:8px;flex-wrap:wrap;margin-top:2px}
-#ark .ark-knapper button{font:inherit;font-weight:800;font-size:15px;padding:11px 16px;border-radius:10px;cursor:pointer;min-height:44px}
-#ark #ark-lagre{border:0;background:var(--ok);color:#fff;flex:1}
-#ark #ark-avbryt{border:1.5px solid var(--line);background:transparent;color:var(--ink)}
+#ark #ark-avbryt.lukk{font-weight:800;color:var(--ink)}
 .tile .tb:hover{background:var(--line2)}
 .tile .velg{position:absolute;right:4px;top:100%;z-index:5;background:var(--card);border:1px solid var(--line);border-radius:10px;box-shadow:0 6px 18px rgba(0,0,0,.18);padding:6px;display:flex;gap:4px;flex-wrap:wrap;max-width:260px}
 .tile .velg button{font:inherit;font-weight:800;font-size:12.5px;padding:4px 9px;border-radius:999px;border:1.5px solid var(--pc);color:var(--pc);background:transparent;cursor:pointer}
@@ -459,7 +466,7 @@ details.om .in{padding:8px 0 0;font-size:14px;max-width:70ch}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.29.1';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.30.0';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -631,6 +638,7 @@ function aapneArk(id,knapp){
   var les=document.getElementById('ark-les'), ta=document.getElementById('ark-notat'), lag=document.getElementById('ark-lagre');
   var lbl=document.getElementById('ark-lbl');
   lbl.hidden=!(o.notat||voksen);
+  var avb=document.getElementById('ark-avbryt'); if(avb){avb.textContent=voksen?'Avbryt':'Lukk'; avb.classList.toggle('lukk',!voksen)}
   if(voksen){les.hidden=true;ta.hidden=false;lag.hidden=false;ta.value=o.notat||'';
     document.getElementById('ark-hint').textContent='Linjeskift blir egne linjer. Lagre skriver til alle enhetene.'}
   else{les.hidden=false;ta.hidden=true;lag.hidden=true;les.textContent=o.notat||'';
@@ -1708,19 +1716,18 @@ if('serviceWorker' in navigator){window.addEventListener('load',function(){navig
 </script>
 <dialog id="ark" aria-labelledby="ark-navn">
   <div class="ark-inn">
-    <div class="ark-topp"><span class="ark-ik" id="ark-ik"></span><h3 id="ark-navn"></h3><input id="ark-navn-inn" hidden maxlength="140" aria-label="Oppgavens tekst"><button type="button" class="ark-x" id="ark-x" aria-label="Lukk uten å lagre">✕</button></div>
+    <div class="ark-bar"><button type="button" id="ark-avbryt">Avbryt</button><span class="ark-tittel">Detaljer</span><button type="button" id="ark-lagre" aria-label="Ferdig — lagre">Ferdig</button><button type="button" class="ark-x" id="ark-x" hidden aria-label="Lukk">✕</button></div>
+    <div class="ark-felt">
+      <div class="ark-topp"><span class="ark-ik" id="ark-ik"></span><h3 id="ark-navn"></h3><input id="ark-navn-inn" hidden maxlength="140" aria-label="Oppgavens tekst" placeholder="Hva skal gjøres?"></div>
+      <span class="ark-lbl" id="ark-lbl">Notat</span>
+      <p class="ark-notat" id="ark-les"></p>
+      <textarea id="ark-notat" aria-labelledby="ark-lbl" placeholder="Slik gjøres det, hva som trengs …"></textarea>
+    </div>
     <div class="ark-meta ark-chips" id="ark-meta"></div>
     <div id="ark-lenkerad"></div>
-    <span class="ark-lbl" id="ark-lbl">Notat</span>
-    <p class="ark-notat" id="ark-les"></p>
-    <textarea id="ark-notat" aria-labelledby="ark-lbl"></textarea>
     <div id="ark-dagrad"></div>
     <div class="ark-handling" id="ark-handling"></div>
     <p class="ark-hint" id="ark-hint"></p>
-    <div class="ark-knapper">
-      <button type="button" id="ark-lagre">Lagre</button>
-      <button type="button" id="ark-avbryt">Lukk uten å lagre</button>
-    </div>
   </div>
 </dialog>
 </body>
