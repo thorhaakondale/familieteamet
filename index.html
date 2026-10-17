@@ -77,6 +77,7 @@ b,strong{font-weight:800}
 .pill.grey{background:var(--line2);color:var(--ink2)}
 .pill.gold{background:#f6e7b8;color:#6b4e00}.tile.bonus{border-style:dashed;border-color:#c9a227}.tile .pt.bo{background:#f6e7b8;color:#6b4e00}
 .barnpoeng{margin:6px 0 10px;padding:8px 12px;border-radius:10px;background:var(--card2);font-size:14px}.barnpoeng b{font-size:18px}
+.borterad{margin:14px 0 4px;text-align:center}.borterad form{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;align-items:center}.borterad input{font:inherit;font-size:14px;padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink)}
 .ferdigrad{margin:16px 0 4px;text-align:center}.ferdigrad button{font:inherit;font-weight:800;font-size:17px;min-height:52px;padding:12px 22px;border-radius:999px;border:0;background:var(--ok);color:#fff;cursor:pointer;width:100%;max-width:420px}.ferdigrad button.meldt{background:var(--card2);color:var(--ink);border:1.5px solid var(--line)}.ferdigrad .small{display:block;margin-top:6px}
 .ferdigbadge{margin:4px 0 8px;font-size:14px}
 .dagrad button.full{border-color:var(--warn);color:var(--warn)}
@@ -433,7 +434,7 @@ details.om .in{padding:8px 0 0;font-size:14px;max-width:70ch}
 <p><b>Bonus 🎁.</b> Noen jobber er ekstra: vaske i huset i torsdagstimen, hjelpe til med bilene og garasjen. De ligger i sin egen bolk nederst, gir ekstra poeng når de gjøres, men teller aldri i ukemålet — ingen taper noe på å la dem ligge. Det som bare er forventet hjelp (klargjøring, bære, rydde etter seg) gir ikke poeng i det hele tatt.</p>
 <p><b>Varsler — få og faste.</b> Tavla maser ikke. Hver får et varsel på mobilen bare til de faste tidene Bjørn har satt opp — de voksne: fabrikkrunden, torsdagstimen, bestilling av mat, søndagstur og søndagskos, pluss én kveldsmelding når barna har gjort alt sitt; barna: morgenrutinen på skoledager og «ferdig for i dag?» om kvelden. Varselet åpner tavla. Varslene sendes gjennom gratistjenesten ntfy (eget emne per voksen under Oppgavebanken) og inneholder ikke navn. Lenka i varselet har familiekoden i seg, slik at den åpner riktig tavle også i Safari — derfor skal emnene holdes hemmelige.</p>
 <p><b>Ideer og forslag hører ikke hjemme her.</b> «Legg til noe jeg må huske» er for husoppgaver med dato. Ideer, forslag og alt som ikke er huset går i innboksen på Kontrolltavla — Bjørn sorterer den søndag og sier fra når for mye henger.</p>
-<p><b>Ferdig for i dag ✅.</b> Når barna har gjort sitt, trykker de «Ferdig for i dag» nederst. Da ser de voksne det øverst på tavla. Når alle barna som har oppgaver i dag har gjort alt sitt, får de voksne <b>én</b> melding samlet — tidligst halv ni om kvelden, aldri ett varsel per trykk. Den som er borte får ingen.</p>
+<p><b>Ferdig for i dag ✅.</b> Når barna har gjort sitt, trykker de «Ferdig for i dag» nederst. Da ser de voksne det øverst på tavla. <b>Jeg er borte 🧳</b> — glemt å legge inn i kalenderen? Knappen nederst på din tavle setter deg borte til og med en dato; husoppgavene dine pauses til da, og «Hjemme igjen» tar det bort. Når alle barna som har oppgaver i dag har gjort alt sitt, får de voksne <b>én</b> melding samlet — tidligst halv ni om kvelden, aldri ett varsel per trykk. Den som er borte får ingen.</p>
 <p><b>Voksne</b> legger inn nye oppgaver, flytter dager og setter belønning under Oppgavebanken. Rader merket «forslag» er tavlas forslag og skal justeres av dere.</p>
 <p><b>Egen lenke og «app» på iPad og mobil.</b> Bruk lenka med <code>&amp;p=erik</code>, <code>&amp;p=vaarin</code>, <code>&amp;p=oscar</code>, <code>&amp;p=thor</code> eller <code>&amp;p=anniken</code>, så åpner tavla ferdig valgt for den personen — også fra hjemskjermen. Legg den på hjemskjermen: iPad/iPhone — Del-knappen → «Legg til på Hjem-skjerm»; Android — menyen ⋮ → «Legg til på startskjermen». Ingen innlogging trengs.</p>
 <p><b>Husøkta torsdag.</b> Alle starter når de kommer hjem fra skolen og gjør sine jobber samtidig — ferdig før fotballen. Badene veksler mellom <b>GROV</b> og lett: appen husker når det sist ble vasket grundig, og blir en uke hoppet over, blir neste automatisk grov. Det som ikke ble gjort torsdag dukker opp én gang til, lørdag morgen, som «Lørdagsøkta». Gikk torsdagen bra, er lørdagen fri.</p>
@@ -451,7 +452,7 @@ details.om .in{padding:8px 0 0;font-size:14px;max-width:70ch}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.27.0';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.28.0';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -550,6 +551,7 @@ function planUke(man){
       var parts=k.split('|');var o=OPPG.filter(function(x){return x.id===parts[0]})[0];if(!o||o.aktiv===false)return;
       var person=parts[2], d=Math.round((new Date(dato+'T00:00:00')-man)/86400000);
       if(us[o.id+'|'+d+'|'+person])return; /* v1.15.1: utsatt videre fra landingsdagen (gamle kjeder) */
+      if(!o.egen&&fravFor(dato,person))return; /* v1.28: utsatte oppgaver vises heller ikke på en fraværsdag — de henger videre til personen er hjemme */
       var fraMan=ukeFraKey(uk), fraDato=addDays(fraMan,+parts[1]);
       ut.push({o:o,dag:d,person:person,orig:person,utsatt:true,fraUke:uk,fraKey:k,fraDato:fraDato,key:o.id+'|'+d+'|'+person+'|u'+uk+'-'+parts[1]});
     });
@@ -1249,13 +1251,24 @@ function tegnIdag(){
     var fl=(fv.linjer||[]).map(function(l){if(!l)return '';var tx=esc(l.x||'');if(l.l)tx='<a href="'+esc(l.l)+'" target="_blank" rel="noopener">'+tx+' ↗</a>';
       return '<li class="'+(l.hard?'hard':'')+'">'+(l.t?'<span class="t">'+(l.hard?'⏰ ':'')+esc(l.t)+'</span> ':'')+tx+'</li>'}).join('');
     var fb2=fv.lenke?'<a href="'+esc(fv.lenke)+'" target="_blank" rel="noopener">Hele planen ↗</a> · ':'';
-    html='<div class="frav"><h3>'+esc(fv.navn||'Borte')+'</h3>'+(fl?'<ul>'+fl+'</ul>':'<p class="tom">Ingen plan lagt inn — bare fri.</p>')+'<div class="fravfot">'+fb2+'Husoppgavene dine er satt på pause i dag. <button type="button" class="edit" id="frav-av">Ikke borte likevel</button></div></div>'+html;
+    html='<div class="frav"><h3>'+esc(fv.navn||'Borte')+'</h3>'+(fl?'<ul>'+fl+'</ul>':'<p class="tom">Ingen plan lagt inn — bare fri.</p>')+'<div class="fravfot">'+fb2+'Husoppgavene dine er satt på pause i dag. <button type="button" class="edit" id="frav-av">Ikke borte likevel</button>'+(fv.kilde==='manuell'?' <button type="button" class="edit" id="frav-av-alle">Hjemme igjen — ta bort resten</button>':'')+'</div></div>'+html;
   } else if(!valgt){ var borte=PERS.filter(function(p){return fravFor(NAA,p.id)}); if(borte.length) html='<div class="fravchip">🧳 Borte i dag: '+borte.map(function(p){var f=fravFor(NAA,p.id);return p.dyr+' '+esc(p.navn)+(f.navn?' ('+esc(f.navn)+')':'')}).join(' · ')+'</div>'+html; }
   if(!html) html='<p class="tom">Ingen oppgaver i dag — fri! 🎉</p>';
+  /* v1.28 (Thor 17.10): «Jeg er borte» — glemt å legge inn i kalenderen? Én knapp, foreslått dato, så er husoppgavene på pause til og med den dagen */
+  if(valgt&&erVoksen()&&!fv){ html+='<div class="borterad"><button type="button" class="edit" id="borte-btn">🧳 Jeg er borte fra hjemmet</button><form id="borte-form" hidden autocomplete="off"><label class="small">Til og med <input type="date" id="borte-til" min="'+ymd(NAA)+'" value="'+ymd(addDays(NAA,1))+'"></label><input id="borte-hva" placeholder="Hvor / hva (valgfritt)" maxlength="40"><button type="submit" class="edit">Sett borte</button><button type="button" class="edit" id="borte-x">Avbryt</button></form></div>'; }
   if(erBarn){var fm=ferdigFor(valgt);html+='<div class="ferdigrad">'+(fm?'<button id="ferdig-btn" class="meldt" data-angre="1">✓ Du meldte ferdig for i dag</button><span class="small">Når alle har gjort alt sitt, får mamma og pappa én beskjed i kveld. Trykk igjen hvis du angret.</span>':'<button id="ferdig-btn">✅ Ferdig for i dag</button><span class="small">Trykk når alt ditt er gjort.</span>')+'</div>'}
   var el=document.getElementById('idag-liste');el.innerHTML=frem+html;
   var fbtn=document.getElementById('ferdig-btn');if(fbtn)fbtn.onclick=function(){meldFerdig(valgt,!!fbtn.dataset.angre,antGjort,antAlle)};
   var fav=document.getElementById('frav-av');if(fav)fav.onclick=function(){if(confirm('Ta bort fraværet for i dag? Husoppgavene kommer tilbake.'))settFravaer(valgt,NAA,null)};
+  var fa2=document.getElementById('frav-av-alle');if(fa2)fa2.onclick=function(){if(!confirm('Ta bort fraværet fra i dag og framover?'))return;var d=new Date(NAA.getFullYear(),NAA.getMonth(),NAA.getDate()),n=0;while(n<31){var f=fravFor(d,valgt);if(!f)break;if(f.kilde!=='manuell')break;settFravaer(valgt,d,null);d=addDays(d,1);n++}};
+  var bb=document.getElementById('borte-btn'), bf=document.getElementById('borte-form');
+  if(bb&&bf){ bb.onclick=function(){bb.hidden=true;bf.hidden=false;document.getElementById('borte-til').focus()};
+    document.getElementById('borte-x').onclick=function(){bf.hidden=true;bb.hidden=false};
+    bf.onsubmit=function(ev){ev.preventDefault(); var til=document.getElementById('borte-til').value||ymd(NAA), hva=(document.getElementById('borte-hva').value||'').trim()||'Borte';
+      if(til<ymd(NAA)) til=ymd(NAA); var d=new Date(NAA.getFullYear(),NAA.getMonth(),NAA.getDate()), n=0;
+      while(ymd(d)<=til&&n<31){ if(!fravFor(d,valgt)) settFravaer(valgt,d,{navn:hva,kilde:'manuell',varsel:'',linjer:[],by:valgt,ts:new Date().toISOString()}); d=addDays(d,1); n++; }
+      toast('Borte til og med '+DAGK[(new Date(til+'T00:00:00').getDay()+6)%7]+' '+datoNorsk(new Date(til+'T00:00:00'))+' — husoppgavene er på pause'); };
+  }
   el.querySelectorAll('.gk').forEach(function(b){b.onclick=function(){toggle(b.dataset.k,b.dataset.s,b.dataset.p)}});
   el.querySelectorAll('.ti').forEach(function(b){b.onclick=function(ev){ev.stopPropagation();aapneArk(b.dataset.ark,b)}});
   el.querySelectorAll('.tmain').forEach(function(b){b.onclick=function(){
