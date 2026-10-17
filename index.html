@@ -119,7 +119,7 @@ dialog#ark::backdrop{background:rgba(0,0,0,.45)}
 #ark .ark-inn{padding:18px 18px calc(18px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:12px}
 #ark .ark-topp{display:flex;align-items:flex-start;gap:10px}
 #ark .ark-ik{font-size:26px;line-height:1.1}
-#ark h3{margin:0;font-size:19px;line-height:1.25;flex:1}
+#ark h3{margin:0;font-size:19px;line-height:1.25;flex:1}#ark #ark-navn-inn{flex:1;font:inherit;font-size:17px;font-weight:800;line-height:1.25;padding:4px 8px;border:1.5px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);min-width:0}
 #ark .ark-x{border:0;background:var(--line2);color:var(--ink);font:inherit;font-size:17px;width:34px;height:34px;border-radius:50%;cursor:pointer;flex:none}
 #ark .ark-meta{margin:0;font-size:13.5px;color:var(--muted);line-height:1.5}#ark .ark-chips{display:flex;flex-wrap:wrap;gap:6px}#ark .ark-chips span{display:inline-block;padding:4px 10px;border-radius:999px;background:var(--card2);border:1px solid var(--line);color:var(--ink);font-size:13px;font-weight:700}#ark .dagrad button.pers{border-color:var(--pc);color:var(--pc)}#ark textarea{min-height:90px}
 #ark .ark-lbl{font-size:12px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
@@ -459,7 +459,7 @@ details.om .in{padding:8px 0 0;font-size:14px;max-width:70ch}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.29.0';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.29.1';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -617,6 +617,8 @@ function aapneArk(id,knapp){
   var voksen=erVoksen();
   document.getElementById('ark-ik').textContent=o.ikon||'🧺';
   document.getElementById('ark-navn').textContent=o.navn;
+  var ni=document.getElementById('ark-navn-inn'); /* v1.29.1 (Thor 17.10): voksne kan endre selve teksten i arket, ikke bare notatet */
+  if(ni){ var kanNavn=erVoksen()&&!o.tur; ni.hidden=!kanNavn; document.getElementById('ark-navn').hidden=kanNavn; ni.value=o.navn||''; }
   var hvem=(o.rull&&o.rull.length?o.rull:(o.hvem||[])).map(function(h){return (PMAP[h]||{navn:h}).navn}).join(', ');
   var bit=[rytmeTekst(o)];
   if(o.slakk)bit.push('kan flyttes '+o.slakk+' dag'+(o.slakk>1?'er':''));
@@ -716,10 +718,12 @@ function lagreArk(){
   if(!erVoksen()){d.close();return}
   var nytt=document.getElementById('ark-notat').value.replace(/\s+$/,'');
   if(nytt)o.notat=nytt; else delete o.notat;
+  var ni=document.getElementById('ark-navn-inn'), nyNavn=ni&&!ni.hidden?ni.value.replace(/\s+/g,' ').trim():''; var navnEndret=!!(nyNavn&&nyNavn!==o.navn);
+  if(navnEndret) o.navn=nyNavn;
   o.ts=new Date().toISOString();
   try{localStorage.setItem('ft-oppg',JSON.stringify(OPPG))}catch(e){}
   if(db){var dok=JSON.parse(JSON.stringify(o));if(!dok.rull)delete dok.rull;db.child('oppgaver/'+id).set(dok).catch(function(){status('Kunne ikke lagre delt — ligger på denne enheten.')})}
-  d.close(); toast('Notatet er lagret ✓'); tegn();
+  d.close(); toast(navnEndret?'Lagret ✓':'Notatet er lagret ✓'); tegn();
 }
 var ARK_BUNDET=false;
 function arkInit(){ /* arket ligger nederst i dokumentet — bind knappene første gang det åpnes */
@@ -1704,7 +1708,7 @@ if('serviceWorker' in navigator){window.addEventListener('load',function(){navig
 </script>
 <dialog id="ark" aria-labelledby="ark-navn">
   <div class="ark-inn">
-    <div class="ark-topp"><span class="ark-ik" id="ark-ik"></span><h3 id="ark-navn"></h3><button type="button" class="ark-x" id="ark-x" aria-label="Lukk uten å lagre">✕</button></div>
+    <div class="ark-topp"><span class="ark-ik" id="ark-ik"></span><h3 id="ark-navn"></h3><input id="ark-navn-inn" hidden maxlength="140" aria-label="Oppgavens tekst"><button type="button" class="ark-x" id="ark-x" aria-label="Lukk uten å lagre">✕</button></div>
     <div class="ark-meta ark-chips" id="ark-meta"></div>
     <div id="ark-lenkerad"></div>
     <span class="ark-lbl" id="ark-lbl">Notat</span>
