@@ -35,3 +35,6 @@ Styrkeøktene følger rekkefølgen A → B → A, ikke ukedagen (Thor). På dage
 
 ## v1.14 — 16.10.2026
 Variantknappene på pauseøvelsene (dead hang ↔ håndklehang, suitcase ↔ farmer's walk) byttet tilbake på iPhone (Thor). Trykk tegner ikke lenger hele økta på nytt — bare knappene og tittelen oppdateres — valget lagres i den aktive økta med en gang, og huskes som ditt valg (`innst.varianter`, lokalt) til neste økt. `touch-action:manipulation` på alle knapper. SW lk-v14.
+
+## v1.16 — 17.10.2026
+Søndagsreserven (Thor): `thor.okter.H` i program.json, bundet til søndag med `visDag:"son"`. Vises bare på søndager der uka mangler en styrkeøkt, som et valgfritt tilbud UNDER søndagsturen — «Søndagsturen går foran» og «ingenting skal tas igjen» står i kortet. ~20 min: yogastart, bulgarsk utfall på sofaen, hoftehev mot sofaen (bird dog i pausen), push-ups på sofakanten (sideplanke i pausen), rolig yoga-avslutning. Ingen tung hengsling før mandagens økt. Teller som ukas styrkeøkt, men endrer ikke A/B-rekkefølgen. Hjemmeknappen på A/B-dager vises ikke for økter med `visDag` (Anniken uendret). Uketabellen merker «+hjemme». SW lk-v16.

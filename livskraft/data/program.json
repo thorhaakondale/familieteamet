@@ -1,6 +1,6 @@
 {
- "versjon": "v1.8",
- "kilde": "Dale Livsstil & PT (programkortet) for øvelser og vekter · liv-treningsspesifikasjon.md v1.1 for mål, regler og progresjon · v1.6 12.10.2026: pauseøvelsene synlige, lette og med bilde · v1.7 14.10.2026: Annikens program (Liv) — to gymøkter, hjemmeøkt og månedssjekk · v1.8 16.10.2026: proteinkortet — lunsj og kvelds mot dagsmålet (Liv)",
+ "versjon": "v1.9",
+ "kilde": "Dale Livsstil & PT (programkortet) for øvelser og vekter · liv-treningsspesifikasjon.md v1.1 for mål, regler og progresjon · v1.6 12.10.2026: pauseøvelsene synlige, lette og med bilde · v1.7 14.10.2026: Annikens program (Liv) — to gymøkter, hjemmeøkt og månedssjekk · v1.8 16.10.2026: proteinkortet — lunsj og kvelds mot dagsmålet (Liv) · v1.9 17.10.2026: søndagsreserven H for Thor — kort hjemmeøkt bare på søndager uka mangler en styrkeøkt, turen går foran",
  "personer": {
   "thor": {
    "navn": "Thor",
@@ -442,6 +442,147 @@
     "varighet": "",
     "farge": "#9ca3af",
     "tekst": "Valgfritt: topptur, sykkel, familie. Ingen plikt."
+   },
+   "H": {
+    "navn": "H — Søndagsreserve hjemme",
+    "dag": "søndag · bare når uka mangler en styrkeøkt",
+    "varighet": "~20 min",
+    "farge": "#0d9488",
+    "visDag": "son",
+    "oppvarming": "Yogastart på matta, 3 min: 5 × katt-ku · 30 s barnets stilling · 30 s nedadgående hund med bøyde knær · 3 × «verdens beste tøy» per side.",
+    "ferdigtekst": "Søndagsreserven teller som ukas manglende styrkeøkt. Mandag er det bare neste bokstav.",
+    "hensikt": {
+     "tittel": "Søndagsreserve — bare hvis du har lyst",
+     "linjer": [
+      [
+       "Når den dukker opp",
+       "Bare på søndager der A eller B ikke ble tatt. Er begge gjort, finnes den ikke — den er aldri en tredje økt."
+      ],
+      [
+       "Søndagsturen går foran",
+       "Har du bare overskudd til én ting, ta turen. Begge går fint, men turen først."
+      ],
+      [
+       "Overskudd, ikke krav",
+       "Hopper du over, er det helt greit. Ingenting skal tas igjen — mandag er bare neste bokstav."
+      ],
+      [
+       "Utstyr",
+       "Matte og sofa. Har du strikk, kettlebell eller en manual, bruk det — ellers kroppsvekt."
+      ],
+      [
+       "Ryggen og mandagen",
+       "Ingen tung hengsling, mandagens økt kommer rett etter. Ryggtall 2 eller mer i morges: ta bare yogastarten og avslutningen."
+      ]
+     ],
+     "regel": "Stopp mens det fortsatt er gøy. Kjennes det tungt midt i, avslutt — økta teller likevel.",
+     "mer": "Slik er den tenkt"
+    },
+    "ovelser": [
+     {
+      "id": "hs-splitt",
+      "navn": "Bulgarsk utfall med bakfoten på sofaen",
+      "hint": "vristen ned på sofaen, ikke tærne bøyd · har du kettlebell eller manual: hold den foran brystet",
+      "sett": 2,
+      "reps": [
+       8,
+       10
+      ],
+      "perSide": true,
+      "pause": 60,
+      "pauseFast": 60,
+      "type": "hoved",
+      "slik": [
+       "Stå med ryggen til sofaen, legg den ene vristen på setet bak deg. Framfoten et langt steg fram, hele foten i gulvet.",
+       "Senk bakre kne rett ned mot gulvet, overkroppen litt foroverlent.",
+       "Press opp gjennom hælen på framfoten. Alle reps, så bytt. Vondt i stortåa: kortere bevegelse."
+      ]
+     },
+     {
+      "id": "hs-hofteloft",
+      "navn": "Hoftehev med skuldrene mot sofaen",
+      "hint": "hold 1 s på toppen · har du strikk: rundt knærne, press dem ut",
+      "sett": 2,
+      "reps": [
+       12,
+       15
+      ],
+      "pause": 60,
+      "pauseFast": 60,
+      "type": "hoved",
+      "fyllstoff": {
+       "id": "birddog",
+       "navn": "Bird dog",
+       "maal": "2 × 6 per side — rolig, 3 s hold på topp",
+       "maaling": "reps",
+       "perSide": true,
+       "sett": 2,
+       "bilde": "img/birddog.webp",
+       "slik": [
+        "På alle fire, hendene under skuldrene, knærne under hofta.",
+        "Strekk høyre arm fram og venstre bein bak samtidig — til de er i høyde med ryggen, ikke høyere.",
+        "Hold 3 sekunder uten at hofta vrir seg, tilbake, bytt side. 6 per side."
+       ],
+       "hvorfor": "Ryggen: lærer korsryggen å holde seg i ro mens armer og bein jobber — McGill Big 3."
+      },
+      "slik": [
+       "Sitt på gulvet med skulderbladene mot sofakanten, knærne bøyd og føttene i gulvet.",
+       "Press hofta opp til kroppen er rett fra knær til skuldre — klem setet, ikke svai i korsryggen.",
+       "Hold 1 sekund, ned rolig."
+      ]
+     },
+     {
+      "id": "hs-push",
+      "navn": "Push-ups med hendene på sofakanten",
+      "hint": "kroppen rett fra hode til hæl · for lett: hendene på gulvet",
+      "sett": 2,
+      "reps": [
+       8,
+       15
+      ],
+      "pause": 60,
+      "pauseFast": 60,
+      "type": "hoved",
+      "fyllstoff": {
+       "id": "sideplanke",
+       "navn": "Sideplanke",
+       "maal": "2 × 20–30 s per side — stopp mens formen er fin",
+       "maaling": "sek",
+       "sett": 2,
+       "perSide": true,
+       "maaltid": 60,
+       "bilde": "img/sideplanke.webp",
+       "slik": [
+        "Ligg på siden, albuen rett under skulderen, føttene oppå hverandre.",
+        "Løft hofta til kroppen er én rett linje fra hode til føtter. Øverste hånd på hofta.",
+        "Hold 20–30 s rolig pust, ned, bytt side. Blir det tungt: nederste kne i gulvet."
+       ],
+       "hvorfor": "Kjerne og korsrygg: sidemusklene som holder ryggen stabil — McGill Big 3."
+      },
+      "slik": [
+       "Hendene på sofakanten litt bredere enn skuldrene, beina strake bak.",
+       "Senk brystet mot sofakanten med albuene skrått bakover, ikke rett ut.",
+       "Press opp. Murrer albuen: kortere bevegelse, eller hopp over."
+      ]
+     },
+     {
+      "id": "hs-yoga",
+      "navn": "Rolig avslutning på matta",
+      "hint": "3 min · figur-4 eller due per side, liggende vridning, seks lange utpust",
+      "sett": 1,
+      "reps": [
+       1,
+       1
+      ],
+      "type": "avslutning",
+      "maaling": "gjort",
+      "slik": [
+       "Figur-4: ligg på ryggen, ankelen over motsatt kne, trekk beinet inn mot deg. 30 s per side.",
+       "Liggende vridning: knærne til den ene siden, blikket mot den andre. 30 s per side.",
+       "Ligg stille og pust rolig ut seks ganger, lengre ut enn inn."
+      ]
+     }
+    ]
    }
   },
   "tester": {
