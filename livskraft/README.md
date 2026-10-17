@@ -38,3 +38,6 @@ Variantknappene på pauseøvelsene (dead hang ↔ håndklehang, suitcase ↔ far
 
 ## v1.16 — 17.10.2026
 Søndagsreserven (Thor): `thor.okter.H` i program.json, bundet til søndag med `visDag:"son"`. Vises bare på søndager der uka mangler en styrkeøkt, som et valgfritt tilbud UNDER søndagsturen — «Søndagsturen går foran» og «ingenting skal tas igjen» står i kortet. ~20 min: yogastart, bulgarsk utfall på sofaen, hoftehev mot sofaen (bird dog i pausen), push-ups på sofakanten (sideplanke i pausen), rolig yoga-avslutning. Ingen tung hengsling før mandagens økt. Teller som ukas styrkeøkt, men endrer ikke A/B-rekkefølgen. Hjemmeknappen på A/B-dager vises ikke for økter med `visDag` (Anniken uendret). Uketabellen merker «+hjemme». SW lk-v16.
+
+## v1.17 — 17.10.2026
+Reserveøkta hjemme (tidligere «søndagsreserven») er tilgjengelig torsdag–søndag (Thor): `visDag:["tor","fre","lor","son"]`, `utenGym:["son"]`. Torsdag–lørdag ligger den som en ekstra knapp i «Ikke fått tatt styrkeøkta denne uka?» under A/B-valget; søndag står den alene under turen (ingen gym-økt dagen før mandag). På tur-dagene står «<turen> går foran». Fortsatt bare når uka mangler en styrkeøkt. SW lk-v17.

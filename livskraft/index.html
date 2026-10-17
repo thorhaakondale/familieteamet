@@ -360,7 +360,7 @@ details.om summary{cursor:pointer;font-weight:700;color:var(--ag);font-size:13px
 
 <script>
 /* ============================================================
-   Livskraft v1.16 — treningsappen til familien Dale (Liv, 14.9.2026 · v1.8 28.9: alarm maks 10 s, slipper lyden · v1.9 29.9: varsel i bakgrunnen via ntfy · v1.10 12.10: pauseøvelsene synlige med bilde og «slik gjør du den», hovedøvelse/pauseøvelse/tilbehør merket, ærlig tidsanslag per økt · v1.11 13.10: push-varselet bestilles 5 s før pausen er over · v1.12 14.10: Annikens program (A, B, hjemmeøkt H), bilde på hovedøvelsene, månedssjekken · v1.13 16.10: neste styrkeøkt følger rekkefølgen, ikke ukedagen — valgbar alle dager uka ikke er fullført · v1.14 16.10: variantvalget på pauseøvelsene står og huskes · v1.16 17.10: søndagsreserven — kort hjemmeøkt bare på søndager uka mangler en styrkeøkt)
+   Livskraft v1.17 — treningsappen til familien Dale (Liv, 14.9.2026 · v1.8 28.9: alarm maks 10 s, slipper lyden · v1.9 29.9: varsel i bakgrunnen via ntfy · v1.10 12.10: pauseøvelsene synlige med bilde og «slik gjør du den», hovedøvelse/pauseøvelse/tilbehør merket, ærlig tidsanslag per økt · v1.11 13.10: push-varselet bestilles 5 s før pausen er over · v1.12 14.10: Annikens program (A, B, hjemmeøkt H), bilde på hovedøvelsene, månedssjekken · v1.13 16.10: neste styrkeøkt følger rekkefølgen, ikke ukedagen — valgbar alle dager uka ikke er fullført · v1.14 16.10: variantvalget på pauseøvelsene står og huskes · v1.16 17.10: søndagsreserven · v1.17 17.10: reserveøkta hjemme tilgjengelig torsdag–søndag når uka mangler en styrkeøkt)
    Program = data/program.json (agentstyrt). Logg = lokalt + Firebase (fam/<kode>/okt/<person>).
    ============================================================ */
 "use strict";
@@ -607,16 +607,22 @@ function tegnIdag(){
   else if(bok==='T'||bok==='S'){h+='<p class="lit" style="margin:8px 0">'+esc(okt.tekst)+'</p><div class="rad"><input class="tall" id="tur-min" type="text" inputmode="numeric" placeholder="min" style="max-width:100px"><button class="knapp lit" id="gjort-enkel" data-t="'+bok+'">'+(erGjort?'Gjort ✓':'Turen er gått')+'</button></div>'}
   else{h+='<p class="lit" style="margin:8px 0">'+esc(okt.tekst)+'</p>'}
   if(bok!=='A'&&bok!=='B'&&gymDenneUka()<gymMaalUke(modus)&&!gj.some(function(o){return o.type==='A'||o.type==='B'||o.type==='H'})){
-    var hr=PP().okter.H;if(hr&&hr.visDag&&hr.visDag===DAGKEY[(d.getDay()||7)-1]){ /* v1.16 (Thor 17.10.2026): søndagsreserven — overskudd, ikke krav. Turen står først. */
-      h+='<div class="ta-igjen" style="border-bottom:0;border-top:1px dashed var(--kant);padding:14px 0 0;margin:14px 0 4px"><b>Overskudd i dag? Søndagsreserve hjemme</b><div class="lit">Uka mangler en styrkeøkt. Vil du, kan du ta en kort, enkel økt hjemme — yoga, kroppsvekt og sofaen.</div>';
-      h+='<ul class="lit" style="margin:8px 0 0;padding-left:18px"><li><b>Søndagsturen går foran.</b> Har du bare overskudd til én ting, ta turen.</li><li>Hopper du over, er det helt greit — ingenting skal tas igjen. Mandag er bare neste bokstav.</li></ul>';
-      h+='<div class="rad" style="margin-top:10px"><button class="knapp sek" id="start-reserve">Start søndagsreserven · ~'+estMin(hr,false)+' min</button></div></div>'}
+    /* v1.16–1.17 (Thor 17.10.2026): reserveøkta hjemme — overskudd, ikke krav. Tilgjengelig dagene i visDag (tor–søn); på utenGym-dager (søndag) står den alene under turen. */
+    var hr=PP().okter.H,dk=DAGKEY[(d.getDay()||7)-1],resDag=!!(hr&&hr.visDag&&[].concat(hr.visDag).indexOf(dk)>-1),resAlene=resDag&&[].concat(hr.utenGym||[]).indexOf(dk)>-1;
+    var turForan=(bok==='T'||bok==='S')?'<li><b>'+esc(okt.navn)+' går foran.</b> Har du bare overskudd til én ting, ta turen.</li>':'';
+    if(resAlene){
+      h+='<div class="ta-igjen" style="border-bottom:0;border-top:1px dashed var(--kant);padding:14px 0 0;margin:14px 0 4px"><b>Overskudd i dag? Reserveøkt hjemme</b><div class="lit">Uka mangler en styrkeøkt. Vil du, kan du ta en kort, enkel økt hjemme — yoga, kroppsvekt og sofaen.</div>';
+      h+='<ul class="lit" style="margin:8px 0 0;padding-left:18px">'+turForan+'<li>Hopper du over, er det helt greit — ingenting skal tas igjen. Neste økt er bare neste bokstav.</li></ul>';
+      h+='<div class="rad" style="margin-top:10px"><button class="knapp sek" id="start-reserve">Start reserveøkta · ~'+estMin(hr,false)+' min</button></div></div>'}
     else{
     var nb=nesteGymBokstav(),ab=nb==='A'?'B':'A';var h0=h;h='';
     h+='<div class="ta-igjen"><b>Ikke fått tatt styrkeøkta denne uka?</b><div class="lit">Ta den i dag — neste i rekkefølgen er '+nb+'.</div>';
     if(ps.nivaa===2)h+='<div class="varsel">'+esc(PROG.tilbakefall.tre_uker)+'</div>';else if(ps.nivaa===1)h+='<div class="varsel">'+esc(PROG.tilbakefall.to)+'</div>';
     h+='<div class="rad" style="margin-top:10px"><button class="knapp" id="start-neste" data-t="'+nb+'">Start økt '+nb+' · '+esc(PP().okter[nb].navn)+' · ~'+estMin(PP().okter[nb],false)+' min</button></div>';
-    h+='<div class="rad" style="margin-top:8px"><button class="knapp sek lit" id="start-annen" data-t="'+ab+'">Eller økt '+ab+' · ~'+estMin(PP().okter[ab],false)+' min</button></div></div>'+h0}}
+    h+='<div class="rad" style="margin-top:8px"><button class="knapp sek lit" id="start-annen" data-t="'+ab+'">Eller økt '+ab+' · ~'+estMin(PP().okter[ab],false)+' min</button></div>';
+    if(resDag){h+='<div class="rad" style="margin-top:8px"><button class="knapp sek lit" id="start-reserve">Eller reserveøkt hjemme — yoga og kroppsvekt · ~'+estMin(hr,false)+' min</button></div>';
+      h+='<ul class="lit" style="margin:8px 0 0;padding-left:18px">'+turForan+'<li>Overskudd, ikke krav: hopper du over, skal ingenting tas igjen.</li></ul>'}
+    h+='</div>'+h0}}
   $('idag-kort').innerHTML='<h2>'+dagTittel+'</h2>'+h;
   var bn=$('start-neste');if(bn)bn.onclick=function(){startOkt(bn.getAttribute('data-t'),false)};
   var ba=$('start-annen');if(ba)ba.onclick=function(){startOkt(ba.getAttribute('data-t'),false)};

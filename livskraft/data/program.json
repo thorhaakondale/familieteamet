@@ -1,6 +1,6 @@
 {
- "versjon": "v1.9",
- "kilde": "Dale Livsstil & PT (programkortet) for øvelser og vekter · liv-treningsspesifikasjon.md v1.1 for mål, regler og progresjon · v1.6 12.10.2026: pauseøvelsene synlige, lette og med bilde · v1.7 14.10.2026: Annikens program (Liv) — to gymøkter, hjemmeøkt og månedssjekk · v1.8 16.10.2026: proteinkortet — lunsj og kvelds mot dagsmålet (Liv) · v1.9 17.10.2026: søndagsreserven H for Thor — kort hjemmeøkt bare på søndager uka mangler en styrkeøkt, turen går foran",
+ "versjon": "v1.10",
+ "kilde": "Dale Livsstil & PT (programkortet) for øvelser og vekter · liv-treningsspesifikasjon.md v1.1 for mål, regler og progresjon · v1.6 12.10.2026: pauseøvelsene synlige, lette og med bilde · v1.7 14.10.2026: Annikens program (Liv) — to gymøkter, hjemmeøkt og månedssjekk · v1.8 16.10.2026: proteinkortet — lunsj og kvelds mot dagsmålet (Liv) · v1.9 17.10.2026: søndagsreserven H for Thor — kort hjemmeøkt bare på søndager uka mangler en styrkeøkt, turen går foran · v1.10 17.10.2026: reserveøkta H tilgjengelig torsdag–søndag (søndag uten gym-valg)",
  "personer": {
   "thor": {
    "navn": "Thor",
@@ -444,27 +444,32 @@
     "tekst": "Valgfritt: topptur, sykkel, familie. Ingen plikt."
    },
    "H": {
-    "navn": "H — Søndagsreserve hjemme",
-    "dag": "søndag · bare når uka mangler en styrkeøkt",
+    "navn": "H — Reserveøkt hjemme",
+    "dag": "torsdag–søndag · bare når uka mangler en styrkeøkt",
     "varighet": "~20 min",
     "farge": "#0d9488",
-    "visDag": "son",
+    "visDag": [
+     "tor",
+     "fre",
+     "lor",
+     "son"
+    ],
     "oppvarming": "Yogastart på matta, 3 min: 5 × katt-ku · 30 s barnets stilling · 30 s nedadgående hund med bøyde knær · 3 × «verdens beste tøy» per side.",
-    "ferdigtekst": "Søndagsreserven teller som ukas manglende styrkeøkt. Mandag er det bare neste bokstav.",
+    "ferdigtekst": "Reserveøkta teller som ukas manglende styrkeøkt. Neste gang på gymmet er det bare neste bokstav.",
     "hensikt": {
-     "tittel": "Søndagsreserve — bare hvis du har lyst",
+     "tittel": "Reserveøkt hjemme — bare hvis du har lyst",
      "linjer": [
       [
        "Når den dukker opp",
-       "Bare på søndager der A eller B ikke ble tatt. Er begge gjort, finnes den ikke — den er aldri en tredje økt."
+       "Torsdag til søndag, bare når A eller B ikke ble tatt den uka. Er begge gjort, finnes den ikke — den er aldri en tredje økt."
       ],
       [
-       "Søndagsturen går foran",
-       "Har du bare overskudd til én ting, ta turen. Begge går fint, men turen først."
+       "Turen går foran",
+       "På tur-dagene (torsdag og søndag): har du bare overskudd til én ting, ta turen. Begge går fint, men turen først."
       ],
       [
        "Overskudd, ikke krav",
-       "Hopper du over, er det helt greit. Ingenting skal tas igjen — mandag er bare neste bokstav."
+       "Hopper du over, er det helt greit. Ingenting skal tas igjen — neste økt er bare neste bokstav."
       ],
       [
        "Utstyr",
@@ -472,7 +477,7 @@
       ],
       [
        "Ryggen og mandagen",
-       "Ingen tung hengsling, mandagens økt kommer rett etter. Ryggtall 2 eller mer i morges: ta bare yogastarten og avslutningen."
+       "Ingen tung hengsling, så den passer også på søndag med mandagsøkta rett etter. Ryggtall 2 eller mer i morges: ta bare yogastarten og avslutningen."
       ]
      ],
      "regel": "Stopp mens det fortsatt er gøy. Kjennes det tungt midt i, avslutt — økta teller likevel.",
@@ -582,6 +587,9 @@
        "Ligg stille og pust rolig ut seks ganger, lengre ut enn inn."
       ]
      }
+    ],
+    "utenGym": [
+     "son"
     ]
    }
   },
