@@ -452,7 +452,7 @@ details.om .in{padding:8px 0 0;font-size:14px;max-width:70ch}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.28.0';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.28.1';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -877,6 +877,9 @@ function backupLuka(dag,type){ /* v1.24: type 'hus' (lørdag) eller 'bil' (sønd
 }
 function planleggBackup(){
   if(BACKUP_NAA||!db||!INNST.ntfy||!FRAV_LASTET||!UKER_LASTET||!OPPG_LASTET) return;
+  /* v1.28.1 (Thor 17.10): backup-varselet respekterer av-bryteren i innstillinger/varsler (id backup-luka). Står den på aktiv:false, sendes ingenting — lørdagsøkta kl. 9 tar over. */
+  var bl=INNST.varsler?(Array.isArray(INNST.varsler)?INNST.varsler:Object.keys(INNST.varsler).map(function(k){return INNST.varsler[k]})).filter(function(v){return v&&v.id==='backup-luka'})[0]:null;
+  if(bl&&bl.aktiv===false){ BACKUP_NAA=true; return; }
   var naa=new Date(), man=mandag(naa), fre18=addDays(man,4); fre18.setHours(18,0,0,0);
   if(naa<fre18) return; BACKUP_NAA=true;
   var n=lesNtfy(INNST.ntfy)||{}, hm=String(INNST.backupTid||'09:30').split(':');
