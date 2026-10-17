@@ -77,6 +77,9 @@ b,strong{font-weight:800}
 .pill.grey{background:var(--line2);color:var(--ink2)}
 .pill.gold{background:#f6e7b8;color:#6b4e00}.tile.bonus{border-style:dashed;border-color:#c9a227}.tile .pt.bo{background:#f6e7b8;color:#6b4e00}
 .barnpoeng{margin:6px 0 10px;padding:8px 12px;border-radius:10px;background:var(--card2);font-size:14px}.barnpoeng b{font-size:18px}
+.mer{padding:10px 14px}.mer .borterad{margin:4px 0}.mer details.om{margin-top:6px}
+.ferdigstripe{margin-top:14px;border-top:1px dashed var(--line);padding-top:8px}.ferdigstripe summary{cursor:pointer;font-weight:800;font-size:13px;color:var(--muted);list-style:none}.ferdigstripe summary::-webkit-details-marker{display:none}.ferdigstripe summary .small{font-weight:500}
+.ferdigstripe .tiles.kompakt .tile{min-height:30px;opacity:.7}.ferdigstripe .tiles.kompakt .tmain{padding:2px 4px 2px 9px}.ferdigstripe .tiles.kompakt .pt,.ferdigstripe .tiles.kompakt .mt,.ferdigstripe .tiles.kompakt .avs,.ferdigstripe .tiles.kompakt .tb{display:none}
 .borterad{margin:14px 0 4px;text-align:center}.borterad form{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;align-items:center}.borterad input{font:inherit;font-size:14px;padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink)}
 .ferdigrad{margin:16px 0 4px;text-align:center}.ferdigrad button{font:inherit;font-weight:800;font-size:17px;min-height:52px;padding:12px 22px;border-radius:999px;border:0;background:var(--ok);color:#fff;cursor:pointer;width:100%;max-width:420px}.ferdigrad button.meldt{background:var(--card2);color:var(--ink);border:1.5px solid var(--line)}.ferdigrad .small{display:block;margin-top:6px}
 .ferdigbadge{margin:4px 0 8px;font-size:14px}
@@ -318,6 +321,10 @@ details.om .in{padding:8px 0 0;font-size:14px;max-width:70ch}
     </details>
   </div>
 </section>
+<!-- v1.29 (Thor 17.10): det man gjør sjelden, samlet i ett lavt kort under dagen -->
+<section class="card mer" id="mer" hidden>
+  <div id="mer-borte"></div>
+</section>
 
 <section class="card" id="lag">
   <h2>Lagmålet denne uka</h2>
@@ -452,7 +459,7 @@ details.om .in{padding:8px 0 0;font-size:14px;max-width:70ch}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.28.1';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.29.0';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -725,7 +732,7 @@ function arkInit(){ /* arket ligger nederst i dokumentet — bind knappene førs
   ARK_BUNDET=true; return true;
 }
 
-var valgt=null;
+var valgt=null, FERD_OPEN=false;
 try{valgt=localStorage.getItem('ft-person')||null}catch(e){}
 (function(){var q='';try{q=(new URLSearchParams(location.search).get('p')||location.hash.replace('#','')||'').toLowerCase()}catch(e){}
   if(q==='vårin'||q==='varin')q='vaarin';
@@ -1201,9 +1208,10 @@ function tegnIdag(){
   var BARN=['erik','vaarin','oscar'];
   var erBarn=!!(valgt&&BARN.indexOf(valgt)>=0);
   var rekke=erBarn?GRUPPER.concat(['Bonus','Henger igjen']):['Henger igjen'].concat(GRUPPER,['Bonus']);
+  var FERD=[]; /* v1.29 (Thor 17.10): det som er huket flyttes ut av gruppene og ned i én lav stripe nederst */
   rekke.forEach(function(g){
     if(!grp[g].length) return;
-    html+='<div class="grp'+(g==='Henger igjen'?' hg':'')+'">'+esc(navnG[g]||g)+'</div><div class="tiles">';
+    var gh='';
     /* «Alle»-visning: samme oppgave for flere personer samme dag = én rute med avatarer */
     var liste=grp[g];
     /* Forfalte ruter slås IKKE sammen: de kan komme fra ulike uker, og hver av dem må beholde sin egen ukeKey */
@@ -1215,7 +1223,8 @@ function tegnIdag(){
         var alleD=s.felles.every(function(x){return erGjort(fk,x.key)}), antD=s.felles.filter(function(x){return erGjort(fk,x.key)}).length;
         var av=s.felles.map(function(x){var q=PMAP[x.person];return '<span class="av'+(erGjort(fk,x.key)?' ok':'')+'" style="--pc:'+q.farge+'" title="'+esc(q.navn)+'">'+esc(q.kort)+'</span>'}).join('');
         var metaF=(s.o.min?s.o.min+' min · ':'')+'alle sammen · '+antD+' av '+s.felles.length+(s.o.notat||s.o.lenke?' · trykk ⓘ for stegene':'');
-        html+='<div class="tile'+(alleD?' done':'')+(s.o.bonus?' bonus':'')+'" style="--pc:var(--accent)"><button class="tmain" data-k="'+esc(fk)+'" data-f="'+esc(s.felles.map(function(x){return x.key}).join(','))+'" aria-pressed="'+alleD+'"><span class="chk">✓</span><span class="ik">'+s.o.ikon+'</span><span class="tx"><span class="nm">'+esc(s.o.navn)+'<span class="pt num">+'+(s.o.poeng*s.felles.length)+'</span></span><span class="mt">'+metaF+'</span><span class="avs">'+av+'</span></span></button><span class="side">'+arkKnapp(s.o)+'<button hidden class="tb" title="Utsett for alle" aria-label="Utsett for alle" data-k="'+esc(s.felles[0].ukeKey||key)+'" data-o="'+esc(s.o.id)+'" data-d="'+s.dag+'" data-dag0="'+(s.felles[0].flyttet?s.felles[0].fraDag:s.dag)+'" data-felles="'+esc(s.felles.map(function(x){return x.orig}).join(','))+'">⇄</button></span></div>';
+        var tF='<div class="tile'+(alleD?' done':'')+(s.o.bonus?' bonus':'')+'" style="--pc:var(--accent)"><button class="tmain" data-k="'+esc(fk)+'" data-f="'+esc(s.felles.map(function(x){return x.key}).join(','))+'" aria-pressed="'+alleD+'"><span class="chk">✓</span><span class="ik">'+s.o.ikon+'</span><span class="tx"><span class="nm">'+esc(s.o.navn)+'<span class="pt num">+'+(s.o.poeng*s.felles.length)+'</span></span><span class="mt">'+metaF+'</span><span class="avs">'+av+'</span></span></button><span class="side">'+arkKnapp(s.o)+'<button hidden class="tb" title="Utsett for alle" aria-label="Utsett for alle" data-k="'+esc(s.felles[0].ukeKey||key)+'" data-o="'+esc(s.o.id)+'" data-d="'+s.dag+'" data-dag0="'+(s.felles[0].flyttet?s.felles[0].fraDag:s.dag)+'" data-felles="'+esc(s.felles.map(function(x){return x.orig}).join(','))+'">⇄</button></span></div>';
+        if(alleD) FERD.push(tF); else gh+=tF;
         return;
       }
       var done=erGjort(s.ukeKey||key,s.key), p=PMAP[s.person];
@@ -1228,10 +1237,12 @@ function tegnIdag(){
         meta='skulle vært '+DAGK[s.dag]+' '+datoNorsk(s.dato)+(dg>6?' · <b>'+dg+' dager forfalt</b>':'')+' · '+meta;}
       meta=meta.replace(/^(\s*·\s*)+/,'').replace(/(\s*·\s*)+$/,''); /* huskelapper uten minutter skal ikke ende på en ensom prikk */
       var tk=s.ukeKey||key;
-      html+='<div class="tile'+(done?' done':'')+(s.forfalt?' hg':'')+(s.o.bonus?' bonus':'')+'" style="--pc:'+p.farge+'"><button class="tmain" data-k="'+esc(tk)+'" data-s="'+esc(s.key)+'" data-p="'+esc(s.person)+'" aria-pressed="'+done+'"><span class="chk">✓</span><span class="ik">'+s.o.ikon+'</span><span class="tx"><span class="nm">'+esc(s.o.navn)+mdTag(s.o,s.dato||NAA)+(s.o.bonus?'<span class="pt num bo">+'+s.o.poeng+' bonus</span>':'<span class="pt num">+'+s.o.poeng+'</span>')+'</span><span class="mt">'+meta+'</span></span></button><span class="side">'+arkKnapp(s.o)+'<button hidden class="tb" title="Bytt oppgaven til en annen" aria-label="Bytt til en annen" data-k="'+esc(tk)+'" data-o="'+esc(s.o.id)+'" data-d="'+s.dag+'" data-fra="'+esc(s.orig)+'" data-naa="'+esc(s.person)+'" data-dag0="'+(s.flyttet?s.fraDag:s.dag)+'"'+(s.forfalt?' data-forfalt="1"':'')+(s.utsatt?' data-uts="'+esc(s.fraUke)+'" data-utsk="'+esc(s.fraKey)+'"':'')+'>⇄</button></span></div>';
+      var tS='<div class="tile'+(done?' done':'')+(s.forfalt?' hg':'')+(s.o.bonus?' bonus':'')+'" style="--pc:'+p.farge+'"><button class="tmain" data-k="'+esc(tk)+'" data-s="'+esc(s.key)+'" data-p="'+esc(s.person)+'" aria-pressed="'+done+'"><span class="chk">✓</span><span class="ik">'+s.o.ikon+'</span><span class="tx"><span class="nm">'+esc(s.o.navn)+mdTag(s.o,s.dato||NAA)+(s.o.bonus?'<span class="pt num bo">+'+s.o.poeng+' bonus</span>':'<span class="pt num">+'+s.o.poeng+'</span>')+'</span><span class="mt">'+meta+'</span></span></button><span class="side">'+arkKnapp(s.o)+'<button hidden class="tb" title="Bytt oppgaven til en annen" aria-label="Bytt til en annen" data-k="'+esc(tk)+'" data-o="'+esc(s.o.id)+'" data-d="'+s.dag+'" data-fra="'+esc(s.orig)+'" data-naa="'+esc(s.person)+'" data-dag0="'+(s.flyttet?s.fraDag:s.dag)+'"'+(s.forfalt?' data-forfalt="1"':'')+(s.utsatt?' data-uts="'+esc(s.fraUke)+'" data-utsk="'+esc(s.fraKey)+'"':'')+'>⇄</button></span></div>';
+      if(done) FERD.push(tS); else gh+=tS;
     });
-    html+='</div>';
+    if(gh) html+='<div class="grp'+(g==='Henger igjen'?' hg':'')+'">'+esc(navnG[g]||g)+'</div><div class="tiles">'+gh+'</div>';
   });
+  if(FERD.length) html+='<details class="ferdigstripe"'+(FERD_OPEN?' open':'')+' id="ferdigstripe"><summary>✓ Fullført i dag <span class="num">('+FERD.length+')</span> <span class="small">— trykk på en for å angre</span></summary><div class="tiles kompakt">'+FERD.join('')+'</div></details>';
   /* dagsframdrift + feiring */
   var pl=slots.filter(function(s){return !s.o.bonus});
   var antAlle=pl.length, antGjort=pl.filter(function(s){return erGjort(key,s.key)}).length;
@@ -1257,10 +1268,13 @@ function tegnIdag(){
     html='<div class="frav"><h3>'+esc(fv.navn||'Borte')+'</h3>'+(fl?'<ul>'+fl+'</ul>':'<p class="tom">Ingen plan lagt inn — bare fri.</p>')+'<div class="fravfot">'+fb2+'Husoppgavene dine er satt på pause i dag. <button type="button" class="edit" id="frav-av">Ikke borte likevel</button>'+(fv.kilde==='manuell'?' <button type="button" class="edit" id="frav-av-alle">Hjemme igjen — ta bort resten</button>':'')+'</div></div>'+html;
   } else if(!valgt){ var borte=PERS.filter(function(p){return fravFor(NAA,p.id)}); if(borte.length) html='<div class="fravchip">🧳 Borte i dag: '+borte.map(function(p){var f=fravFor(NAA,p.id);return p.dyr+' '+esc(p.navn)+(f.navn?' ('+esc(f.navn)+')':'')}).join(' · ')+'</div>'+html; }
   if(!html) html='<p class="tom">Ingen oppgaver i dag — fri! 🎉</p>';
+  else if(!/class="grp/.test(html)) html='<p class="tom">Alt er gjort — fri! 🎉</p>'+html;
   /* v1.28 (Thor 17.10): «Jeg er borte» — glemt å legge inn i kalenderen? Én knapp, foreslått dato, så er husoppgavene på pause til og med den dagen */
-  if(valgt&&erVoksen()&&!fv){ html+='<div class="borterad"><button type="button" class="edit" id="borte-btn">🧳 Jeg er borte fra hjemmet</button><form id="borte-form" hidden autocomplete="off"><label class="small">Til og med <input type="date" id="borte-til" min="'+ymd(NAA)+'" value="'+ymd(addDays(NAA,1))+'"></label><input id="borte-hva" placeholder="Hvor / hva (valgfritt)" maxlength="40"><button type="submit" class="edit">Sett borte</button><button type="button" class="edit" id="borte-x">Avbryt</button></form></div>'; }
+  var merB=document.getElementById('mer-borte'); if(merB) merB.innerHTML='';
+  if(valgt&&erVoksen()&&!fv&&merB){ merB.innerHTML='<div class="borterad"><button type="button" class="edit" id="borte-btn">🧳 Jeg er borte fra hjemmet</button><form id="borte-form" hidden autocomplete="off"><label class="small">Til og med <input type="date" id="borte-til" min="'+ymd(NAA)+'" value="'+ymd(addDays(NAA,1))+'"></label><input id="borte-hva" placeholder="Hvor / hva (valgfritt)" maxlength="40"><button type="submit" class="edit">Sett borte</button><button type="button" class="edit" id="borte-x">Avbryt</button></form></div>'; }
   if(erBarn){var fm=ferdigFor(valgt);html+='<div class="ferdigrad">'+(fm?'<button id="ferdig-btn" class="meldt" data-angre="1">✓ Du meldte ferdig for i dag</button><span class="small">Når alle har gjort alt sitt, får mamma og pappa én beskjed i kveld. Trykk igjen hvis du angret.</span>':'<button id="ferdig-btn">✅ Ferdig for i dag</button><span class="small">Trykk når alt ditt er gjort.</span>')+'</div>'}
   var el=document.getElementById('idag-liste');el.innerHTML=frem+html;
+  var fs=document.getElementById('ferdigstripe'); if(fs) fs.addEventListener('toggle',function(){FERD_OPEN=fs.open});
   var fbtn=document.getElementById('ferdig-btn');if(fbtn)fbtn.onclick=function(){meldFerdig(valgt,!!fbtn.dataset.angre,antGjort,antAlle)};
   var fav=document.getElementById('frav-av');if(fav)fav.onclick=function(){if(confirm('Ta bort fraværet for i dag? Husoppgavene kommer tilbake.'))settFravaer(valgt,NAA,null)};
   var fa2=document.getElementById('frav-av-alle');if(fa2)fa2.onclick=function(){if(!confirm('Ta bort fraværet fra i dag og framover?'))return;var d=new Date(NAA.getFullYear(),NAA.getMonth(),NAA.getDate()),n=0;while(n<31){var f=fravFor(d,valgt);if(!f)break;if(f.kilde!=='manuell')break;settFravaer(valgt,d,null);d=addDays(d,1);n++}};
@@ -1537,8 +1551,10 @@ document.querySelectorAll('[data-ntfytest]').forEach(function(b){b.onclick=funct
 /* ---------- samle ---------- */
 function tegnNyRask(){
   var w=document.getElementById('ny-rask-wrap'); if(!w) return;
-  var VOKSNE=['thor','anniken'];
+  var VOKSNE=['thor','anniken'], mer=document.getElementById('mer');
+  if(mer&&w.parentNode!==mer) mer.appendChild(w); /* v1.29: ligger i «Mer»-kortet */
   w.hidden=!(valgt&&VOKSNE.indexOf(valgt)>=0);
+  if(mer) mer.hidden=w.hidden;
   if(!w.hidden&&window.__nyRaskHvem)window.__nyRaskHvem();
 }
 function tegn(){tegnHvem();tegnIdag();tegnLag();tegnUke();tegnSlik();tegnVedl();tegnHist();tegnBank();fyllInnst();tegnNyRask();tegnPakk();tegnAjour()}
@@ -1597,6 +1613,7 @@ function gaaTil(id){var m=document.getElementById(id);if(!m)return;var off=0;doc
     try{localStorage.setItem('ft-oppg',JSON.stringify(OPPG))}catch(e){}
     if(db){db.child('oppgaver/'+id).set(o).catch(function(){status('Kunne ikke lagre delt — ligger på denne enheten.')})}
     tIn.value=''; settDato(0); if(mk){mk.checked=false} if(mm){mm.checked=false} tegn(); settHvem(valgt||'thor');
+    w.open=false; /* v1.29 (Thor 17.10): seksjonen lukker seg når du har lagt til — da føles det ferdig */
     toast((person===valgt?'Lagt til ':PMAP[person].navn+': ') + (dato===ymd(NAA)?'i dag':datoNorsk(new Date(dato+'T00:00:00'))) + (o.minn?' \u00b7 minner kl. '+o.minn.tid:'') + ' \u2713');
     if(o.minn&&db) VARSLET_NAA=false, planleggVarsler();
   };
