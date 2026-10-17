@@ -483,7 +483,7 @@ details.om .in{padding:8px 0 0;font-size:14px;max-width:70ch}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.31.0';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.32.0';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -880,6 +880,31 @@ function ntfyPost(topic,tittel,tekst,tag,atUnix,prio,click){ /* samme form som L
   var u=NTFY_URL+encodeURIComponent(topic)+'?title='+encodeURIComponent('Familieteamet · '+tittel)+'&tags='+encodeURIComponent(tag||'bell')+'&priority='+(prio||4)+(atUnix?'&delay='+atUnix:'')+(click?'&click='+encodeURIComponent(click):'');
   try{return fetch(u,{method:'POST',body:tekst,keepalive:true}).then(function(r){return r.ok}).catch(function(){return false})}catch(e){return Promise.resolve(false)}
 }
+/* v1.32 (Thor 17.10.2026): huskelapp-varsler kan avbestilles — ntfy gir en id for hver bestilt melding, den lagres i varsler/sendt, og flyttes, endres eller slettes lappen, slettes den gamle meldingen hos ntfy før den går av. */
+function ntfyPostId(topic,tittel,tekst,tag,atUnix,prio,click){
+  if(!topic||!window.fetch) return Promise.resolve(null);
+  var u=NTFY_URL+encodeURIComponent(topic)+'?title='+encodeURIComponent('Familieteamet · '+tittel)+'&tags='+encodeURIComponent(tag||'bell')+'&priority='+(prio||4)+(atUnix?'&delay='+atUnix:'')+(click?'&click='+encodeURIComponent(click):'');
+  try{return fetch(u,{method:'POST',body:tekst,keepalive:true}).then(function(r){if(!r.ok)return null;return r.json().then(function(j){return (j&&j.id)||'ok'}).catch(function(){return 'ok'})}).catch(function(){return null})}catch(e){return Promise.resolve(null)}
+}
+function ntfyAvbestill(topic,id){if(!topic||!id||id==='ok'||!window.fetch)return;try{fetch(NTFY_URL+encodeURIComponent(topic)+'/'+encodeURIComponent(id),{method:'DELETE',keepalive:true}).catch(function(){})}catch(e){}}
+var RYDD_T=null;
+function ryddMinn(){ /* kjører når oppgavene endres: varsler for lapper som ikke lenger står på den datoen/det klokkeslettet, avbestilles */
+  if(!db||!OPPG_LASTET) return; clearTimeout(RYDD_T);
+  RYDD_T=setTimeout(function(){
+    db.child('varsler/sendt').orderByKey().startAt(ymd(new Date())).once('value').then(function(snap){
+      var v=snap.val()||{}, endret=false, jobber=[];
+      Object.keys(v).forEach(function(k){var i=k.indexOf('_minn_'); if(i<0) return;
+        var dato=k.slice(0,i), id=k.slice(i+6), e=v[k]||{}, o=null;
+        for(var j=0;j<OPPG.length;j++){if(OPPG[j].id===id){o=OPPG[j];break}}
+        var gyldig=o&&o.aktiv!==false&&o.minn&&o.minn.tid&&o.dato===dato&&(!e.tid||e.tid===o.minn.tid);
+        if(gyldig) return;
+        if(e.ids) Object.keys(e.ids).forEach(function(p){var x=e.ids[p]; if(x) ntfyAvbestill(x.t,x.id)});
+        endret=true; jobber.push(db.child('varsler/sendt/'+k).set(null).catch(function(){}));
+      });
+      if(endret) Promise.all(jobber).then(function(){VARSLET_NAA=false; planleggVarsler()});
+    }).catch(function(){});
+  },1500);
+}
 function varsle(tittel,tekst,tag){ /* til begge voksne nå */
   var n=lesNtfy(INNST.ntfy)||{}, ps=['thor','anniken'].filter(function(p){return n[p]}); if(!ps.length) return Promise.resolve(false);
   return Promise.all(ps.map(function(p){return ntfyPost(n[p],tittel,tekst,tag,null,null,appLenke(p))})).then(function(a){return a.some(Boolean)});
@@ -958,8 +983,9 @@ function planleggVarsler(){
         if(err||!committed) return;
         var ps=(o.minn.til&&o.minn.til.length?o.minn.til:(o.hvem||[])).filter(function(p){return n[p]}); if(!ps.length){ ref3.set(null).catch(function(){}); return; }
         var fra=(o.minn.av&&PMAP[o.minn.av]&&ps.length>1)?' fra '+PMAP[o.minn.av].navn:'';
-        Promise.all(ps.map(function(p){return ntfyPost(n[p],'Huskelapp'+fra,o.navn,'pushpin',Math.floor(t3.getTime()/1000),4,appLenke(p))}))
-          .then(function(a){ if(!a.some(Boolean)) ref3.set(null).catch(function(){}) });
+        Promise.all(ps.map(function(p){return ntfyPostId(n[p],'Huskelapp'+fra,o.navn,'pushpin',Math.floor(t3.getTime()/1000),4,appLenke(p))}))
+          .then(function(a){ if(!a.some(Boolean)){ ref3.set(null).catch(function(){}); return; }
+            var ids={}; ps.forEach(function(p,i){ if(a[i]) ids[p]={t:n[p],id:a[i]} }); ref3.update({tid:o.minn.tid,ids:ids}).catch(function(){}) });
       });
     });
     liste.forEach(function(v){ if(!v||v.aktiv===false||!v.id||!v.tid||(v.dager||[]).indexOf(wd)<0) return;
@@ -1679,7 +1705,7 @@ function slaaSammenOppg(liste){
   try{
     firebase.initializeApp(FIREBASE);
     db=firebase.database().ref('fam/'+KODE); dbOk=true;
-    db.child('oppgaver').on('value',function(snap){var v=snap.val()||{};OPPG_LASTET=true;setTimeout(planleggBackup,0);var li=Object.keys(v).map(function(k){return v[k]});try{localStorage.setItem('ft-oppg-delt',JSON.stringify(li))}catch(e){};slaaSammenOppg(li);synkTurOppg();tegn()});
+    db.child('oppgaver').on('value',function(snap){var v=snap.val()||{};OPPG_LASTET=true;setTimeout(planleggBackup,0);var li=Object.keys(v).map(function(k){return v[k]});try{localStorage.setItem('ft-oppg-delt',JSON.stringify(li))}catch(e){};slaaSammenOppg(li);synkTurOppg();tegn();ryddMinn()});
     db.child('innlost').on('value',function(snap){INNLOST=snap.val()||{};tegn()});
     db.child('belonning').on('value',function(snap){BELONNING=snap.val()||{};tegn()});
     db.child('tilstand').on('value',function(snap){TILSTAND=snap.val()||{};tegn()});
