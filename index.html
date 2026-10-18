@@ -483,7 +483,7 @@ details.om .in{padding:8px 0 0;font-size:14px;max-width:70ch}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.34.0';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.35.0';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -1503,7 +1503,7 @@ function tegnLag(){
 /* Uker der lagmålet er nådd: rekke på rad (inkl. denne uka hvis nådd) og antall av siste 8 */
 function ukeStatus(){
   var man=mandag(NAA), rekke=0, naaddNaa=false, brutt=false, liste=[];
-  for(var i=0;i<16;i++){var m=addDays(man,-7*i);var key=ukeKey(m);var t=UKER[key]?ukeTall(m):null;var naadd=!!(t&&t.maal>0&&t.gjort>=t.maal);
+  for(var i=0;i<16;i++){var m=addDays(man,-7*i);var key=ukeKey(m);var t=UKER[key]?ukeTall(m):null;var naadd=!!(t&&t.maal>0&&t.gjort>=t.maal)||!!(INNST.godskrevet&&INNST.godskrevet[key]); /* v1.35: godskrevne uker (Thor 18.10: oppstartsukene) teller som nådd */
     liste.push(naadd);
     if(i===0)naaddNaa=naadd;
     if(!brutt){if(naadd)rekke++;else if(i>0)brutt=true;}}
@@ -1673,7 +1673,7 @@ document.getElementById('innst').onsubmit=function(e){
   INNST.trapp=trapp;
   INNST.ntfy={};['thor','anniken','erik','vaarin'].forEach(function(p){INNST.ntfy[p]=(document.getElementById('i-ntfy-'+p).value||'').trim()});
   try{localStorage.setItem('ft-innst',JSON.stringify(INNST))}catch(e){}
-  if(db){db.child('innstillinger').set({id:'main',prosent:INNST.prosent,plan:INNST.plan||null,trapp:INNST.trapp,ferie:INNST.ferie||null,ntfy:INNST.ntfy||null,varsler:INNST.varsler||null,by:valgt||'familie',ts:new Date().toISOString()}).catch(function(er){status('Kunne ikke lagre innstillinger delt.')})}
+  if(db){db.child('innstillinger').set({id:'main',prosent:INNST.prosent,plan:INNST.plan||null,trapp:INNST.trapp,ferie:INNST.ferie||null,ntfy:INNST.ntfy||null,varsler:INNST.varsler||null,godskrevet:INNST.godskrevet||null,by:valgt||'familie',ts:new Date().toISOString()}).catch(function(er){status('Kunne ikke lagre innstillinger delt.')})}
   toast('Lagret ✓');tegn();
 };
 function fyllInnst(){var tr=(INNST.trapp&&INNST.trapp.length)?INNST.trapp:SEED_TRAPP;for(var i=0;i<5;i++){var el=document.getElementById('i-t'+i);if(el&&tr[i]&&document.activeElement!==el)el.value=tr[i].navn+': '+tr[i].tekst}
@@ -1794,7 +1794,7 @@ function slaaSammenOppg(liste){
     db.child('dyner').on('value',function(snap){DYNER=snap.val()||{};synkTurOppg();tegn()});
     db.child('pakk').on('value',function(snap){PAKK=snap.val()||{};tegnPakk()});
     db.child('fravaer').on('value',function(snap){FRAVAER=snap.val()||{};FRAV_LASTET=true;setTimeout(planleggBackup,0);try{localStorage.setItem('ft-fravaer',JSON.stringify(FRAVAER))}catch(e){};tegn();planleggVarsler()});
-    db.child('innstillinger').on('value',function(snap){var x=snap.val();if(x){if(x.prosent)INNST.prosent=x.prosent;if(x.plan)INNST.plan=Object.assign({},INNST.plan||{},x.plan);if(x.trapp&&x.trapp.length)INNST.trapp=x.trapp;if(x.ferie)INNST.ferie=x.ferie;INNST.ntfy=lesNtfy(x.ntfy);if(x.varsler)INNST.varsler=x.varsler;tegn();planleggVarsler()}});
+    db.child('innstillinger').on('value',function(snap){var x=snap.val();if(x){if(x.prosent)INNST.prosent=x.prosent;if(x.plan)INNST.plan=Object.assign({},INNST.plan||{},x.plan);if(x.trapp&&x.trapp.length)INNST.trapp=x.trapp;if(x.ferie)INNST.ferie=x.ferie;INNST.ntfy=lesNtfy(x.ntfy);if(x.varsler)INNST.varsler=x.varsler;INNST.godskrevet=x.godskrevet||null;tegn();planleggVarsler()}});
     var LOKALT_FOER=JSON.parse(JSON.stringify(UKER)), foersteSnap=true;
     db.child('uker').on('value',function(snap){
       var v=snap.val()||{}; var n=0;
