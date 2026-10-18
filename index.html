@@ -483,7 +483,7 @@ details.om .in{padding:8px 0 0;font-size:14px;max-width:70ch}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.37.0';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.38.0';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -1447,6 +1447,9 @@ function tegnIdag(){
     var oid=(b.dataset.s||'').split('|')[0], ob=OPPG.filter(function(x){return x.id===oid})[0];
     if(ob&&ob.tur&&erVoksen()){var pr=b.dataset.s.split('|'), paa=!erGjort(b.dataset.k,b.dataset.s);
       (ob.hvem||[]).forEach(function(pp){var kk=pr[0]+'|'+pr[1]+'|'+pp; if(erGjort(b.dataset.k,kk)!==paa) toggle(b.dataset.k,kk,pp)}); return}
+    /* v1.38 (Thor 18.10.2026): samarbeidsoppgaver hakes for alle som har den samme dag, uansett hvem som trykker — f.eks. tran til barna: den som gir den, huker av for alle */
+    if(ob&&ob.samarbeid){var pr2=b.dataset.s.split('|'), paa2=!erGjort(b.dataset.k,b.dataset.s);
+      samPers(ob,b.dataset.k,+pr2[1],pr2[2]).forEach(function(pp){var kk=pr2[0]+'|'+pr2[1]+'|'+pp; if(erGjort(b.dataset.k,kk)!==paa2) toggle(b.dataset.k,kk,pp)}); return}
     toggle(b.dataset.k,b.dataset.s,b.dataset.p)};
     /* v1.19 (Thor 13.10): trykk på teksten åpner arket; haken tas i venstre del av ruta (boksen til midten av ikonet) */
     b.addEventListener('click',function(ev){var tx=ev.target.closest&&ev.target.closest('.tx'); if(!tx) return; ev.stopImmediatePropagation(); var oo=b.parentNode.querySelector('.ti'); if(oo) aapneArk(oo.dataset.ark,oo)},true);
