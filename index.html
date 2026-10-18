@@ -483,7 +483,7 @@ details.om .in{padding:8px 0 0;font-size:14px;max-width:70ch}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.38.0';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.39.0';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -982,6 +982,10 @@ function flyttGamleKveld(){
   });
 }
 var RYDD_T=null;
+/* v1.39 (Thor 18.10.2026): ferier og dager man er borte er blank familietid. Huskelapp-varsler holdes stille for den som er borte eller i
+   ferieuker — unntatt lapper personen har satt selv (minn.av), de ringer alltid. Lappen står fortsatt på tavla. */
+function minnStille(o,p,dag){ if(o&&o.minn&&o.minn.av===p) return false; return !!(fravFor(dag,p)||erFerie(ukeKey(dag))); }
+function minnTil(o){ return (o.minn&&o.minn.til&&o.minn.til.length?o.minn.til:(o.hvem||[])); }
 function ryddMinn(){ /* kjører når oppgavene endres: varsler for lapper som ikke lenger står på den datoen/det klokkeslettet, avbestilles */
   if(!db||!OPPG_LASTET) return; clearTimeout(RYDD_T);
   RYDD_T=setTimeout(function(){
@@ -990,7 +994,7 @@ function ryddMinn(){ /* kjører når oppgavene endres: varsler for lapper som ik
       Object.keys(v).forEach(function(k){var i=k.indexOf('_minn_'); if(i<0) return;
         var dato=k.slice(0,i), id=k.slice(i+6), e=v[k]||{}, o=null;
         for(var j=0;j<OPPG.length;j++){if(OPPG[j].id===id){o=OPPG[j];break}}
-        var gyldig=o&&o.aktiv!==false&&o.minn&&o.minn.tid&&o.dato===dato&&(!e.tid||e.tid===o.minn.tid);
+        var gyldig=o&&o.aktiv!==false&&o.minn&&o.minn.tid&&o.dato===dato&&(!e.tid||e.tid===o.minn.tid)&&minnTil(o).some(function(p){return !minnStille(o,p,new Date(dato+'T00:00:00'))}); /* v1.39: alle mottakerne borte/ferie → avbestill */
         if(gyldig) return;
         endret=true; jobber.push(avbestillMinn(e,dato,o).then(function(ok){ if(ok) return db.child('varsler/sendt/'+k).set(null); }).catch(function(){})); /* v1.37: feilet den, står posten og prøves igjen neste gang */
       });
@@ -1074,7 +1078,7 @@ function planleggVarsler(){
       var key3=yd+'_minn_'+o.id, ref3=db.child('varsler/sendt/'+key3);
       ref3.transaction(function(cur){ if(cur) return; return {ts:Date.now(),by:valgt||'familie'} },function(err,committed){
         if(err||!committed) return;
-        var ps=(o.minn.til&&o.minn.til.length?o.minn.til:(o.hvem||[])).filter(function(p){return n[p]}); if(!ps.length){ ref3.set(null).catch(function(){}); return; }
+        var ps=minnTil(o).filter(function(p){return n[p]&&!minnStille(o,p,dag)}); /* v1.39 */ if(!ps.length){ ref3.set(null).catch(function(){}); return; }
         var fra=(o.minn.av&&PMAP[o.minn.av]&&ps.length>1)?' fra '+PMAP[o.minn.av].navn:'';
         Promise.all(ps.map(function(p){return ntfyPostId(n[p],'Huskelapp'+fra,o.navn,'pushpin',Math.floor(t3.getTime()/1000),4,appLenke(p),ntfySeq('ft',yd,'minn',o.id,p))}))
           .then(function(a){ if(!a.some(Boolean)){ ref3.set(null).catch(function(){}); return; }
@@ -1812,7 +1816,7 @@ function slaaSammenOppg(liste){
     db.child('turer').on('value',function(snap){TURER=snap.val()||{};synkTurOppg();tegn();VARSLET_NAA=false;planleggVarsler()});
     db.child('dyner').on('value',function(snap){DYNER=snap.val()||{};synkTurOppg();tegn()});
     db.child('pakk').on('value',function(snap){PAKK=snap.val()||{};tegnPakk()});
-    db.child('fravaer').on('value',function(snap){FRAVAER=snap.val()||{};FRAV_LASTET=true;setTimeout(planleggBackup,0);try{localStorage.setItem('ft-fravaer',JSON.stringify(FRAVAER))}catch(e){};tegn();planleggVarsler()});
+    db.child('fravaer').on('value',function(snap){FRAVAER=snap.val()||{};FRAV_LASTET=true;setTimeout(planleggBackup,0);try{localStorage.setItem('ft-fravaer',JSON.stringify(FRAVAER))}catch(e){};tegn();planleggVarsler();ryddMinn()}); /* v1.39: nytt fravær kan avbestille lapp-varsler */
     db.child('innstillinger').on('value',function(snap){var x=snap.val();if(x){if(x.prosent)INNST.prosent=x.prosent;if(x.plan)INNST.plan=Object.assign({},INNST.plan||{},x.plan);if(x.trapp&&x.trapp.length)INNST.trapp=x.trapp;if(x.ferie)INNST.ferie=x.ferie;INNST.ntfy=lesNtfy(x.ntfy);if(x.varsler)INNST.varsler=x.varsler;INNST.godskrevet=x.godskrevet||null;tegn();planleggVarsler()}});
     var LOKALT_FOER=JSON.parse(JSON.stringify(UKER)), foersteSnap=true;
     db.child('uker').on('value',function(snap){
