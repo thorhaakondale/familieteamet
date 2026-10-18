@@ -1225,15 +1225,15 @@
  "protein": {
   "thor": {
    "maal": 170,
-   "tekst": "3 måltider + frukt",
+   "tekst": "3 måltider + 1–2 frukt",
    "maaltider": [
     {
      "navn": "Første måltid (~11)",
      "g": 55,
      "eks": [
-      "Jobb: salat med 2 egg + 100 g stekt kyllingfilet + 30 g feta + 80 g kokt pasta, lett dressing",
-      "Helg: 200 g gresk yoghurt + 100 g cottage cheese + 20 g whey + blåbær, 2 knekkebrød med mager smøreost",
-      "Kantine: proteinet først, to håndflater"
+      "Grunnen på jobb: salat med 2 egg + 100 g stekt kyllingfilet + 30 g feta + 80 g kokt fullkornspasta + 80 g kikerter + mye grønt, lett dressing",
+      "helg: 200 g gresk yoghurt + 100 g cottage cheese + 20 g whey + blåbær, 3 knekkebrød med mager smøreost",
+      "kantine: proteinet først (to håndflater), så grønt, så litt potet/ris"
      ]
     },
     {
@@ -1241,36 +1241,36 @@
      "g": 55,
      "middag": true,
      "eks": [
-      "Fra ukesmenyen — vekt på tallerken står i Ukeshandel"
+      "Fra ukesmenyen — vekt på tallerken står i Ukeshandel, grønt fritt"
      ]
     },
     {
      "navn": "Kvelds",
      "g": 60,
      "eks": [
-      "350 g gresk yoghurt (2 %) + 20 g whey + 100 g blåbær — ca. 400 kcal"
+      "350 g gresk yoghurt (2 %) + 20 g whey + 100 g blåbær + 1 ss chia- eller linfrø — ca. 450 kcal"
      ]
     }
    ],
-   "merk": "Frukt: 2 om dagen — eple, banan før gym. Melk er ingen proteinstrategi: 3 dl lettmelk gir 10 g for 120 kcal."
+   "merk": "Karbohydrater og fiber gir energien gjennom dagen: 1–2 epler hver dag (ett før og ett etter lunsj — banan før gym man/ons), knekkebrød og fullkorn, kikerter i salaten, potet/ris/pasta til middag og minst 150 g grønnsaker. Mål: ca. 35 g fiber om dagen og ca. 2 300 kcal. Melk er ingen proteinstrategi — 3 dl lettmelk gir 10 g for 120 kcal."
   },
   "anniken": {
    "maal": 120,
-   "tekst": "4 måltider",
+   "tekst": "4 måltider + frukt",
    "maaltider": [
     {
      "navn": "Frokost",
      "g": 25,
      "eks": [
-      "havregrøt på lettmelk + skyr 150 g",
-      "2 egg + 1 skive med ost + et glass melk"
+      "Grunnen: 2 knekkebrød med ost + 150 g gresk yoghurt med bær",
+      "havregrøt på lettmelk + skyr 150 g"
      ]
     },
     {
      "navn": "Lunsj",
      "g": 30,
      "eks": [
-      "salat med 100 g kylling + 1 egg",
+      "Grunnen: salat med 100 g stekt kyllingfilet + 1 egg + 1 skive grovt brød eller 60 g kokt fullkornspasta",
       "middagsrester"
      ]
     },
@@ -1279,19 +1279,19 @@
      "g": 38,
      "middag": true,
      "eks": [
-      "Fra ukesmenyen — sjekkes hver søndag"
+      "Fra ukesmenyen — vekt på tallerken står i Ukeshandel, grønt fritt"
      ]
     },
     {
      "navn": "Kvelds",
      "g": 27,
      "eks": [
-      "skyr 200 g med bær + 1 skive med ost",
+      "Grunnen: 200 g gresk yoghurt med bær + 1 ss nøtter eller frø",
       "2 skiver med kalkun og ost + et glass melk"
      ]
     }
    ],
-   "merk": "Reagerer magen på skyr eller cottage cheese, finnes laktosefrie varianter med samme protein."
+   "merk": "Karbohydrater og fiber gir energien: knekkebrød, havre og grovt brød, fullkornsris/-pasta og potet, 1–2 frukt om dagen (kiwi, appelsin, bær og banan er skånsomme for magen — eple og pære kan gi oppblåsthet) og minst 150 g grønnsaker til middag. Mål: ca. 25–30 g fiber og aldri under 1 500 kcal. Reagerer magen på skyr eller cottage cheese, finnes laktosefrie varianter med samme protein."
   },
   "fotnote": "Omtrentlige gram, avrundet til nærmeste 5. Det er uka som teller, ikke hver dag."
  }
