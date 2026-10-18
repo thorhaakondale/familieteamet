@@ -483,7 +483,7 @@ details.om .in{padding:8px 0 0;font-size:14px;max-width:70ch}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.36.0';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.37.0';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -889,7 +889,22 @@ function ntfyPostId(topic,tittel,tekst,tag,atUnix,prio,click,seq){
   var u=NTFY_URL+encodeURIComponent(topic)+(seq?'/'+seq:'')+'?title='+encodeURIComponent('Familieteamet · '+tittel)+'&tags='+encodeURIComponent(tag||'bell')+'&priority='+(prio||4)+(atUnix?'&delay='+atUnix:'')+(click?'&click='+encodeURIComponent(click):'');
   try{return fetch(u,{method:'POST',body:tekst,keepalive:true}).then(function(r){if(!r.ok)return null;return r.json().then(function(j){return (j&&j.id)||'ok'}).catch(function(){return 'ok'})}).catch(function(){return null})}catch(e){return Promise.resolve(null)}
 }
-function ntfyAvbestill(topic,id){if(!topic||!id||id==='ok'||!window.fetch)return;try{fetch(NTFY_URL+encodeURIComponent(topic)+'/'+encodeURIComponent(id),{method:'DELETE',keepalive:true}).catch(function(){})}catch(e){}}
+/* v1.37 (Thor 18.10.2026): plenklipp-lappen ble flyttet, men varselet gikk likevel. Avbestilling går nå som GET /<emne>/<id>/delete — en enkel
+   forespørsel uten CORS-preflight (DELETE med keepalive feiler stille i Safari) — og svarer om den lyktes, så posten i varsler/sendt bare fjernes når meldingen er borte. */
+function ntfyAvbestill(topic,id){if(!topic||!id||id==='ok'||!window.fetch)return Promise.resolve(true);try{return fetch(NTFY_URL+encodeURIComponent(topic)+'/'+encodeURIComponent(id)+'/delete',{cache:'no-store',keepalive:true}).then(function(r){return r.ok||r.status===404}).catch(function(){return false})}catch(e){return Promise.resolve(false)}}
+/* v1.37: lapper bestilt før v1.32 har ingen lagret id. Da letes meldingen opp blant de planlagte hos ntfy (samme dato, tittelen Huskelapp, samme tekst eller klokkeslett) og slettes på meldings-id. null = fikk ikke lest lista. */
+function ntfyFinnLapp(topic,dato,tekst,tid){if(!topic||!window.fetch)return Promise.resolve([]);var naa=Date.now();
+  return fetch(NTFY_URL+encodeURIComponent(topic)+'/json?poll=1&sched=1',{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.text()}).then(function(txt){
+    return txt.split('\n').filter(Boolean).map(function(l){try{return JSON.parse(l)}catch(e){return null}}).filter(function(m){
+      if(!m||m.event!=='message'||m.time*1000<=naa||String(m.title||'').indexOf('Familieteamet · Huskelapp')!==0) return false;
+      var tm=new Date(m.time*1000), hm=('0'+tm.getHours()).slice(-2)+':'+('0'+tm.getMinutes()).slice(-2);
+      return ymd(tm)===dato&&((tekst!=null&&m.message===tekst)||(tid&&hm===tid)); }).map(function(m){return m.id});
+  }).catch(function(){return null});}
+function avbestillMinn(e,dato,o){var n=lesNtfy(INNST.ntfy)||{};
+  if(e.ids) return Promise.all(Object.keys(e.ids).map(function(p){var x=e.ids[p]; return x?ntfyAvbestill(x.t,x.id):true})).then(function(a){return a.every(Boolean)});
+  var tekst=o?o.navn:null; if(tekst==null&&!e.tid) return Promise.resolve(true);
+  return Promise.all(Object.keys(n).filter(function(p){return n[p]}).map(function(p){return ntfyFinnLapp(n[p],dato,tekst,e.tid).then(function(ids){
+    if(ids===null) return false; return Promise.all(ids.map(function(id){return ntfyAvbestill(n[p],id)})).then(function(a){return a.every(Boolean)}); })})).then(function(a){return a.every(Boolean)});}
 /* v1.33 (Thor 17.10.2026): kveldsvarsler med stopp:true («Ferdig for i dag?», kveldssjekken) avbestilles for den som er ferdig:
    har trykket «Ferdig for i dag», eller har hak på alt sitt i dag. Angres det, bestilles varselet på nytt så lenge klokka ikke har passert.
    Neste dag er en egen melding og går som vanlig. Hver melding har fast sekvens-id ft-<dato>-<varsel>-<person> hos ntfy, så avbestilling og
@@ -908,7 +923,7 @@ function oppgGjort(id,yd){
   return sl.length>0&&sl.every(function(s){return erGjort(key,s.key)});
 }
 function varselFerdig(v,p,yd){return v.oppg?oppgGjort(v.oppg,yd):dagFerdig(p,yd)}
-function ntfySlett(topic,seq){if(!topic||!seq||!window.fetch)return Promise.resolve(false);try{return fetch(NTFY_URL+encodeURIComponent(topic)+'/'+seq,{method:'DELETE',keepalive:true}).then(function(r){return r.ok}).catch(function(){return false})}catch(e){return Promise.resolve(false)}}
+function ntfySlett(topic,seq){if(!topic||!seq||!window.fetch)return Promise.resolve(false);try{return fetch(NTFY_URL+encodeURIComponent(topic)+'/'+encodeURIComponent(seq)+'/delete',{cache:'no-store',keepalive:true}).then(function(r){return r.ok||r.status===404}).catch(function(){return false})}catch(e){return Promise.resolve(false)}} /* v1.37: GET /delete, se ntfyAvbestill */
 var KVELD_T=null;
 function kveldStopp(){
   if(!db||!INNST.varsler||!INNST.ntfy) return; clearTimeout(KVELD_T);
@@ -977,8 +992,7 @@ function ryddMinn(){ /* kjører når oppgavene endres: varsler for lapper som ik
         for(var j=0;j<OPPG.length;j++){if(OPPG[j].id===id){o=OPPG[j];break}}
         var gyldig=o&&o.aktiv!==false&&o.minn&&o.minn.tid&&o.dato===dato&&(!e.tid||e.tid===o.minn.tid);
         if(gyldig) return;
-        if(e.ids) Object.keys(e.ids).forEach(function(p){var x=e.ids[p]; if(x) ntfyAvbestill(x.t,x.id)});
-        endret=true; jobber.push(db.child('varsler/sendt/'+k).set(null).catch(function(){}));
+        endret=true; jobber.push(avbestillMinn(e,dato,o).then(function(ok){ if(ok) return db.child('varsler/sendt/'+k).set(null); }).catch(function(){})); /* v1.37: feilet den, står posten og prøves igjen neste gang */
       });
       if(endret) Promise.all(jobber).then(function(){VARSLET_NAA=false; planleggVarsler()});
     }).catch(function(){});
