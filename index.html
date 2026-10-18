@@ -483,7 +483,7 @@ details.om .in{padding:8px 0 0;font-size:14px;max-width:70ch}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.40.0';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.41.0';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -1264,7 +1264,7 @@ function planleggPakk(naa,n,yd){ /* v1.19: pakkeslagene per tur og person; uten 
     var key=yd+'_pakk_'+t, ref=db.child('varsler/sendt/'+key), L=PAKKL[t]||{};
     ref.transaction(function(cur){ if(cur) return; return {ts:Date.now(),by:valgt||'familie'} },function(err,committed){
       if(err||!committed) return;
-      var ps=['thor','anniken'].filter(function(p){return n[p]&&!fravFor(yd,p)}); /* v1.40: den som er borte får ingen pakkepåminnelse */ if(!ps.length){ref.set(null).catch(function(){});return}
+      var ps=['thor','anniken'].filter(function(p){return n[p]}); /* v1.41 (Thor 18.10): pakking er turvarsel — går alltid, også til den som er borte */ if(!ps.length){ref.set(null).catch(function(){});return}
       var ant=pkLinjer('basis').length+pkLinjer(t).length;
       Promise.all(ps.map(function(p){return ntfyPost(n[p],'Pakkelista · '+(L.navn||t),'I morgen: '+(L.navn||t)+'. Åpne lista og hak av mens dere pakker ('+ant+' linjer).','luggage',Math.floor(tt.getTime()/1000),4,appLenke(p)+'#pakk')}))
         .then(function(a){ if(!a.some(Boolean)) ref.set(null).catch(function(){}) });
