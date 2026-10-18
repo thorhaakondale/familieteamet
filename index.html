@@ -483,7 +483,7 @@ details.om .in{padding:8px 0 0;font-size:14px;max-width:70ch}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.35.0';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.36.0';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -537,7 +537,9 @@ function dagerIUka(o,man){
   var n={'2uke':2,'3uke':3,'4uke':4,'kvartal':13}[o.int];
   if(!n) return [];
   var start=o.fra?ukeIndex(ukeFraKey(o.fra)):0;
-  return ((idx-start)%n===0)?[dag]:[];
+  /* v1.36: skift = {"<fra uke>":"<ny startuke>"} forskyver rytmen fra den uka og framover uten å endre tidligere uker (Thor 18.10: en skjøvet grovvask hoppes aldri over) */
+  if(o.skift){Object.keys(o.skift).sort().forEach(function(k){if(k<=key&&o.skift[k])start=ukeIndex(ukeFraKey(o.skift[k]))})}
+  return (idx>=start&&(idx-start)%n===0)?[dag]:[];
 }
 /* v1.9: vedlikeholdsplanen — oppgaver med int 'uker' (hver N. uke, fra en startuke) legges ut med et tak per uke
    (INNST.vedlTak, standard 2) og kan skyves inntil 'slakk' uker fram for å jevne ut køen. Deterministisk: samme data → samme plan. */
