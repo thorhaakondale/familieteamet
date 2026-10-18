@@ -1224,15 +1224,16 @@
  },
  "protein": {
   "thor": {
-   "maal": 160,
-   "tekst": "3 måltider",
+   "maal": 170,
+   "tekst": "3 måltider + frukt",
    "maaltider": [
     {
-     "navn": "Lunsj",
-     "g": 50,
+     "navn": "Første måltid (~11)",
+     "g": 55,
      "eks": [
-      "3 grove skiver med kyllingpålegg + 2 egg + skyr 170 g",
-      "middagsrester + cottage cheese 200 g"
+      "Jobb: salat med 2 egg + 100 g stekt kyllingfilet + 30 g feta + 80 g kokt pasta, lett dressing",
+      "Helg: 200 g gresk yoghurt + 100 g cottage cheese + 20 g whey + blåbær, 2 knekkebrød med mager smøreost",
+      "Kantine: proteinet først, to håndflater"
      ]
     },
     {
@@ -1240,18 +1241,18 @@
      "g": 55,
      "middag": true,
      "eks": [
-      "Fra ukesmenyen — sjekkes hver søndag"
+      "Fra ukesmenyen — vekt på tallerken står i Ukeshandel"
      ]
     },
     {
      "navn": "Kvelds",
-     "g": 55,
+     "g": 60,
      "eks": [
-      "skyr 300 g med bær + 2 skiver med kalkun og ost",
-      "cottage cheese 300 g + 2 skiver med makrell i tomat"
+      "350 g gresk yoghurt (2 %) + 20 g whey + 100 g blåbær — ca. 400 kcal"
      ]
     }
-   ]
+   ],
+   "merk": "Frukt: 2 om dagen — eple, banan før gym. Melk er ingen proteinstrategi: 3 dl lettmelk gir 10 g for 120 kcal."
   },
   "anniken": {
    "maal": 120,
