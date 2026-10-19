@@ -19,21 +19,21 @@
   --bg:#f1efe8;--card:#ffffff;--card2:#faf9f5;--line:#dcd9cf;--line2:#ece9e0;
   --ink:#141311;--ink2:#33322e;--muted:#5a5852;
   --erik:#2560a8;--vaarin:#b03a6e;--oscar:#c9820c;--thor:#6a4fc4;--anniken:#1a9463;
-  --ok:#1a7f4b;--okbg:#dff3e6;--warn:#b7791f;--warnbg:#fbf0d5;
+  --ok:#1a7f4b;--okbg:#dff3e6;--warn:#b7791f;--warnbg:#fbf0d5;--bad:#b42318;--badbg:#fdeceb;
   --accent:#1a9463;--accentbg:#e4f3ea;--shadow:0 1px 3px rgba(20,19,17,.08);
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
   --bg:#17181a;--card:#222327;--card2:#1c1d20;--line:#3a3b40;--line2:#2e2f34;
   --ink:#f2f1ec;--ink2:#d5d3cb;--muted:#a09e95;
   --erik:#5b93de;--vaarin:#cd5b87;--oscar:#c08415;--thor:#8a72dd;--anniken:#2ba578;
-  --ok:#4fc27e;--okbg:#1d3527;--warn:#e0a33a;--warnbg:#3a2f18;
+  --ok:#4fc27e;--okbg:#1d3527;--warn:#e0a33a;--warnbg:#3a2f18;--bad:#f07167;--badbg:#3a1f1c;
   --accent:#2ba578;--accentbg:#1d3527;--shadow:0 1px 3px rgba(0,0,0,.4);
 }}
 :root[data-theme="dark"]{
   --bg:#17181a;--card:#222327;--card2:#1c1d20;--line:#3a3b40;--line2:#2e2f34;
   --ink:#f2f1ec;--ink2:#d5d3cb;--muted:#a09e95;
   --erik:#5b93de;--vaarin:#cd5b87;--oscar:#c08415;--thor:#8a72dd;--anniken:#2ba578;
-  --ok:#4fc27e;--okbg:#1d3527;--warn:#e0a33a;--warnbg:#3a2f18;
+  --ok:#4fc27e;--okbg:#1d3527;--warn:#e0a33a;--warnbg:#3a2f18;--bad:#f07167;--badbg:#3a1f1c;
   --accent:#2ba578;--accentbg:#1d3527;--shadow:0 1px 3px rgba(0,0,0,.4);
 }
 *{box-sizing:border-box}
@@ -274,6 +274,22 @@ form.ny button{font:inherit;font-weight:800;padding:9px 14px;border-radius:8px;b
 details.om{margin:6px 0 12px}
 details.om summary{cursor:pointer;font-weight:800;font-size:14px;color:var(--ink2)}
 details.om .in{padding:8px 0 0;font-size:14px;max-width:70ch}
+.angre{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:60;display:flex;align-items:center;gap:12px;max-width:calc(100% - 32px);background:var(--ink);color:var(--bg);padding:8px 8px 8px 16px;border-radius:14px;box-shadow:0 6px 20px rgba(0,0,0,.25);font-weight:700;font-size:15px}
+.angre span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.angre button{flex:none;font:inherit;font-weight:800;font-size:15px;min-height:40px;padding:6px 14px;border-radius:10px;border:0;background:var(--accent);color:#fff;cursor:pointer}
+#ark .ark-minn{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:12px 0 4px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--card2)}
+#ark .ark-minn label{font-weight:800;font-size:14.5px;color:var(--ink)}
+#ark .ark-minn input{font:inherit;font-size:16px;min-height:40px;padding:4px 8px;border:1.5px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink)}
+#ark .ark-minn button{font:inherit;font-size:14px;font-weight:700;min-height:40px;padding:6px 12px;border:1.5px solid var(--line);border-radius:10px;background:transparent;color:var(--muted);cursor:pointer}
+#ark .ark-minn small{flex-basis:100%;color:var(--muted);font-size:12.5px}
+#ark .ark-slett{margin:18px 0 4px;padding-top:12px;border-top:1px solid var(--line)}
+#ark .ark-slett button{font:inherit;font-weight:800;font-size:15px;min-height:44px;padding:10px 14px;border-radius:10px;cursor:pointer;border:1.5px solid var(--line);background:transparent;color:var(--ink)}
+#ark .ark-slett .slett-start{width:100%;border-color:var(--bad);color:var(--bad);background:transparent}
+#ark .ark-slett .slett-bekr{background:var(--badbg);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px}
+#ark .ark-slett .slett-bekr p{margin:0 0 2px;font-size:14.5px;color:var(--ink)}
+#ark .ark-slett .slett-bekr .rod{background:var(--bad);border-color:var(--bad);color:#fff}
+#ark .ark-slett button:focus-visible,.angre button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+#ark .ark-minn[hidden],#ark .ark-slett[hidden],.angre[hidden]{display:none}
 .toast{position:fixed;left:50%;bottom:70px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--bg);padding:12px 22px;border-radius:999px;font-weight:900;font-size:20px;opacity:0;transition:all .25s;z-index:50;pointer-events:none}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .plan{display:flex;gap:8px;flex-wrap:wrap}
@@ -489,11 +505,12 @@ details.om .in{padding:8px 0 0;font-size:14px;max-width:70ch}
 <p class="dbstat" id="dbstat"></p>
 </div>
 <div class="toast" id="toast"></div>
+<div class="angre" id="angre" role="status" hidden><span id="angre-tx"></span><button type="button" id="angre-btn">Angre</button></div>
 <button class="dale-totop" id="dale-totop" aria-label="Til toppen">↑ Topp</button>
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.42.0';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.43.0';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -532,7 +549,9 @@ function hvemUke(o,ukeIdx){
   return o.hvem||[];
 }
 /* Hvilke dager i uka (0–6) oppgaven faller på. Returnerer [] hvis ikke denne uka. */
-function dagerIUka(o,man){
+/* v1.43: «Slett alle framtidige» setter o.slutt (ÅÅÅÅ-MM-DD) — forekomster fra og med den dagen forsvinner, historikken står */
+function dagerIUka(o,man){var r=dagerIUka0(o,man); if(o.slutt&&r.length) r=r.filter(function(d){return ymd(addDays(man,d))<o.slutt}); return r}
+function dagerIUka0(o,man){
   if(o.aktiv===false) return [];
   var key=ukeKey(man), idx=ukeIndex(man);
   if(o.fra && key<o.fra) return [];
@@ -599,6 +618,8 @@ function planUke(man){
       ut.push({o:o,dag:d,person:person,orig:person,utsatt:true,fraUke:uk,fraKey:k,fraDato:fraDato,key:o.id+'|'+d+'|'+person+'|u'+uk+'-'+parts[1]});
     });
   });
+  var hp=(UKER[key]&&UKER[key].hopp)||{}; /* v1.43: «Slett bare denne gangen» — forekomsten hoppes over, teller ikke og henger ikke */
+  ut=ut.filter(function(s){return !hp[s.key]});
   return ut;
 }
 function utsett(fraUke,o,dag,person,dato){
@@ -675,6 +696,7 @@ function aapneArk(id,knapp){
   var d=document.getElementById('ark');
   byggDagrad(o,knapp,d);
   document.getElementById('ark-handling').innerHTML=''; /* v1.19: bytt-raden ligger i dagvelgeren */
+  byggArkMinn(o); byggArkSlett(o,arkForekomst(knapp));
   d.dataset.id=id;
   if(!d.open)d.showModal();
 }
@@ -736,6 +758,7 @@ function samPers(o,ukK,dag0,fallback){
 function settDagFor(o,ds,dato){
   if(o.egen){ /* huskelapp: den flyttes, den «utsettes» ikke — datoen er hele oppgaven */
     if(ds.uts)utsett(ds.k,o,+ds.dag0,ds.fra,null);
+    var gml=o.dato; angreVis('Flyttet: '+o.navn,function(){o.dato=gml; lagreOppg(o); tegn()});
     o.dato=dato; o.ts=new Date().toISOString();
     try{localStorage.setItem('ft-oppg',JSON.stringify(OPPG))}catch(e){}
     if(db){var dok=JSON.parse(JSON.stringify(o));if(!dok.rull)delete dok.rull;db.child('oppgaver/'+o.id).set(dok).catch(function(){status('Kunne ikke lagre delt.')})}
@@ -746,9 +769,51 @@ function settDagFor(o,ds,dato){
       var pu=ds.utsk.split('|'); alle.forEach(function(pp){utsett(ds.uts,o,+pu[1],pp,dato)});
     } else { /* planlagt engangsoppgave: utsettelsen skal synes, som før */
       alle.forEach(function(pp){utsett(ds.k,o,+ds.dag0,pp,dato)});
+      angreVis('Flyttet: '+o.navn,function(){alle.forEach(function(pp){utsett(ds.k,o,+ds.dag0,pp,null)})});
     }
   }
 }
+/* v1.43 (Thor 19.10.2026): Angre i 10 sekunder, sletting og varsel i arket */
+var ANGRE_T=null, ANGRE_FN=null;
+function angreVis(tekst,fn,ms){var el=document.getElementById('angre'); if(!el) return; document.getElementById('angre-tx').textContent=tekst; ANGRE_FN=fn; el.hidden=false;
+  clearTimeout(ANGRE_T); ANGRE_T=setTimeout(angreSkjul,ms||10000);
+  document.getElementById('angre-btn').onclick=function(){var f=ANGRE_FN; angreSkjul(); if(f) f()}}
+function angreSkjul(){var el=document.getElementById('angre'); if(el) el.hidden=true; ANGRE_FN=null; clearTimeout(ANGRE_T)}
+function lagreOppg(o){o.ts=new Date().toISOString(); try{localStorage.setItem('ft-oppg',JSON.stringify(OPPG))}catch(e){}
+  if(db){var dok=JSON.parse(JSON.stringify(o)); if(!dok.rull) delete dok.rull; db.child('oppgaver/'+o.id).set(dok).catch(function(){status('Kunne ikke lagre delt — ligger på denne enheten.')})}}
+function settHopp(k,slots,paa){var u=ukeDoc(k); if(!u.hopp) u.hopp={}; var upd={};
+  slots.forEach(function(sl){ if(paa) u.hopp[sl]=Date.now(); else delete u.hopp[sl]; upd['uker/'+k+'/hopp/'+sl]=paa?u.hopp[sl]:null });
+  lagreLokalt(); tegn(); if(db){upd['uker/'+k+'/ts']=new Date().toISOString(); db.update(upd).catch(function(){status('Kunne ikke lagre delt.')})}}
+function arkForekomst(knapp){var t=knapp&&knapp.closest?knapp.closest('.tile'):null, tm=t?t.querySelector('.tmain'):null; if(!tm||!tm.dataset.k) return null;
+  var sl=tm.dataset.f?tm.dataset.f.split(','):(tm.dataset.s?[tm.dataset.s]:[]); if(!sl.length) return null;
+  return {k:tm.dataset.k, slots:sl, dato:addDays(ukeFraKey(tm.dataset.k),+sl[0].split('|')[1])}}
+function byggArkMinn(o){var el=document.getElementById('ark-minn'); if(!el) return;
+  var vis=erVoksen()&&o.egen&&!o.tur; el.hidden=!vis; if(!vis){el.innerHTML='';return}
+  var tid=(o.minn&&o.minn.tid)||'';
+  el.innerHTML='<label for="ark-minn-tid">⏰ Varsel</label><input type="time" id="ark-minn-tid" value="'+esc(tid)+'">'+(tid?'<button type="button" id="ark-minn-fjern">Fjern varsel</button>':'')+
+    '<small>'+(tid?'Varselet går på lappens dato. Endre tiden og trykk Ferdig.':'Velg et klokkeslett og trykk Ferdig, så får du varsel på lappens dato.')+'</small>';
+  var fj=document.getElementById('ark-minn-fjern'); if(fj) fj.onclick=function(){document.getElementById('ark-minn-tid').value=''; fj.remove()};}
+function byggArkSlett(o,occ){var el=document.getElementById('ark-slett'); if(!el) return;
+  var vis=erVoksen()&&!o.tur; el.hidden=!vis; if(!vis){el.innerHTML='';return}
+  var gjent=o.int!=='dato';
+  el.innerHTML='<button type="button" class="slett-start" id="slett-start">🗑 Slett '+(o.egen?'lappen':'oppgaven')+'</button>';
+  document.getElementById('slett-start').onclick=function(){
+    var h='<div class="slett-bekr"><p><b>Slette «'+esc(o.navn)+'»?</b>'+(gjent?' Den gjentar seg.':'')+'</p>';
+    if(gjent){ if(occ) h+='<button type="button" class="rod" id="slett-denne">Bare denne gangen ('+esc(datoNorsk(occ.dato))+')</button>';
+      h+='<button type="button" class="'+(occ?'':'rod')+'" id="slett-alle">Alle framtidige'+(occ?' fra '+esc(datoNorsk(occ.dato)):'')+'</button>'; }
+    else h+='<button type="button" class="rod" id="slett-en">Slett</button>';
+    h+='<button type="button" id="slett-avbryt">Avbryt</button></div>'; el.innerHTML=h; try{el.scrollIntoView({block:'end',behavior:'smooth'})}catch(e){}
+    var d=document.getElementById('ark');
+    document.getElementById('slett-avbryt').onclick=function(){byggArkSlett(o,occ)};
+    var b1=document.getElementById('slett-en'); if(b1) b1.onclick=function(){ var f={aktiv:o.aktiv};
+      o.aktiv=false; o.slettet=new Date().toISOString(); o.slettetAv=valgt||'familie'; lagreOppg(o); d.close(); tegn();
+      angreVis('Slettet: '+o.navn,function(){ if(f.aktiv===undefined) delete o.aktiv; else o.aktiv=f.aktiv; delete o.slettet; delete o.slettetAv; lagreOppg(o); tegn() }) };
+    var b2=document.getElementById('slett-denne'); if(b2) b2.onclick=function(){ settHopp(occ.k,occ.slots,true); d.close();
+      angreVis('Hoppet over '+datoNorsk(occ.dato),function(){settHopp(occ.k,occ.slots,false)}) };
+    var b3=document.getElementById('slett-alle'); if(b3) b3.onclick=function(){ var f=o.slutt, fra=occ?occ.dato:new Date(NAA.getFullYear(),NAA.getMonth(),NAA.getDate());
+      o.slutt=ymd(fra); lagreOppg(o); d.close(); tegn();
+      angreVis('Slettet fra '+datoNorsk(fra)+': '+o.navn,function(){ if(f) o.slutt=f; else delete o.slutt; lagreOppg(o); tegn() }) };
+  };}
 function lagreArk(){
   var d=document.getElementById('ark'), id=d.dataset.id;
   var o=OPPG.filter(function(x){return x.id===id})[0]; if(!o){d.close();return}
@@ -757,10 +822,14 @@ function lagreArk(){
   if(nytt)o.notat=nytt; else delete o.notat;
   var ni=document.getElementById('ark-navn-inn'), nyNavn=ni&&!ni.hidden?ni.value.replace(/\s+/g,' ').trim():''; var navnEndret=!!(nyNavn&&nyNavn!==o.navn);
   if(navnEndret) o.navn=nyNavn;
+  var mi=document.getElementById('ark-minn-tid'), minnEndret=false;
+  if(mi&&!document.getElementById('ark-minn').hidden){ var nt=mi.value||'', gt=(o.minn&&o.minn.tid)||'';
+    if(nt!==gt){ minnEndret=true; if(nt) o.minn={tid:nt, til:(o.minn&&o.minn.til&&o.minn.til.length)?o.minn.til:((o.hvem&&o.hvem.length)?o.hvem.slice():[valgt||'thor']), av:valgt||(o.minn&&o.minn.av)||'thor'}; else delete o.minn; } }
   o.ts=new Date().toISOString();
   try{localStorage.setItem('ft-oppg',JSON.stringify(OPPG))}catch(e){}
   if(db){var dok=JSON.parse(JSON.stringify(o));if(!dok.rull)delete dok.rull;db.child('oppgaver/'+id).set(dok).catch(function(){status('Kunne ikke lagre delt — ligger på denne enheten.')})}
-  d.close(); toast(navnEndret?'Lagret ✓':'Notatet er lagret ✓'); tegn();
+  d.close(); toast(minnEndret?(o.minn?'⏰ Varsel kl. '+o.minn.tid:'Varselet er fjernet'):(navnEndret?'Lagret ✓':'Notatet er lagret ✓')); tegn();
+  if(minnEndret){VARSLET_NAA=false; try{ryddMinn();planleggVarsler()}catch(e){}}
 }
 var ARK_BUNDET=false;
 function arkInit(){ /* arket ligger nederst i dokumentet — bind knappene første gang det åpnes */
@@ -831,6 +900,7 @@ function toggle(key,slot,person){
   PENDING[key+'#'+slot]={key:key,slot:slot,val:val,ts:Date.now()};
   lagreLokalt(); tegn();
   if(naaGjort){var p=OPPG.filter(function(o){return slot.indexOf(o.id+'|')===0})[0];toast('+'+(p?p.poeng:1)+' ⭐ '+(PMAP[person]?PMAP[person].navn:''));
+    angreVis('Huket av: '+(p?p.navn:''),function(){if(erGjort(key,slot))toggle(key,slot,person)},6000);
     if(p&&p.veksle){var md=modus(p,NAA);TILSTAND[p.id]={sist:md,dato:ymd(NAA)};if(db){db.child('tilstand/'+p.id).set({sist:md,dato:ymd(NAA),by:person||'familie'}).catch(function(){})}}}
   if(db){
     var upd={}; upd['uker/'+key+'/gjort/'+slot]=val; upd['uker/'+key+'/by']=person||'familie'; upd['uker/'+key+'/ts']=new Date().toISOString();
@@ -1904,8 +1974,10 @@ if('serviceWorker' in navigator){window.addEventListener('load',function(){navig
     </div>
     <div class="ark-meta ark-chips" id="ark-meta"></div>
     <div id="ark-lenkerad"></div>
+    <div class="ark-minn" id="ark-minn" hidden></div>
     <div id="ark-dagrad"></div>
     <div class="ark-handling" id="ark-handling"></div>
+    <div class="ark-slett" id="ark-slett" hidden></div>
     <p class="ark-hint" id="ark-hint"></p>
   </div>
 </dialog>
