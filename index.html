@@ -133,6 +133,9 @@ dialog#nydlg,dialog#bortedlg{border:0;border-radius:16px;padding:0;max-width:560
 #ark .dagrad input[type=date]{font:inherit;font-size:14.5px;min-height:44px;padding:9px 12px;border:1.5px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink)}
 dialog#ark{border:0;border-radius:16px;padding:0;max-width:560px;width:calc(100% - 28px);background:var(--card);color:var(--ink);box-shadow:0 18px 50px rgba(0,0,0,.28)}
 dialog#ark::backdrop{background:rgba(0,0,0,.45)}
+/* v1.53.3 (Thor 19.10): rulling i arket skal rulle arket — ikke siden under */
+dialog#ark,dialog#nydlg,dialog#bortedlg{max-height:calc(100dvh - 24px);overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+body.side-laast{position:fixed;left:0;right:0;width:100%;overflow:hidden}
 #ark .ark-inn{padding:0 16px calc(18px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:12px}
 #ark .ark-bar{position:sticky;top:0;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 -16px 2px;padding:10px 12px;background:var(--card);border-bottom:1px solid var(--line)}
 #ark .ark-bar .ark-tittel{font-weight:800;font-size:15px;color:var(--ink)}
@@ -543,7 +546,7 @@ h1.topp .pill{font-size:11px;font-weight:700;letter-spacing:0}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.53.2';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.53.3';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -747,6 +750,12 @@ function aapneArk(id,knapp){
   d.dataset.id=id;
   if(!d.open)d.showModal();
 }
+/* v1.53.3: lås siden bak et åpent ark (iOS ruller ellers bakgrunnen) */
+var LAAS_Y=0;
+function laasSide(paa){var b=document.body; if(paa){ if(b.classList.contains('side-laast')) return; LAAS_Y=window.scrollY||0; b.style.top=(-LAAS_Y)+'px'; b.classList.add('side-laast'); }
+  else{ if(!b.classList.contains('side-laast')) return; if(document.querySelector('dialog[open]')) return; b.classList.remove('side-laast'); b.style.top=''; window.scrollTo(0,LAAS_Y); }}
+(function(){ if(!window.HTMLDialogElement) return; var orig=HTMLDialogElement.prototype.showModal;
+  HTMLDialogElement.prototype.showModal=function(){ laasSide(true); var r=orig.apply(this,arguments); if(!this.__laasBundet){ this.__laasBundet=true; this.addEventListener('close',function(){ setTimeout(function(){laasSide(false)},0) }); } return r; }; })();
 function arkTb(knapp){return knapp&&knapp.parentNode?knapp.parentNode.querySelector('.tb'):null}
 function nesteAv(pred,etter){ /* v1.15: neste planlagte dato (strengt etter «etter») for en aktiv oppgave som oppfyller pred */
   var man=mandag(NAA), best=null;
