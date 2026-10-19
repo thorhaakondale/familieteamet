@@ -340,14 +340,25 @@ details.om .in{padding:8px 0 0;font-size:14px;max-width:70ch}
 .aa-ses>div:first-child{flex:1 1 320px;min-width:0}.aa-ses .aa-btns{align-self:center}
 .aa-ses.passert{opacity:.85}.aa-ses select{font:inherit;font-size:12px;padding:2px 6px;border:1px solid var(--line);border-radius:6px;background:var(--card2);color:var(--ink)}
 @media(max-width:700px){.aa-tile b{font-size:19px}.aa-col{flex-basis:16px}}
+/* v1.52 (Thor 19.10): lavere topp og tettere dag, så mer av lista synes */
+h1.topp{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:22px;margin:10px 0 6px}
+h1.topp .pill{font-size:11px;font-weight:700;letter-spacing:0}
+.hvem{gap:5px;margin:0 0 10px}.hvem button{padding:5px 11px;min-height:34px;font-size:13.5px}.hvem button .dyr{font-size:16px;margin-right:5px}.hvem button.on{transform:none}
+#idag h2{margin-bottom:4px}
+.dagnav{margin:0 0 6px}.dagnav button{height:34px;min-width:38px;font-size:18px;padding:0 10px}
+.grp{margin:12px 0 5px;padding-top:8px}
+.tile{min-height:42px}.tile .tmain{padding-top:4px;padding-bottom:4px}
+.tiles{gap:5px}
+.grp.hv{display:flex;align-items:center;gap:6px;color:var(--accent)}.grp.hv::before{content:'';flex:none;width:17px;height:17px;background:currentColor;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M15 2.5a1 1 0 0 1 2 0v9.2a1 1 0 0 1-2 0z'/%3E%3Cpath d='M13 12.5h6.5a1.5 1.5 0 0 1 0 3H13z'/%3E%3Cpath d='M3 14.5a5 5 0 0 1 5-5h1.5a4.5 4.5 0 0 1 4.5 4.5V19a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z'/%3E%3Ccircle cx='5.5' cy='20.5' r='2'/%3E%3Ccircle cx='11.5' cy='20.5' r='2'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M15 2.5a1 1 0 0 1 2 0v9.2a1 1 0 0 1-2 0z'/%3E%3Cpath d='M13 12.5h6.5a1.5 1.5 0 0 1 0 3H13z'/%3E%3Cpath d='M3 14.5a5 5 0 0 1 5-5h1.5a4.5 4.5 0 0 1 4.5 4.5V19a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z'/%3E%3Ccircle cx='5.5' cy='20.5' r='2'/%3E%3Ccircle cx='11.5' cy='20.5' r='2'/%3E%3C/svg%3E") center/contain no-repeat}
+.tile .ti{width:38px}.tile .side{margin-left:4px}
+@media(max-width:700px){h1.topp{font-size:20px;margin:6px 0 6px}.hvem button{padding:4px 10px;min-height:32px;font-size:13px}.card{padding:10px 11px}}
 </style>
 </head>
 <body>
 <div class="wrap">
 <!-- egen app: ingen navigasjon til andre sider med vilje -->
 
-<h1 style="margin-top:14px">🧹 Familieteamet</h1>
-<p class="sub">Ett lag, fem spillere. Trykk på det du har gjort — poengene teller for hele familien. <span class="pill" id="dbpill">kobler til …</span></p>
+<h1 class="topp">🧹 Familieteamet <span class="pill" id="dbpill">kobler til …</span></h1>
 
 <div class="hvem" id="hvem" role="group" aria-label="Hvem er du?"></div>
 
@@ -526,7 +537,7 @@ details.om .in{padding:8px 0 0;font-size:14px;max-width:70ch}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.51.0';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.52.0';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -909,7 +920,7 @@ function tegnDagnav(){var el=document.getElementById('dagnav'); if(!el) return; 
   if(VIS_OFF===0&&!fravFor(d,valgt)){try{n+=forfalte().filter(function(s){return !valgt||s.person===valgt}).length}catch(e){}} /* i dag teller også det som henger igjen */
   var lbl=VIS_OFF===0?'I dag':(VIS_OFF===1?'I morgen':DAGER[(d.getDay()+6)%7]);
   el.innerHTML='<button type="button" id="dn-bak" aria-label="Dagen før"'+(VIS_OFF<=0?' disabled':'')+'>‹</button>'+
-    '<div class="dn-mid"><div class="dn-dato">'+esc(lbl)+' '+d.getDate()+'.'+(d.getMonth()+1)+'.</div><div class="dn-ant">'+(n?n+(n===1?' oppgave':' oppgaver')+' igjen':'ingenting igjen')+'</div></div>'+
+    '<div class="dn-mid"><div class="dn-dato">'+esc(lbl)+' '+d.getDate()+'.'+(d.getMonth()+1)+'.</div>'+(VIS_OFF===0?'':'<div class="dn-ant">'+(n?n+(n===1?' oppgave':' oppgaver')+' igjen':'ingenting igjen')+'</div>')+'</div>'+
     (VIS_OFF>0?'<button type="button" class="dn-idag" id="dn-idag">I dag</button>':'')+
     '<button type="button" id="dn-fram" aria-label="Neste dag"'+(VIS_OFF>=VIS_MAX?' disabled':'')+'>›</button>';
   document.getElementById('dn-bak').onclick=function(){if(VIS_OFF>0){VIS_OFF--;tegn()}};
@@ -1524,10 +1535,12 @@ function tegnIdag(){
   var BARN=['erik','vaarin','oscar'];
   var erBarn=!!(valgt&&BARN.indexOf(valgt)>=0);
   var rekke=erBarn?GRUPPER.concat(['Bonus','Henger igjen']):['Henger igjen'].concat(GRUPPER,['Bonus']);
-  if(erTorsdag){ navnG['Grovvask']='🧽 Husvasken · '+tVask; rekke=['Grovvask','Rydding'].concat(rekke.filter(function(g){return g!=='Grovvask'&&g!=='Rydding'})); }
+  if(erTorsdag){ navnG['Grovvask']='🧽 Husvasken · '+tVask; rekke=['Grovvask','Rydding'].concat(rekke.filter(function(g){return g!=='Grovvask'&&g!=='Rydding'}));
+    /* v1.52 (Thor 19.10): husvasken samler all torsdagsvask for alle fem — grovvask pluss oppgaver merket husvask:true (torsdagstimen, trappa) */
+    Object.keys(grp).forEach(function(g){ if(g==='Grovvask'||g==='Henger igjen'||g==='Bonus') return; grp[g]=grp[g].filter(function(s){ if(s.o.husvask){grp['Grovvask'].push(s);return false} return true }) }); }
   var FERD=[]; /* v1.29 (Thor 17.10): det som er huket flyttes ut av gruppene og ned i én lav stripe nederst */
   rekke.forEach(function(g){
-    if(!grp[g].length) return;
+    if(!grp[g].length){ if(erTorsdag&&g==='Grovvask') html+='<div class="grp hv">'+esc(navnG[g])+'</div><p class="small" style="margin:4px 0 10px">Ingenting på deg denne torsdagen — hjelp den som trenger det. 🙌</p>'; return; }
     var gh='';
     /* «Alle»-visning: samme oppgave for flere personer samme dag = én rute med avatarer */
     var liste=grp[g];
@@ -1557,7 +1570,8 @@ function tegnIdag(){
       var tS='<div class="tile'+(done?' done':'')+(s.forfalt?' hg':'')+(s.o.bonus?' bonus':'')+'" style="--pc:'+p.farge+'"><button class="tmain" data-k="'+esc(tk)+'" data-s="'+esc(s.key)+'" data-p="'+esc(s.person)+'" aria-pressed="'+done+'"><span class="chk">✓</span><span class="ik">'+s.o.ikon+'</span><span class="tx"><span class="nm">'+esc(s.o.navn)+mdTag(s.o,s.dato||NAA)+(s.o.bonus?'<span class="pt num bo">+'+s.o.poeng+' bonus</span>':'<span class="pt num">+'+s.o.poeng+'</span>')+'</span><span class="mt">'+meta+'</span></span></button><span class="side">'+arkKnapp(s.o)+'<button hidden class="tb" title="Bytt oppgaven til en annen" aria-label="Bytt til en annen" data-k="'+esc(tk)+'" data-o="'+esc(s.o.id)+'" data-d="'+s.dag+'" data-fra="'+esc(s.orig)+'" data-naa="'+esc(s.person)+'" data-dag0="'+(s.flyttet?s.fraDag:s.dag)+'"'+(s.forfalt?' data-forfalt="1"':'')+(s.utsatt?' data-uts="'+esc(s.fraUke)+'" data-utsk="'+esc(s.fraKey)+'"':'')+'>⇄</button></span></div>';
       if(done) FERD.push(tS); else gh+=tS;
     });
-    if(gh) html+='<div class="grp'+(g==='Henger igjen'?' hg':'')+'">'+esc(navnG[g]||g)+'</div><div class="tiles">'+gh+'</div>';
+    if(!gh&&erTorsdag&&g==='Grovvask') html+='<div class="grp hv">'+esc(navnG[g])+'</div><p class="small" style="margin:4px 0 10px">✓ Din del av husvasken er gjort.</p>';
+    if(gh) html+='<div class="grp'+(g==='Henger igjen'?' hg':'')+(erTorsdag&&g==='Grovvask'?' hv':'')+'">'+esc(navnG[g]||g)+'</div><div class="tiles">'+gh+'</div>';
   });
   if(FERD.length) html+='<details class="ferdigstripe"'+(FERD_OPEN?' open':'')+' id="ferdigstripe"><summary>✓ Fullført'+(FRAM?'':' i dag')+' <span class="num">('+FERD.length+')</span> <span class="small">— trykk på en for å angre</span></summary><div class="tiles kompakt">'+FERD.join('')+'</div></details>';
   /* dagsframdrift + feiring */
