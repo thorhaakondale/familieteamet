@@ -292,6 +292,10 @@ details.om .in{padding:8px 0 0;font-size:14px;max-width:70ch}
 #ark .ark-slett .slett-bekr .rod{background:var(--bad);border-color:var(--bad);color:#fff}
 #ark .ark-slett button:focus-visible,.angre button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 #ark .ark-minn[hidden],#ark .ark-slett[hidden],.angre[hidden]{display:none}
+.dato-rad{display:flex;flex-wrap:wrap;align-items:center;gap:8px;flex-basis:100%;margin-top:4px}
+.dato-rad .dato-naa{flex-basis:100%;font-size:13.5px;color:var(--muted)}
+.dato-rad .dato-ok{font:inherit;font-weight:800;font-size:15px;min-height:44px;padding:8px 14px;border-radius:10px;border:0;background:#1a73e8;color:#fff;cursor:pointer}
+.dato-rad .dato-ok[hidden]{display:none}
 .toast{position:fixed;left:50%;bottom:70px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--bg);padding:12px 22px;border-radius:999px;font-weight:900;font-size:20px;opacity:0;transition:all .25s;z-index:50;pointer-events:none}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .plan{display:flex;gap:8px;flex-wrap:wrap}
@@ -512,7 +516,7 @@ details.om .in{padding:8px 0 0;font-size:14px;max-width:70ch}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.49.0';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.50.0';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -750,10 +754,17 @@ function byggDagrad(o,knapp,d){ /* v1.15: én dagvelger for alle typer — hurti
     var y=ymd(b); if(y===naaDato) return; brukt[y]=1; var n=antallDag(ds.naa||ds.fra||valgt||'thor',y);
     var k=knapp2(v,'\u21AA Backup-luka · '+DAGK[bd]+' '+datoNorsk(b)+(n?' ·'+n:''),false,function(){gaaTil(y);setTimeout(function(){toast('Lagt på backup-luka '+DAGK[bd]+' '+datoNorsk(b))},50)},'backup'); })();
   hkn('I morgen',addDays(i0,1)); hkn('Om 2 dager',addDays(i0,2));
-  var di=document.createElement('input'); di.type='date'; di.value=naaDato||ymd(i0); di.min=ymd(i0); di.setAttribute('aria-label','Velg dato');
+  /* v1.50 (Thor 19.10): datovelgeren viser dagen oppgaven står på nå, og flytter først når du trykker «✓ Flytt til …» */
+  var oc=arkForekomst(knapp), vist=oc?ymd(oc.dato):(naaDato||ymd(i0)), vd=new Date(vist+'T12:00:00');
+  var drad=document.createElement('div'); drad.className='dato-rad';
+  var dl=document.createElement('div'); dl.className='dato-naa'; dl.textContent='Står nå: '+DAGER[(vd.getDay()+6)%7].toLowerCase()+' '+datoNorsk(vd)+' · velg en annen dato:'; drad.appendChild(dl);
+  var di=document.createElement('input'); di.type='date'; di.value=vist; di.min=ymd(i0); di.setAttribute('aria-label','Velg dato');
+  var ok=document.createElement('button'); ok.type='button'; ok.className='dato-ok'; ok.hidden=true;
   di.onclick=function(e){e.stopPropagation()};
-  di.onchange=function(e){e.stopPropagation();if(!di.value)return;var val=di.value;d.close();setTimeout(function(){gaaTil(val)},0)};
-  v.appendChild(di);
+  di.onchange=function(e){e.stopPropagation(); if(!di.value||di.value===vist){ok.hidden=true;return}
+    var nd=new Date(di.value+'T12:00:00'); ok.textContent='✓ Flytt til '+DAGER[(nd.getDay()+6)%7].toLowerCase()+' '+datoNorsk(nd); ok.hidden=false};
+  ok.onclick=function(e){e.stopPropagation(); var val=di.value; if(!val) return; d.close(); setTimeout(function(){gaaTil(val)},0)};
+  drad.appendChild(di); drad.appendChild(ok); v.appendChild(drad);
   /* bytt til en annen — rett i arket (ikke for utsatte/forfalte ruter: der finnes ingen ukenøkkel å bytte på) */
   if(!ds.uts&&!ds.forfalt&&ds.k&&ds.fra){ var bv=seksjon('Bytt til');
     PERS.forEach(function(p){ if(p.id===(ds.naa||ds.fra)) return; var k=knapp2(bv,(p.id===ds.fra?'\u21A9 ':'')+p.dyr+' '+p.navn,false,function(){bytt(ds.k,o,+ds.dag0,ds.fra,p.id)},'pers'); k.style.setProperty('--pc',p.farge); }); }
@@ -1468,8 +1479,10 @@ function tegnIdag(){
   grp['Bonus']=[];
   slots.forEach(function(s){var g=s.o.bonus?'Bonus':(s.o.egen?'Dagen':(s.o.kat||'Rydding')); (grp[g]||(grp[g]=[])).push(s)}); /* v1.46 (Thor 19.10): huskelapper ligger i «I løpet av dagen», sortert etter varseltid */
   /* v1.49 (Thor 19.10.2026): torsdag er husdagen — husvasken og husøkta står øverst, med tidspunkt. Tidene ligger i innstillinger/torsdag. */
-  var TT=(INNST&&INNST.torsdag)||{}, tVask=TT.vask||'17:00–18:30', tOkt=TT.okt||'19:00–20:00';
-  var navnRydding=erTorsdag?'🧹 Husøkta · '+tOkt+' — alle sammen':'Ryddejobb';
+  var TT=(INNST&&INNST.torsdag)||{}, tVask=TT.vask||'17:00–18:30', tOkt=TT.okt||'19:00–20:00', tOktB=TT.oktBarn||'18:30–19:00';
+  /* barna tar sin del rett etter husvasken, før leggetid; de voksne fortsetter etterpå (Thor 19.10) */
+  var erB=!!(valgt&&['erik','vaarin','oscar'].indexOf(valgt)>=0);
+  var navnRydding=erTorsdag?(erB?'🧹 Husøkta · '+tOktB:(valgt?'🧹 Husøkta · '+tOkt:'🧹 Husøkta · barna '+tOktB+' · voksne '+tOkt)):'Ryddejobb';
   var navnHenger=erLordag?'🧹 Lørdagsøkta — det som henger igjen fra uka':'⏰ Henger igjen — ikke gjort ennå';
   var html='';
   var navnG={'Morgen':'Morgen','Etter skolen':'Når du kommer hjem','Dagen':'I løpet av dagen','Vedlikehold':'🔧 Vedlikehold hus, hage og bil','Hytta':'🏔️ Hytta og Airbnb','Grovvask':'🧽 Grovvask','Måltider':'Måltider','Kveld':'Kveld — før legging','Rydding':navnRydding,'Vask':'Vask og bestilling','Sesong':'Modent nå','Sikkerhet':'🛟 Sikkerhet — brann, varslere og førstehjelp','Huskelapper':'📌 Huskelapper','Bonus':'🎁 Bonus — ekstra poeng, utenfor ukemålet','Henger igjen':navnHenger};
