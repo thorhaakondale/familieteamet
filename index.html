@@ -540,7 +540,7 @@ h1.topp .pill{font-size:11px;font-weight:700;letter-spacing:0}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.52.2';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.53.0';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -1540,7 +1540,9 @@ function tegnIdag(){
      Voksne ser det som henger igjen overst, fordi de planlegger uka. */
   var BARN=['erik','vaarin','oscar'];
   var erBarn=!!(valgt&&BARN.indexOf(valgt)>=0);
-  var rekke=erBarn?GRUPPER.concat(['Bonus','Henger igjen']):['Henger igjen'].concat(GRUPPER,['Bonus']);
+  /* v1.53 (Thor 19.10): voksne ser det som skjer i dag først — morgen, dagens tidspunkter, og bonus de skal gjøre sammen med barna — før gamle etterslep og rutinevedlikehold */
+  var TOPP_V=['Morgen','Dagen','Bonus','Henger igjen'];
+  var rekke=erBarn?GRUPPER.concat(['Bonus','Henger igjen']):TOPP_V.concat(GRUPPER.filter(function(g){return TOPP_V.indexOf(g)<0}));
   if(erTorsdag){ navnG['Grovvask']='🧽 Husvasken · '+tVask; rekke=['Grovvask','Rydding'].concat(rekke.filter(function(g){return g!=='Grovvask'&&g!=='Rydding'}));
     /* v1.52 (Thor 19.10): husvasken samler all torsdagsvask for alle fem — grovvask pluss oppgaver merket husvask:true (torsdagstimen, trappa) */
     Object.keys(grp).forEach(function(g){ if(g==='Grovvask'||g==='Henger igjen'||g==='Bonus') return; grp[g]=grp[g].filter(function(s){ if(s.o.husvask){grp['Grovvask'].push(s);return false} return true }) }); }
