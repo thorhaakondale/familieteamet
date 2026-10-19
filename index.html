@@ -546,7 +546,7 @@ h1.topp .pill{font-size:11px;font-weight:700;letter-spacing:0}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.55.0';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.56.0';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -1181,22 +1181,50 @@ var RYDD_T=null;
 /* v1.39 (Thor 18.10.2026): ferier og dager man er borte er blank familietid. Huskelapp-varsler holdes stille for den som er borte eller i
    ferieuker — unntatt lapper personen har satt selv (minn.av), de ringer alltid. Lappen står fortsatt på tavla. */
 /* v1.47 (Thor 19.10): alle oppgaver kan ha varsel. Engangsoppgaver på sin dato, gjentakende de dagene de faktisk står i planen. */
-function minnPaa(o,yd){ if(!o||o.aktiv===false||!o.minn||!o.minn.tid) return false; if(o.int==='dato') return o.dato===yd;
+/* v1.56 (Thor 19.10.2026): «Minn på» følger tavla — samme plan som rutene (flytt, utsett, bytt, «slett bare denne gangen») — og varselet
+   avbestilles når oppgaven er hakket av. Angres haken, bestilles det på nytt så lenge klokkeslettet ikke har passert. */
+var PU_MEMO=null;
+function planUkeM(m){ if(!PU_MEMO) return planUke(m); var k=ukeKey(m); return PU_MEMO[k]||(PU_MEMO[k]=planUke(m)); }
+function minnSlots(o,yd){ var d=new Date(yd+'T00:00:00'), m=mandag(d), di=Math.round((d-m)/86400000); return planUkeM(m).filter(function(s){return s.o.id===o.id&&s.dag===di}); }
+function minnPaa0(o,yd){ if(o.int==='dato') return o.dato===yd;
   var d=new Date(yd+'T12:00:00'), m=mandag(d), di=(d.getDay()+6)%7; try{return dagerIUka(o,m).indexOf(di)>=0}catch(e){return false} }
+function minnPaa(o,yd){ if(!o||o.aktiv===false||!o.minn||!o.minn.tid) return false; if(!UKER_LASTET||!OPPG_LASTET) return minnPaa0(o,yd);
+  try{return minnSlots(o,yd).length>0}catch(e){return minnPaa0(o,yd)} }
+function minnGjort(o,yd){ if(!o||!UKER_LASTET||!OPPG_LASTET) return false;
+  try{ var key=ukeKey(mandag(new Date(yd+'T00:00:00'))), sl=minnSlots(o,yd); return sl.length>0&&sl.every(function(s){return erGjort(key,s.key)}); }catch(e){return false} }
+function minnMott(o,yd){ var ut=[], sl=[]; if(UKER_LASTET&&OPPG_LASTET){ try{sl=minnSlots(o,yd)}catch(e){sl=[]} }
+  minnTil(o).forEach(function(p){ var mine=sl.filter(function(s){return s.orig===p&&s.person!==p}); /* byttet: varselet går til den som har overtatt */
+    (mine.length?mine.map(function(s){return s.person}):[p]).forEach(function(q){ if(ut.indexOf(q)<0) ut.push(q) }); });
+  return ut; }
 function minnStille(o,p,dag){ if(o&&o.minn&&o.minn.av===p) return false; return !!(fravFor(dag,p)||erFerie(ukeKey(dag))); }
 function minnTil(o){ return (o.minn&&o.minn.til&&o.minn.til.length?o.minn.til:(o.hvem||[])); }
 function ryddMinn(){ /* kjører når oppgavene endres: varsler for lapper som ikke lenger står på den datoen/det klokkeslettet, avbestilles */
-  if(!db||!OPPG_LASTET) return; clearTimeout(RYDD_T);
+  if(!db||!OPPG_LASTET||!UKER_LASTET) return; clearTimeout(RYDD_T); /* v1.56: vent på ukas haker og flytt, ellers stemmer ikke planen */
   RYDD_T=setTimeout(function(){
     db.child('varsler/sendt').orderByKey().startAt(ymd(new Date())).once('value').then(function(snap){
-      var v=snap.val()||{}, endret=false, jobber=[];
+      var v=snap.val()||{}, endret=false, jobber=[], nt=lesNtfy(INNST.ntfy)||{}, naaMs=Date.now(); PU_MEMO={};
+      try{
       Object.keys(v).forEach(function(k){var i=k.indexOf('_minn_'); if(i<0) return;
         var dato=k.slice(0,i), id=k.slice(i+6), e=v[k]||{}, o=null;
         for(var j=0;j<OPPG.length;j++){if(OPPG[j].id===id){o=OPPG[j];break}}
-        var gyldig=o&&minnPaa(o,dato)&&(!e.tid||e.tid===o.minn.tid)&&minnTil(o).some(function(p){return !minnStille(o,p,new Date(dato+'T00:00:00'))}); /* v1.39: alle mottakerne borte/ferie → avbestill */
+        var gyldig=o&&minnPaa(o,dato)&&(!e.tid||e.tid===o.minn.tid)&&minnMott(o,dato).some(function(p){return !minnStille(o,p,new Date(dato+'T00:00:00'))}); /* v1.39: alle mottakerne borte/ferie → avbestill */
+        if(gyldig){ /* v1.56: hakket av, eller byttet til en annen — gjelder bare varsler som ikke har gått ennå */
+          var tm=String(e.tid||o.minn.tid).split(':'), dd=new Date(dato+'T00:00:00'), tt=new Date(dd.getFullYear(),dd.getMonth(),dd.getDate(),+tm[0],+tm[1]||0,0).getTime();
+          if(tt-naaMs>60000){
+            if(minnGjort(o,dato)) gyldig=false;
+            else if(e.ids){ var mo=minnMott(o,dato).filter(function(p){return nt[p]&&!minnStille(o,p,dd)});
+              if(!mo.every(function(p){return e.ids[p]})||!Object.keys(e.ids).every(function(p){return mo.indexOf(p)>=0})) gyldig=false; }
+          }
+        }
         if(gyldig) return;
         endret=true; jobber.push(avbestillMinn(e,dato,o).then(function(ok){ if(ok) return db.child('varsler/sendt/'+k).set(null); }).catch(function(){})); /* v1.37: feilet den, står posten og prøves igjen neste gang */
       });
+      /* v1.56: mangler et varsel som skal gå (haken angret, flyttet hit, byttet hit) — bestill */
+      for(var d=0;d<3&&!endret;d++){ (function(dag){ var yd=ymd(dag);
+        OPPG.forEach(function(o){ if(endret||v[yd+'_minn_'+o.id]||!minnPaa(o,yd)||minnGjort(o,yd)) return;
+          var hm=String(o.minn.tid).split(':'), t=new Date(dag.getFullYear(),dag.getMonth(),dag.getDate(),+hm[0],+hm[1]||0,0).getTime();
+          if(t-naaMs>120000&&minnMott(o,yd).some(function(p){return nt[p]&&!minnStille(o,p,dag)})) endret=true; }); })(addDays(new Date(),d)); }
+      } finally { PU_MEMO=null; }
       if(endret) Promise.all(jobber).then(function(){VARSLET_NAA=false; planleggVarsler()});
     }).catch(function(){});
   },1500);
@@ -1248,8 +1276,8 @@ function planleggBackup(){
     ref.transaction(function(cur){ if(cur) return; return {ts:Date.now(),by:valgt||'familie'} },function(err,committed){
       if(err||!committed) return;
       var ps=b.til.filter(function(p){return n[p]&&!fravFor(ly,p)}); if(!ps.length){ ref.set(null).catch(function(){}); return; }
-      Promise.all(ps.map(function(p){return ntfyPost(n[p],'Backup-luka',b.tekst,b.tag,Math.floor(t.getTime()/1000),3,appLenke(p))}))
-        .then(function(a){ if(!a.some(Boolean)) ref.set(null).catch(function(){}) });
+      Promise.all(ps.map(function(p){return ntfyPost(n[p],'Backup-luka',b.tekst,b.tag,Math.floor(t.getTime()/1000),3,appLenke(p),ntfySeq('ft',ly,'backup',x[0],p))})) /* v1.56: sekvens-id, så den kan avbestilles */
+        .then(function(a){ if(!a.some(Boolean)){ ref.set(null).catch(function(){}); return; } ref.update({til:ps.filter(function(p,i){return a[i]})}).catch(function(){}) });
     });
   });
 }
@@ -1271,19 +1299,21 @@ function planleggVarsler(){
     });
     planleggPakk(naa,n,yd); /* v1.18 */
     /* v1.20: huskelapper med \u00abMinn p\u00e5\u00bb \u2014 ett varsel per lapp og person p\u00e5 lappens dato og klokkeslett; flyttes lappen, f\u00f8lger varselet datoen (ny n\u00f8kkel) */
-    OPPG.forEach(function(o){ if(!minnPaa(o,yd)) return; /* v1.47: ikke bare huskelapper */
+    PU_MEMO={}; try{
+    OPPG.forEach(function(o){ if(!minnPaa(o,yd)||minnGjort(o,yd)) return; /* v1.47: ikke bare huskelapper · v1.56: ikke det som alt er hakket av */
+      var mott=minnMott(o,yd); /* v1.56: følger bytt på tavla */
       var hm3=String(o.minn.tid).split(':'); var t3=new Date(dag.getFullYear(),dag.getMonth(),dag.getDate(),+hm3[0],+hm3[1]||0,0);
       if(t3.getTime()-naa.getTime()<120000) return;
       var key3=yd+'_minn_'+o.id, ref3=db.child('varsler/sendt/'+key3);
       ref3.transaction(function(cur){ if(cur) return; return {ts:Date.now(),by:valgt||'familie'} },function(err,committed){
         if(err||!committed) return;
-        var ps=minnTil(o).filter(function(p){return n[p]&&!minnStille(o,p,dag)}); /* v1.39 */ if(!ps.length){ ref3.set(null).catch(function(){}); return; }
+        var ps=mott.filter(function(p){return n[p]&&!minnStille(o,p,dag)}); /* v1.39 */ if(!ps.length){ ref3.set(null).catch(function(){}); return; }
         var fra=(o.minn.av&&PMAP[o.minn.av]&&ps.length>1)?' fra '+PMAP[o.minn.av].navn:'';
         Promise.all(ps.map(function(p){return ntfyPostId(n[p],(o.egen?'Huskelapp':'Påminnelse')+fra,o.navn,o.egen?'pushpin':'bell',Math.floor(t3.getTime()/1000),4,appLenke(p),ntfySeq('ft',yd,'minn',o.id,p))}))
           .then(function(a){ if(!a.some(Boolean)){ ref3.set(null).catch(function(){}); return; }
             var ids={}; ps.forEach(function(p,i){ if(a[i]) ids[p]={t:n[p],id:ntfySeq('ft',yd,'minn',o.id,p)} }); /* v1.33: sekvens-id — det er den ntfy sletter på */ ref3.update({tid:o.minn.tid,ids:ids}).catch(function(){}) });
       });
-    });
+    }); } finally { PU_MEMO=null; }
     liste.forEach(function(v){ if(!v||v.aktiv===false||!v.id||!v.tid||(v.dager||[]).indexOf(wd)<0) return;
       if(v.skoledag&&erFerie(ukeKey(dag))) return; /* skolerutine-varsler er stille i ferieuker */
       var hm=String(v.tid).split(':'); var t=new Date(dag.getFullYear(),dag.getMonth(),dag.getDate(),+hm[0],+hm[1]||0,0);
@@ -1445,15 +1475,44 @@ document.addEventListener('submit',function(e){
   var id='n'+Date.now().toString(36), rk=pkLinjer(til).length+10;
   db.child('pakkelister/'+til+'/linjer/'+id).set({x:x,kat:til==='basis'?'Pakk':'Egne',ses:ses,sted:'',rekke:rk,by:valgt||'familie',ts:new Date().toISOString()}).then(function(){toast('Lagt til');tx.value=''}).catch(function(){});
 });
+/* v1.56 (Thor 19.10.2026): backup-luka og pakkeslagene avbestilles for den som har gjort jobben før varselet går, og bestilles på nytt
+   om haken angres. Gjelder varsler bestilt fra v1.56 (de har sekvens-id og mottakerliste i varsler/sendt). Avreisedagen («Restene») går alltid. */
+function pakkGjort(tu,sl,p){ if(!UKER_LASTET||!OPPG_LASTET) return false;
+  try{ var m=mandag(new Date(sl.dato+'T00:00:00')), key=ukeKey(m), id='tur-'+tu.id+'-'+sl.n;
+    var s=planUke(m).filter(function(x){return x.o.id===id&&x.person===p}); return s.length>0&&s.every(function(x){return erGjort(key,x.key)}); }catch(e){return false} }
+var GJORT_T=null;
+function ryddGjort(){
+  if(!db||!INNST.ntfy||!UKER_LASTET||!OPPG_LASTET||!window.fetch) return; clearTimeout(GJORT_T);
+  GJORT_T=setTimeout(function(){
+    var naa=new Date(), n=lesNtfy(INNST.ntfy)||{}, man=mandag(naa), jobb=[], hb=String(INNST.backupTid||'09:30').split(':');
+    [['hus',5],['bil',6]].forEach(function(x){ var dag=addDays(man,x[1]), ly=ymd(dag), t=new Date(dag.getFullYear(),dag.getMonth(),dag.getDate(),+hb[0],+hb[1]||0,0);
+      jobb.push({sti:ly+'_backup_'+x[0], t:t, seq:function(p){return ntfySeq('ft',ly,'backup',x[0],p)},
+        ferdig:function(){var b=backupLuka(dag,x[0]), til=b?b.til:[]; return function(p){return til.indexOf(p)<0}},
+        post:function(p){var b=backupLuka(dag,x[0]); return b?ntfyPost(n[p],'Backup-luka',b.tekst,b.tag,Math.floor(t.getTime()/1000),3,appLenke(p),ntfySeq('ft',ly,'backup',x[0],p)):Promise.resolve(false)}}); });
+    turListe().forEach(function(tu){ pakkeslag(tu).forEach(function(sl){ if(sl.n===3) return;
+      var hm=sl.tid.split(':'), dag=new Date(sl.dato+'T00:00:00'), t=new Date(dag.getFullYear(),dag.getMonth(),dag.getDate(),+hm[0],+hm[1]||0,0);
+      jobb.push({sti:sl.dato+'_pakk_'+tu.id+'_'+sl.n, t:t, seq:function(p){return ntfySeq('ft',sl.dato,'pakk',tu.id,sl.n,p)},
+        ferdig:function(){return function(p){return pakkGjort(tu,sl,p)}},
+        post:function(p){return ntfyPost(n[p],'Pakkelista \u00b7 '+sl.navn,sl.tekst,'luggage',Math.floor(t.getTime()/1000),4,appLenke(p)+'#pakk',ntfySeq('ft',sl.dato,'pakk',tu.id,sl.n,p))}}); }); });
+    jobb.forEach(function(j){ var igjen=j.t.getTime()-naa.getTime(); if(igjen<60000||igjen>3*86400000) return;
+      var ref=db.child('varsler/sendt/'+j.sti);
+      ref.once('value').then(function(snap){ var e=snap.val(); if(!e||!e.til) return; var stopp=e.stopp||{}, ferdig=j.ferdig();
+        [].concat(e.til).forEach(function(p){ if(!n[p]) return; var f=ferdig(p);
+          if(f&&!stopp[p]) ntfySlett(n[p],j.seq(p)).then(function(ok){ if(ok) ref.child('stopp/'+p).set(true).catch(function(){}) });
+          else if(!f&&stopp[p]&&igjen>120000) j.post(p).then(function(ok){ if(ok) ref.child('stopp/'+p).set(null).catch(function(){}) });
+        }); }).catch(function(){});
+    });
+  },1500);
+}
 function planleggPakk(naa,n,yd){ /* v1.19: pakkeslagene per tur og person; uten tur: ett varsel kvelden f\u00f8r reisedato (v1.18) */
   turListe().forEach(function(t){ var hv=(t.hvem&&t.hvem.length)?t.hvem:['thor','anniken'];
     pakkeslag(t).forEach(function(sl){ if(sl.dato!==yd) return; var hm=sl.tid.split(':'), dag=new Date(yd+'T00:00:00'), tt=new Date(dag.getFullYear(),dag.getMonth(),dag.getDate(),+hm[0],+hm[1]||0,0); if(tt.getTime()-naa.getTime()<120000) return;
       var key=yd+'_pakk_'+t.id+'_'+sl.n, ref=db.child('varsler/sendt/'+key);
       ref.transaction(function(cur){ if(cur) return; return {ts:Date.now(),by:valgt||'familie'} },function(err,committed){
         if(err||!committed) return;
-        var ps=hv.filter(function(p){return n[p]&&(sl.n!==3||p==='thor'||p==='anniken')}); if(!ps.length){ref.set(null).catch(function(){});return}
-        Promise.all(ps.map(function(p){return ntfyPost(n[p],'Pakkelista \u00b7 '+sl.navn,sl.tekst,'luggage',Math.floor(tt.getTime()/1000),4,appLenke(p)+'#pakk')}))
-          .then(function(a){ if(!a.some(Boolean)) ref.set(null).catch(function(){}) });
+        var ps=hv.filter(function(p){return n[p]&&(sl.n!==3||p==='thor'||p==='anniken')&&(sl.n===3||!pakkGjort(t,sl,p))}); if(!ps.length){ref.set(null).catch(function(){});return} /* v1.56: ferdig pakket = ikke varsel */
+        Promise.all(ps.map(function(p){return ntfyPost(n[p],'Pakkelista \u00b7 '+sl.navn,sl.tekst,'luggage',Math.floor(tt.getTime()/1000),4,appLenke(p)+'#pakk',ntfySeq('ft',yd,'pakk',t.id,sl.n,p))}))
+          .then(function(a){ if(!a.some(Boolean)){ ref.set(null).catch(function(){}); return; } ref.update({til:ps.filter(function(p,i){return a[i]})}).catch(function(){}) });
       });
     });
   });
@@ -2054,7 +2113,7 @@ function slaaSammenOppg(liste){
         if(ant){upd['uker/'+Object.keys(LOKALT_FOER)[0]+'/ts']=new Date().toISOString();db.update(upd).then(function(){toast('☁️ '+ant+' haker fra enheten lastet opp')}).catch(function(){})}
       }
       Object.keys(v).forEach(function(id){var x=v[id]||{};taInnUke(id,x.gjort||{});var bt={};Object.keys(x.bytt||{}).forEach(function(k){if(x.bytt[k])bt[k]=x.bytt[k]});UKER[id].bytt=bt;var fl={};Object.keys(x.flytt||{}).forEach(function(k){if(x.flytt[k]!==null&&x.flytt[k]!==undefined)fl[k]=x.flytt[k]});UKER[id].flytt=fl;var ut2={};Object.keys(x.utsett||{}).forEach(function(k){if(x.utsett[k])ut2[k]=x.utsett[k]});UKER[id].utsett=ut2;n++});
-      lagreLokalt();tegn();UKER_LASTET=true;planleggBackup();kveldStopp();
+      lagreLokalt();tegn();UKER_LASTET=true;planleggBackup();kveldStopp();try{ryddMinn();ryddGjort()}catch(e){} /* v1.56: haker og flytt styrer også «Minn på», backup-luka og pakkingen */
       document.getElementById('dbpill').textContent='lagres delt';
       status('Delt lagring tilkoblet · '+n+' uke'+(n===1?'':'r')+' registrert.');
     },function(e){status('Delt lagring avviste tilkoblingen — er familiekoden riktig? ('+(e&&e.message)+')');document.getElementById('dbpill').textContent='lagres på enheten'});
