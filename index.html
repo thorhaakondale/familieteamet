@@ -100,6 +100,15 @@ dialog#nydlg,dialog#bortedlg{border:0;border-radius:16px;padding:0;max-width:560
 .ptag{display:inline-block;font-size:11.5px;font-weight:800;padding:1px 7px;border-radius:999px;color:#fff;background:var(--pc);vertical-align:middle;margin-right:4px}
 /* today tiles */
 .grp{margin:18px 0 6px;padding-top:10px;border-top:1px solid var(--line);font-size:12.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.dagnav{display:flex;align-items:center;gap:8px;margin:2px 0 10px}
+.dagnav button{appearance:none;border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;min-width:44px;height:40px;font:inherit;font-size:20px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0 12px}
+.dagnav button:disabled{opacity:.3;cursor:default}
+.dagnav button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.dagnav .dn-mid{flex:1;min-width:0;text-align:center;line-height:1.25}
+.dagnav .dn-dato{font-weight:800;font-size:16px}
+.dagnav .dn-ant{font-size:12.5px;color:var(--muted)}
+.dagnav .dn-idag{font-size:13px;height:32px;min-width:0;padding:0 10px;border-color:var(--accent);color:var(--accent)}
+.framdag{background:var(--accentbg);border-radius:10px;padding:8px 12px;margin:0 0 10px;font-size:13.5px;color:var(--ink2)}
 .grp:first-child,.glemt+.grp,.dagtxt+.grp{border-top:0;padding-top:0;margin-top:8px}
 .tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:6px}
 .tile{display:flex;align-items:center;gap:6px;padding:0 4px 0 0;border-radius:10px;border:1.5px solid var(--line);background:var(--card);min-height:46px;color:var(--ink);width:100%;position:relative}
@@ -312,6 +321,7 @@ details.om .in{padding:8px 0 0;font-size:14px;max-width:70ch}
 
 <section class="card" id="idag">
   <h2 id="idag-h">I dag</h2>
+  <div class="dagnav" id="dagnav"></div>
   <div id="dagplan"></div>
   <div id="idag-liste"></div>
   <div id="ny-rask-wrap" hidden>
@@ -483,7 +493,7 @@ details.om .in{padding:8px 0 0;font-size:14px;max-width:70ch}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.41.0';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.42.0';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -764,6 +774,24 @@ function arkInit(){ /* arket ligger nederst i dokumentet — bind knappene førs
 }
 
 var valgt=null, FERD_OPEN=false;
+/* v1.42 (Thor 19.10.2026): bla framover dag for dag over oppgavene — aldri bakover forbi i dag, og appen åpner alltid på i dag.
+   Maks 6 dager fram; resten av planen ligger i ukeoversikten og Oppgavebanken. */
+var VIS_OFF=0, VIS_MAX=6, SKJULT_TS=0;
+function visDag(){var t=new Date();return addDays(new Date(t.getFullYear(),t.getMonth(),t.getDate(),12),VIS_OFF)}
+function antForDag(d){var m=mandag(d), k=ukeKey(m), di=(d.getDay()+6)%7;
+  return planUke(m).filter(function(s){return s.dag===di&&!s.o.bonus&&(!valgt||s.person===valgt)&&!erGjort(k,s.key)}).length}
+function tegnDagnav(){var el=document.getElementById('dagnav'); if(!el) return; var d=visDag(), n=antForDag(d);
+  if(VIS_OFF===0&&!fravFor(d,valgt)){try{n+=forfalte().filter(function(s){return !valgt||s.person===valgt}).length}catch(e){}} /* i dag teller også det som henger igjen */
+  var lbl=VIS_OFF===0?'I dag':(VIS_OFF===1?'I morgen':DAGER[(d.getDay()+6)%7]);
+  el.innerHTML='<button type="button" id="dn-bak" aria-label="Dagen før"'+(VIS_OFF<=0?' disabled':'')+'>‹</button>'+
+    '<div class="dn-mid"><div class="dn-dato">'+esc(lbl)+' '+d.getDate()+'.'+(d.getMonth()+1)+'.</div><div class="dn-ant">'+(n?n+(n===1?' oppgave':' oppgaver')+' igjen':'ingenting igjen')+'</div></div>'+
+    (VIS_OFF>0?'<button type="button" class="dn-idag" id="dn-idag">I dag</button>':'')+
+    '<button type="button" id="dn-fram" aria-label="Neste dag"'+(VIS_OFF>=VIS_MAX?' disabled':'')+'>›</button>';
+  document.getElementById('dn-bak').onclick=function(){if(VIS_OFF>0){VIS_OFF--;tegn()}};
+  document.getElementById('dn-fram').onclick=function(){if(VIS_OFF<VIS_MAX){VIS_OFF++;tegn()}};
+  var ti=document.getElementById('dn-idag'); if(ti) ti.onclick=function(){VIS_OFF=0;tegn()};}
+document.addEventListener('visibilitychange',function(){ if(document.hidden){SKJULT_TS=Date.now();return}
+  if(VIS_OFF&&SKJULT_TS&&Date.now()-SKJULT_TS>5*60000){VIS_OFF=0;try{tegn()}catch(e){}} }); /* tilbake i appen etter en stund = i dag */
 try{valgt=localStorage.getItem('ft-person')||null}catch(e){}
 (function(){var q='';try{q=(new URLSearchParams(location.search).get('p')||location.hash.replace('#','')||'').toLowerCase()}catch(e){}
   if(q==='vårin'||q==='varin')q='vaarin';
@@ -1339,6 +1367,7 @@ function glemtIGaar(){
   return planUke(m).filter(function(s){return erRutine(s.o)&&!s.o.bonus&&s.dag===d&&!erGjort(k,s.key)&&(!valgt||s.person===valgt)}).map(function(s){s.ukeKey=k;return s});
 }
 function tegnIdag(){
+  var FRAM=VIS_OFF>0, NAA=FRAM?visDag():window.NAA; tegnDagnav(); /* v1.42: lokal NAA = dagen som vises */
   var man=mandag(NAA), key=ukeKey(man), dIdx=(NAA.getDay()+6)%7;
   var pv=valgt?PMAP[valgt]:null;
   var fv=valgt?fravFor(NAA,valgt):null;
@@ -1347,7 +1376,7 @@ function tegnIdag(){
   document.getElementById('dagplan').innerHTML=''; /* ingen dagsplan: tavla er ikke en kalender — det viktigste er at det blir gjort i løpet av dagen */
   var slots=planUke(man).filter(function(s){return s.dag===dIdx&&(!valgt||s.person===valgt)});
   slots.forEach(function(s){s.ukeKey=key});
-  var henger=fv?[]:forfalte(); /* v1.17: på en fraværsdag maser tavla ikke om det som henger */
+  var henger=(fv||FRAM)?[]:forfalte(); /* v1.42: «henger igjen» vises bare på i dag */ /* v1.17: på en fraværsdag maser tavla ikke om det som henger */
   var grp={'Henger igjen':henger}; GRUPPER.forEach(function(g){grp[g]=[]});
   var erTorsdag=(dIdx===3), erLordag=(dIdx===5);
   /* Huskelapper (lagt inn med «+ Legg til noe jeg må huske») får sin egen bolk, uansett kategori. */
@@ -1396,17 +1425,17 @@ function tegnIdag(){
     });
     if(gh) html+='<div class="grp'+(g==='Henger igjen'?' hg':'')+'">'+esc(navnG[g]||g)+'</div><div class="tiles">'+gh+'</div>';
   });
-  if(FERD.length) html+='<details class="ferdigstripe"'+(FERD_OPEN?' open':'')+' id="ferdigstripe"><summary>✓ Fullført i dag <span class="num">('+FERD.length+')</span> <span class="small">— trykk på en for å angre</span></summary><div class="tiles kompakt">'+FERD.join('')+'</div></details>';
+  if(FERD.length) html+='<details class="ferdigstripe"'+(FERD_OPEN?' open':'')+' id="ferdigstripe"><summary>✓ Fullført'+(FRAM?'':' i dag')+' <span class="num">('+FERD.length+')</span> <span class="small">— trykk på en for å angre</span></summary><div class="tiles kompakt">'+FERD.join('')+'</div></details>';
   /* dagsframdrift + feiring */
   var pl=slots.filter(function(s){return !s.o.bonus});
   var antAlle=pl.length, antGjort=pl.filter(function(s){return erGjort(key,s.key)}).length;
   var frem='';
   if(erBarn){var tp=ukeTall(man).per[valgt];frem+='<div class="barnpoeng">Denne uka: <b class="num">'+tp.gjort+'</b> poeng <span class="small">· '+tp.antG+' av '+tp.ant+' oppgaver gjort'+(tp.bonus?' · 🎁 +'+tp.bonus+' bonus':'')+'</span></div>'}
-  else{var fb=ferdigIDag();if(fb.length)frem+='<div class="ferdigbadge">✅ Ferdig for i dag: '+fb.map(function(id){var q=PMAP[id];return q?q.dyr+' '+esc(q.navn):''}).join(', ')+'</div>'}
+  else if(!FRAM){var fb=ferdigIDag();if(fb.length)frem+='<div class="ferdigbadge">✅ Ferdig for i dag: '+fb.map(function(id){var q=PMAP[id];return q?q.dyr+' '+esc(q.navn):''}).join(', ')+'</div>'}
   if(antAlle){var pct=Math.round(antGjort/antAlle*100);
     frem+='<div class="dagbar"><div class="dagfill" style="width:'+pct+'%"></div></div><p class="dagtxt">'+(antGjort===antAlle?'<b>Alt gjort i dag!</b> 🎉 Kjempebra.':'<b>'+antGjort+' av '+antAlle+'</b> gjort · '+(antAlle-antGjort)+' igjen')+'</p>';
-    if(antGjort===antAlle&&!window.__feiret){window.__feiret=true;feir()}else if(antGjort<antAlle)window.__feiret=false;}
-  var gl=fv?[]:glemtIGaar();
+    if(!FRAM&&antGjort===antAlle&&!window.__feiret){window.__feiret=true;feir()}else if(antGjort<antAlle)window.__feiret=false;}
+  var gl=(fv||FRAM)?[]:glemtIGaar();
   if(gl.length){
     var gkn=gl.map(function(s){return '<button class="gk" data-k="'+esc(s.ukeKey)+'" data-s="'+esc(s.key)+'" data-p="'+esc(s.person)+'">'+s.o.ikon+' '+esc(s.o.navn)+(valgt?'':' · '+esc(PMAP[s.person].navn))+' ✓?</button>'}).join('');
     var gsm='<span class="small">Trykk hvis det ble gjort likevel. Ellers står dagen tom — rutiner tas ikke igjen.</span>';
@@ -1421,13 +1450,14 @@ function tegnIdag(){
     var fb2=fv.lenke?'<a href="'+esc(fv.lenke)+'" target="_blank" rel="noopener">Hele planen ↗</a> · ':'';
     html='<div class="frav"><h3>'+esc(fv.navn||'Borte')+'</h3>'+(fl?'<ul>'+fl+'</ul>':'<p class="tom">Ingen plan lagt inn — bare fri.</p>')+'<div class="fravfot">'+fb2+'Husoppgavene dine er satt på pause i dag. <button type="button" class="edit" id="frav-av">Ikke borte likevel</button>'+(fv.kilde==='manuell'?' <button type="button" class="edit" id="frav-av-alle">Hjemme igjen — ta bort resten</button>':'')+'</div></div>'+html;
   } else if(!valgt){ var borte=PERS.filter(function(p){return fravFor(NAA,p.id)}); if(borte.length) html='<div class="fravchip">🧳 Borte i dag: '+borte.map(function(p){var f=fravFor(NAA,p.id);return p.dyr+' '+esc(p.navn)+(f.navn?' ('+esc(f.navn)+')':'')}).join(' · ')+'</div>'+html; }
-  if(!html) html='<p class="tom">Ingen oppgaver i dag — fri! 🎉</p>';
+  if(!html) html='<p class="tom">Ingen oppgaver '+(FRAM?'denne dagen':'i dag')+' — fri! 🎉</p>';
   else if(!/class="grp/.test(html)) html='<p class="tom">Alt er gjort — fri! 🎉</p>'+html;
   /* v1.28 (Thor 17.10): «Jeg er borte» — glemt å legge inn i kalenderen? Én knapp, foreslått dato, så er husoppgavene på pause til og med den dagen */
   var merB=document.getElementById('mer-borte'); if(merB) merB.innerHTML='';
-  var bbtn=document.getElementById('borte-btn'); if(bbtn) bbtn.hidden=!(valgt&&erVoksen()&&!fv);
-  if(valgt&&erVoksen()&&!fv&&merB){ merB.innerHTML='<div class="borterad"><p class="small" style="margin:0 0 8px">Husoppgavene dine settes på pause til og med datoen — akkurat som ved en tur. «Hjemme igjen» på fraværsdagen tar det bort.</p><form id="borte-form" autocomplete="off"><label class="small">Til og med <input type="date" id="borte-til" min="'+ymd(NAA)+'" value="'+ymd(addDays(NAA,1))+'"></label><input id="borte-hva" placeholder="Hvor / hva (valgfritt)" maxlength="40"><button type="submit" class="edit">Sett borte</button></form></div>'; }
-  if(erBarn){var fm=ferdigFor(valgt);html+='<div class="ferdigrad">'+(fm?'<button id="ferdig-btn" class="meldt" data-angre="1">✓ Du meldte ferdig for i dag</button><span class="small">Når alle har gjort alt sitt, får mamma og pappa én beskjed i kveld. Trykk igjen hvis du angret.</span>':'<button id="ferdig-btn">✅ Ferdig for i dag</button><span class="small">Trykk når alt ditt er gjort.</span>')+'</div>'}
+  var bbtn=document.getElementById('borte-btn'); if(bbtn) bbtn.hidden=!(valgt&&erVoksen()&&!fv&&!FRAM);
+  if(valgt&&erVoksen()&&!fv&&!FRAM&&merB){ merB.innerHTML='<div class="borterad"><p class="small" style="margin:0 0 8px">Husoppgavene dine settes på pause til og med datoen — akkurat som ved en tur. «Hjemme igjen» på fraværsdagen tar det bort.</p><form id="borte-form" autocomplete="off"><label class="small">Til og med <input type="date" id="borte-til" min="'+ymd(NAA)+'" value="'+ymd(addDays(NAA,1))+'"></label><input id="borte-hva" placeholder="Hvor / hva (valgfritt)" maxlength="40"><button type="submit" class="edit">Sett borte</button></form></div>'; }
+  if(erBarn&&!FRAM){var fm=ferdigFor(valgt);html+='<div class="ferdigrad">'+(fm?'<button id="ferdig-btn" class="meldt" data-angre="1">✓ Du meldte ferdig for i dag</button><span class="small">Når alle har gjort alt sitt, får mamma og pappa én beskjed i kveld. Trykk igjen hvis du angret.</span>':'<button id="ferdig-btn">✅ Ferdig for i dag</button><span class="small">Trykk når alt ditt er gjort.</span>')+'</div>'}
+  if(FRAM) frem='<div class="framdag">Du ser '+DAGER[dIdx].toLowerCase()+' '+datoNorsk(NAA)+' Det du huker av her, er gjort for den dagen.</div>'+frem;
   var el=document.getElementById('idag-liste');el.innerHTML=frem+html;
   var fs=document.getElementById('ferdigstripe'); if(fs) fs.addEventListener('toggle',function(){FERD_OPEN=fs.open});
   var fbtn=document.getElementById('ferdig-btn');if(fbtn)fbtn.onclick=function(){meldFerdig(valgt,!!fbtn.dataset.angre,antGjort,antAlle)};
