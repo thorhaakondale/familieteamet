@@ -546,7 +546,7 @@ h1.topp .pill{font-size:11px;font-weight:700;letter-spacing:0}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.54.0';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.55.0';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -962,7 +962,12 @@ try{var lu=JSON.parse(localStorage.getItem('ft-uker')||'{}');UKER=lu||{}}catch(e
 function lagreLokalt(){try{localStorage.setItem('ft-uker',JSON.stringify(UKER))}catch(e){}}
 
 function ukeDoc(key){if(!UKER[key])UKER[key]={gjort:{}};if(!UKER[key].gjort)UKER[key].gjort={};return UKER[key]}
-function erGjort(key,slot){var u=UKER[key];return !!(u&&u.gjort&&u.gjort[slot])}
+/* v1.55 (Thor 19.10): én-veis kobling fra Livskraft — en A/B-økt logget der huker av treningsruta her. Familieteamet skriver aldri til Livskraft. */
+var LK={thor:{},anniken:{}};
+function lkType(slot,key){ if(!slot||slot.indexOf('x-okt-')!==0) return null; var pa=slot.split('|'), p=pa[2], t;
+  try{ t=(LK[p]||{})[ymd(addDays(ukeFraKey(key),+pa[1]))] }catch(e){ return null } return (t&&t.length)?t[t.length-1]:null }
+function erGjortFT(key,slot){var u=UKER[key];return !!(u&&u.gjort&&u.gjort[slot])}
+function erGjort(key,slot){return erGjortFT(key,slot)||!!lkType(slot,key)}
 var BELONNING={}, INNLOST={}; /* innlost: '<uke>-<nivå>' -> {ts,by,tekst} — familien merker at belønningen faktisk ble gjort */
 function innlos(key,idx,tekst,person){var id=key+'-'+idx; var dok={ts:new Date().toISOString(),by:person||'familie',tekst:tekst||''};
   INNLOST[id]=dok; tegn(); toast('🎉 Gjort — '+(tekst||'belønning'));
@@ -986,6 +991,7 @@ function modus(o,dato){
 function mdTag(o,dato){if(!o.veksle)return '';var m=modus(o,dato);return ' <span class="md '+m+'">'+(m==='grov'?'GROV':'lett')+'</span>'}
 var PENDING={}; /* slot -> {key,val,ts} — egne trykk som ikke er bekreftet av delt lagring ennå */
 function toggle(key,slot,person){
+  if(!erGjortFT(key,slot)&&lkType(slot,key)){toast('Logget i Livskraft ✓ — endres der');return}
   var u=ukeDoc(key); var naaGjort=!u.gjort[slot];
   var val=naaGjort?Date.now():null;
   if(naaGjort) u.gjort[slot]=val; else delete u.gjort[slot];
@@ -1605,7 +1611,8 @@ function tegnIdag(){
         meta='skulle vært '+DAGK[s.dag]+' '+datoNorsk(s.dato)+(dg>6?' · <b>'+dg+' dager forfalt</b>':'')+' · '+meta;}
       meta=meta.replace(/^(\s*·\s*)+/,'').replace(/(\s*·\s*)+$/,''); /* huskelapper uten minutter skal ikke ende på en ensom prikk */
       var tk=s.ukeKey||key;
-      var tS='<div class="tile'+(done?' done':'')+(s.forfalt?' hg':'')+(s.o.bonus?' bonus':'')+'" style="--pc:'+p.farge+'"><button class="tmain" data-k="'+esc(tk)+'" data-s="'+esc(s.key)+'" data-p="'+esc(s.person)+'" aria-pressed="'+done+'"><span class="chk">✓</span><span class="ik">'+s.o.ikon+'</span><span class="tx"><span class="nm">'+esc(s.o.navn)+mdTag(s.o,s.dato||NAA)+(s.o.bonus?'<span class="pt num bo">+'+s.o.poeng+' bonus</span>':'<span class="pt num">+'+s.o.poeng+'</span>')+'</span><span class="mt">'+meta+'</span></span></button><span class="side">'+arkKnapp(s.o)+'<button hidden class="tb" title="Bytt oppgaven til en annen" aria-label="Bytt til en annen" data-k="'+esc(tk)+'" data-o="'+esc(s.o.id)+'" data-d="'+s.dag+'" data-fra="'+esc(s.orig)+'" data-naa="'+esc(s.person)+'" data-dag0="'+(s.flyttet?s.fraDag:s.dag)+'"'+(s.forfalt?' data-forfalt="1"':'')+(s.utsatt?' data-uts="'+esc(s.fraUke)+'" data-utsk="'+esc(s.fraKey)+'"':'')+'>⇄</button></span></div>';
+      var navnVis=s.o.navn; if(s.o.kat==='Trening'&&done){var lt=lkType(s.key,tk); navnVis+=lt?' — logget i Livskraft ('+lt+') ✓':' — bonusøkt (ikke logget i Livskraft)';}
+      var tS='<div class="tile'+(done?' done':'')+(s.forfalt?' hg':'')+(s.o.bonus?' bonus':'')+'" style="--pc:'+p.farge+'"><button class="tmain" data-k="'+esc(tk)+'" data-s="'+esc(s.key)+'" data-p="'+esc(s.person)+'" aria-pressed="'+done+'"><span class="chk">✓</span><span class="ik">'+s.o.ikon+'</span><span class="tx"><span class="nm">'+esc(navnVis)+mdTag(s.o,s.dato||NAA)+(s.o.bonus?'<span class="pt num bo">+'+s.o.poeng+' bonus</span>':'<span class="pt num">+'+s.o.poeng+'</span>')+'</span><span class="mt">'+meta+'</span></span></button><span class="side">'+arkKnapp(s.o)+'<button hidden class="tb" title="Bytt oppgaven til en annen" aria-label="Bytt til en annen" data-k="'+esc(tk)+'" data-o="'+esc(s.o.id)+'" data-d="'+s.dag+'" data-fra="'+esc(s.orig)+'" data-naa="'+esc(s.person)+'" data-dag0="'+(s.flyttet?s.fraDag:s.dag)+'"'+(s.forfalt?' data-forfalt="1"':'')+(s.utsatt?' data-uts="'+esc(s.fraUke)+'" data-utsk="'+esc(s.fraKey)+'"':'')+'>⇄</button></span></div>';
       if(done) FERD.push(tS); else gh+=tS;
     });
     if(!gh&&erTorsdag&&g==='Grovvask') html+='<div class="grp hv">'+esc(navnG[g])+'</div><p class="small" style="margin:4px 0 10px">✓ Din del av husvasken er gjort.</p>';
@@ -2026,6 +2033,7 @@ function slaaSammenOppg(liste){
     db=firebase.database().ref('fam/'+KODE); dbOk=true;
     db.child('oppgaver').on('value',function(snap){var v=snap.val()||{};OPPG_LASTET=true;setTimeout(planleggBackup,0);var li=Object.keys(v).map(function(k){return v[k]});try{localStorage.setItem('ft-oppg-delt',JSON.stringify(li))}catch(e){};slaaSammenOppg(li);synkTurOppg();tegn();ryddMinn();kveldStopp()});
     db.child('innlost').on('value',function(snap){INNLOST=snap.val()||{};tegn()});
+    ['thor','anniken'].forEach(function(p){ db.child('okt/'+p+'/okter').limitToLast(60).on('value',function(snap){var m={}; snap.forEach(function(c){var o=c.val(); if(o&&o.dato&&(o.type==='A'||o.type==='B')) (m[o.dato]||(m[o.dato]=[])).push(o.type)}); LK[p]=m; tegn()},function(){}) }); /* v1.55: les Livskraft-øktene (bare lesing) */
     db.child('belonning').on('value',function(snap){BELONNING=snap.val()||{};tegn()});
     db.child('tilstand').on('value',function(snap){TILSTAND=snap.val()||{};tegn()});
     db.child('ferdig').on('value',function(snap){var v=snap.val()||{};Object.keys(v).forEach(function(d){FERDIG[d]=v[d]||{}});Object.keys(FERDIG).forEach(function(d){if(!v[d])FERDIG[d]={}});try{localStorage.setItem('ft-ferdig',JSON.stringify(FERDIG))}catch(e){};tegn();kveldStopp()});
