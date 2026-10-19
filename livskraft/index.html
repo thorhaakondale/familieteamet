@@ -350,14 +350,11 @@ details.om summary{cursor:pointer;font-weight:700;color:var(--ag);font-size:13px
   </div>
   <div class="kort" id="k-ntfy">
     <h2>Varsel i bakgrunnen</h2>
-    <p class="lit" style="margin:0 0 8px">Når pausen er over og Livskraft ligger i bakgrunnen, får du en push-melding med lyd og vibrasjon — også med Spotify på og skjermen låst. Meldingen sendes fra gratistjenesten ntfy.sh og inneholder bare «Pausen er over» og øvelsen. Kommer alarmen i appen (den er synlig), avbestilles push-meldingen.</p>
-    <div class="fem">
-      <div><label>Varsel i bakgrunnen</label><div class="seg" id="seg-ntfy"><button data-v="1">På</button><button data-v="0">Av</button></div></div>
-    </div>
+    <p class="lit" style="margin:0 0 8px">Når pausen er over og Livskraft ligger i bakgrunnen, får du en push-melding med lyd og vibrasjon — også med Spotify på og skjermen låst. Meldingen sendes fra gratistjenesten ntfy.sh og inneholder bare «Pausen er over» og øvelsen. Kommer alarmen i appen (den er synlig), avbestilles push-meldingen. Varselet er alltid på — det er ingen bryter å glemme.</p>
     <ol class="steg" style="margin:8px 0 0">
       <li>Last ned <b>ntfy</b> fra App Store (gratis, åpen kildekode).</li>
       <li>I ntfy: «Subscribe to topic» → skriv emnet under (eller trykk «Kopier emne» og lim inn). Server: ntfy.sh.</li>
-      <li>Slå på her, og trykk «Send testvarsel» — legg telefonen fra deg; meldingen kommer om 10–20 sekunder.</li>
+      <li>Trykk «Send testvarsel» — legg telefonen fra deg; meldingen kommer om 10–20 sekunder.</li>
     </ol>
     <div class="rad" style="margin-top:8px;flex-wrap:wrap;gap:6px"><code id="ntfy-emne" style="font-size:15px;padding:6px 10px;border-radius:8px;background:var(--kant2)"></code><button class="knapp lit sek" id="ntfy-kopier">Kopier emne</button><button class="knapp lit sek" id="ntfy-test">Send testvarsel</button></div>
     <p class="lit" id="ntfy-status" style="margin:6px 0 0"></p>
@@ -401,12 +398,12 @@ details.om summary{cursor:pointer;font-weight:700;color:var(--ag);font-size:13px
 
 <script>
 /* ============================================================
-   Livskraft v1.20 — treningsappen til familien Dale (Liv, 14.9.2026 · v1.8 28.9: alarm maks 10 s, slipper lyden · v1.9 29.9: varsel i bakgrunnen via ntfy · v1.10 12.10: pauseøvelsene synlige med bilde og «slik gjør du den», hovedøvelse/pauseøvelse/tilbehør merket, ærlig tidsanslag per økt · v1.11 13.10: push-varselet bestilles 5 s før pausen er over · v1.12 14.10: Annikens program (A, B, hjemmeøkt H), bilde på hovedøvelsene, månedssjekken · v1.13 16.10: neste styrkeøkt følger rekkefølgen, ikke ukedagen — valgbar alle dager uka ikke er fullført · v1.14 16.10: variantvalget på pauseøvelsene står og huskes · v1.16 17.10: søndagsreserven · v1.17 17.10: reserveøkta hjemme tor–søn · v1.18 17.10: én-trykks turlogg hver dag, med eller uten Oscar · v1.19 17.10: ukesrapport kropp 0–5 og styrkebildet — e1RM-trend og indeks · v1.20 17.10: øvelsesbildene hentes fra Firebase)
+   Livskraft v1.20 — treningsappen til familien Dale (Liv, 14.9.2026 · v1.8 28.9: alarm maks 10 s, slipper lyden · v1.9 29.9: varsel i bakgrunnen via ntfy · v1.10 12.10: pauseøvelsene synlige med bilde og «slik gjør du den», hovedøvelse/pauseøvelse/tilbehør merket, ærlig tidsanslag per økt · v1.11 13.10: push-varselet bestilles 5 s før pausen er over · v1.12 14.10: Annikens program (A, B, hjemmeøkt H), bilde på hovedøvelsene, månedssjekken · v1.13 16.10: neste styrkeøkt følger rekkefølgen, ikke ukedagen — valgbar alle dager uka ikke er fullført · v1.14 16.10: variantvalget på pauseøvelsene står og huskes · v1.16 17.10: søndagsreserven · v1.17 17.10: reserveøkta hjemme tor–søn · v1.18 17.10: én-trykks turlogg hver dag, med eller uten Oscar · v1.19 17.10: ukesrapport kropp 0–5 og styrkebildet — e1RM-trend og indeks · v1.20 17.10: øvelsesbildene hentes fra Firebase · v1.21 19.10: varsel i bakgrunnen alltid på, bryteren fjernet)
    Program = data/program.json (agentstyrt). Logg = lokalt + Firebase (fam/<kode>/okt/<person>).
    ============================================================ */
 "use strict";
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
-var VERSJON='1.20.0'; /* v1.20: appversjonen, vises under Mer → Programmet */
+var VERSJON='1.21.0'; /* v1.21: appversjonen, vises under Mer → Programmet */
 var KODE=null, PERSON='thor', PROG=null, S=null, db=null, dbOk=false, PENDING=[];
 var AKTIV=null; /* pågående økt */
 var UKEVIS=0;   /* uke-offset i Uka-fanen */
@@ -976,10 +973,10 @@ document.addEventListener('pointerdown',function(){if(ALARM.iv)alarmStopp()},tru
    Ringer appen selv (synlig), avbestilles meldingen. ntfy leverer forsinkede meldinger hvert 10. sekund, så varselet
    kan komme inntil 10 s etter at pausen er ute. Emnet er en tilfeldig nøkkel (lk-…) — ingen familiekode, ingen navn. */
 var NTFY_URL='https://ntfy.sh/', NT={id:null,topic:null};
-function ntfyPaa(){return !!(S.innst.ntfy&&S.innst.ntfy.on&&S.innst.ntfy.topic)}
+function ntfyPaa(){var n=ntfyN();if(!n.topic){n.topic=ntfyNyttEmne();ntfyLagre();n=ntfyN()}return !!n.topic} /* v1.21 (Thor 19.10): alltid på — ingen av/på-bryter */
 function ntfyNyttEmne(){var a='abcdefghijkmnpqrstuvwxyz23456789',t='lk-';try{var r=new Uint8Array(14);crypto.getRandomValues(r);for(var i=0;i<14;i++)t+=a[r[i]%a.length]}catch(e){for(var j=0;j<14;j++)t+=a[Math.floor(Math.random()*a.length)]}return t}
-function ntfyLagre(){var n=ntfyN();lagre('innst/ntfy',{on:n.on?1:0,topic:n.topic||''})}
-function ntfyPlan(sek,ov,si){ /* bestill en forsinket push når pausen starter — bare hvis varselet er slått på */
+function ntfyLagre(){var n=ntfyN();lagre('innst/ntfy',{on:1,topic:n.topic||''})}
+function ntfyPlan(sek,ov,si){ /* bestill en forsinket push når pausen starter — alltid (v1.21) */
   if(!ntfyPaa()||!window.fetch)return;
   var d=Math.max(10,Math.round((sek||0)-5));if(d<10)return; /* v1.11 (Thor 13.10): bestilles 5 s før pausen er over — ntfy + Apple bruker 5–15 s på leveringen */
   var navn=ov&&ov.navn?ov.navn:'';var tekst='Pausen er over'+(navn?' — '+navn+(si!==undefined&&si!==null?' sett '+(si+2):''):'')+'. Kjør.';
@@ -995,10 +992,9 @@ function ntfyN(){return S.innst.ntfy||(S.innst.ntfy={on:0,topic:''})} /* lagre()
 function tegnNtfy(){var n=ntfyN();
   if(!n.topic){n.topic=ntfyNyttEmne();ntfyLagre();n=ntfyN()}
   var em=$('ntfy-emne');if(em)em.textContent=n.topic;
-  Array.prototype.forEach.call(document.querySelectorAll('#seg-ntfy button'),function(b){b.className=(+b.getAttribute('data-v')===(n.on?1:0))?'on':'';b.onclick=function(){ntfyN().on=+b.getAttribute('data-v');ntfyLagre();var st=$('ntfy-status');if(st)st.textContent='';tegnNtfy()}});
-  var st=$('ntfy-status');if(st&&!st.textContent)st.textContent=n.on?'På. Push-melding bestilles hver gang en pause starter, og avbestilles hvis appen selv ringer.':'Av. Alarmen virker bare når appen er synlig.';
+  var st=$('ntfy-status');if(st&&!st.textContent)st.textContent='Push-melding bestilles hver gang en pause starter, og avbestilles hvis appen selv ringer.';
   $('ntfy-kopier').onclick=function(){var t=ntfyN().topic;try{navigator.clipboard.writeText(t).then(function(){if(st)st.textContent='Emnet er kopiert — lim inn i ntfy under «Subscribe to topic».'})}catch(e){if(st)st.textContent='Skriv emnet inn i ntfy: '+t}};
-  $('ntfy-test').onclick=function(){if(!ntfyN().on){if(st)st.textContent='Slå på først.';return}ntfyTest()};
+  $('ntfy-test').onclick=function(){ntfyTest()};
   $('ntfy-nytt').onclick=function(){NT.id=null;ntfyN().topic=ntfyNyttEmne();ntfyLagre();if(st)st.textContent='Nytt emne laget — abonner på det i ntfy.';tegnNtfy()};}
 $('timer-hopp').onclick=stoppTimer;
 /* ---------- lyd (v1.7) ----------
