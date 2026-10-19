@@ -512,7 +512,7 @@ details.om .in{padding:8px 0 0;font-size:14px;max-width:70ch}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.46.0';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.47.0';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -800,10 +800,10 @@ function arkForekomst(knapp){var t=knapp&&knapp.closest?knapp.closest('.tile'):n
   var sl=tm.dataset.f?tm.dataset.f.split(','):(tm.dataset.s?[tm.dataset.s]:[]); if(!sl.length) return null;
   return {k:tm.dataset.k, slots:sl, dato:addDays(ukeFraKey(tm.dataset.k),+sl[0].split('|')[1])}}
 function byggArkMinn(o){var el=document.getElementById('ark-minn'); if(!el) return;
-  var vis=erVoksen()&&o.egen&&!o.tur; el.hidden=!vis; if(!vis){el.innerHTML='';return}
+  var vis=erVoksen()&&!o.tur; /* v1.47: varsel på alle oppgaver */ el.hidden=!vis; if(!vis){el.innerHTML='';return}
   var tid=(o.minn&&o.minn.tid)||'';
   el.innerHTML='<label for="ark-minn-tid">⏰ Varsel</label><input type="time" id="ark-minn-tid" value="'+esc(tid)+'">'+(tid?'<button type="button" id="ark-minn-fjern">Fjern varsel</button>':'')+
-    '<small>'+(tid?'Varselet går på lappens dato. Endre tiden og trykk Ferdig.':'Velg et klokkeslett og trykk Ferdig, så får du varsel på lappens dato.')+'</small>';
+    '<small>'+(o.int==='dato'?(tid?'Varselet går på oppgavens dato. Endre tiden og trykk Ferdig.':'Velg et klokkeslett og trykk Ferdig — da får du varsel, og oppgaven sorteres etter tiden.'):'Gjentakende: varsel hver gang den står på tavla. Tiden sorterer også lista.')+'</small>';
   var fj=document.getElementById('ark-minn-fjern'); if(fj) fj.onclick=function(){document.getElementById('ark-minn-tid').value=''; fj.remove()};}
 function byggArkSlett(o,occ){var el=document.getElementById('ark-slett'); if(!el) return;
   var vis=erVoksen()&&!o.tur; el.hidden=!vis; if(!vis){el.innerHTML='';return}
@@ -1094,6 +1094,9 @@ function flyttGamleKveld(){
 var RYDD_T=null;
 /* v1.39 (Thor 18.10.2026): ferier og dager man er borte er blank familietid. Huskelapp-varsler holdes stille for den som er borte eller i
    ferieuker — unntatt lapper personen har satt selv (minn.av), de ringer alltid. Lappen står fortsatt på tavla. */
+/* v1.47 (Thor 19.10): alle oppgaver kan ha varsel. Engangsoppgaver på sin dato, gjentakende de dagene de faktisk står i planen. */
+function minnPaa(o,yd){ if(!o||o.aktiv===false||!o.minn||!o.minn.tid) return false; if(o.int==='dato') return o.dato===yd;
+  var d=new Date(yd+'T12:00:00'), m=mandag(d), di=(d.getDay()+6)%7; try{return dagerIUka(o,m).indexOf(di)>=0}catch(e){return false} }
 function minnStille(o,p,dag){ if(o&&o.minn&&o.minn.av===p) return false; return !!(fravFor(dag,p)||erFerie(ukeKey(dag))); }
 function minnTil(o){ return (o.minn&&o.minn.til&&o.minn.til.length?o.minn.til:(o.hvem||[])); }
 function ryddMinn(){ /* kjører når oppgavene endres: varsler for lapper som ikke lenger står på den datoen/det klokkeslettet, avbestilles */
@@ -1104,7 +1107,7 @@ function ryddMinn(){ /* kjører når oppgavene endres: varsler for lapper som ik
       Object.keys(v).forEach(function(k){var i=k.indexOf('_minn_'); if(i<0) return;
         var dato=k.slice(0,i), id=k.slice(i+6), e=v[k]||{}, o=null;
         for(var j=0;j<OPPG.length;j++){if(OPPG[j].id===id){o=OPPG[j];break}}
-        var gyldig=o&&o.aktiv!==false&&o.minn&&o.minn.tid&&o.dato===dato&&(!e.tid||e.tid===o.minn.tid)&&minnTil(o).some(function(p){return !minnStille(o,p,new Date(dato+'T00:00:00'))}); /* v1.39: alle mottakerne borte/ferie → avbestill */
+        var gyldig=o&&minnPaa(o,dato)&&(!e.tid||e.tid===o.minn.tid)&&minnTil(o).some(function(p){return !minnStille(o,p,new Date(dato+'T00:00:00'))}); /* v1.39: alle mottakerne borte/ferie → avbestill */
         if(gyldig) return;
         endret=true; jobber.push(avbestillMinn(e,dato,o).then(function(ok){ if(ok) return db.child('varsler/sendt/'+k).set(null); }).catch(function(){})); /* v1.37: feilet den, står posten og prøves igjen neste gang */
       });
@@ -1182,7 +1185,7 @@ function planleggVarsler(){
     });
     planleggPakk(naa,n,yd); /* v1.18 */
     /* v1.20: huskelapper med \u00abMinn p\u00e5\u00bb \u2014 ett varsel per lapp og person p\u00e5 lappens dato og klokkeslett; flyttes lappen, f\u00f8lger varselet datoen (ny n\u00f8kkel) */
-    OPPG.forEach(function(o){ if(!o.egen||!o.minn||!o.minn.tid||o.aktiv===false||o.dato!==yd) return;
+    OPPG.forEach(function(o){ if(!minnPaa(o,yd)) return; /* v1.47: ikke bare huskelapper */
       var hm3=String(o.minn.tid).split(':'); var t3=new Date(dag.getFullYear(),dag.getMonth(),dag.getDate(),+hm3[0],+hm3[1]||0,0);
       if(t3.getTime()-naa.getTime()<120000) return;
       var key3=yd+'_minn_'+o.id, ref3=db.child('varsler/sendt/'+key3);
@@ -1190,7 +1193,7 @@ function planleggVarsler(){
         if(err||!committed) return;
         var ps=minnTil(o).filter(function(p){return n[p]&&!minnStille(o,p,dag)}); /* v1.39 */ if(!ps.length){ ref3.set(null).catch(function(){}); return; }
         var fra=(o.minn.av&&PMAP[o.minn.av]&&ps.length>1)?' fra '+PMAP[o.minn.av].navn:'';
-        Promise.all(ps.map(function(p){return ntfyPostId(n[p],'Huskelapp'+fra,o.navn,'pushpin',Math.floor(t3.getTime()/1000),4,appLenke(p),ntfySeq('ft',yd,'minn',o.id,p))}))
+        Promise.all(ps.map(function(p){return ntfyPostId(n[p],(o.egen?'Huskelapp':'Påminnelse')+fra,o.navn,o.egen?'pushpin':'bell',Math.floor(t3.getTime()/1000),4,appLenke(p),ntfySeq('ft',yd,'minn',o.id,p))}))
           .then(function(a){ if(!a.some(Boolean)){ ref3.set(null).catch(function(){}); return; }
             var ids={}; ps.forEach(function(p,i){ if(a[i]) ids[p]={t:n[p],id:ntfySeq('ft',yd,'minn',o.id,p)} }); /* v1.33: sekvens-id — det er den ntfy sletter på */ ref3.update({tid:o.minn.tid,ids:ids}).catch(function(){}) });
       });
@@ -1482,12 +1485,12 @@ function tegnIdag(){
     /* Forfalte ruter slås IKKE sammen: de kan komme fra ulike uker, og hver av dem må beholde sin egen ukeKey */
     if(!valgt){var by={},ord=[];liste.forEach(function(s){var k=s.o.id+'|'+s.dag+'|'+(s.ukeKey||key);if(!by[k]){by[k]=[];ord.push(k)}by[k].push(s)});
       liste=ord.map(function(k){var arr=by[k];if(arr.length===1)return arr[0];var a=arr[0];return {o:a.o,dag:a.dag,person:a.person,orig:a.orig,key:a.key,ukeKey:a.ukeKey,felles:arr}})}
-    liste.sort(function(a,b){var da=(a.felles?a.felles.every(function(x){return erGjort(a.ukeKey||key,x.key)}):erGjort(a.ukeKey||key,a.key))?1:0,dbb=(b.felles?b.felles.every(function(x){return erGjort(b.ukeKey||key,x.key)}):erGjort(b.ukeKey||key,b.key))?1:0;if(da!==dbb)return da-dbb;if(g==='Dagen'){var ta=(a.o.minn&&a.o.minn.tid)||'99:99',tb=(b.o.minn&&b.o.minn.tid)||'99:99';if(ta!==tb)return ta<tb?-1:1}return (a.person>b.person)?1:-1}).forEach(function(s){
+    liste.sort(function(a,b){var da=(a.felles?a.felles.every(function(x){return erGjort(a.ukeKey||key,x.key)}):erGjort(a.ukeKey||key,a.key))?1:0,dbb=(b.felles?b.felles.every(function(x){return erGjort(b.ukeKey||key,x.key)}):erGjort(b.ukeKey||key,b.key))?1:0;if(da!==dbb)return da-dbb;{var ta=(a.o.minn&&a.o.minn.tid)||'99:99',tb=(b.o.minn&&b.o.minn.tid)||'99:99';if(ta!==tb)return ta<tb?-1:1}return (a.person>b.person)?1:-1}).forEach(function(s){
       if(s.felles){
         var fk=s.ukeKey||key;
         var alleD=s.felles.every(function(x){return erGjort(fk,x.key)}), antD=s.felles.filter(function(x){return erGjort(fk,x.key)}).length;
         var av=s.felles.map(function(x){var q=PMAP[x.person];return '<span class="av'+(erGjort(fk,x.key)?' ok':'')+'" style="--pc:'+q.farge+'" title="'+esc(q.navn)+'">'+esc(q.kort)+'</span>'}).join('');
-        var rkF=rytmeKort(s.o), metaF=(rkF?'↻ '+rkF+' · ':'')+(s.o.min?s.o.min+' min · ':'')+'alle sammen · '+antD+' av '+s.felles.length+(s.o.notat||s.o.lenke?' · trykk ⓘ for stegene':'');
+        var rkF=rytmeKort(s.o), metaF=(s.o.minn&&s.o.minn.tid?'⏰ '+s.o.minn.tid+' · ':'')+(rkF?'↻ '+rkF+' · ':'')+(s.o.min?s.o.min+' min · ':'')+'alle sammen · '+antD+' av '+s.felles.length+(s.o.notat||s.o.lenke?' · trykk ⓘ for stegene':'');
         var tF='<div class="tile'+(alleD?' done':'')+(s.o.bonus?' bonus':'')+'" style="--pc:var(--accent)"><button class="tmain" data-k="'+esc(fk)+'" data-f="'+esc(s.felles.map(function(x){return x.key}).join(','))+'" aria-pressed="'+alleD+'"><span class="chk">✓</span><span class="ik">'+s.o.ikon+'</span><span class="tx"><span class="nm">'+esc(s.o.navn)+'<span class="pt num">+'+(s.o.poeng*s.felles.length)+'</span></span><span class="mt">'+metaF+'</span><span class="avs">'+av+'</span></span></button><span class="side">'+arkKnapp(s.o)+'<button hidden class="tb" title="Utsett for alle" aria-label="Utsett for alle" data-k="'+esc(s.felles[0].ukeKey||key)+'" data-o="'+esc(s.o.id)+'" data-d="'+s.dag+'" data-dag0="'+(s.felles[0].flyttet?s.felles[0].fraDag:s.dag)+'" data-felles="'+esc(s.felles.map(function(x){return x.orig}).join(','))+'">⇄</button></span></div>';
         if(alleD) FERD.push(tF); else gh+=tF;
         return;
