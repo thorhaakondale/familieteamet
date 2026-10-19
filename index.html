@@ -146,6 +146,8 @@ dialog#ark::backdrop{background:rgba(0,0,0,.45)}
 #ark .ark-felt .ark-lbl{margin-top:4px}
 #ark .ark-topp{display:flex;align-items:flex-start;gap:10px}
 #ark .ark-ik{font-size:26px;line-height:1.1}
+#ark #ark-navn-inn{resize:none;overflow:hidden;min-height:2.6em;white-space:pre-wrap;word-break:break-word}
+#ark .ark-topp{align-items:flex-start}
 #ark h3{margin:0;font-size:19px;line-height:1.25;flex:1}#ark #ark-navn-inn{flex:1;font:inherit;font-size:17px;font-weight:800;line-height:1.25;padding:4px 8px;border:1.5px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);min-width:0}
 #ark .ark-x{border:0;background:var(--line2);color:var(--ink);font:inherit;font-size:17px;width:34px;height:34px;border-radius:50%;cursor:pointer;flex:none}
 #ark .ark-meta{margin:0;font-size:13.5px;color:var(--muted);line-height:1.5}#ark .ark-chips{display:flex;flex-wrap:wrap;gap:6px}#ark .ark-chips span{display:inline-block;padding:4px 10px;border-radius:999px;background:var(--card2);border:1px solid var(--line);color:var(--ink);font-size:13px;font-weight:700}#ark .dagrad button.pers{border-color:var(--pc);color:var(--pc)}#ark textarea{min-height:90px}
@@ -510,7 +512,7 @@ details.om .in{padding:8px 0 0;font-size:14px;max-width:70ch}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.44.0';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.45.0';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -682,7 +684,10 @@ function aapneArk(id,knapp){
   document.getElementById('ark-ik').textContent=o.ikon||'🧺';
   document.getElementById('ark-navn').textContent=o.navn;
   var ni=document.getElementById('ark-navn-inn'); /* v1.29.1 (Thor 17.10): voksne kan endre selve teksten i arket, ikke bare notatet */
-  if(ni){ var kanNavn=erVoksen()&&!o.tur; ni.hidden=!kanNavn; document.getElementById('ark-navn').hidden=kanNavn; ni.value=o.navn||''; }
+  if(ni){ var kanNavn=erVoksen()&&!o.tur; ni.hidden=!kanNavn; document.getElementById('ark-navn').hidden=kanNavn; ni.value=o.navn||'';
+    /* v1.45 (Thor 19.10): tittelen vokser med teksten, så hele er synlig og kan endres på telefonen — Enter avslutter i stedet for linjeskift */
+    var vokse=function(){ni.style.height='auto';ni.style.height=(ni.scrollHeight+2)+'px'};
+    ni.oninput=vokse; ni.onkeydown=function(e){if(e.key==='Enter'){e.preventDefault();ni.blur()}}; setTimeout(vokse,0); }
   var hvem=(o.rull&&o.rull.length?o.rull:(o.hvem||[])).map(function(h){return (PMAP[h]||{navn:h}).navn}).join(', ');
   var bit=[rytmeTekst(o)];
   if(o.slakk)bit.push('kan flyttes '+o.slakk+' dag'+(o.slakk>1?'er':''));
@@ -1974,7 +1979,7 @@ if('serviceWorker' in navigator){window.addEventListener('load',function(){navig
   <div class="ark-inn">
     <div class="ark-bar"><button type="button" id="ark-avbryt">Avbryt</button><span class="ark-tittel">Detaljer</span><button type="button" id="ark-lagre" aria-label="Ferdig — lagre">Ferdig</button><button type="button" class="ark-x" id="ark-x" hidden aria-label="Lukk">✕</button></div>
     <div class="ark-felt">
-      <div class="ark-topp"><span class="ark-ik" id="ark-ik"></span><h3 id="ark-navn"></h3><input id="ark-navn-inn" hidden maxlength="140" aria-label="Oppgavens tekst" placeholder="Hva skal gjøres?"></div>
+      <div class="ark-topp"><span class="ark-ik" id="ark-ik"></span><h3 id="ark-navn"></h3><textarea id="ark-navn-inn" hidden rows="2" maxlength="200" enterkeyhint="done" aria-label="Oppgavens tekst" placeholder="Hva skal gjøres?"></textarea></div>
       <span class="ark-lbl" id="ark-lbl">Notat</span>
       <p class="ark-notat" id="ark-les"></p>
       <textarea id="ark-notat" aria-labelledby="ark-lbl" placeholder="Slik gjøres det, hva som trengs …"></textarea>
