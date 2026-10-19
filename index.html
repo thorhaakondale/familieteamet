@@ -296,6 +296,16 @@ details.om .in{padding:8px 0 0;font-size:14px;max-width:70ch}
 .dato-rad .dato-naa{flex-basis:100%;font-size:13.5px;color:var(--muted)}
 .dato-rad .dato-ok{font:inherit;font-weight:800;font-size:15px;min-height:44px;padding:8px 14px;border-radius:10px;border:0;background:#1a73e8;color:#fff;cursor:pointer}
 .dato-rad .dato-ok[hidden]{display:none}
+.tiles .tile.sw{overflow:hidden;touch-action:pan-y}
+.tile.sw>:not(.swipe-akt){transition:transform .18s ease}
+.tile.sw.sw-drag>:not(.swipe-akt){transition:none}
+.tile.sw.sw-open>:not(.swipe-akt){transform:translateX(-148px)}
+.swipe-akt{position:absolute;top:0;right:0;bottom:0;display:flex;z-index:0}
+.swipe-akt{visibility:hidden}.tile.sw-drag .swipe-akt,.tile.sw-open .swipe-akt{visibility:visible}
+.swipe-akt button{width:74px;border:0;font:inherit;font-weight:800;font-size:13px;color:#fff;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+.swipe-akt .sa-flytt{background:var(--warn)}
+.swipe-akt .sa-slett{background:var(--bad)}
+.tile.sw>:not(.swipe-akt){position:relative;z-index:1;background:inherit}
 .toast{position:fixed;left:50%;bottom:70px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--bg);padding:12px 22px;border-radius:999px;font-weight:900;font-size:20px;opacity:0;transition:all .25s;z-index:50;pointer-events:none}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .plan{display:flex;gap:8px;flex-wrap:wrap}
@@ -516,7 +526,7 @@ details.om .in{padding:8px 0 0;font-size:14px;max-width:70ch}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.50.0';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.51.0';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -837,6 +847,29 @@ function byggArkSlett(o,occ){var el=document.getElementById('ark-slett'); if(!el
       o.slutt=ymd(fra); lagreOppg(o); d.close(); tegn();
       angreVis('Slettet fra '+datoNorsk(fra)+': '+o.navn,function(){ if(f) o.slutt=f; else delete o.slutt; lagreOppg(o); tegn() }) };
   };}
+/* v1.51 (Thor 19.10.2026): sveip til venstre på en rute viser «Flytt» og «Slett». Sveipet gjør ingenting selv — knappene åpner arket. */
+var SW_AAPEN=null;
+function sveipLukk(){ if(SW_AAPEN){ SW_AAPEN.classList.remove('sw-open'); [].forEach.call(SW_AAPEN.children,function(c){if(!c.classList.contains('swipe-akt'))c.style.transform=''}); SW_AAPEN=null; } }
+function sveipId(t){ var tm=t.querySelector('.tmain'); if(!tm) return null; var k=tm.dataset.s||(tm.dataset.f||'').split(',')[0]||''; return k.split('|')[0]||null }
+function sveipBind(t){ var id=sveipId(t); if(!id||t.dataset.sw) return; var o=OPPG.filter(function(x){return x.id===id})[0]; if(!o||o.tur) return;
+  t.dataset.sw='1'; t.classList.add('sw');
+  var a=document.createElement('div'); a.className='swipe-akt';
+  a.innerHTML='<button type="button" class="sa-flytt" aria-label="Flytt">⏭<span>Flytt</span></button><button type="button" class="sa-slett" aria-label="Slett">🗑<span>Slett</span></button>';
+  t.insertBefore(a,t.firstChild);
+  var knapp=function(){return t.querySelector('.ti')||t.querySelector('.tb')||t.querySelector('.tmain')};
+  a.querySelector('.sa-flytt').onclick=function(e){e.stopPropagation(); sveipLukk(); aapneArk(id,knapp()); setTimeout(function(){var r=document.getElementById('ark-dagrad'); if(r&&r.scrollIntoView) r.scrollIntoView({block:'center'})},60)};
+  a.querySelector('.sa-slett').onclick=function(e){e.stopPropagation(); sveipLukk(); aapneArk(id,knapp()); setTimeout(function(){var b=document.getElementById('slett-start'); if(b) b.click()},60)};
+  var x0=0,y0=0,dx=0,modus=null,start=0;
+  t.addEventListener('touchstart',function(e){ if(e.touches.length!==1) return; x0=e.touches[0].clientX; y0=e.touches[0].clientY; dx=0; modus=null; start=t.classList.contains('sw-open')?-148:0; if(SW_AAPEN&&SW_AAPEN!==t) sveipLukk(); },{passive:true});
+  t.addEventListener('touchmove',function(e){ var ddx=e.touches[0].clientX-x0, ddy=e.touches[0].clientY-y0;
+    if(!modus){ if(Math.abs(ddx)>12&&Math.abs(ddx)>Math.abs(ddy)*1.5) modus='h'; else if(Math.abs(ddy)>10) modus='v'; else return; }
+    if(modus!=='h') return; e.preventDefault(); dx=ddx; var p=Math.max(-160,Math.min(0,start+dx)); t.classList.add('sw-drag');
+    [].forEach.call(t.children,function(c){if(!c.classList.contains('swipe-akt'))c.style.transform='translateX('+p+'px)'}); },{passive:false});
+  t.addEventListener('touchend',function(){ if(modus!=='h') return; t.classList.remove('sw-drag'); [].forEach.call(t.children,function(c){if(!c.classList.contains('swipe-akt'))c.style.transform=''});
+    var p=start+dx; if(p<-70){ t.classList.add('sw-open'); SW_AAPEN=t; } else { t.classList.remove('sw-open'); if(SW_AAPEN===t) SW_AAPEN=null; } modus=null; });
+  t.addEventListener('click',function(e){ if(t.classList.contains('sw-open')&&!e.target.closest('.swipe-akt')){ e.stopPropagation(); e.preventDefault(); sveipLukk(); } },true);
+}
+document.addEventListener('touchstart',function(e){ if(SW_AAPEN&&!SW_AAPEN.contains(e.target)) sveipLukk(); },{passive:true});
 function lagreArk(){
   var d=document.getElementById('ark'), id=d.dataset.id;
   var o=OPPG.filter(function(x){return x.id===id})[0]; if(!o){d.close();return}
@@ -1573,6 +1606,7 @@ function tegnIdag(){
       toast('Borte til og med '+DAGK[(new Date(til+'T00:00:00').getDay()+6)%7]+' '+datoNorsk(new Date(til+'T00:00:00'))+' — husoppgavene er på pause'); };
   }
   el.querySelectorAll('.gk').forEach(function(b){b.onclick=function(){toggle(b.dataset.k,b.dataset.s,b.dataset.p)}});
+  if(erVoksen()) el.querySelectorAll('.tiles:not(.kompakt) .tile').forEach(sveipBind); /* v1.51: sveip til venstre — Flytt og Slett (bare voksne) */
   el.querySelectorAll('.ti').forEach(function(b){b.onclick=function(ev){ev.stopPropagation();aapneArk(b.dataset.ark,b)}});
   el.querySelectorAll('.tmain').forEach(function(b){b.onclick=function(){
     if(b.dataset.f){var keys=b.dataset.f.split(','),alle=keys.every(function(k){return erGjort(b.dataset.k,k)});
