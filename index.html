@@ -512,7 +512,7 @@ details.om .in{padding:8px 0 0;font-size:14px;max-width:70ch}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.48.0';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.49.0';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -1467,7 +1467,9 @@ function tegnIdag(){
   /* Huskelapper (lagt inn med «+ Legg til noe jeg må huske») får sin egen bolk, uansett kategori. */
   grp['Bonus']=[];
   slots.forEach(function(s){var g=s.o.bonus?'Bonus':(s.o.egen?'Dagen':(s.o.kat||'Rydding')); (grp[g]||(grp[g]=[])).push(s)}); /* v1.46 (Thor 19.10): huskelapper ligger i «I løpet av dagen», sortert etter varseltid */
-  var navnRydding=erTorsdag?'🧹 Husøkta — alle sammen etter skolen':'Ryddejobb';
+  /* v1.49 (Thor 19.10.2026): torsdag er husdagen — husvasken og husøkta står øverst, med tidspunkt. Tidene ligger i innstillinger/torsdag. */
+  var TT=(INNST&&INNST.torsdag)||{}, tVask=TT.vask||'17:00–18:30', tOkt=TT.okt||'19:00–20:00';
+  var navnRydding=erTorsdag?'🧹 Husøkta · '+tOkt+' — alle sammen':'Ryddejobb';
   var navnHenger=erLordag?'🧹 Lørdagsøkta — det som henger igjen fra uka':'⏰ Henger igjen — ikke gjort ennå';
   var html='';
   var navnG={'Morgen':'Morgen','Etter skolen':'Når du kommer hjem','Dagen':'I løpet av dagen','Vedlikehold':'🔧 Vedlikehold hus, hage og bil','Hytta':'🏔️ Hytta og Airbnb','Grovvask':'🧽 Grovvask','Måltider':'Måltider','Kveld':'Kveld — før legging','Rydding':navnRydding,'Vask':'Vask og bestilling','Sesong':'Modent nå','Sikkerhet':'🛟 Sikkerhet — brann, varslere og førstehjelp','Huskelapper':'📌 Huskelapper','Bonus':'🎁 Bonus — ekstra poeng, utenfor ukemålet','Henger igjen':navnHenger};
@@ -1476,6 +1478,7 @@ function tegnIdag(){
   var BARN=['erik','vaarin','oscar'];
   var erBarn=!!(valgt&&BARN.indexOf(valgt)>=0);
   var rekke=erBarn?GRUPPER.concat(['Bonus','Henger igjen']):['Henger igjen'].concat(GRUPPER,['Bonus']);
+  if(erTorsdag){ navnG['Grovvask']='🧽 Husvasken · '+tVask; rekke=['Grovvask','Rydding'].concat(rekke.filter(function(g){return g!=='Grovvask'&&g!=='Rydding'})); }
   var FERD=[]; /* v1.29 (Thor 17.10): det som er huket flyttes ut av gruppene og ned i én lav stripe nederst */
   rekke.forEach(function(g){
     if(!grp[g].length) return;
