@@ -349,8 +349,10 @@ h1.topp .pill{font-size:11px;font-weight:700;letter-spacing:0}
 .grp{margin:12px 0 5px;padding-top:8px}
 .tile{min-height:42px}.tile .tmain{padding-top:4px;padding-bottom:4px}
 .tiles{gap:5px}
-/* v1.52.2: «I dag» midt under datoen, godt unna pila */
-.dagnav .dn-ant .dn-idag{display:inline-flex;vertical-align:middle;height:26px;font-size:12.5px;padding:0 10px;margin-left:6px;border-width:1.5px}
+/* v1.53.1: «I dag» midt under datoen; framdriften på én linje */
+.dagnav .dn-mid .dn-idag{display:inline-flex;height:26px;font-size:12.5px;padding:0 12px;margin:2px auto 0;border-width:1.5px}
+.dagrad{display:flex;align-items:center;gap:10px;margin:0 0 4px}.dagrad .dagbar{flex:1;height:8px;margin:0}.dagrad .dagtxt{margin:0;white-space:nowrap;font-size:13.5px}
+.barnpoeng{margin:4px 0 8px;padding:6px 10px}
 .grp.hv{display:flex;align-items:center;gap:6px;color:var(--accent)}.grp.hv::before{content:'';flex:none;width:17px;height:17px;background:currentColor;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M15 2.5a1 1 0 0 1 2 0v9.2a1 1 0 0 1-2 0z'/%3E%3Cpath d='M13 12.5h6.5a1.5 1.5 0 0 1 0 3H13z'/%3E%3Cpath d='M3 14.5a5 5 0 0 1 5-5h1.5a4.5 4.5 0 0 1 4.5 4.5V19a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z'/%3E%3Ccircle cx='5.5' cy='20.5' r='2'/%3E%3Ccircle cx='11.5' cy='20.5' r='2'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M15 2.5a1 1 0 0 1 2 0v9.2a1 1 0 0 1-2 0z'/%3E%3Cpath d='M13 12.5h6.5a1.5 1.5 0 0 1 0 3H13z'/%3E%3Cpath d='M3 14.5a5 5 0 0 1 5-5h1.5a4.5 4.5 0 0 1 4.5 4.5V19a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z'/%3E%3Ccircle cx='5.5' cy='20.5' r='2'/%3E%3Ccircle cx='11.5' cy='20.5' r='2'/%3E%3C/svg%3E") center/contain no-repeat}
 .tile .ti{width:38px}.tile .side{margin-left:4px}
 @media(min-width:701px){.tiles{grid-template-columns:repeat(auto-fill,minmax(280px,1fr))}}
@@ -540,7 +542,7 @@ h1.topp .pill{font-size:11px;font-weight:700;letter-spacing:0}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.53.0';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.53.1';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -927,7 +929,7 @@ function tegnDagnav(){var el=document.getElementById('dagnav'); if(!el) return; 
   if(VIS_OFF===0&&!fravFor(d,valgt)){try{n+=forfalte().filter(function(s){return !valgt||s.person===valgt}).length}catch(e){}} /* i dag teller også det som henger igjen */
   var lbl=VIS_OFF===0?'I dag':(VIS_OFF===1?'I morgen':DAGER[(d.getDay()+6)%7]);
   el.innerHTML='<button type="button" id="dn-bak" aria-label="Dagen før"'+(VIS_OFF<=0?' disabled':'')+'>‹</button>'+
-    '<div class="dn-mid"><div class="dn-dato">'+esc(lbl)+' '+d.getDate()+'.'+(d.getMonth()+1)+'.</div>'+(VIS_OFF===0?'':'<div class="dn-ant">'+(n?n+(n===1?' oppgave':' oppgaver')+' igjen':'ingenting igjen')+' <button type="button" class="dn-idag" id="dn-idag">↩ I dag</button></div>')+'</div>'+
+    '<div class="dn-mid"><div class="dn-dato">'+esc(lbl)+' '+d.getDate()+'.'+(d.getMonth()+1)+'.</div>'+(VIS_OFF===0?'':'<button type="button" class="dn-idag" id="dn-idag">↩ I dag</button>')+'</div>'+
     '<button type="button" id="dn-fram" aria-label="Neste dag"'+(VIS_OFF>=VIS_MAX?' disabled':'')+'>›</button>';
   document.getElementById('dn-bak').onclick=function(){if(VIS_OFF>0){VIS_OFF--;tegn()}};
   document.getElementById('dn-fram').onclick=function(){if(VIS_OFF<VIS_MAX){VIS_OFF++;tegn()}};
@@ -1535,7 +1537,7 @@ function tegnIdag(){
   var navnRydding=erTorsdag?(erB?'🧹 Husøkta · '+tOktB:(valgt?'🧹 Husøkta · '+tOkt:'🧹 Husøkta · barna '+tOktB+' · voksne '+tOkt)):'Ryddejobb';
   var navnHenger=erLordag?'🧹 Lørdagsøkta — det som henger igjen fra uka':'⏰ Henger igjen — ikke gjort ennå';
   var html='';
-  var navnG={'Morgen':'Morgen','Etter skolen':'Når du kommer hjem','Dagen':'I løpet av dagen','Vedlikehold':'🔧 Vedlikehold hus, hage og bil','Hytta':'🏔️ Hytta og Airbnb','Grovvask':'🧽 Grovvask','Måltider':'Måltider','Kveld':'Kveld — før legging','Rydding':navnRydding,'Vask':'Vask og bestilling','Sesong':'Modent nå','Sikkerhet':'🛟 Sikkerhet — brann, varslere og førstehjelp','Huskelapper':'📌 Huskelapper','Bonus':'🎁 Bonus — ekstra poeng, utenfor ukemålet','Henger igjen':navnHenger};
+  var navnG={'Morgen':'Morgen','Etter skolen':'Når du kommer hjem','Dagen':'I løpet av dagen','Vedlikehold':'🔧 Vedlikehold hus, hage og bil','Hytta':'🏔️ Hytta og Airbnb','Grovvask':'🧽 Grovvask','Måltider':'Måltider','Kveld':'Kveld — før legging','Rydding':navnRydding,'Vask':'Vask og bestilling','Sesong':'Modent nå','Sikkerhet':'🛟 Sikkerhet — brann, varslere og førstehjelp','Huskelapper':'📌 Huskelapper','Bonus':'🎁 Bonus — ekstra poeng','Henger igjen':navnHenger};
   /* Barna ser dagen i dagens rekkefolge: morgen forst, og det som henger igjen til slutt.
      Voksne ser det som henger igjen overst, fordi de planlegger uka. */
   var BARN=['erik','vaarin','oscar'];
@@ -1589,7 +1591,7 @@ function tegnIdag(){
   if(erBarn){var tp=ukeTall(man).per[valgt];frem+='<div class="barnpoeng">Denne uka: <b class="num">'+tp.gjort+'</b> poeng <span class="small">· '+tp.antG+' av '+tp.ant+' oppgaver gjort'+(tp.bonus?' · 🎁 +'+tp.bonus+' bonus':'')+'</span></div>'}
   else if(!FRAM){var fb=ferdigIDag();if(fb.length)frem+='<div class="ferdigbadge">✅ Ferdig for i dag: '+fb.map(function(id){var q=PMAP[id];return q?q.dyr+' '+esc(q.navn):''}).join(', ')+'</div>'}
   if(antAlle){var pct=Math.round(antGjort/antAlle*100);
-    frem+='<div class="dagbar"><div class="dagfill" style="width:'+pct+'%"></div></div><p class="dagtxt">'+(antGjort===antAlle?'<b>Alt gjort i dag!</b> 🎉 Kjempebra.':'<b>'+antGjort+' av '+antAlle+'</b> gjort · '+(antAlle-antGjort)+' igjen')+'</p>';
+    frem+='<div class="dagrad"><div class="dagbar"><div class="dagfill" style="width:'+pct+'%"></div></div><p class="dagtxt">'+(antGjort===antAlle?'<b>Alt gjort!</b> 🎉':'<b>'+antGjort+' av '+antAlle+'</b> gjort · '+(antAlle-antGjort)+' igjen')+'</p></div>';
     if(!FRAM&&antGjort===antAlle&&!window.__feiret){window.__feiret=true;feir()}else if(antGjort<antAlle)window.__feiret=false;}
   var gl=(fv||FRAM)?[]:glemtIGaar();
   if(gl.length){
@@ -1613,7 +1615,7 @@ function tegnIdag(){
   var bbtn=document.getElementById('borte-btn'); if(bbtn) bbtn.hidden=!(valgt&&erVoksen()&&!fv&&!FRAM);
   if(valgt&&erVoksen()&&!fv&&!FRAM&&merB){ merB.innerHTML='<div class="borterad"><p class="small" style="margin:0 0 8px">Husoppgavene dine settes på pause til og med datoen — akkurat som ved en tur. «Hjemme igjen» på fraværsdagen tar det bort.</p><form id="borte-form" autocomplete="off"><label class="small">Til og med <input type="date" id="borte-til" min="'+ymd(NAA)+'" value="'+ymd(addDays(NAA,1))+'"></label><input id="borte-hva" placeholder="Hvor / hva (valgfritt)" maxlength="40"><button type="submit" class="edit">Sett borte</button></form></div>'; }
   if(erBarn&&!FRAM){var fm=ferdigFor(valgt);html+='<div class="ferdigrad">'+(fm?'<button id="ferdig-btn" class="meldt" data-angre="1">✓ Du meldte ferdig for i dag</button><span class="small">Når alle har gjort alt sitt, får mamma og pappa én beskjed i kveld. Trykk igjen hvis du angret.</span>':'<button id="ferdig-btn">✅ Ferdig for i dag</button><span class="small">Trykk når alt ditt er gjort.</span>')+'</div>'}
-  if(FRAM) frem='<div class="framdag">Du ser '+DAGER[dIdx].toLowerCase()+' '+datoNorsk(NAA)+' Det du huker av her, er gjort for den dagen.</div>'+frem;
+  /* v1.53.1 (Thor 19.10): den grønne «Du ser …»-beskjeden er fjernet — datoen står allerede i dagvelgeren */
   var el=document.getElementById('idag-liste');el.innerHTML=frem+html;
   var fs=document.getElementById('ferdigstripe'); if(fs) fs.addEventListener('toggle',function(){FERD_OPEN=fs.open});
   var fbtn=document.getElementById('ferdig-btn');if(fbtn)fbtn.onclick=function(){meldFerdig(valgt,!!fbtn.dataset.angre,antGjort,antAlle)};
