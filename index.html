@@ -283,7 +283,8 @@ details.om .in{padding:8px 0 0;font-size:14px;max-width:70ch}
 #ark .ark-minn label{font-weight:800;font-size:14.5px;color:var(--ink)}
 #ark .ark-minn input{font:inherit;font-size:16px;min-height:40px;padding:4px 8px;border:1.5px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink)}
 #ark .ark-minn button{font:inherit;font-size:14px;font-weight:700;min-height:40px;padding:6px 12px;border:1.5px solid var(--line);border-radius:10px;background:transparent;color:var(--muted);cursor:pointer}
-#ark .ark-minn small{flex-basis:100%;color:var(--muted);font-size:12.5px}
+#ark .ark-minn select{font:inherit;font-size:16px;min-height:40px;padding:4px 8px;border:1.5px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);flex:1;min-width:0}
+.ark-minn small{flex-basis:100%;color:var(--muted);font-size:12.5px}
 #ark .ark-slett{margin:18px 0 4px;padding-top:12px;border-top:1px solid var(--line)}
 #ark .ark-slett button{font:inherit;font-weight:800;font-size:15px;min-height:44px;padding:10px 14px;border-radius:10px;cursor:pointer;border:1.5px solid var(--line);background:transparent;color:var(--ink)}
 #ark .ark-slett .slett-start{width:100%;border-color:var(--bad);color:var(--bad);background:transparent}
@@ -542,7 +543,7 @@ h1.topp .pill{font-size:11px;font-weight:700;letter-spacing:0}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.53.1';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.53.2';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -840,11 +841,16 @@ function settHopp(k,slots,paa){var u=ukeDoc(k); if(!u.hopp) u.hopp={}; var upd={
 function arkForekomst(knapp){var t=knapp&&knapp.closest?knapp.closest('.tile'):null, tm=t?t.querySelector('.tmain'):null; if(!tm||!tm.dataset.k) return null;
   var sl=tm.dataset.f?tm.dataset.f.split(','):(tm.dataset.s?[tm.dataset.s]:[]); if(!sl.length) return null;
   return {k:tm.dataset.k, slots:sl, dato:addDays(ukeFraKey(tm.dataset.k),+sl[0].split('|')[1])}}
+/* v1.53.2 (Thor 19.10): de voksne kan selv velge hvilken bolk en oppgave står i (f.eks. fra Huskelapper til I løpet av dagen) */
+var GRUPPE_NAVN={'Morgen':'Morgen','Etter skolen':'Når du kommer hjem','Dagen':'I løpet av dagen','Måltider':'Måltider','Rydding':'Rydding / husøkta','Grovvask':'Grovvask / husvasken','Vask':'Vask og bestilling','Vedlikehold':'Vedlikehold hus, hage og bil','Hytta':'Hytta og Airbnb','Sesong':'Modent nå','Sikkerhet':'Sikkerhet','Huskelapper':'Huskelapper','Kveld':'Kveld — før legging'};
+function gruppeStd(o){return o.egen?'Dagen':(o.kat||'Rydding')}
+function gruppeFor(o){return (o.gruppe&&GRUPPER.indexOf(o.gruppe)>=0)?o.gruppe:gruppeStd(o)}
 function byggArkMinn(o){var el=document.getElementById('ark-minn'); if(!el) return;
   var vis=erVoksen()&&!o.tur; /* v1.47: varsel på alle oppgaver */ el.hidden=!vis; if(!vis){el.innerHTML='';return}
   var tid=(o.minn&&o.minn.tid)||'';
   el.innerHTML='<label for="ark-minn-tid">⏰ Varsel</label><input type="time" id="ark-minn-tid" value="'+esc(tid)+'">'+(tid?'<button type="button" id="ark-minn-fjern">Fjern varsel</button>':'')+
     '<small>'+(o.int==='dato'?(tid?'Varselet går på oppgavens dato. Endre tiden og trykk Ferdig.':'Velg et klokkeslett og trykk Ferdig — da får du varsel, og oppgaven sorteres etter tiden.'):'Gjentakende: varsel hver gang den står på tavla. Tiden sorterer også lista.')+'</small>';
+  if(!o.bonus){var gn=gruppeFor(o); el.innerHTML+='<label for="ark-gruppe" style="margin-top:6px">📂 Står i</label><select id="ark-gruppe">'+GRUPPER.map(function(g){return '<option value="'+g+'"'+(g===gn?' selected':'')+'>'+esc(GRUPPE_NAVN[g]||g)+'</option>'}).join('')+'</select>';}
   var fj=document.getElementById('ark-minn-fjern'); if(fj) fj.onclick=function(){document.getElementById('ark-minn-tid').value=''; fj.remove()};}
 function byggArkSlett(o,occ){var el=document.getElementById('ark-slett'); if(!el) return;
   var vis=erVoksen()&&!o.tur; el.hidden=!vis; if(!vis){el.innerHTML='';return}
@@ -901,10 +907,12 @@ function lagreArk(){
   var mi=document.getElementById('ark-minn-tid'), minnEndret=false;
   if(mi&&!document.getElementById('ark-minn').hidden){ var nt=mi.value||'', gt=(o.minn&&o.minn.tid)||'';
     if(nt!==gt){ minnEndret=true; if(nt) o.minn={tid:nt, til:(o.minn&&o.minn.til&&o.minn.til.length)?o.minn.til:((o.hvem&&o.hvem.length)?o.hvem.slice():[valgt||'thor']), av:valgt||(o.minn&&o.minn.av)||'thor'}; else delete o.minn; } }
+  var gs=document.getElementById('ark-gruppe'), grEndret=false;
+  if(gs&&!document.getElementById('ark-minn').hidden&&gs.value!==gruppeFor(o)){ grEndret=true; if(gs.value===gruppeStd(o)) delete o.gruppe; else o.gruppe=gs.value; }
   o.ts=new Date().toISOString();
   try{localStorage.setItem('ft-oppg',JSON.stringify(OPPG))}catch(e){}
   if(db){var dok=JSON.parse(JSON.stringify(o));if(!dok.rull)delete dok.rull;db.child('oppgaver/'+id).set(dok).catch(function(){status('Kunne ikke lagre delt — ligger på denne enheten.')})}
-  d.close(); toast(minnEndret?(o.minn?'⏰ Varsel kl. '+o.minn.tid:'Varselet er fjernet'):(navnEndret?'Lagret ✓':'Notatet er lagret ✓')); tegn();
+  d.close(); toast(minnEndret?(o.minn?'⏰ Varsel kl. '+o.minn.tid:'Varselet er fjernet'):(grEndret?'Flyttet til «'+(GRUPPE_NAVN[gruppeFor(o)]||gruppeFor(o))+'» ✓':(navnEndret?'Lagret ✓':'Notatet er lagret ✓'))); tegn();
   if(minnEndret){VARSLET_NAA=false; try{ryddMinn();planleggVarsler()}catch(e){}}
 }
 var ARK_BUNDET=false;
@@ -1529,7 +1537,7 @@ function tegnIdag(){
   var erTorsdag=(dIdx===3), erLordag=(dIdx===5);
   /* Huskelapper (lagt inn med «+ Legg til noe jeg må huske») får sin egen bolk, uansett kategori. */
   grp['Bonus']=[];
-  slots.forEach(function(s){var g=s.o.bonus?'Bonus':(s.o.egen?'Dagen':(s.o.kat||'Rydding')); (grp[g]||(grp[g]=[])).push(s)}); /* v1.46 (Thor 19.10): huskelapper ligger i «I løpet av dagen», sortert etter varseltid */
+  slots.forEach(function(s){var g=s.o.bonus?'Bonus':gruppeFor(s.o); (grp[g]||(grp[g]=[])).push(s)}); /* v1.46 (Thor 19.10): huskelapper ligger i «I løpet av dagen», sortert etter varseltid */
   /* v1.49 (Thor 19.10.2026): torsdag er husdagen — husvasken og husøkta står øverst, med tidspunkt. Tidene ligger i innstillinger/torsdag. */
   var TT=(INNST&&INNST.torsdag)||{}, tVask=TT.vask||'17:00–18:30', tOkt=TT.okt||'19:00–20:00', tOktB=TT.oktBarn||'18:30–19:00';
   /* barna tar sin del rett etter husvasken, før leggetid; de voksne fortsetter etterpå (Thor 19.10) */
