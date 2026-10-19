@@ -512,7 +512,7 @@ details.om .in{padding:8px 0 0;font-size:14px;max-width:70ch}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.45.0';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.46.0';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -1463,7 +1463,7 @@ function tegnIdag(){
   var erTorsdag=(dIdx===3), erLordag=(dIdx===5);
   /* Huskelapper (lagt inn med «+ Legg til noe jeg må huske») får sin egen bolk, uansett kategori. */
   grp['Bonus']=[];
-  slots.forEach(function(s){var g=s.o.bonus?'Bonus':(s.o.egen?'Huskelapper':(s.o.kat||'Rydding')); (grp[g]||(grp[g]=[])).push(s)});
+  slots.forEach(function(s){var g=s.o.bonus?'Bonus':(s.o.egen?'Dagen':(s.o.kat||'Rydding')); (grp[g]||(grp[g]=[])).push(s)}); /* v1.46 (Thor 19.10): huskelapper ligger i «I løpet av dagen», sortert etter varseltid */
   var navnRydding=erTorsdag?'🧹 Husøkta — alle sammen etter skolen':'Ryddejobb';
   var navnHenger=erLordag?'🧹 Lørdagsøkta — det som henger igjen fra uka':'⏰ Henger igjen — ikke gjort ennå';
   var html='';
@@ -1482,7 +1482,7 @@ function tegnIdag(){
     /* Forfalte ruter slås IKKE sammen: de kan komme fra ulike uker, og hver av dem må beholde sin egen ukeKey */
     if(!valgt){var by={},ord=[];liste.forEach(function(s){var k=s.o.id+'|'+s.dag+'|'+(s.ukeKey||key);if(!by[k]){by[k]=[];ord.push(k)}by[k].push(s)});
       liste=ord.map(function(k){var arr=by[k];if(arr.length===1)return arr[0];var a=arr[0];return {o:a.o,dag:a.dag,person:a.person,orig:a.orig,key:a.key,ukeKey:a.ukeKey,felles:arr}})}
-    liste.sort(function(a,b){var da=(a.felles?a.felles.every(function(x){return erGjort(a.ukeKey||key,x.key)}):erGjort(a.ukeKey||key,a.key))?1:0,dbb=(b.felles?b.felles.every(function(x){return erGjort(b.ukeKey||key,x.key)}):erGjort(b.ukeKey||key,b.key))?1:0;if(da!==dbb)return da-dbb;return (a.person>b.person)?1:-1}).forEach(function(s){
+    liste.sort(function(a,b){var da=(a.felles?a.felles.every(function(x){return erGjort(a.ukeKey||key,x.key)}):erGjort(a.ukeKey||key,a.key))?1:0,dbb=(b.felles?b.felles.every(function(x){return erGjort(b.ukeKey||key,x.key)}):erGjort(b.ukeKey||key,b.key))?1:0;if(da!==dbb)return da-dbb;if(g==='Dagen'){var ta=(a.o.minn&&a.o.minn.tid)||'99:99',tb=(b.o.minn&&b.o.minn.tid)||'99:99';if(ta!==tb)return ta<tb?-1:1}return (a.person>b.person)?1:-1}).forEach(function(s){
       if(s.felles){
         var fk=s.ukeKey||key;
         var alleD=s.felles.every(function(x){return erGjort(fk,x.key)}), antD=s.felles.filter(function(x){return erGjort(fk,x.key)}).length;
@@ -1493,7 +1493,7 @@ function tegnIdag(){
         return;
       }
       var done=erGjort(s.ukeKey||key,s.key), p=PMAP[s.person];
-      var rk=rytmeKort(s.o), meta=(rk?'↻ '+rk+' · ':'')+(s.o.min?s.o.min+' min':'')+(valgt?'':' · '+p.navn)+(s.o.notat?' · '+esc(kortNotat(s.o.notat)):'');
+      var rk=rytmeKort(s.o), meta=(s.o.minn&&s.o.minn.tid?'⏰ '+s.o.minn.tid+' · ':'')+(rk?'↻ '+rk+' · ':'')+(s.o.min?s.o.min+' min':'')+(valgt?'':' · '+p.navn)+(s.o.notat?' · '+esc(kortNotat(s.o.notat)):'');
       if(s.o.lenke) meta+=' · <a href="'+s.o.lenke+'" onclick="event.stopPropagation()">'+esc(s.o.lenkenavn||'åpne')+'</a>';
       if(s.byttet) meta='⇄ for '+PMAP[s.orig].navn+' · '+meta;
       if(s.flyttet) meta='→ fra '+DAGK[s.fraDag]+' · '+meta;
