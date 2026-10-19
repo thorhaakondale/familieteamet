@@ -351,6 +351,7 @@ h1.topp .pill{font-size:11px;font-weight:700;letter-spacing:0}
 .tiles{gap:5px}
 .grp.hv{display:flex;align-items:center;gap:6px;color:var(--accent)}.grp.hv::before{content:'';flex:none;width:17px;height:17px;background:currentColor;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M15 2.5a1 1 0 0 1 2 0v9.2a1 1 0 0 1-2 0z'/%3E%3Cpath d='M13 12.5h6.5a1.5 1.5 0 0 1 0 3H13z'/%3E%3Cpath d='M3 14.5a5 5 0 0 1 5-5h1.5a4.5 4.5 0 0 1 4.5 4.5V19a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z'/%3E%3Ccircle cx='5.5' cy='20.5' r='2'/%3E%3Ccircle cx='11.5' cy='20.5' r='2'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M15 2.5a1 1 0 0 1 2 0v9.2a1 1 0 0 1-2 0z'/%3E%3Cpath d='M13 12.5h6.5a1.5 1.5 0 0 1 0 3H13z'/%3E%3Cpath d='M3 14.5a5 5 0 0 1 5-5h1.5a4.5 4.5 0 0 1 4.5 4.5V19a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z'/%3E%3Ccircle cx='5.5' cy='20.5' r='2'/%3E%3Ccircle cx='11.5' cy='20.5' r='2'/%3E%3C/svg%3E") center/contain no-repeat}
 .tile .ti{width:38px}.tile .side{margin-left:4px}
+@media(min-width:701px){.tiles{grid-template-columns:repeat(auto-fill,minmax(280px,1fr))}}
 @media(max-width:700px){h1.topp{font-size:20px;margin:6px 0 6px}.hvem button{padding:4px 10px;min-height:32px;font-size:13px}.card{padding:10px 11px}}
 </style>
 </head>
@@ -537,7 +538,7 @@ h1.topp .pill{font-size:11px;font-weight:700;letter-spacing:0}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.52.0';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.52.1';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
