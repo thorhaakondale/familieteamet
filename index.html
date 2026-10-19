@@ -349,6 +349,8 @@ h1.topp .pill{font-size:11px;font-weight:700;letter-spacing:0}
 .grp{margin:12px 0 5px;padding-top:8px}
 .tile{min-height:42px}.tile .tmain{padding-top:4px;padding-bottom:4px}
 .tiles{gap:5px}
+/* v1.52.2: «I dag» midt under datoen, godt unna pila */
+.dagnav .dn-ant .dn-idag{display:inline-flex;vertical-align:middle;height:26px;font-size:12.5px;padding:0 10px;margin-left:6px;border-width:1.5px}
 .grp.hv{display:flex;align-items:center;gap:6px;color:var(--accent)}.grp.hv::before{content:'';flex:none;width:17px;height:17px;background:currentColor;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M15 2.5a1 1 0 0 1 2 0v9.2a1 1 0 0 1-2 0z'/%3E%3Cpath d='M13 12.5h6.5a1.5 1.5 0 0 1 0 3H13z'/%3E%3Cpath d='M3 14.5a5 5 0 0 1 5-5h1.5a4.5 4.5 0 0 1 4.5 4.5V19a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z'/%3E%3Ccircle cx='5.5' cy='20.5' r='2'/%3E%3Ccircle cx='11.5' cy='20.5' r='2'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M15 2.5a1 1 0 0 1 2 0v9.2a1 1 0 0 1-2 0z'/%3E%3Cpath d='M13 12.5h6.5a1.5 1.5 0 0 1 0 3H13z'/%3E%3Cpath d='M3 14.5a5 5 0 0 1 5-5h1.5a4.5 4.5 0 0 1 4.5 4.5V19a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z'/%3E%3Ccircle cx='5.5' cy='20.5' r='2'/%3E%3Ccircle cx='11.5' cy='20.5' r='2'/%3E%3C/svg%3E") center/contain no-repeat}
 .tile .ti{width:38px}.tile .side{margin-left:4px}
 @media(min-width:701px){.tiles{grid-template-columns:repeat(auto-fill,minmax(280px,1fr))}}
@@ -538,7 +540,7 @@ h1.topp .pill{font-size:11px;font-weight:700;letter-spacing:0}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.52.1';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.52.2';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -643,6 +645,10 @@ function planUke(man){
       if(us[o.id+'|'+d+'|'+person])return; /* v1.15.1: utsatt videre fra landingsdagen (gamle kjeder) */
       if(!o.egen&&fravFor(dato,person))return; /* v1.28: utsatte oppgaver vises heller ikke på en fraværsdag — de henger videre til personen er hjemme */
       var fraMan=ukeFraKey(uk), fraDato=addDays(fraMan,+parts[1]);
+      /* v1.52.2 (Thor 19.10): har en datooppgave fått ny dato etter at den ble utsatt, gjelder den nye datoen — den gamle utsettelsen er foreldet (ga duplikat av antisklimatta) */
+      if(o.int==='dato'&&o.dato&&ymd(fraDato)!==o.dato) return;
+      /* …og står oppgaven allerede vanlig på samme dag for samme person, vises den bare én gang */
+      if(ut.some(function(x){return x.o.id===o.id&&x.dag===d&&x.person===person})) return;
       ut.push({o:o,dag:d,person:person,orig:person,utsatt:true,fraUke:uk,fraKey:k,fraDato:fraDato,key:o.id+'|'+d+'|'+person+'|u'+uk+'-'+parts[1]});
     });
   });
@@ -921,8 +927,7 @@ function tegnDagnav(){var el=document.getElementById('dagnav'); if(!el) return; 
   if(VIS_OFF===0&&!fravFor(d,valgt)){try{n+=forfalte().filter(function(s){return !valgt||s.person===valgt}).length}catch(e){}} /* i dag teller også det som henger igjen */
   var lbl=VIS_OFF===0?'I dag':(VIS_OFF===1?'I morgen':DAGER[(d.getDay()+6)%7]);
   el.innerHTML='<button type="button" id="dn-bak" aria-label="Dagen før"'+(VIS_OFF<=0?' disabled':'')+'>‹</button>'+
-    '<div class="dn-mid"><div class="dn-dato">'+esc(lbl)+' '+d.getDate()+'.'+(d.getMonth()+1)+'.</div>'+(VIS_OFF===0?'':'<div class="dn-ant">'+(n?n+(n===1?' oppgave':' oppgaver')+' igjen':'ingenting igjen')+'</div>')+'</div>'+
-    (VIS_OFF>0?'<button type="button" class="dn-idag" id="dn-idag">I dag</button>':'')+
+    '<div class="dn-mid"><div class="dn-dato">'+esc(lbl)+' '+d.getDate()+'.'+(d.getMonth()+1)+'.</div>'+(VIS_OFF===0?'':'<div class="dn-ant">'+(n?n+(n===1?' oppgave':' oppgaver')+' igjen':'ingenting igjen')+' <button type="button" class="dn-idag" id="dn-idag">↩ I dag</button></div>')+'</div>'+
     '<button type="button" id="dn-fram" aria-label="Neste dag"'+(VIS_OFF>=VIS_MAX?' disabled':'')+'>›</button>';
   document.getElementById('dn-bak').onclick=function(){if(VIS_OFF>0){VIS_OFF--;tegn()}};
   document.getElementById('dn-fram').onclick=function(){if(VIS_OFF<VIS_MAX){VIS_OFF++;tegn()}};
