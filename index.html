@@ -310,6 +310,7 @@ details.om .in{padding:8px 0 0;font-size:14px;max-width:70ch}
 .swipe-akt .sa-flytt{background:var(--warn)}
 .swipe-akt .sa-slett{background:var(--bad)}
 .tile.sw>:not(.swipe-akt){position:relative;z-index:1;background:inherit}
+.fri-sp{position:fixed;left:50%;bottom:70px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:14px 18px;border-radius:18px;z-index:60;display:none;max-width:92vw;text-align:center;box-shadow:0 8px 30px rgba(0,0,0,.25)}.fri-sp.show{display:block}.fri-sp .fri-t{font-weight:900;font-size:18px;margin-bottom:10px}.fri-sp .fri-k{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}.fri-sp button{font:inherit;font-weight:800;font-size:16px;padding:10px 16px;border-radius:999px;border:2px solid var(--bg);background:var(--bg);color:var(--ink);cursor:pointer}.fri-sp button.nei{background:transparent;color:var(--bg)}
 .toast{position:fixed;left:50%;bottom:70px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--bg);padding:12px 22px;border-radius:999px;font-weight:900;font-size:20px;opacity:0;transition:all .25s;z-index:50;pointer-events:none}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .plan{display:flex;gap:8px;flex-wrap:wrap}
@@ -541,12 +542,13 @@ h1.topp .pill{font-size:11px;font-weight:700;letter-spacing:0}
 <p class="dbstat" id="dbstat"></p>
 </div>
 <div class="toast" id="toast"></div>
+<div class="fri-sp" id="fri-sp" role="dialog" aria-live="polite"></div>
 <div class="angre" id="angre" role="status" hidden><span id="angre-tx"></span><button type="button" id="angre-btn">Angre</button></div>
 <button class="dale-totop" id="dale-totop" aria-label="Til toppen">↑ Topp</button>
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.56.1';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.57.0';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -697,6 +699,16 @@ var visUke=mandag(NAA);
 /* ---------- DETALJARKET (v1.13) ---------- */
 var AAPNE_PAA_TRYKK=false; /* true = trykk på hele ruta åpner arket i stedet for å hake av (Apple Påminnelser-oppførsel) */
 function erVoksen(){return valgt===null||valgt==='thor'||valgt==='anniken'}
+/* v1.57 (Thor 22.10): fredag kveld og lørdag er fri. Flytter en voksen noe dit, spør vi én gang om søndag i stedet — et spørsmål, ikke en sperre. */
+var FRI_DAGER=[4,5];
+function fridagSjekk(dato,fn){ var dt=new Date(dato+'T12:00:00'), di=(dt.getDay()+6)%7;
+  if(!erVoksen()||FRI_DAGER.indexOf(di)<0){fn(dato);return}
+  var son=ymd(addDays(dt,6-di)), el=document.getElementById('fri-sp');
+  el.innerHTML='<div class="fri-t">'+DAGER[di]+' er fri \u2014 heller s\u00f8ndag '+datoNorsk(new Date(son+'T12:00:00'))+'?</div><div class="fri-k"><button type="button" class="ja">S\u00f8ndag</button><button type="button" class="nei">Behold '+DAGER[di].toLowerCase()+'</button></div>';
+  el.classList.add('show');
+  el.querySelector('.ja').onclick=function(e){e.stopPropagation();el.classList.remove('show');fn(son)};
+  el.querySelector('.nei').onclick=function(e){e.stopPropagation();el.classList.remove('show');fn(dato)};
+}
 function kortNotat(t){t=String(t).replace(/\s+/g,' ').trim();return t.length>58?t.slice(0,58)+'…':t}
 function arkKnapp(o){return '<button class="ti" title="Detaljer, bytt og flytt" aria-label="Detaljer, bytt og flytt" data-ark="'+esc(o.id)+'">'+((o.notat||o.lenke)?'ⓘ':'⋯')+'</button>'}
 /* v1.44 (Thor 19.10.2026): hvor ofte står på ruta for alt som ikke er daglige rutiner — bare info, rytmen styres av Bjørn */
@@ -771,7 +783,8 @@ function byggDagrad(o,knapp,d){ /* v1.15: én dagvelger for alle typer — hurti
   var tb=arkTb(knapp); if(!tb){return}
   var ds=tb.dataset, i0=new Date(NAA.getFullYear(),NAA.getMonth(),NAA.getDate()), manNaa=mandag(NAA), keyNaa=ukeKey(manNaa), dIdx=(NAA.getDay()+6)%7;
   var naaDato = o.int==='dato' ? (o.dato||ymd(NAA)) : (ds.k===keyNaa ? ymd(addDays(manNaa,+ds.d)) : null);
-  function gaaTil(dato){ /* dato = ymd */
+  function gaaTil(dato){fridagSjekk(dato,gaaTil0)} /* v1.57: fredag/lørdag → spør om søndag */
+  function gaaTil0(dato){ /* dato = ymd */
     if(o.int==='dato'){settDagFor(o,ds,dato);return}
     if(ds.uts){var p=ds.utsk.split('|');(o.samarbeid?samPers(o,null,null,p[2]):[p[2]]).forEach(function(pp){utsett(ds.uts,o,+p[1],pp,dato)});return}
     var diff=Math.round((new Date(dato+'T00:00:00')-manNaa)/86400000), ps=o.samarbeid?samPers(o,ds.k,+ds.dag0,ds.fra):[ds.fra]; /* v1.26: samarbeid følger den som flytter */
@@ -1584,11 +1597,14 @@ function forfalte(){
       if(s.o.bonus) return; /* v1.16: bonus er frivillig — maser aldri */
       if(s.o.samarbeid&&BARN_FERDIG.concat(['oscar']).indexOf(s.person)>=0) return; /* v1.26: samarbeid henger bare hos de voksne */
       if(s.o.int==='uke'&&w>0) return; /* ukentlige kommer igjen neste uke uansett */
-      if(s.o.int==='uke'&&w===0){ /* husøkta torsdag: henger IKKE daglig — lander på lørdag én gang, ellers faller den */
-        if(!(s.dag<dIdx&&dIdx===5)) return; }
+      if(s.o.int==='uke'&&w===0){ /* husøkta torsdag: henger IKKE daglig — lander på SØNDAG én gang (v1.57, var lørdag), ellers faller den */
+        if(!(s.dag<dIdx&&dIdx===6)) return; }
       var passert=(w>0)||(s.dag<dIdx); if(!passert) return;
       /* v1.17.1 (Thor 13.10): periodiske oppgaver henger maks 3 dager — glemte du den, venter du til neste runde. Datooppgaver og huskelapper henger til de er gjort. */
-      if(s.o.int!=='dato'&&!s.o.egen&&(NAA-addDays(m,s.dag))>3*86400000&&!(s.o.luka==='bil'&&w===0&&dIdx===6)) return; /* v1.24: bilvask fra tirsdag lander på søndagsblokka én gang (huset har lørdag) */
+      if(s.o.int!=='dato'&&!s.o.egen){ /* v1.57 (Thor 22.10): fredag kveld og lørdag er fri — ingenting henger der. Det som glapp i uka lander på søndag (inntil 5 dager gammelt), ellers maks 3 dager som før. */
+        if(dIdx===4||dIdx===5) return;
+        var dgr=Math.round((addDays(mandag(NAA),dIdx)-addDays(m,s.dag))/86400000), tak=(dIdx===6)?5:3;
+        if(dgr>tak&&!(s.o.luka==='bil'&&w===0&&dIdx===6)) return; }
       if(addDays(m,s.dag)<STARTDATO) return; /* ingenting fra før appen fantes */
       if(erGjort(k,s.key)) return;
       /* engangsoppgaver med dato henger igjen til de er krysset av (Thors regel 14.9.2026).
@@ -1777,15 +1793,15 @@ function tegnIdag(){
     if(o.int!=='dato'){
       var l2=document.createElement('div'); l2.className='vl'; l2.textContent='…eller flytt til en annen dag denne uka'; v.appendChild(l2);
       for(var d=0;d<7;d++){(function(d){var k=document.createElement('button'); k.style.setProperty('--pc','var(--ink2)'); k.textContent=(d===+b.dataset.dag0?'↩ ':'')+DAGK[d]; if(d===+b.dataset.d)k.className='naa';
-        k.onclick=function(e){e.stopPropagation();flytt(b.dataset.k,o,+b.dataset.dag0,b.dataset.fra,d===+b.dataset.dag0?null:d)}; v.appendChild(k)})(d)}
+        k.onclick=function(e){e.stopPropagation();fridagSjekk(ymd(addDays(ukeFraKey(b.dataset.k),d)),function(y){var d2=Math.round((new Date(y+'T00:00:00')-ukeFraKey(b.dataset.k))/86400000);flytt(b.dataset.k,o,+b.dataset.dag0,b.dataset.fra,d2===+b.dataset.dag0?null:d2)})}; v.appendChild(k)})(d)}
     }
     { /* utsett til en dato — i morgen, +2, neste uke, eller velg selv (gjelder alle typer) */
       var l3=document.createElement('div'); l3.className='vl'; l3.textContent='…eller utsett til'; v.appendChild(l3);
       var basis=addDays(ukeFraKey(b.dataset.k),+b.dataset.dag0);
       [[1,'i morgen'],[2,'+2 dager'],[7,'neste uke']].forEach(function(x){var k=document.createElement('button');k.style.setProperty('--pc','var(--warn)');k.textContent='⏭ '+x[1];
-        k.onclick=function(e){e.stopPropagation();utsett(b.dataset.k,o,+b.dataset.dag0,b.dataset.fra,ymd(addDays(basis,x[0])))};v.appendChild(k)});
+        k.onclick=function(e){e.stopPropagation();fridagSjekk(ymd(addDays(basis,x[0])),function(y){utsett(b.dataset.k,o,+b.dataset.dag0,b.dataset.fra,y)})};v.appendChild(k)});
       var di=document.createElement('input'); di.type='date'; di.className='vdato'; di.min=ymd(addDays(basis,1)); di.setAttribute('aria-label','Velg dato');
-      di.onclick=function(e){e.stopPropagation()}; di.onchange=function(e){e.stopPropagation();if(di.value)utsett(b.dataset.k,o,+b.dataset.dag0,b.dataset.fra,di.value)}; v.appendChild(di);
+      di.onclick=function(e){e.stopPropagation()}; di.onchange=function(e){e.stopPropagation();if(di.value)fridagSjekk(di.value,function(y){utsett(b.dataset.k,o,+b.dataset.dag0,b.dataset.fra,y)})}; v.appendChild(di);
     }
     tile.appendChild(v);
   }});
@@ -1988,7 +2004,7 @@ document.getElementById('innst').onsubmit=function(e){
   INNST.trapp=trapp;
   INNST.ntfy={};['thor','anniken','erik','vaarin'].forEach(function(p){INNST.ntfy[p]=(document.getElementById('i-ntfy-'+p).value||'').trim()});
   try{localStorage.setItem('ft-innst',JSON.stringify(INNST))}catch(e){}
-  if(db){db.child('innstillinger').set({id:'main',prosent:INNST.prosent,plan:INNST.plan||null,trapp:INNST.trapp,ferie:INNST.ferie||null,ntfy:INNST.ntfy||null,varsler:INNST.varsler||null,godskrevet:INNST.godskrevet||null,by:valgt||'familie',ts:new Date().toISOString()}).catch(function(er){status('Kunne ikke lagre innstillinger delt.')})}
+  if(db){db.child('innstillinger').update({id:'main',/* v1.57: update, ikke set — set slettet nøkler appen ikke kjenner (hyttesjekk, backupDag …) */prosent:INNST.prosent,plan:INNST.plan||null,trapp:INNST.trapp,ferie:INNST.ferie||null,ntfy:INNST.ntfy||null,varsler:INNST.varsler||null,godskrevet:INNST.godskrevet||null,by:valgt||'familie',ts:new Date().toISOString()}).catch(function(er){status('Kunne ikke lagre innstillinger delt.')})}
   toast('Lagret ✓');tegn();
 };
 function fyllInnst(){var tr=(INNST.trapp&&INNST.trapp.length)?INNST.trapp:SEED_TRAPP;for(var i=0;i<5;i++){var el=document.getElementById('i-t'+i);if(el&&tr[i]&&document.activeElement!==el)el.value=tr[i].navn+': '+tr[i].tekst}
@@ -2110,7 +2126,7 @@ function slaaSammenOppg(liste){
     db.child('dyner').on('value',function(snap){DYNER=snap.val()||{};synkTurOppg();tegn()});
     db.child('pakk').on('value',function(snap){PAKK=snap.val()||{};tegnPakk()});
     db.child('fravaer').on('value',function(snap){FRAVAER=snap.val()||{};FRAV_LASTET=true;setTimeout(planleggBackup,0);try{localStorage.setItem('ft-fravaer',JSON.stringify(FRAVAER))}catch(e){};tegn();planleggVarsler();ryddMinn()}); /* v1.39: nytt fravær kan avbestille lapp-varsler */
-    db.child('innstillinger').on('value',function(snap){var x=snap.val();if(x){if(x.prosent)INNST.prosent=x.prosent;if(x.plan)INNST.plan=Object.assign({},INNST.plan||{},x.plan);if(x.trapp&&x.trapp.length)INNST.trapp=x.trapp;if(x.ferie)INNST.ferie=x.ferie;INNST.ntfy=lesNtfy(x.ntfy);if(x.varsler)INNST.varsler=x.varsler;INNST.godskrevet=x.godskrevet||null;tegn();planleggVarsler()}});
+    db.child('innstillinger').on('value',function(snap){var x=snap.val();if(x){if(x.prosent)INNST.prosent=x.prosent;if(x.plan)INNST.plan=Object.assign({},INNST.plan||{},x.plan);if(x.trapp&&x.trapp.length)INNST.trapp=x.trapp;if(x.ferie)INNST.ferie=x.ferie;if(x.backupDag!==undefined)INNST.backupDag=x.backupDag;if(x.backupDagBil!==undefined)INNST.backupDagBil=x.backupDagBil;/* v1.57: backupdagene styres fra banken */INNST.ntfy=lesNtfy(x.ntfy);if(x.varsler)INNST.varsler=x.varsler;INNST.godskrevet=x.godskrevet||null;tegn();planleggVarsler()}});
     var LOKALT_FOER=JSON.parse(JSON.stringify(UKER)), foersteSnap=true;
     db.child('uker').on('value',function(snap){
       var v=snap.val()||{}; var n=0;
