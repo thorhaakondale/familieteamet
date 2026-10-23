@@ -362,6 +362,19 @@ h1.topp .pill{font-size:11px;font-weight:700;letter-spacing:0}
 .tile .ti{width:38px}.tile .side{margin-left:4px}
 @media(min-width:701px){.tiles{grid-template-columns:repeat(auto-fill,minmax(280px,1fr))}}
 @media(max-width:700px){h1.topp{font-size:20px;margin:6px 0 6px}.hvem button{padding:4px 10px;min-height:32px;font-size:13px}.card{padding:10px 11px}}
+/* v1.58 (Thor 23.10): arket skal leses på armlengdes avstand — større tittel og notat, mer luft, notatet som tekst */
+dialog#ark{width:calc(100% - 16px)}
+#ark .ark-ik{font-size:32px}
+#ark h3{font-size:22px;line-height:1.25}
+#ark .ark-felt #ark-navn-inn,#ark #ark-navn-inn{font-size:21px;line-height:1.25;font-weight:800;border-color:transparent;background:transparent;padding:2px 4px}
+#ark #ark-navn-inn:focus{border-color:var(--line);background:var(--card)}
+#ark .ark-notat{font-size:18px;line-height:1.6;color:var(--ink)}
+#ark textarea{font-size:17.5px;line-height:1.55}
+#ark .ark-felt textarea#ark-notat{overflow:hidden;resize:none;max-height:none}
+#ark .ark-endre{align-self:flex-start;font:inherit;font-size:14.5px;font-weight:700;color:var(--muted);background:transparent;border:1.5px solid var(--line);border-radius:999px;padding:6px 12px;cursor:pointer}
+#ark .ark-chips span{font-size:14.5px;padding:5px 11px}
+#ark .ark-lbl{font-size:13px}
+#ark .dagrad button{font-size:15.5px}
 </style>
 </head>
 <body>
@@ -548,7 +561,7 @@ h1.topp .pill{font-size:11px;font-weight:700;letter-spacing:0}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.57.0';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.58.0';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -751,9 +764,13 @@ function aapneArk(id,knapp){
   var lbl=document.getElementById('ark-lbl');
   lbl.hidden=!(o.notat||voksen);
   var avb=document.getElementById('ark-avbryt'); if(avb){avb.textContent=voksen?'Avbryt':'Lukk'; avb.classList.toggle('lukk',!voksen)}
-  if(voksen){les.hidden=true;ta.hidden=false;lag.hidden=false;ta.value=o.notat||'';
+  /* v1.58 (Thor 23.10): notatet vises som lesbar tekst — «Endre» åpner skrivefeltet, som vokser med innholdet */
+  var endre=document.getElementById('ark-endre'); function taVokse(){ta.style.height='auto';ta.style.height=Math.max(120,ta.scrollHeight+4)+'px'}
+  ta.oninput=taVokse;
+  if(endre) endre.onclick=function(e){e.stopPropagation();les.hidden=true;endre.hidden=true;ta.hidden=false;taVokse();ta.focus()};
+  if(voksen){var harN=!!(o.notat&&o.notat.trim()); les.hidden=!harN; les.textContent=o.notat||''; if(endre) endre.hidden=!harN; ta.hidden=harN; lag.hidden=false; ta.value=o.notat||''; if(!harN) setTimeout(taVokse,0);
     document.getElementById('ark-hint').textContent='Linjeskift blir egne linjer. Lagre skriver til alle enhetene.'}
-  else{les.hidden=false;ta.hidden=true;lag.hidden=true;les.textContent=o.notat||'';
+  else{les.hidden=false;ta.hidden=true;lag.hidden=true;les.textContent=o.notat||''; if(endre) endre.hidden=true;
     document.getElementById('ark-hint').textContent='Flytt dagen eller bytt til en annen rett over her.'}
   var d=document.getElementById('ark');
   byggDagrad(o,knapp,d);
@@ -943,6 +960,8 @@ function lagreArk(){
   o.ts=new Date().toISOString();
   try{localStorage.setItem('ft-oppg',JSON.stringify(OPPG))}catch(e){}
   if(db){var dok=JSON.parse(JSON.stringify(o));if(!dok.rull)delete dok.rull;db.child('oppgaver/'+id).set(dok).catch(function(){status('Kunne ikke lagre delt — ligger på denne enheten.')})}
+  /* v1.58 (Thor 23.10): er en ny dato valgt i kalenderen, flytter «Ferdig» også oppgaven — uten å måtte trykke «Flytt til» først */
+  var okb=document.querySelector('#ark-dagrad .dato-ok'); if(okb&&!okb.hidden){ okb.click(); tegn(); if(minnEndret){VARSLET_NAA=false; try{ryddMinn();planleggVarsler()}catch(e){}} return; }
   d.close(); toast(minnEndret?(o.minn?'⏰ Varsel kl. '+o.minn.tid:'Varselet er fjernet'):(grEndret?'Flyttet til «'+(GRUPPE_NAVN[gruppeFor(o)]||gruppeFor(o))+'» ✓':(navnEndret?'Lagret ✓':'Notatet er lagret ✓'))); tegn();
   if(minnEndret){VARSLET_NAA=false; try{ryddMinn();planleggVarsler()}catch(e){}}
 }
@@ -2178,7 +2197,7 @@ if('serviceWorker' in navigator){window.addEventListener('load',function(){navig
     <div class="ark-felt">
       <div class="ark-topp"><span class="ark-ik" id="ark-ik"></span><h3 id="ark-navn"></h3><textarea id="ark-navn-inn" hidden rows="2" maxlength="200" enterkeyhint="done" aria-label="Oppgavens tekst" placeholder="Hva skal gjøres?"></textarea></div>
       <span class="ark-lbl" id="ark-lbl">Notat</span>
-      <p class="ark-notat" id="ark-les"></p>
+      <p class="ark-notat" id="ark-les"></p><button type="button" class="ark-endre" id="ark-endre" hidden>✏️ Endre notatet</button>
       <textarea id="ark-notat" aria-labelledby="ark-lbl" placeholder="Slik gjøres det, hva som trengs …"></textarea>
     </div>
     <div class="ark-meta ark-chips" id="ark-meta"></div>
