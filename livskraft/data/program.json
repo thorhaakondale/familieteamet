@@ -236,7 +236,7 @@
      {
       "id": "roing",
       "navn": "Bent over-roing",
-      "hint": "rygg parallell, ingen rykk · vedlikeholdssett",
+      "hint": "rygg parallell, ingen rykk · skulderbladene ett sekund ned og sammen på toppen (nakken) · vedlikeholdssett",
       "sett": 3,
       "reps": [
        8,
@@ -375,7 +375,7 @@
    "M": {
     "navn": "8-minutteren",
     "dag": "tirsdag og fredag kveld",
-    "varighet": "8 + 2 min",
+    "varighet": "8 + 3 min",
     "farge": "#7c3aed",
     "steg": [
      [
@@ -419,6 +419,14 @@
      [
       "«Kort fot»",
       "2 × 10 per fot — plantarfascie"
+     ],
+     [
+      "Hakeinntrekk mot vegg",
+      "10 × 3 s — nakke"
+     ],
+     [
+      "Strikk pull-apart",
+      "2 × 15 — nakke/skulderblad"
      ]
     ]
    },
