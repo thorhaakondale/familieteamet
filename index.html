@@ -375,6 +375,18 @@ dialog#ark{width:calc(100% - 16px)}
 #ark .ark-chips span{font-size:14.5px;padding:5px 11px}
 #ark .ark-lbl{font-size:13px}
 #ark .dagrad button{font-size:15.5px}
+/* v1.60 (Thor 24.10): handlelista i arket — butikk for butikk, en tydelig rad per vare. Litt mindre skrift i arket så det ikke blir så langt. */
+#ark h3{font-size:20px}
+#ark .ark-felt #ark-navn-inn,#ark #ark-navn-inn{font-size:19.5px}
+#ark .ark-notat{font-size:16.5px;line-height:1.5}
+#ark .ark-chips span{font-size:13.5px;padding:4px 10px}
+#ark .ark-notat.sl{white-space:normal}
+#ark .sl-prog{font-size:15px;color:var(--ink2);margin:0 0 4px}
+#ark .sl-butikk{font-size:13.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--accent);margin:14px 0 2px;padding-bottom:4px;border-bottom:2px solid var(--accent)}
+#ark .sl-vare{display:flex;gap:12px;align-items:flex-start;padding:9px 2px;border-bottom:1px solid var(--line);font-size:17px;line-height:1.35;cursor:pointer}
+#ark .sl-vare input{width:24px;height:24px;min-width:24px;margin:0;accent-color:var(--ok)}
+#ark .sl-vare.ok span{text-decoration:line-through;color:var(--muted)}
+#ark .sl-txt{margin:8px 0 2px;font-size:15px;color:var(--ink2);line-height:1.45}
 </style>
 </head>
 <body>
@@ -561,7 +573,7 @@ dialog#ark{width:calc(100% - 16px)}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.59.0';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.60.0';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -722,6 +734,16 @@ function fridagSjekk(dato,fn){ var dt=new Date(dato+'T12:00:00'), di=(dt.getDay(
   el.querySelector('.ja').onclick=function(e){e.stopPropagation();el.classList.remove('show');fn(son)};
   el.querySelector('.nei').onclick=function(e){e.stopPropagation();el.classList.remove('show');fn(dato)};
 }
+/* v1.60 (Thor 24.10): handleliste i notatet — «## Butikk» gir overskrift, «- [ ] vare» gir avkrysning som lagres på oppgaven (o.avkr) */
+function slHash(t){var h=0;t=String(t).trim().toLowerCase();for(var i=0;i<t.length;i++){h=((h<<5)-h+t.charCodeAt(i))|0}return 'v'+(h>>>0).toString(36)}
+function slVarer(n){var ut=[];String(n||'').split('\n').forEach(function(l){var m=l.match(/^\s*[-•*]\s*\[( |x|X)?\]\s*(.+)$/);if(m)ut.push(m[2].trim())});return ut}
+function slStatus(o){var v=slVarer(o.notat);if(!v.length)return null;var a=o.avkr||{},n=v.filter(function(t){return a[slHash(t)]}).length;return {n:n,av:v.length}}
+function slHtml(o){var a=o.avkr||{},h='';String(o.notat||'').split('\n').forEach(function(l){
+    var m=l.match(/^\s*[-•*]\s*\[( |x|X)?\]\s*(.+)$/), b=l.match(/^\s*##\s*(.+)$/);
+    if(m){var t=m[2].trim(),k=slHash(t),ok=!!a[k];h+='<label class="sl-vare'+(ok?' ok':'')+'"><input type="checkbox" data-sl="'+k+'"'+(ok?' checked':'')+'><span>'+esc(t)+'</span></label>'}
+    else if(b){h+='<div class="sl-butikk">'+esc(b[1].trim())+'</div>'}
+    else if(l.trim()){h+='<p class="sl-txt">'+esc(l.trim())+'</p>'}});
+  return h}
 function kortNotat(t){t=String(t).replace(/\s+/g,' ').trim();return t.length>58?t.slice(0,58)+'…':t}
 function arkKnapp(o){return '<button class="ti" title="Detaljer, bytt og flytt" aria-label="Detaljer, bytt og flytt" data-ark="'+esc(o.id)+'">'+((o.notat||o.lenke)?'ⓘ':'⋯')+'</button>'}
 /* v1.44 (Thor 19.10.2026): hvor ofte står på ruta for alt som ikke er daglige rutiner — bare info, rytmen styres av Bjørn */
@@ -739,6 +761,16 @@ function rytmeTekst(o){
   if(o.int==='dager')return (o.dager||[]).map(function(x){return DAGER[x].slice(0,3).toLowerCase()}).join(', ')||'faste dager';
   if(o.int==='dato')return o.dato?('én gang: '+datoNorsk(new Date(o.dato+'T00:00:00'))+o.dato.slice(0,4)):'én gang';
   var k=rytmeKort(o); return k?k+', '+d:(o.int||'');
+}
+function slVis(o,les){ var st=slStatus(o); les.classList.toggle('sl',!!st); var lb=document.getElementById('ark-lbl'); if(lb) lb.textContent=st?'Handleliste':'Notat';
+  if(!st){les.textContent=o.notat||'';return}
+  les.innerHTML='<div class="sl-prog">🛒 <b>'+st.n+' av '+st.av+'</b> kjøpt</div>'+slHtml(o);
+  les.querySelectorAll('input[data-sl]').forEach(function(cb){cb.onchange=function(e){e.stopPropagation(); o.avkr=o.avkr||{}; var k=cb.dataset.sl;
+    if(cb.checked)o.avkr[k]=Date.now(); else delete o.avkr[k]; cb.parentNode.classList.toggle('ok',cb.checked);
+    var s2=slStatus(o); var pr=les.querySelector('.sl-prog b'); if(pr&&s2) pr.textContent=s2.n+' av '+s2.av;
+    try{localStorage.setItem('ft-oppg',JSON.stringify(OPPG))}catch(er){}
+    if(db){db.child('oppgaver/'+o.id+'/avkr/'+k).set(cb.checked?o.avkr[k]:null).catch(function(){status('Kunne ikke lagre delt — ligger på denne enheten.')})}
+    tegn(); }; });
 }
 function aapneArk(id,knapp){
   if(!arkInit())return;
@@ -768,9 +800,9 @@ function aapneArk(id,knapp){
   var endre=document.getElementById('ark-endre'); function taVokse(){ta.style.height='auto';ta.style.height=Math.max(120,ta.scrollHeight+4)+'px'}
   ta.oninput=taVokse;
   if(endre) endre.onclick=function(e){e.stopPropagation();les.hidden=true;endre.hidden=true;ta.hidden=false;taVokse();ta.focus()};
-  if(voksen){var harN=!!(o.notat&&o.notat.trim()); les.hidden=!harN; les.textContent=o.notat||''; if(endre) endre.hidden=!harN; ta.hidden=harN; lag.hidden=false; ta.value=o.notat||''; if(!harN) setTimeout(taVokse,0);
+  if(voksen){var harN=!!(o.notat&&o.notat.trim()); les.hidden=!harN; slVis(o,les); if(endre) endre.hidden=!harN; ta.hidden=harN; lag.hidden=false; ta.value=o.notat||''; if(!harN) setTimeout(taVokse,0);
     document.getElementById('ark-hint').textContent='Linjeskift blir egne linjer. Lagre skriver til alle enhetene.'}
-  else{les.hidden=false;ta.hidden=true;lag.hidden=true;les.textContent=o.notat||''; if(endre) endre.hidden=true;
+  else{les.hidden=false;ta.hidden=true;lag.hidden=true;slVis(o,les); if(endre) endre.hidden=true;
     document.getElementById('ark-hint').textContent='Flytt dagen eller bytt til en annen rett over her.'}
   var d=document.getElementById('ark');
   byggDagrad(o,knapp,d);
@@ -1705,7 +1737,7 @@ function tegnIdag(){
         return;
       }
       var done=erGjort(s.ukeKey||key,s.key), p=PMAP[s.person];
-      var rk=rytmeKort(s.o), meta=(s.o.minn&&s.o.minn.tid?'⏰ '+s.o.minn.tid+' · ':'')+(rk?'↻ '+rk+' · ':'')+(s.o.min?s.o.min+' min':'')+(valgt?'':' · '+p.navn)+(s.o.notat?' · '+esc(kortNotat(s.o.notat)):'');
+      var rk=rytmeKort(s.o), meta=(s.o.minn&&s.o.minn.tid?'⏰ '+s.o.minn.tid+' · ':'')+(rk?'↻ '+rk+' · ':'')+(s.o.min?s.o.min+' min':'')+(valgt?'':' · '+p.navn)+(slStatus(s.o)?' · 🛒 '+slStatus(s.o).n+' av '+slStatus(s.o).av+' kjøpt':(s.o.notat?' · '+esc(kortNotat(s.o.notat)):''));
       if(s.o.lenke) meta+=' · <a href="'+s.o.lenke+'" onclick="event.stopPropagation()">'+esc(s.o.lenkenavn||'åpne')+'</a>';
       if(s.byttet) meta='⇄ for '+PMAP[s.orig].navn+' · '+meta;
       if(s.flyttet) meta='→ fra '+DAGK[s.fraDag]+' · '+meta;
