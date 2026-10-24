@@ -561,7 +561,7 @@ dialog#ark{width:calc(100% - 16px)}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.58.0';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.59.0';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -1780,6 +1780,8 @@ function tegnIdag(){
       (ob.hvem||[]).forEach(function(pp){var kk=slotFor(pr,pp); if(erGjort(b.dataset.k,kk)!==paa) toggle(b.dataset.k,kk,pp)}); return}
     /* v1.38 (Thor 18.10.2026): samarbeidsoppgaver hakes for alle som har den samme dag, uansett hvem som trykker — f.eks. tran til barna: den som gir den, huker av for alle */
     if(ob&&ob.samarbeid){var pr2=b.dataset.s.split('|'), paa2=!erGjort(b.dataset.k,b.dataset.s);
+      /* v1.59 (Thor 24.10): samVoksen — huker et barn av, gjelder det bare barnet; huker en voksen av, gjelder det alle (tran til barna) */
+      if(ob.samVoksen&&['erik','vaarin','oscar'].indexOf(pr2[2])>=0){toggle(b.dataset.k,b.dataset.s,b.dataset.p);return}
       samPersSlot(ob,b.dataset.k,pr2).forEach(function(pp){var kk=slotFor(pr2,pp); if(erGjort(b.dataset.k,kk)!==paa2) toggle(b.dataset.k,kk,pp)}); return}
     toggle(b.dataset.k,b.dataset.s,b.dataset.p)};
     /* v1.19 (Thor 13.10): trykk på teksten åpner arket; haken tas i venstre del av ruta (boksen til midten av ikonet) */
