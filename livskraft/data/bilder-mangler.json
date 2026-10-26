@@ -1,5 +1,5 @@
 {
- "oppdatert": "2026-10-14",
+ "oppdatert": "2026-10-26",
  "regel": "Én oppføring = ett bilde. Fjern oppføringen når bildet er pushet og 'bilde' er satt på alle stedene i brukes_av. Anniken først (prio 1–3), så Thor (4–5).",
  "stil": "Samme stil som img/goblet.webp: flat vektor, ansiktsløs figur, marineblå klær, kremhvit bakgrunn, sidevisning, ingen tekst.",
  "liste": [
@@ -294,6 +294,21 @@
     }
    ],
    "prompt": "Flat vector illustration, faceless short-haired man in navy blue t-shirt and navy shorts, navy sneakers, plain cream off-white background, side view, full body visible, minimal clean style, no text, no logos. Seated calf raise: sitting on a bench with a dumbbell resting on his knees, balls of the feet on a weight plate, heels lifted high."
+  },
+  {
+   "prio": 4,
+   "fil": "img/copenhagen.webp",
+   "navn": "Copenhagen-planke",
+   "brukes_av": [
+    {
+     "person": "thor",
+     "okt": "B",
+     "id": "sideplanke",
+     "pauseovelse": true
+    }
+   ],
+   "prompt": "Flat vector illustration, faceless man with short dark hair in navy blue t-shirt and navy shorts, navy sneakers, plain cream off-white background, side view, full body visible, minimal clean style, no text, no logos. Copenhagen plank: side plank on the floor on his left forearm, body straight and hips lifted, the right (top) leg straight with the inner side of the foot resting on top of a low flat bench, the left (bottom) leg straight and hanging under the bench without touching the floor.",
+   "notat": "Tre forsøk med Z-Image 26.10.2026 traff ikke (figuren lå på benken). Prøv en annen modell eller tegn for hånd."
   }
  ]
 }
