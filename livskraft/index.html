@@ -404,7 +404,7 @@ details.om summary{cursor:pointer;font-weight:700;color:var(--ag);font-size:13px
    ============================================================ */
 "use strict";
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
-var VERSJON='1.22.0'; /* v1.21: appversjonen, vises under Mer → Programmet */
+var VERSJON='1.23.0'; /* v1.21: appversjonen, vises under Mer → Programmet */
 var KODE=null, PERSON='thor', PROG=null, S=null, db=null, dbOk=false, PENDING=[];
 var AKTIV=null; /* pågående økt */
 var UKEVIS=0;   /* uke-offset i Uka-fanen */
@@ -1094,7 +1094,7 @@ function tegnFrem(){
   var ov=finnOv('rdl');var t=rdlTrinn();var l=okterMed('rdl');
   var h='<div class="trapp">'+ov.trapp.trinn.map(function(kg,i){var gj=l.some(function(o){return arbeidsKg(o.ovelser.rdl)>=kg});return '<div class="'+(gj?'gjort':(kg===t.neste?'naa':''))+'">'+kg+'</div>'}).join('')+'</div><p class="lit">'+esc(ov.trapp.tekst)+'<br><b>Neste: '+t.neste+' kg.</b> '+esc(t.grunn)+'</p>';
   $('frem-trapp').innerHTML=h;
-  tegnHovedTabell(['kneboy','stepup','rdl','taahev','press','roing','nedtrekk','albuevern']);
+  tegnHovedTabell(['kneboy','stepup','sideutfall','rdl','taahev','press','roing','nedtrekk','albuevern']);
   var fh='';[['deadhang','Dead hang','sek'],['sideplanke','Sideplanke','sek'],['suitcase','Suitcase carry','m'],['birddog','Bird dog','reps']].forEach(function(f){var ll=okterSortert().filter(function(o){return o.fyll&&o.fyll[f[0]]}).slice(-6).reverse();
     fh+='<h3>'+f[1]+'</h3>';if(!ll.length){fh+='<p class="lit">Ikke målt ennå.</p>';return}
     fh+='<div class="tb"><table><tr><th>Dato</th><th>Sett</th><th>Beste</th>'+(f[2]==='m'?'<th>kg</th><th>Rent</th>':'')+'</tr>';

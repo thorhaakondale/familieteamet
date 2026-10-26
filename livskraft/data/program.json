@@ -67,9 +67,9 @@
       "type": "hoved"
      },
      {
-      "id": "stepup",
-      "navn": "Step-up på kasse",
-      "hint": "kne-høyde, eller bulgarsk splittknebøy · rett etter knebøy mens beina er friske · hurtig opp, rolig ned — dette ER trappa",
+      "id": "sideutfall",
+      "navn": "Sideutfall / Cossack squat",
+      "hint": "vintervariasjon fra uke 45 (Thor 26.10) — step-up kommer tilbake til våren · rett etter knebøy · goblet med manual · hælen i gulvet, foten peker fram, sett deg sidelengs ned på det ene beinet, det andre strakt · 3 s ned, hurtig opp · halluxen: hælen hevet på en skive hvis bakre fot sier nei",
       "sett": 2,
       "reps": [
        8,
@@ -77,13 +77,19 @@
       ],
       "perSide": true,
       "vekt": {
-       "start": 10,
-       "tak": 14,
+       "start": 8,
+       "tak": 16,
        "steg": 2,
-       "enhet": "kg per hånd"
+       "enhet": "kg goblet"
       },
       "pause": 150,
-      "type": "hoved"
+      "type": "hoved",
+      "slik": [
+       "Stå bredt, føttene peker fram, manualen mot brystet.",
+       "Skift vekta til det ene beinet og sett deg ned på siden — det andre beinet strakt, tærne opp.",
+       "Hælen i gulvet hele veien. Så dypt som hofta tillater uten at kneet faller inn.",
+       "3 sekunder ned, hurtig opp. Bytt side etter settet."
+      ]
      },
      {
       "id": "rdl",
@@ -184,6 +190,10 @@
       [
        "Hvorfor vektene er tak",
        "Styrken vedlikeholdes med ~⅓ av volumet så lenge intensiteten holdes (Bickel 2011). Flere reps enn oppgitt gir ikke mer fremgang — det gir tretthet og dårligere form på det løftet som faktisk har skadet deg."
+      ],
+      [
+       "Vintervariasjonen (26.10)",
+       "Fra uke 45: sideutfall i stedet for step-up, og Copenhagen-planke som annenhver sideplanke i B. Sidelengs og innover — setet på siden, innside lår og hoftekontroll. Det er stabiliteten for ryggen, og det er ploging og slalåm. Step-up er tilbake til våren."
       ]
      ],
      "regel": "Reps stopper på toppen av spennet. Blir det for lett, går VEKTA opp neste gang — aldri repetisjonene.",
@@ -293,7 +303,7 @@
       "fyllstoff": {
        "id": "sideplanke",
        "navn": "Sideplanke",
-       "maal": "2 × 20–30 s per side — stopp 10 s før du må",
+       "maal": "1 sideplanke + 1 Copenhagen-planke per side, 20–30 s — stopp 10 s før du må · Copenhagen: øverste fot på benken, kroppen rett (vinter 2026/27, plogen)",
        "maaling": "sek",
        "sett": 2,
        "perSide": true,
@@ -304,7 +314,11 @@
         "Løft hofta til kroppen er én rett linje fra hode til føtter. Øverste hånd på hofta.",
         "Hold 20–30 s rolig pust, ned, bytt side. Blir det tungt: nederste kne i gulvet."
        ],
-       "hvorfor": "Kjerne og korsrygg: sidemusklene som holder ryggen stabil — McGill Big 3."
+       "hvorfor": "Kjerne og korsrygg: sidemusklene som holder ryggen stabil — McGill Big 3.",
+       "varianter": [
+        "Sideplanke",
+        "Copenhagen-planke (innside lår)"
+       ]
       }
      },
      {
