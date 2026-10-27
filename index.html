@@ -2,7 +2,7 @@
 <html lang="nb">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <title>Familieteamet</title>
 <meta name="theme-color" content="#f1efe8">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -387,6 +387,9 @@ dialog#ark{width:calc(100% - 16px)}
 #ark .sl-vare input{width:24px;height:24px;min-width:24px;margin:0;accent-color:var(--ok)}
 #ark .sl-vare.ok span{text-decoration:line-through;color:var(--muted)}
 #ark .sl-txt{margin:8px 0 2px;font-size:15px;color:var(--ink2);line-height:1.45}
+/* v1.60.1: iOS-zoom — skrivefelt ≥16px (Safari zoomer ved fokus under 16px), ingen dobbelttrykk-zoom, fast telefonbredde */
+html,body{touch-action:manipulation}
+input,select,textarea,button{font-size:16px!important}
 </style>
 </head>
 <body>
@@ -573,7 +576,7 @@ dialog#ark{width:calc(100% - 16px)}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.60.0';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.60.1';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
