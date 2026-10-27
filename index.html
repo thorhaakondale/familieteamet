@@ -390,6 +390,24 @@ dialog#ark{width:calc(100% - 16px)}
 /* v1.60.1: iOS-zoom — skrivefelt ≥16px (Safari zoomer ved fokus under 16px), ingen dobbelttrykk-zoom, fast telefonbredde */
 html,body{touch-action:manipulation}
 input,select,textarea,button{font-size:16px!important}
+/* v1.61: handlelista */
+#handle ul{list-style:none;margin:6px 0 0;padding:0}
+#handle li{display:flex;align-items:center;gap:10px;padding:8px 2px;border-bottom:1px solid var(--line);font-size:16px}
+#handle li input[type=checkbox]{width:24px;height:24px;accent-color:var(--ok);flex:0 0 auto}
+#handle li .hl-av{margin-left:auto;font-size:12px;color:var(--muted);white-space:nowrap}
+#handle .nyrad{display:flex;gap:6px;align-items:center;margin:10px 0 4px}
+#handle .nyrad input{flex:1;min-width:0;font:inherit;padding:9px 10px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink)}
+#handle .nyrad button{font:inherit;font-weight:800;border-radius:10px;border:0;padding:9px 12px;cursor:pointer}
+#handle #hl-lagre{background:var(--accent);color:#fff}
+#handle #hl-forslag{margin:6px 0;padding:8px;border:1px dashed var(--line);border-radius:10px}
+#handle #hl-forslag .rad{display:flex;gap:6px;align-items:center;margin:4px 0}
+#handle #hl-forslag .rad input{flex:1;min-width:0;font:inherit;padding:7px 9px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink)}
+#handle #hl-forslag .rad button{border:0;background:transparent;font-size:18px;cursor:pointer;color:var(--muted)}
+#handle .hl-knapper{display:flex;gap:8px;margin-top:6px}
+#handle .hl-knapper button{flex:1;font:inherit;font-weight:800;border-radius:10px;border:0;padding:9px;cursor:pointer}
+#handle .hl-knapper .ok{background:var(--accent);color:#fff}
+#handle .hl-knapper .nei{background:var(--line2);color:var(--ink)}
+#handle .tom{color:var(--muted);font-size:14px;margin:6px 0}
 </style>
 </head>
 <body>
@@ -431,6 +449,19 @@ input,select,textarea,button{font-size:16px!important}
 <section class="handl" id="mer" hidden>
   <button type="button" class="hk1" id="ny-aapne">➕ Ny huskelapp</button>
   <button type="button" class="hk2" id="borte-btn">🧳 Jeg er borte</button>
+</section>
+<!-- v1.61 (Thor 27.10): handlelista — dikter flere ting, appen deler i linjer; Liv tar den med i Ukeshandel søndag -->
+<section class="card" id="handle" hidden>
+  <h2>🛒 Handleliste</h2>
+  <ul id="hl-liste"></ul>
+  <p class="tom" id="hl-tom">Ingenting på lista.</p>
+  <div class="nyrad">
+    <input id="hl-tekst" placeholder="Hva må kjøpes? Flere ting: skill med komma" autocomplete="off">
+    <button type="button" id="hl-mik" class="mik" title="Snakk inn" aria-label="Snakk inn">🎤</button>
+    <button type="button" id="hl-lagre">Legg til</button>
+  </div>
+  <div id="hl-forslag" hidden></div>
+  <p class="small">Dikter alt i ett — «antisklimatte, batterier og tannkrem» blir tre linjer du kan rette før du lagrer. Haket av = kjøpt. Liv tar det som står her med i neste ukes Ukeshandel.</p>
 </section>
 <dialog id="nydlg" aria-labelledby="nydlg-t"><div class="ark-inn">
   <div class="ark-bar"><button type="button" id="ny-avbryt">Avbryt</button><span class="ark-tittel" id="nydlg-t">Ny huskelapp</span><span style="width:70px"></span></div>
@@ -576,7 +607,7 @@ input,select,textarea,button{font-size:16px!important}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.60.1';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.61.0';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -916,6 +947,67 @@ function angreVis(tekst,fn,ms){var el=document.getElementById('angre'); if(!el) 
   clearTimeout(ANGRE_T); ANGRE_T=setTimeout(angreSkjul,ms||10000);
   document.getElementById('angre-btn').onclick=function(){var f=ANGRE_FN; angreSkjul(); if(f) f()}}
 function angreSkjul(){var el=document.getElementById('angre'); if(el) el.hidden=true; ANGRE_FN=null; clearTimeout(ANGRE_T)}
+/* ===== v1.61: diktering og handleliste (Thor 27.10.2026) ===== */
+/* Diktering: nettleserens talegjenkjenning på norsk bokmål. iPhone stopper etter en pause — vi starter igjen til knappen trykkes på nytt. */
+function kobleMik(knapp, felt){
+  var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!knapp) return; if(!SR){knapp.hidden=true; return}
+  var gj=null, aktiv=false, start='', ferdig='';
+  function stopp(){aktiv=false; if(gj){try{gj.stop()}catch(e){}} knapp.classList.remove('paa')}
+  function lytt(){
+    gj=new SR(); gj.lang='nb-NO'; gj.interimResults=true; gj.continuous=true; gj.maxAlternatives=1;
+    gj.onresult=function(ev){var del='';for(var i=0;i<ev.results.length;i++){var r=ev.results[i];if(r.isFinal)ferdig+=(ferdig&&!/[,.;]\s*$/.test(ferdig)?' ':'')+r[0].transcript.trim(); else del+=r[0].transcript}
+      felt.value=(start+ferdig+(del?' '+del:'')).replace(/\s+/g,' ').trim()};
+    gj.onerror=function(e){ if(e&&(e.error==='not-allowed'||e.error==='service-not-allowed')){toast('Mikrofonen er sperret for appen — bruk mikrofonen på tastaturet (norsk)');stopp()} };
+    gj.onend=function(){ gj=null; if(aktiv){ start=felt.value?felt.value+' ':''; ferdig=''; try{lytt()}catch(e){stopp()} } else knapp.classList.remove('paa') };
+    gj.start();
+  }
+  knapp.onclick=function(){
+    if(aktiv){stopp();return}
+    aktiv=true; start=felt.value?felt.value.trim()+' ':''; ferdig='';
+    try{lytt();knapp.classList.add('paa');toast('Snakk nå — trykk 🎤 igjen når du er ferdig')}catch(e){stopp();toast('Fikk ikke tak i mikrofonen — skriv i stedet')}
+  };
+}
+/* «antisklimatte, batterier og tannkrem» → tre linjer. Deler på komma, semikolon, linjeskift, « og », «pluss», og dikterte ord som «komma», «ny linje», «neste». */
+function delLinjer(tekst){
+  var s=' '+String(tekst||'')+' ';
+  s=s.replace(/\s(komma|semikolon|ny linje|neste|punktum|og så|pluss)\s/gi,' , ').replace(/[,;\n]+/g,' , ').replace(/\s+og\s+/gi,' , ');
+  var ut=[], sett={};
+  s.split(',').forEach(function(x){ x=x.replace(/^[\s.\-–]+|[\s.\-–]+$/g,'').replace(/\s+/g,' '); if(!x) return; x=x.charAt(0).toUpperCase()+x.slice(1); var n=x.toLowerCase(); if(sett[n]) return; sett[n]=1; ut.push(x) });
+  return ut;
+}
+var HANDLE={};
+function tegnHandle(){
+  var sek=document.getElementById('handle'), ul=document.getElementById('hl-liste'), tom=document.getElementById('hl-tom'); if(!sek||!ul) return;
+  var voks=!!(valgt&&(valgt==='thor'||valgt==='anniken')); sek.hidden=!voks; if(!voks) return;
+  var li=Object.keys(HANDLE).map(function(k){return HANDLE[k]}).filter(function(x){return x&&x.tekst&&!x.ok}).sort(function(a,b){return (a.ts||'')<(b.ts||'')?-1:1});
+  ul.innerHTML=''; if(tom) tom.hidden=li.length>0;
+  li.forEach(function(x){ var el=document.createElement('li'); var cb=document.createElement('input'); cb.type='checkbox'; cb.setAttribute('aria-label','Kjøpt: '+x.tekst);
+    cb.onchange=function(){ if(!cb.checked) return; x.ok=new Date().toISOString(); if(db) db.child('handleliste/'+x.id+'/ok').set(x.ok).catch(function(){status('Kunne ikke lagre delt.')}); toast('🛒 '+x.tekst+' — kjøpt'); tegnHandle() };
+    var sp=document.createElement('span'); sp.textContent=x.tekst; var av=document.createElement('span'); av.className='hl-av'; av.textContent=(PMAP[x.av]?PMAP[x.av].dyr:'')+(x.ts?' '+x.ts.slice(8,10)+'.'+x.ts.slice(5,7):'');
+    el.appendChild(cb); el.appendChild(sp); el.appendChild(av); ul.appendChild(el) });
+}
+function lagreHandle(linjer){
+  var av=valgt||'thor', ts=new Date().toISOString(), n=0;
+  linjer.forEach(function(x){ var id='h-'+Date.now().toString(36)+'-'+(n++); var o={id:id,tekst:x,av:av,ts:ts,ok:null}; HANDLE[id]=o; if(db) db.child('handleliste/'+id).set(o).catch(function(){status('Kunne ikke lagre delt — prøv igjen.')}) });
+  tegnHandle(); toast('🛒 '+linjer.length+(linjer.length===1?' ting':' ting')+' lagt på handlelista');
+}
+(function(){
+  var felt=document.getElementById('hl-tekst'), knapp=document.getElementById('hl-lagre'), forslag=document.getElementById('hl-forslag'); if(!felt||!knapp) return;
+  kobleMik(document.getElementById('hl-mik'), felt);
+  function visForslag(linjer){
+    forslag.innerHTML=''; forslag.hidden=false;
+    var h=document.createElement('div'); h.className='small'; h.textContent='Rett om noe ble feil, så lagre:'; forslag.appendChild(h);
+    linjer.forEach(function(x){ var r=document.createElement('div'); r.className='rad'; var i=document.createElement('input'); i.value=x; var b=document.createElement('button'); b.type='button'; b.textContent='✕'; b.setAttribute('aria-label','Fjern'); b.onclick=function(){r.remove()}; r.appendChild(i); r.appendChild(b); forslag.appendChild(r) });
+    var kn=document.createElement('div'); kn.className='hl-knapper';
+    var ok=document.createElement('button'); ok.type='button'; ok.className='ok'; ok.textContent='Lagre linjene';
+    ok.onclick=function(){ var ut=[]; forslag.querySelectorAll('.rad input').forEach(function(i){var v=i.value.trim(); if(v) ut.push(v)}); if(!ut.length){forslag.hidden=true;return} lagreHandle(ut); felt.value=''; forslag.hidden=true; forslag.innerHTML='' };
+    var nei=document.createElement('button'); nei.type='button'; nei.className='nei'; nei.textContent='Avbryt'; nei.onclick=function(){forslag.hidden=true;forslag.innerHTML=''};
+    kn.appendChild(ok); kn.appendChild(nei); forslag.appendChild(kn); forslag.querySelector('.rad input')&&forslag.querySelector('.rad input').focus();
+  }
+  knapp.onclick=function(){ var linjer=delLinjer(felt.value); if(!linjer.length){felt.focus();toast('Hva må kjøpes?');return} if(linjer.length===1){lagreHandle(linjer);felt.value='';return} visForslag(linjer) };
+  felt.addEventListener('keydown',function(e){ if(e.key==='Enter'){e.preventDefault();knapp.click()} });
+})();
 function lagreOppg(o){o.ts=new Date().toISOString(); try{localStorage.setItem('ft-oppg',JSON.stringify(OPPG))}catch(e){}
   if(db){var dok=JSON.parse(JSON.stringify(o)); if(!dok.rull) delete dok.rull; db.child('oppgaver/'+o.id).set(dok).catch(function(){status('Kunne ikke lagre delt — ligger på denne enheten.')})}}
 function settHopp(k,slots,paa){var u=ukeDoc(k); if(!u.hopp) u.hopp={}; var upd={};
@@ -2077,6 +2169,7 @@ function tegnNyRask(){
   if(body&&w.parentNode!==body){ body.appendChild(w); var dt=document.getElementById('ny-rask'); if(dt) dt.open=true; } /* v1.31: skjemaet bor i en egen dialog */
   var voks=!!(valgt&&VOKSNE.indexOf(valgt)>=0); w.hidden=!voks;
   if(mer) mer.hidden=!voks;
+  try{tegnHandle()}catch(e){} /* v1.61 */
   if(!w.hidden&&window.__nyRaskHvem)window.__nyRaskHvem();
 }
 function tegn(){tegnHvem();tegnIdag();tegnLag();tegnUke();tegnSlik();tegnVedl();tegnHist();tegnBank();fyllInnst();tegnNyRask();tegnPakk();tegnAjour()}
@@ -2108,19 +2201,8 @@ function gaaTil(id){var m=document.getElementById(id);if(!m)return;var off=0;doc
   settDato(0);
   /* Mikrofon: bruker nettleserens egen talegjenkjenning når den finnes (Safari/Chrome). Ellers skjules knappen —
      og på iPhone/iPad kan man uansett bruke mikrofonen på tastaturet. */
-  var SR=window.SpeechRecognition||window.webkitSpeechRecognition, mik=document.getElementById('nr-mik'), gj=null;
-  if(!SR){mik.hidden=true}
-  else{
-    mik.onclick=function(){
-      if(gj){try{gj.stop()}catch(e){} return}
-      gj=new SR(); gj.lang='nb-NO'; gj.interimResults=true; gj.continuous=false;
-      var start=tIn.value?tIn.value+' ':'';
-      gj.onresult=function(ev){var t='';for(var i=ev.resultIndex;i<ev.results.length;i++)t+=ev.results[i][0].transcript;tIn.value=start+t};
-      gj.onerror=function(){toast('Fikk ikke tak i mikrofonen — skriv i stedet');};
-      gj.onend=function(){mik.classList.remove('paa');gj=null};
-      try{gj.start();mik.classList.add('paa');toast('Snakk nå …')}catch(e){gj=null}
-    };
-  }
+  /* v1.61: felles diktering (norsk bokmål, lytter til du trykker stopp) — se kobleMik() */
+  kobleMik(document.getElementById('nr-mik'), tIn);
   document.getElementById('nr-lagre').onclick=function(){
     var tekst=tIn.value.trim(), dato=dIn.value;
     if(!tekst){tIn.focus();toast('Skriv hva som må gjøres');return}
@@ -2173,6 +2255,7 @@ function slaaSammenOppg(liste){
     db=firebase.database().ref('fam/'+KODE); dbOk=true;
     db.child('oppgaver').on('value',function(snap){var v=snap.val()||{};OPPG_LASTET=true;setTimeout(planleggBackup,0);var li=Object.keys(v).map(function(k){return v[k]});try{localStorage.setItem('ft-oppg-delt',JSON.stringify(li))}catch(e){};slaaSammenOppg(li);synkTurOppg();tegn();ryddMinn();kveldStopp()});
     db.child('innlost').on('value',function(snap){INNLOST=snap.val()||{};tegn()});
+    db.child('handleliste').on('value',function(snap){HANDLE=snap.val()||{};tegnHandle()}); /* v1.61 */
     ['thor','anniken'].forEach(function(p){ db.child('okt/'+p+'/okter').limitToLast(60).on('value',function(snap){var m={}; snap.forEach(function(c){var o=c.val(); if(o&&o.dato&&(o.type==='A'||o.type==='B')) (m[o.dato]||(m[o.dato]=[])).push(o.type)}); LK[p]=m; tegn()},function(){}) }); /* v1.55: les Livskraft-øktene (bare lesing) */
     db.child('belonning').on('value',function(snap){BELONNING=snap.val()||{};tegn()});
     db.child('tilstand').on('value',function(snap){TILSTAND=snap.val()||{};tegn()});
