@@ -404,7 +404,7 @@ details.om summary{cursor:pointer;font-weight:700;color:var(--ag);font-size:13px
    ============================================================ */
 "use strict";
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
-var VERSJON='1.23.1'; /* v1.21: appversjonen, vises under Mer → Programmet */
+var VERSJON='1.24.0'; /* v1.21: appversjonen, vises under Mer → Programmet */
 var KODE=null, PERSON='thor', PROG=null, S=null, db=null, dbOk=false, PENDING=[];
 var AKTIV=null; /* pågående økt */
 var UKEVIS=0;   /* uke-offset i Uka-fanen */
@@ -834,11 +834,36 @@ function redigerOkt(id){ /* v1.6: åpne en lagret økt på nytt for å rette ell
       AKTIV.fyll[ov.fyllstoff.id].forslag=ff}});
   $('okt-kommentar').value=o.kommentar||'';BEKREFT=false;$('okt-advarsel').innerHTML='';
   lagreAktiv();vis('okt');tegnOkt();window.scrollTo(0,0);}
-function lagreAktiv(){try{if(AKTIV)localStorage.setItem('lk-aktiv-'+PERSON,JSON.stringify(AKTIV));else localStorage.removeItem('lk-aktiv-'+PERSON)}catch(e){}}
+function lagreAktiv(){try{if(AKTIV)localStorage.setItem('lk-aktiv-'+PERSON,JSON.stringify(AKTIV));else{localStorage.removeItem('lk-aktiv-'+PERSON);localStorage.removeItem('lk-vis-'+PERSON)}}catch(e){}}
+/* v1.24 (Thor 30.10.2026): iOS kaster av og til ut appen i bakgrunnen (ntfy, Spotify). Da lastes siden på nytt: økta kom tilbake,
+   men øverst på siden og uten pausetimer. Nå lagres hvor du sto (øvelsen øverst på skjermen + avstand) og timeren ved siden av økta,
+   og begge legges tilbake når økta hentes. Lagres separat fra økta, så ingenting av dette havner i den lagrede økta. */
+function lagreVis(){if(!AKTIV)return;try{
+  var v={id:AKTIV.id,y:window.scrollY||0,anker:null,dy:0,t:null,nt:NT.id?{id:NT.id,topic:NT.topic}:null};
+  if($('v-okt').classList.contains('on')){var l=document.querySelectorAll('#okt-liste .ov');
+    for(var i=0;i<l.length;i++){var r=l[i].getBoundingClientRect();if(r.bottom>60){v.anker=l[i].id;v.dy=Math.round(r.top);break}}}
+  if(T.slutt&&T.ov)v.t={slutt:T.slutt,ov:T.ov.id,si:T.si,varslet:T.varslet};
+  localStorage.setItem('lk-vis-'+PERSON,JSON.stringify(v))}catch(e){}}
+var RULLBRUKER=false;
+function gjenopprettVis(){var v;try{v=JSON.parse(localStorage.getItem('lk-vis-'+PERSON)||'null')}catch(e){v=null}
+  if(!v||!AKTIV||v.id!==AKTIV.id)return;
+  if(v.nt&&v.nt.id){NT.id=v.nt.id;NT.topic=v.nt.topic}
+  if(v.t&&v.t.slutt){var ov=finnOv(v.t.ov);if(ov){T.slutt=v.t.slutt;T.ov=ov;T.si=v.t.si;T.varslet=!!v.t.varslet;
+    $('timer').classList.add('on');$('timer-info').innerHTML=timerInfo(ov,v.t.si);tegnTimer();if(T.iv)clearInterval(T.iv);T.iv=setInterval(tegnTimer,500)}}
+  RULLBRUKER=false;var stopp=function(){RULLBRUKER=true};
+  ['touchstart','wheel','keydown'].forEach(function(ev){window.addEventListener(ev,stopp,{once:true,passive:true})});
+  var rull=function(){if(RULLBRUKER)return;var e=v.anker&&document.getElementById(v.anker);
+    if(e)window.scrollTo(0,Math.max(0,e.getBoundingClientRect().top+(window.scrollY||0)-v.dy));else if(v.y)window.scrollTo(0,v.y)};
+  /* bildene lastes etter hvert og skyver innholdet — rull på nytt et par ganger til du selv tar i skjermen */
+  requestAnimationFrame(rull);[150,500,1200,2500].forEach(function(ms){setTimeout(rull,ms)})}
+var RULL_IV=null;
+window.addEventListener('scroll',function(){if(!AKTIV)return;clearTimeout(RULL_IV);RULL_IV=setTimeout(lagreVis,300)},{passive:true});
+document.addEventListener('visibilitychange',function(){if(document.visibilityState==='hidden')lagreVis()});
+window.addEventListener('pagehide',lagreVis);
 function hentAktiv(){ /* v1.5: en påbegynt økt overlever at appen lastes på nytt */
   try{var r=localStorage.getItem('lk-aktiv-'+PERSON);if(!r)return;var a=JSON.parse(r);
     if(!a||a.dato!==idag()||!erStyrke(a.type)){localStorage.removeItem('lk-aktiv-'+PERSON);return}
-    AKTIV=a;vis('okt');tegnOkt()}catch(e){}}
+    AKTIV=a;vis('okt');tegnOkt();gjenopprettVis()}catch(e){}}
 function sisteVariant(fid){var hv=S.innst&&S.innst.varianter&&S.innst.varianter[fid];if(hv)return hv;var l=okterSortert().filter(function(o){return o.fyll&&o.fyll[fid]&&o.fyll[fid].variant});return l.length?l[l.length-1].fyll[fid].variant:null}
 function tegnOkt(){
   var okt=PP().okter[AKTIV.type];
@@ -936,8 +961,8 @@ $('okt-avbryt').onclick=function(){if(!AKTIV){vis('idag');return}
 var T={slutt:0,iv:null,ov:null,varslet:false};
 function restSek(){return T.slutt?Math.ceil((T.slutt-Date.now())/1000):0}
 function startTimer(sek,ov,si){T.slutt=Date.now()+sek*1000;T.ov=ov;T.si=si;T.varslet=false;$('timer').classList.add('on');ntfyPlan(sek,ov,si);
-  var info=esc(ov.navn)+' sett '+(si+1)+' ✓';if(ov.fyllstoff&&si<ov.sett-1){info+='<div class="fyllvarsel" style="display:inline-block;margin-top:3px;padding:2px 8px;border-radius:6px;font-weight:800;background:#7c3aed;color:#fff">Pauseøvelse nå: '+esc(ov.fyllstoff.navn)+' — lett</div>'}
-  $('timer-info').innerHTML=info;tegnTimer();if(T.iv)clearInterval(T.iv);T.iv=setInterval(tegnTimer,500)}
+  $('timer-info').innerHTML=timerInfo(ov,si);tegnTimer();if(T.iv)clearInterval(T.iv);T.iv=setInterval(tegnTimer,500);lagreVis()}
+function timerInfo(ov,si){var info=esc(ov.navn)+' sett '+(si+1)+' ✓';if(ov.fyllstoff&&si<ov.sett-1){info+='<div class="fyllvarsel" style="display:inline-block;margin-top:3px;padding:2px 8px;border-radius:6px;font-weight:800;background:#7c3aed;color:#fff">Pauseøvelse nå: '+esc(ov.fyllstoff.navn)+' — lett</div>'}return info}
 function tegnTimer(){ /* v1.4: regnes alltid fra klokka, aldri fra en teller som fryser i bakgrunnen */
   if(!T.slutt)return;
   var r=restSek();
@@ -949,8 +974,8 @@ function ferdigTimer(over){ /* v1.8 (Thor 28.9): ring i maks 10 sekunder, så sl
   var fersk=(over||0)<60;
   if(S.innst.lyd&&fersk){if(document.visibilityState==='visible')alarmStart();else{pip(); /* prøv ett pip fra bakgrunnen (iOS nekter som regel) — alarmen starter når appen er synlig igjen */ setTimeout(function(){if(document.visibilityState==='visible'&&T.slutt&&restSek()<=0)alarmStart()},300)}}
   if(fersk)setTimeout(function(){if(T.slutt&&restSek()<=0)stoppTimer()},ALARM_MS+500)} /* kom du tilbake seint, blir timeren stående med «ute for … siden» (v1.4) */
-function stoppTimer(){alarmStopp();ntfyAvlys();if(T.iv)clearInterval(T.iv);T.iv=null;T.slutt=0;$('timer-over').textContent='';$('timer').classList.remove('on')}
-$('timer-pluss').onclick=function(){alarmStopp();T.slutt=Math.max(T.slutt,Date.now())+30000;T.varslet=false;tegnTimer();if(!T.iv)T.iv=setInterval(tegnTimer,500);ntfyAvlys();ntfyPlan(restSek(),T.ov,T.si)};
+function stoppTimer(){alarmStopp();ntfyAvlys();if(T.iv)clearInterval(T.iv);T.iv=null;T.slutt=0;$('timer-over').textContent='';$('timer').classList.remove('on');lagreVis()}
+$('timer-pluss').onclick=function(){alarmStopp();T.slutt=Math.max(T.slutt,Date.now())+30000;T.varslet=false;tegnTimer();if(!T.iv)T.iv=setInterval(tegnTimer,500);ntfyAvlys();ntfyPlan(restSek(),T.ov,T.si);lagreVis()};
 /* ---------- alarm (v1.8) ----------
    Thor 28.9.2026: alarmen ringte ikke ferdig, og Spotify stoppet da appen kom i forgrunnen. Nå: pip hvert sekund i maks 10 s
    (ALARM_MS), stopp ved første berøring, «+30» eller «Ferdig» — og så SLIPPES lydkanalen (AudioContext suspenderes,
@@ -984,7 +1009,7 @@ function ntfyPlan(sek,ov,si){ /* bestill en forsinket push når pausen starter �
   var navn=ov&&ov.navn?ov.navn:'';var tekst='Pausen er over'+(navn?' — '+navn+(si!==undefined&&si!==null?' sett '+(si+2):''):'')+'. Kjør.';
   var topic=S.innst.ntfy.topic;NT.topic=topic;
   var u=NTFY_URL+encodeURIComponent(topic)+'?delay='+d+'s&priority=5&title='+encodeURIComponent('Livskraft')+'&tags=alarm_clock';
-  try{fetch(u,{method:'POST',body:tekst,keepalive:true}).then(function(r){return r.json()}).then(function(j){if(j&&j.id&&NT.topic===topic)NT.id=j.id}).catch(function(){})}catch(e){}}
+  try{fetch(u,{method:'POST',body:tekst,keepalive:true}).then(function(r){return r.json()}).then(function(j){if(j&&j.id&&NT.topic===topic){NT.id=j.id;lagreVis()}}).catch(function(){})}catch(e){}}
 function ntfyAvlys(){ /* pausen ble avbrutt, forlenget eller ringte i appen — trekk meldingen tilbake før ntfy sender den */
   if(!NT.id)return;var id=NT.id,topic=NT.topic;NT.id=null;
   try{fetch(NTFY_URL+encodeURIComponent(topic)+'/'+encodeURIComponent(id),{method:'DELETE',keepalive:true}).catch(function(){})}catch(e){}}
