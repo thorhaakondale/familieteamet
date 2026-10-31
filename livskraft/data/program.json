@@ -390,7 +390,7 @@
    "M": {
     "navn": "8-minutteren",
     "dag": "tirsdag og fredag kveld",
-    "varighet": "8 + 3 min",
+    "varighet": "ca. 13 + 3 min",
     "farge": "#7c3aed",
     "steg": [
      [
@@ -404,6 +404,10 @@
      [
       "90/90-hofte",
       "1 min per side"
+     ],
+     [
+      "Rumpetøy – figur 4 på rygg",
+      "45 s per side"
      ],
      [
       "Kneling hoftebøyer m/strekk over hodet",
@@ -451,6 +455,111 @@
       "Sideplanke",
       "20–30 s per side — korsrygg"
      ]
+    ],
+    "guide": [
+     {
+      "id": "m-kattku",
+      "navn": "Katt–ku",
+      "sek": 60,
+      "sider": 1,
+      "hint": "Alle fire. Rund rygg og blikket mot navlen, så svai rygg og blikket fram. Rolig, i takt med pusten."
+     },
+     {
+      "id": "m-kobra",
+      "navn": "Barnestilling → kobra",
+      "sek": 60,
+      "sider": 1,
+      "hint": "Sitt på hælene med armene strakt fram. Skyv deg fram til magen og løft brystet med strake armer – hoftene blir i matta. Fram og tilbake."
+     },
+     {
+      "id": "m-9090",
+      "navn": "90/90-hofte",
+      "sek": 60,
+      "sider": 2,
+      "hint": "Begge knær bøyd 90°: ett bein foran, ett ut til siden. Sitt rakt og len deg lett fram over det fremre beinet."
+     },
+     {
+      "id": "m-figur4",
+      "navn": "Rumpetøy – figur 4 på rygg",
+      "sek": 45,
+      "sider": 2,
+      "hint": "Ligg på ryggen. Legg ankelen over motsatt kne, ta tak bak låret og trekk det rolig mot brystet. Kjennes dypt i setet."
+     },
+     {
+      "id": "m-hoftebøyer",
+      "navn": "Kneling hoftebøyer m/strekk",
+      "sek": 45,
+      "sider": 2,
+      "hint": "Ett kne i matta, den andre foten foran. Stram setet, skyv hofta fram og strekk armen på kne-siden over hodet."
+     },
+     {
+      "id": "m-hamstring",
+      "navn": "Hamstring på rygg m/håndkle",
+      "sek": 45,
+      "sider": 2,
+      "hint": "Ligg på ryggen med håndkle rundt foten. Løft beinet så rett du klarer og trekk rolig mot deg."
+     },
+     {
+      "id": "m-legg",
+      "navn": "Legg/akilles mot vegg",
+      "sek": 45,
+      "sider": 2,
+      "hint": "Hendene mot veggen, ett bein bak med hælen i gulvet. Halve tida med rett kne, halve med bøyd kne."
+     },
+     {
+      "id": "m-rotasjon",
+      "navn": "Brystryggrotasjon på siden",
+      "sek": 45,
+      "sider": 2,
+      "hint": "Ligg på siden med knærne bøyd og armene strakt fram. Åpne den øverste armen bakover i en bue og følg den med blikket. Knærne ligger stille."
+     },
+     {
+      "id": "m-taer",
+      "navn": "Tåklem + stortå",
+      "sek": 60,
+      "sider": 1,
+      "hint": "Spre tærne og klem dem sammen. Bøy så stortåa forsiktig opp og ned med hånden."
+     }
+    ],
+    "guide_tillegg": [
+     {
+      "id": "t-flexbar",
+      "navn": "Håndkle-/FlexBar-vri",
+      "reps": "3 × 10 per arm",
+      "hint": "Vri håndkleet eller FlexBaren som om du vrir opp en klut – rolig tilbake. For albuen."
+     },
+     {
+      "id": "t-kortfot",
+      "navn": "«Kort fot»",
+      "reps": "2 × 10 per fot",
+      "hint": "Foten flat. Løft fotbuen ved å trekke tåballen mot hælen – uten å krølle tærne."
+     },
+     {
+      "id": "t-hake",
+      "navn": "Hakeinntrekk mot vegg",
+      "reps": "10 × 3 s",
+      "hint": "Rygg og bakhode mot veggen. Trekk haka rett bakover (dobbelthake), hold 3 s."
+     },
+     {
+      "id": "t-pullapart",
+      "navn": "Strikk pull-apart",
+      "reps": "2 × 15",
+      "hint": "Strak arm foran deg i skulderhøyde, dra strikken fra hverandre og klem skulderbladene sammen."
+     },
+     {
+      "id": "t-glutebro",
+      "navn": "Glute bridge",
+      "reps": "12 m/2 s hold",
+      "hint": "På ryggen, føttene i gulvet. Løft hofta til rett linje kne–skulder, klem setet i 2 s.",
+      "bilde": "img/hoftehev.webp"
+     },
+     {
+      "id": "t-sideplanke",
+      "navn": "Sideplanke",
+      "reps": "20–30 s per side",
+      "hint": "På underarmen, kroppen i rett linje fra hode til føtter. Hofta oppe.",
+      "bilde": "img/sideplanke.webp"
+     }
     ]
    },
    "T": {
