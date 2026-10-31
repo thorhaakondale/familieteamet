@@ -404,7 +404,7 @@ details.om summary{cursor:pointer;font-weight:700;color:var(--ag);font-size:13px
    ============================================================ */
 "use strict";
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
-var VERSJON='1.24.1'; /* v1.21: appversjonen, vises under Mer → Programmet */
+var VERSJON='1.25.0'; /* v1.21: appversjonen, vises under Mer → Programmet */
 var KODE=null, PERSON='thor', PROG=null, S=null, db=null, dbOk=false, PENDING=[];
 var AKTIV=null; /* pågående økt */
 var UKEVIS=0;   /* uke-offset i Uka-fanen */
@@ -644,7 +644,7 @@ function tegnIdag(){
     if(ps.nivaa===2)h+='<div class="varsel">'+esc(PROG.tilbakefall.tre_uker)+'</div>';else if(ps.nivaa===1)h+='<div class="varsel">'+esc(PROG.tilbakefall.to)+'</div>';if(modus==='minimum')h+='<div class="varsel">Minimumsuke: én kort økt og én tur teller som gjort.</div>';
     if(!erGjort)h+=middagBoks();
     h+='<div class="rad" style="margin-top:12px"><button class="knapp'+(lett?' sek':'')+'" id="start-okt" data-t="'+bok+'">'+(erGjort?'Start '+bok+' en gang til':'Start økt '+bok+(lett?' — full':''))+' · ~'+estMin(PP().okter[bok],false)+' min</button></div>';
-    if((bok==='A'||bok==='B')&&!erGjort){var altB=bok==='A'?'B':'A';h+='<div class="rad" style="margin-top:8px"><button class="knapp sek lit" id="start-annen" data-t="'+altB+'">Eller ta økt '+altB+' i stedet · ~'+estMin(PP().okter[altB],false)+' min</button></div>'}
+    if(bok==='A'||bok==='B'){var altB=bok==='A'?'B':'A';h+='<div class="rad" style="margin-top:8px"><button class="knapp sek lit" id="start-annen" data-t="'+altB+'">'+(erGjort?'Start økt '+altB:'Eller ta økt '+altB+' i stedet')+' · ~'+estMin(PP().okter[altB],false)+' min</button></div>'}
     h+='<div class="rad" style="margin-top:8px"><button class="knapp'+(lett?'':' sek lit')+'" id="start-kort" data-t="'+bok+'">Kort økt '+bok+' — ett sett per løft, ~25 min</button></div>';
     if(bok!=='H'&&PP().okter.H&&!PP().okter.H.visDag&&!erGjort)h+='<div class="rad" style="margin-top:8px"><button class="knapp sek lit" id="start-hjemme">Kommer du deg ikke på gymmet? Hjemmeøkt i stedet · ~'+estMin(PP().okter.H,false)+' min</button></div>';
     var m=new Date();if(PP().regler.maanedlig_tungt_sett&&bok==='A'&&m.getDate()<=7&&m.getDay()===1&&!lett)h+='<div class="varsel">Første mandag i måneden: '+esc(PROG.thor.regler.maanedlig_tungt_sett)+'</div>'}
@@ -675,7 +675,13 @@ function tegnIdag(){
       h+='<ul class="lit" style="margin:8px 0 0;padding-left:18px">'+turForan+'<li>Overskudd, ikke krav: hopper du over, skal ingenting tas igjen.</li></ul>'}
     h+='</div>'+h0}}
   if(bok!=='T'&&bok!=='S'&&planForDag(d)!=='T'&&planForDag(d)!=='S')h+='<div style="margin-top:14px;padding-top:12px;border-top:1px dashed var(--kant)"><b>Gikk en tur i dag?</b>'+turRad(gj,'T')+'</div>';
+  /* v1.25: A og B kan alltid startes — også på hviledager, turdager og etter at dagens økt er gjort */
+  if(bok!=='A'&&bok!=='B'&&modus!=='syk'&&PP().okter.A&&PP().okter.B&&h.indexOf('id="start-neste"')<0&&h.indexOf('id="start-annen"')<0)h+='<div style="margin-top:14px;padding-top:12px;border-top:1px dashed var(--kant)"><b>Gymøkt i dag likevel?</b><div class="rad" style="margin-top:6px">'+['A','B'].map(function(t){return '<button class="knapp sek lit" data-fristart="'+t+'">Start økt '+t+' · ~'+estMin(PP().okter[t],false)+' min</button>'}).join('')+'</div></div>';
+  var gjIdag=gjortDag(idag()).filter(function(o){return o.type!=='T'&&o.type!=='S'});
+  if(gjIdag.length)h+='<div style="margin-top:14px;padding-top:12px;border-top:1px dashed var(--kant)"><b>Trykket feil?</b><div class="rad" style="margin-top:6px">'+gjIdag.map(function(o){var nv=(PP().okter[o.type]&&PP().okter[o.type].navn)||o.type;return '<button class="knapp sek lit" data-angre="'+o.id+'">'+(ANGRE===o.id?'Trykk igjen for å slette':'Angre: '+esc(nv)+(o.kort?' (kort)':''))+'</button>'}).join('')+'</div><span class="lit" style="display:block;margin-top:4px">Sletter økta fra i dag — på alle enheter.</span></div>';
   $('idag-kort').innerHTML='<h2>'+dagTittel+'</h2>'+h;
+  Array.prototype.forEach.call(document.querySelectorAll('#idag-kort button[data-fristart]'),function(x){x.onclick=function(){startOkt(x.getAttribute('data-fristart'),false)}});
+  Array.prototype.forEach.call(document.querySelectorAll('#idag-kort button[data-angre]'),function(b){b.onclick=function(){var id=b.getAttribute('data-angre');if(ANGRE!==id){ANGRE=id;tegnIdag();return}ANGRE=null;slettOkt(id);tegnIdag();tegnUka();tegnFrem()}});
   var bn=$('start-neste');if(bn)bn.onclick=function(){startOkt(bn.getAttribute('data-t'),false)};
   var ba=$('start-annen');if(ba)ba.onclick=function(){startOkt(ba.getAttribute('data-t'),false)};
   var b=$('start-okt');if(b)b.onclick=function(){startOkt(b.getAttribute('data-t'),false)};
@@ -685,7 +691,7 @@ function tegnIdag(){
   var mi=$('in-middag');if(mi)mi.onchange=function(){if(this.value)settMiddag(this.value)};
   var mn=$('middag-naa');if(mn)mn.onclick=function(){settMiddag(naaHHMM())};
   Array.prototype.forEach.call(document.querySelectorAll('#idag-kort button[data-tur]'),function(tb){tb.onclick=function(){var mi=tall(($('tur-min')||{}).value)||60;var ob=tb.getAttribute('data-oscar')==='1';var o={id:nyId(),person:PERSON,dato:idag(),uke:ukeKey(new Date()),type:tb.getAttribute('data-tur'),min:mi};if(ob){o.oscar=true;o.kommentar='Med Oscar'}lagre('okter/'+o.id,o);tegnIdag();tegnUka()}});
-  var g=$('gjort-enkel');if(g)g.onclick=function(){loggEnkel(g.getAttribute('data-t'),null);tegnIdag();tegnUka()};
+  var g=$('gjort-enkel');if(g)g.onclick=function(){var t=g.getAttribute('data-t');if(!gjortDag(idag()).some(function(o){return o.type===t}))loggEnkel(t,null);tegnIdag();tegnUka()};
   var gm=$('gjort-m-ekstra');if(gm)gm.onclick=function(){if(!gjortDag(idag()).some(function(o){return o.type==='M'}))loggEnkel('M',null);tegnIdag();tegnUka()};
   /* råd */
   var ctx=ukeskontekst(),rs=ryggsjekk();var r='';
@@ -731,6 +737,9 @@ function tegnSeier(){
   var aff=o.affekt==='hard'?' Det kjentes for hardt midt i — neste økt holder vekta og kutter siste sett.':o.affekt==='lett'?' Det kjentes lett — reps opp neste gang, så vekt.':'';
   e.innerHTML='<div class="vinn"><h2>'+(o.kort?'Gjort — kort økt. Det holder.':'Gjort. '+((PP().okter[o.type]&&PP().okter[o.type].ferdigtekst)||((o.type==='A'?'Underkroppen':'Overkroppen, grepet og kjernen')+' har fått sitt.')))+'</h2><p class="lit" style="margin:0 0 6px">'+sett+' sett'+(min?' på '+min+' minutter':'')+'.'+esc(aff)+'</p>'+(vinn.length?'<ul class="steg">'+vinn.map(function(v){return '<li>'+esc(v)+'</li>'}).join('')+'</ul>':'<p class="lit" style="margin:0">Ingen rekorder i dag, og det er ikke poenget. Du kom.</p>')+'</div>';
 }
+/* v1.25 (Thor 31.10.2026): angre en logget økt — lokalt, i køen og på serveren */
+function slettOkt(id){delete S.okter[id];var sti='okter/'+id,i=PENDING.indexOf(sti);if(i>-1){PENDING.splice(i,1);try{localStorage.setItem('lk-pending-'+PERSON,JSON.stringify(PENDING))}catch(e){}}skrivLokalt();if(dbOk&&db)db.child(sti).remove();dbStatus()}
+var ANGRE=null;
 function loggEnkel(type,min){var d=idag();var o={id:nyId(),person:PERSON,dato:d,uke:ukeKey(new Date()),type:type,min:min||null};lagre('okter/'+o.id,o)}
 function tegnFem(){
   var iso=idag();var x=dagInfo(iso);var harP=erThor();
@@ -762,7 +771,7 @@ function tegnUka(){
     var v=$('dag-velger');var vh='<b>'+dagNavn((fraIso(iso).getDay()||7)-1)+' '+iso.slice(8)+'.'+(+iso.slice(5,7))+'</b> — logg: ';
     valg.forEach(function(x){var fins=gj.some(function(o){return o.type===x[0]});vh+='<button class="knapp lit'+(fins?'':' sek')+'" data-logg="'+x[0]+'" style="margin:4px 4px 0 0">'+(fins?'✓ ':'')+x[1]+'</button>'});
     var gym=gj.filter(function(o){return o.type==='A'||o.type==='B'||o.type==='H'});
-    if(gym.length)vh+='<div class="rad" style="margin-top:8px">'+gym.map(function(o){return '<button class="knapp lit" data-red="'+o.id+'">Rett økt '+o.type+(o.kort?' (kort)':'')+'</button>'}).join('')+'<span class="lit">glemt et sett eller trykket feil? åpne den på nytt</span></div>';
+    if(gym.length)vh+='<div class="rad" style="margin-top:8px">'+gym.map(function(o){return '<button class="knapp lit" data-red="'+o.id+'">Rett økt '+o.type+(o.kort?' (kort)':'')+'</button><button class="knapp sek lit" data-slett="'+o.id+'">Slett økt '+o.type+'</button>'}).join('')+'<span class="lit">glemt et sett eller trykket feil? åpne den på nytt</span></div>';
     else if(harP)vh+='<span class="lit" style="display:block;margin-top:6px">Gym-økter startes fra «I dag» så settene blir logget.</span>';
     if(harP&&erThor())vh+='<div class="fem" style="margin-top:10px">'+
       '<div><label>Rygg 0–3</label><div class="seg" id="seg-d-rygg"></div></div>'+
@@ -773,6 +782,7 @@ function tegnUka(){
       '<span class="lit" style="display:block;margin-top:6px">Tallene lagres på '+iso.slice(8)+'.'+(+iso.slice(5,7))+'. — her retter du det du glemte eller førte feil dag.</span>';
     v.innerHTML=vh;v.style.display='block';
     Array.prototype.forEach.call(v.querySelectorAll('button[data-red]'),function(b){b.onclick=function(){redigerOkt(b.getAttribute('data-red'))}});
+    Array.prototype.forEach.call(v.querySelectorAll('button[data-slett]'),function(b){b.onclick=function(){if(b.getAttribute('data-ok')!=='1'){b.setAttribute('data-ok','1');b.textContent='Trykk igjen for å slette';return}slettOkt(b.getAttribute('data-slett'));tegnUka();tegnIdag();tegnFrem()}});
     if(harP&&erThor()){
       (function(){var xd=dagInfo(iso);
         function seg2(el,felt){var e=v.querySelector('#'+el);if(!e)return;e.innerHTML='';for(var i=0;i<=3;i++){(function(val){var bb=document.createElement('button');bb.textContent=val;if(xd[felt]===val)bb.className='on';bb.onclick=function(){var o=dagInfo(iso);o[felt]=val;o.dato=iso;lagre('dag/'+iso,o);tegnUka();tegnIdag();tegnFem()};e.appendChild(bb)})(i)}}
@@ -1328,7 +1338,10 @@ function tegnProtein(){var e=$('protein-kort');var P=PROG.protein&&PROG.protein[
   e.hidden=false}
 function tegnAlt(){tegnProtein();tegnIdag();tegnUka();tegnFrem();tegnMer()}
 function flettInn(server){ /* server-dokumenter vinner ved nyere ts */
-  if(!server)return;['okter','dag','uke','tester','maaned'].forEach(function(k){var m=server[k]||{};Object.keys(m).forEach(function(id){var l=S[k][id];if(!l||(m[id].ts||0)>=(l.ts||0))S[k][id]=m[id]})});
+  if(!server)return;
+  /* v1.25: økter som er slettet på serveren (fra en annen enhet eller av Liv) forsvinner også her — unntatt de som ennå ikke er sendt */
+  var so=server.okter||{};Object.keys(S.okter).forEach(function(id){if(!so[id]&&PENDING.indexOf('okter/'+id)<0&&!(AKTIV&&AKTIV._rediger===id))delete S.okter[id]});
+  ['okter','dag','uke','tester','maaned'].forEach(function(k){var m=server[k]||{};Object.keys(m).forEach(function(id){var l=S[k][id];if(!l||(m[id].ts||0)>=(l.ts||0))S[k][id]=m[id]})});
   if(server.innst){if(server.innst.pauser)S.innst.pauser=server.innst.pauser;if(server.innst.lyd&&server.innst.lyd.v!==undefined)S.innst.lyd=server.innst.lyd.v;if(server.innst.ntfy&&server.innst.ntfy.topic!==undefined)S.innst.ntfy={on:server.innst.ntfy.on?1:0,topic:server.innst.ntfy.topic}}
   skrivLokalt();
 }
