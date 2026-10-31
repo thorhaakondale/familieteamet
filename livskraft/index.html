@@ -404,7 +404,7 @@ details.om summary{cursor:pointer;font-weight:700;color:var(--ag);font-size:13px
    ============================================================ */
 "use strict";
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
-var VERSJON='1.24.0'; /* v1.21: appversjonen, vises under Mer → Programmet */
+var VERSJON='1.24.1'; /* v1.21: appversjonen, vises under Mer → Programmet */
 var KODE=null, PERSON='thor', PROG=null, S=null, db=null, dbOk=false, PENDING=[];
 var AKTIV=null; /* pågående økt */
 var UKEVIS=0;   /* uke-offset i Uka-fanen */
@@ -651,6 +651,12 @@ function tegnIdag(){
   else if(bok==='M'){h+='<ol class="steg" style="margin:10px 0">'+okt.steg.map(function(s){return '<li><b>'+esc(s[0])+'</b> — '+esc(s[1])+'</li>'}).join('')+'</ol><p class="lit">+ sene- og nakketillegget: '+okt.tillegg.map(function(s){return esc(s[0])+' '+esc(s[1])}).join(' · ')+'</p><div class="rad"><button class="knapp" id="gjort-enkel" data-t="M">'+(erGjort?'Gjort ✓':'8-minutteren gjort')+'</button></div>'}
   else if(bok==='T'||bok==='S'){h+='<p class="lit" style="margin:8px 0">'+esc(okt.tekst)+'</p>'+turRad(gj,bok)}
   else{h+='<p class="lit" style="margin:8px 0">'+esc(okt.tekst)+'</p>'}
+  /* v1.24.1 (Thor 31.10.2026): 8-minutteren kan åpnes og logges hvilken dag som helst — ikke bare tir/fre. */
+  if(bok!=='M'&&erThor()&&PP().okter.M){var mo=PP().okter.M,mG=gj.some(function(o){return o.type==='M'});
+    h+='<details style="margin:14px 0 4px;border-top:1px dashed var(--kant);padding-top:12px"><summary style="cursor:pointer"><b>'+esc(mo.navn)+'</b> <span class="lit">— kan tas hvilken dag som helst'+(mG?' · ✓ gjort i dag':'')+'</span></summary>'+
+      '<ol class="steg" style="margin:10px 0">'+mo.steg.map(function(s){return '<li><b>'+esc(s[0])+'</b> — '+esc(s[1])+'</li>'}).join('')+'</ol>'+
+      (mo.tillegg?'<p class="lit">+ sene- og nakketillegget: '+mo.tillegg.map(function(s){return esc(s[0])+' '+esc(s[1])}).join(' · ')+'</p>':'')+
+      '<div class="rad"><button class="knapp sek" id="gjort-m-ekstra">'+(mG?'Gjort ✓':'8-minutteren gjort')+'</button></div></details>'}
   if(bok!=='A'&&bok!=='B'&&gymDenneUka()<gymMaalUke(modus)&&!gj.some(function(o){return o.type==='A'||o.type==='B'||o.type==='H'})){
     /* v1.16–1.17 (Thor 17.10.2026): reserveøkta hjemme — overskudd, ikke krav. Tilgjengelig dagene i visDag (tor–søn); på utenGym-dager (søndag) står den alene under turen. */
     var hr=PP().okter.H,dk=DAGKEY[(d.getDay()||7)-1],resDag=!!(hr&&hr.visDag&&[].concat(hr.visDag).indexOf(dk)>-1),resAlene=resDag&&[].concat(hr.utenGym||[]).indexOf(dk)>-1;
@@ -680,6 +686,7 @@ function tegnIdag(){
   var mn=$('middag-naa');if(mn)mn.onclick=function(){settMiddag(naaHHMM())};
   Array.prototype.forEach.call(document.querySelectorAll('#idag-kort button[data-tur]'),function(tb){tb.onclick=function(){var mi=tall(($('tur-min')||{}).value)||60;var ob=tb.getAttribute('data-oscar')==='1';var o={id:nyId(),person:PERSON,dato:idag(),uke:ukeKey(new Date()),type:tb.getAttribute('data-tur'),min:mi};if(ob){o.oscar=true;o.kommentar='Med Oscar'}lagre('okter/'+o.id,o);tegnIdag();tegnUka()}});
   var g=$('gjort-enkel');if(g)g.onclick=function(){loggEnkel(g.getAttribute('data-t'),null);tegnIdag();tegnUka()};
+  var gm=$('gjort-m-ekstra');if(gm)gm.onclick=function(){if(!gjortDag(idag()).some(function(o){return o.type==='M'}))loggEnkel('M',null);tegnIdag();tegnUka()};
   /* råd */
   var ctx=ukeskontekst(),rs=ryggsjekk();var r='';
   if(rs.stopp)r+='<div class="rodt">'+esc(rs.tekst)+'</div>';else if(rs.hold)r+='<div class="varsel">'+esc(rs.tekst)+'</div>';
