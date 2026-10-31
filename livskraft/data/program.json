@@ -808,7 +808,7 @@
    "ons": "T",
    "tor": "B",
    "fre": "F",
-   "lor": "H",
+   "lor": "F",
    "son": "S"
   },
   "ukeplan": [
@@ -1196,7 +1196,7 @@
    },
    "H": {
     "navn": "H — Hjemmeøkt",
-    "dag": "når tirsdag eller torsdag ryker · eller lørdag",
+    "dag": "når tirsdag eller torsdag ryker · valgfri bonus på lørdag",
     "varighet": "ca. 30 min med pauser",
     "farge": "#0891b2",
     "oppvarming": "2 min marsj på stedet + 10 armsirkler + 10 knebøy uten vekt.",

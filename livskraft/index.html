@@ -404,7 +404,7 @@ details.om summary{cursor:pointer;font-weight:700;color:var(--ag);font-size:13px
    ============================================================ */
 "use strict";
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
-var VERSJON='1.27.0'; /* v1.21: appversjonen, vises under Mer → Programmet */
+var VERSJON='1.27.1'; /* v1.21: appversjonen, vises under Mer → Programmet */
 var KODE=null, PERSON='thor', PROG=null, S=null, db=null, dbOk=false, PENDING=[];
 var AKTIV=null; /* pågående økt */
 var UKEVIS=0;   /* uke-offset i Uka-fanen */
@@ -679,7 +679,8 @@ function tegnIdag(){
     h+='</div>'+h0}}
   if(bok!=='T'&&bok!=='S'&&planForDag(d)!=='T'&&planForDag(d)!=='S')h+='<div style="margin-top:14px;padding-top:12px;border-top:1px dashed var(--kant)"><b>Gikk en tur i dag?</b>'+turRad(gj,'T')+'</div>';
   /* v1.25: A og B kan alltid startes — også på hviledager, turdager og etter at dagens økt er gjort */
-  if(bok!=='A'&&bok!=='B'&&modus!=='syk'&&PP().okter.A&&PP().okter.B&&h.indexOf('id="start-neste"')<0&&h.indexOf('id="start-annen"')<0)h+='<div style="margin-top:14px;padding-top:12px;border-top:1px dashed var(--kant)"><b>Gymøkt i dag likevel?</b><div class="rad" style="margin-top:6px">'+['A','B'].map(function(t){return '<button class="knapp sek lit" data-fristart="'+t+'">Start økt '+t+' · ~'+estMin(PP().okter[t],false)+' min</button>'}).join('')+'</div></div>';
+  if(bok!=='A'&&bok!=='B'&&modus!=='syk'&&PP().okter.A&&PP().okter.B){var fl=(h.indexOf('id="start-neste"')<0&&h.indexOf('id="start-annen"')<0)?['A','B']:[];if(PP().okter.H&&bok!=='H'&&h.indexOf('id="start-hjemme"')<0&&h.indexOf('id="start-reserve"')<0)fl.push('H');
+    if(fl.length)h+='<div style="margin-top:14px;padding-top:12px;border-top:1px dashed var(--kant)"><b>Lyst på en økt i dag likevel?</b><div class="rad" style="margin-top:6px">'+fl.map(function(t){return '<button class="knapp sek lit" data-fristart="'+t+'">'+(t==='H'?'Hjemmeøkt (valgfri)':'Start økt '+t)+' · ~'+estMin(PP().okter[t],false)+' min</button>'}).join('')+'</div></div>'}
   var gjIdag=gjortDag(idag()).filter(function(o){return o.type!=='T'&&o.type!=='S'});
   if(gjIdag.length)h+='<div style="margin-top:14px;padding-top:12px;border-top:1px dashed var(--kant)"><b>Trykket feil?</b><div class="rad" style="margin-top:6px">'+gjIdag.map(function(o){var nv=(PP().okter[o.type]&&PP().okter[o.type].navn)||o.type;return '<button class="knapp sek lit" data-angre="'+o.id+'">'+(ANGRE===o.id?'Trykk igjen for å slette':'Angre: '+esc(nv)+(o.kort?' (kort)':''))+'</button>'}).join('')+'</div><span class="lit" style="display:block;margin-top:4px">Sletter økta fra i dag — på alle enheter.</span></div>';
   $('idag-kort').innerHTML='<h2>'+dagTittel+'</h2>'+h;
