@@ -607,7 +607,7 @@ input,select,textarea,button{font-size:16px!important}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.63.0';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.64.0';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -1286,7 +1286,17 @@ function oppgGjort(id,yd){
   var m=mandag(new Date(yd+'T00:00:00')), key=ukeKey(m), sl=planUke(m).filter(function(s){return s.o.id===id});
   return sl.length>0&&sl.every(function(s){return erGjort(key,s.key)});
 }
-function varselFerdig(v,p,yd){return v.oppg?oppgGjort(v.oppg,yd):dagFerdig(p,yd)}
+/* v1.64: varsel knyttet til en daglig oppgave (oppgDag) stoppes per person og per dag — egen hake, eller én hake i en samarbeidsoppgave */
+function oppgGjortP(id,p,yd){
+  if(!UKER_LASTET||!OPPG_LASTET) return false;
+  var dt=new Date(yd+'T00:00:00'), m=mandag(dt), key=ukeKey(m), wd=(dt.getDay()+6)%7;
+  var sl=planUke(m).filter(function(s){return s.o.id===id&&s.dag===wd});
+  if(!sl.length) return false;
+  if(sl[0].o.samarbeid&&sl.some(function(s){return (s.person===p||['thor','anniken'].indexOf(s.person)>=0)&&erGjort(key,s.key)})) return true; /* en voksen huker for alle; et barn bare for seg */
+  var mine=sl.filter(function(s){return s.person===p});
+  return mine.length>0&&mine.every(function(s){return erGjort(key,s.key)});
+}
+function varselFerdig(v,p,yd){return v.oppg?(v.oppgDag?oppgGjortP(v.oppg,p,yd):oppgGjort(v.oppg,yd)):dagFerdig(p,yd)}
 function ntfySlett(topic,seq){if(!topic||!seq||!window.fetch)return Promise.resolve(false);try{return fetch(NTFY_URL+encodeURIComponent(topic)+'/'+encodeURIComponent(seq)+'/delete',{cache:'no-store',keepalive:true}).then(function(r){return r.ok||r.status===404}).catch(function(){return false})}catch(e){return Promise.resolve(false)}} /* v1.37: GET /delete, se ntfyAvbestill */
 var KVELD_T=null;
 function kveldStopp(){
