@@ -607,7 +607,7 @@ input,select,textarea,button{font-size:16px!important}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.62.0';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.63.0';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -1993,24 +1993,48 @@ function ukeStatus(){
     if(!brutt){if(naadd)rekke++;else if(i>0)brutt=true;}}
   return {rekke:rekke,naaddNaa:naaddNaa,av:function(n){var c=0;for(var i=0;i<n&&i<liste.length;i++)if(liste[i])c++;return c}};
 }
+/* v1.63 (Thor 31.10.2026): BELØNNINGSBANKEN. En opptjent belønning står til den er haket av — også over i neste uke.
+   Saldoen regnes fra appens første uke. Maks to av samme slag til gode: når en tredje opptjenes i en avsluttet uke,
+   faller den eldste bort (lagres i innlost med by:'tak', så saldoen er stabil). Hver hake tar den eldste. */
+var BANK_TAK=2, BANK=[];
+function naaddUke(m){var key=ukeKey(m);var t=UKER[key]?ukeTall(m):null;return !!(t&&t.maal>0&&t.gjort>=t.maal)||!!(INNST.godskrevet&&INNST.godskrevet[key])}
+function belBank(trapp){
+  var man=mandag(NAA), uker=[];
+  for(var m=mandag(STARTDATO);m<=man;m=addDays(m,7))uker.push({key:ukeKey(m),n:naaddUke(m)});
+  var siste=uker.length-1, ut=[], skriv={};
+  trapp.forEach(function(r,i){
+    var kø=[], rekke=0, sist=-999, inn=[];
+    uker.forEach(function(u,j){
+      rekke=u.n?rekke+1:0; var tj=false;
+      if(r.krav===1&&!r.av) tj=u.n;
+      else if(!r.av) tj=u.n&&rekke>=r.krav&&rekke%r.krav===0;
+      else {var c=0;for(var w=Math.max(0,j-r.av+1);w<=j;w++)if(uker[w].n)c++; tj=c>=r.krav&&(j-sist)>=r.av;}
+      if(!tj)return; sist=j; var id=u.key+'-'+i, il=INNLOST[id];
+      if(il){if(il.by!=='tak')inn.push({id:id,key:u.key,ts:il.ts});return}
+      kø.push({id:id,key:u.key,j:j});
+      while(kø.length>BANK_TAK){ var d=kø.shift(); skriv[d.id]={ts:new Date().toISOString(),by:'tak',tekst:'falt bort — maks '+BANK_TAK+' til gode'}; }
+    });
+    var vis=kø.slice(-BANK_TAK); inn.sort(function(a,b){return a.ts<b.ts?1:-1});
+    ut.push({antall:vis.length,eldste:vis[0]||null,sisteInn:inn[0]||null});
+  });
+  Object.keys(skriv).forEach(function(id){INNLOST[id]=skriv[id]; if(db){db.child('innlost/'+id).set(skriv[id]).catch(function(){})}});
+  return ut;
+}
 var rullIdx=0, rullTimer=null;
 function tegnTrapp(t){
   var trapp=(INNST.trapp&&INNST.trapp.length)?INNST.trapp:SEED_TRAPP, st=ukeStatus(), rest=Math.max(0,t.maal-t.gjort);
+  BANK=belBank(trapp);
   var h='<tr><th></th><th>Belønning</th><th class="c">Status</th></tr>';
   var linjer=[];
   trapp.forEach(function(n,i){
     var krav=n.av?n.krav+' av '+n.av+' uker':(n.krav===1?'lagmålet én uke':n.krav+' uker på rad');
     if(n.krav===1&&!n.av){var st1=ukasStund(ukeKey(mandag(NAA)));if(st1){n=Object.assign({},n,{ikon:st1.ikon,navn:'Ukas familiestund: '+st1.tekst,tekst:(st1.fra==='Bjørn'?'Bjørns forslag for denne uka':'Sesongforslag — Bjørn bytter det ut søndag')+'. Passer det ikke, velger dere noe annet — poenget er tid sammen.'})}}
-    var har=n.av?st.av(n.av):st.rekke;
-    var naadd;
-    if(n.krav===1&&!n.av) naadd=st.naaddNaa;                                   /* ukas stund: bare når DENNE uka er nådd */
-    else if(!n.av) naadd=st.naaddNaa&&st.rekke>=n.krav&&(st.rekke%n.krav===0);  /* 2 på rad: uke 2, 4, 6 … i rekka */
-    else { naadd=har>=n.krav;                                                   /* 6 av 8 / 12 av 16: én gang per vindu */
-      if(naadd){for(var w=1;w<n.av;w++){if(INNLOST[ukeKey(addDays(mandag(NAA),-7*w))+'-'+i]){naadd=false;break}}}}
-    var ukeN=ukeKey(mandag(NAA)), idN=ukeN+'-'+i, il=INNLOST[idN];
-    var status=il?'<span class="naadd">🎉 gjort '+datoNorsk(new Date(il.ts))+'</span><br><button class="edit inl" data-a="angre" data-k="'+ukeN+'" data-i="'+i+'">angre</button>':(naadd?'<span class="naadd">✓ opptjent</span><br><button class="edit inl" data-a="gjort" data-k="'+ukeN+'" data-i="'+i+'" data-t="'+esc(n.navn)+'">Vi gjorde det!</button>':(function(){ if(n.av) return '<span class="num">'+har+' av '+n.av+' uker</span>'; if(n.krav===1) return '<span class="small">ikke nådd ennå denne uka</span>'; var neste=(Math.floor(st.rekke/n.krav)+1)*n.krav; return '<span class="num">'+st.rekke+' på rad · neste ved '+neste+'</span>' })());
+    var har=n.av?st.av(n.av):st.rekke, b=BANK[i], naadd=b.antall>0;
+    var nyInn=b.sisteInn&&(Date.now()-new Date(b.sisteInn.ts).getTime())<3*864e5;
+    var status=naadd?'<span class="naadd">🎁 '+b.antall+' til gode</span><br><button class="edit inl" data-a="gjort" data-k="'+b.eldste.key+'" data-i="'+i+'" data-t="'+esc(n.navn)+'">Vi gjorde det!</button>':(function(){ if(n.av) return '<span class="num">'+har+' av '+n.av+' uker</span>'; if(n.krav===1) return '<span class="small">ikke nådd ennå denne uka</span>'; var neste=(Math.floor(st.rekke/n.krav)+1)*n.krav; return '<span class="num">'+st.rekke+' på rad · neste ved '+neste+'</span>' })();
+    if(nyInn) status+='<br><span class="small">🎉 sist gjort '+datoNorsk(new Date(b.sisteInn.ts))+'</span> <button class="edit inl" data-a="angre" data-k="'+b.sisteInn.key+'" data-i="'+i+'">angre</button>';
     h+='<tr><td class="ikon">'+n.ikon+'</td><td class="navn">'+esc(n.navn)+' <span class="pill grey">'+krav+'</span><small>'+esc(n.tekst)+'</small></td><td class="c">'+status+'</td></tr>';
-    var linje=naadd?'Opptjent — '+n.navn.toLowerCase()+' står for tur!':(st.naaddNaa?'Denne uka er i boks. '+(n.krav-har)+' uke'+(n.krav-har===1?'':'r')+' til '+n.navn.toLowerCase():rest+' poeng igjen denne uka'+(n.krav>1?' · '+(n.krav-har)+' uke'+(n.krav-har===1?'':'r')+' til '+n.navn.toLowerCase():' → '+n.navn.toLowerCase()));
+    var linje=naadd?(b.antall>1?b.antall+' til gode — ':'Opptjent — ')+n.navn.toLowerCase()+' står for tur!':(st.naaddNaa?'Denne uka er i boks. '+(n.krav-har)+' uke'+(n.krav-har===1?'':'r')+' til '+n.navn.toLowerCase():rest+' poeng igjen denne uka'+(n.krav>1?' · '+(n.krav-har)+' uke'+(n.krav-har===1?'':'r')+' til '+n.navn.toLowerCase():' → '+n.navn.toLowerCase()));
     linjer.push('<span class="ik">'+n.ikon+'</span><span>'+esc(n.navn)+'<small>'+esc(linje)+'</small></span>');
   });
   document.getElementById('trapp-tbl').innerHTML=h;
