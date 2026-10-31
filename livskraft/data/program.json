@@ -45,7 +45,7 @@
    "A": {
     "navn": "A — Underkropp",
     "dag": "mandag",
-    "varighet": "~37 min",
+    "varighet": "ca. 50 min med pauser",
     "farge": "#2563eb",
     "oppvarming": "5 min lett på romaskin eller tredemølle + 2 lette sett knebøy: 40 kg, så 60 kg.",
     "ovelser": [
@@ -204,7 +204,7 @@
    "B": {
     "navn": "B — Overkropp, bæring og kjerne",
     "dag": "onsdag",
-    "varighet": "~42 min",
+    "varighet": "ca. 55 min med pauser",
     "farge": "#7c3aed",
     "oppvarming": "5 min lett romaskin + armsirkler og brystryggrotasjon + 1 lett sett av første øvelse.",
     "ovelser": [
@@ -390,44 +390,44 @@
    "M": {
     "navn": "8-minutteren",
     "dag": "tirsdag og fredag kveld",
-    "varighet": "ca. 13 + 3 min",
+    "varighet": "ca. 10 min gjennomføringstid + ca. 3 min tillegg",
     "farge": "#7c3aed",
     "steg": [
      [
       "Katt–ku",
-      "1 min"
+      "45 s"
      ],
      [
       "Barnestilling → kobra",
-      "1 min"
+      "60 s"
      ],
      [
       "90/90-hofte",
-      "1 min per side"
+      "45 s per side"
      ],
      [
       "Rumpetøy – figur 4 på rygg",
       "45 s per side"
      ],
      [
-      "Kneling hoftebøyer m/strekk over hodet",
-      "45 s per side"
+      "Kneling hoftebøyer m/strekk",
+      "30 s per side"
      ],
      [
       "Hamstring på rygg m/håndkle",
-      "45 s per side"
+      "30 s per side"
      ],
      [
-      "Legg/akilles mot vegg, rett + bøyd kne",
-      "45 s per side"
+      "Legg/akilles mot vegg",
+      "30 s per side"
      ],
      [
       "Brystryggrotasjon på siden",
-      "45 s per side"
+      "30 s per side"
      ],
      [
-      "Tåklem + stortå-mobilisering",
-      "1 min"
+      "Tåklem + stortå",
+      "45 s"
      ]
     ],
     "tillegg": [
@@ -460,7 +460,7 @@
      {
       "id": "m-kattku",
       "navn": "Katt–ku",
-      "sek": 60,
+      "sek": 45,
       "sider": 1,
       "hint": "Alle fire. Rund rygg og blikket mot navlen, så svai rygg og blikket fram. Rolig, i takt med pusten."
      },
@@ -474,7 +474,7 @@
      {
       "id": "m-9090",
       "navn": "90/90-hofte",
-      "sek": 60,
+      "sek": 45,
       "sider": 2,
       "hint": "Begge knær bøyd 90°: ett bein foran, ett ut til siden. Sitt rakt og len deg lett fram over det fremre beinet."
      },
@@ -488,35 +488,35 @@
      {
       "id": "m-hoftebøyer",
       "navn": "Kneling hoftebøyer m/strekk",
-      "sek": 45,
+      "sek": 30,
       "sider": 2,
       "hint": "Ett kne i matta, den andre foten foran. Stram setet, skyv hofta fram og strekk armen på kne-siden over hodet."
      },
      {
       "id": "m-hamstring",
       "navn": "Hamstring på rygg m/håndkle",
-      "sek": 45,
+      "sek": 30,
       "sider": 2,
       "hint": "Ligg på ryggen med håndkle rundt foten. Løft beinet så rett du klarer og trekk rolig mot deg."
      },
      {
       "id": "m-legg",
       "navn": "Legg/akilles mot vegg",
-      "sek": 45,
+      "sek": 30,
       "sider": 2,
       "hint": "Hendene mot veggen, ett bein bak med hælen i gulvet. Halve tida med rett kne, halve med bøyd kne."
      },
      {
       "id": "m-rotasjon",
       "navn": "Brystryggrotasjon på siden",
-      "sek": 45,
+      "sek": 30,
       "sider": 2,
       "hint": "Ligg på siden med knærne bøyd og armene strakt fram. Åpne den øverste armen bakover i en bue og følg den med blikket. Knærne ligger stille."
      },
      {
       "id": "m-taer",
       "navn": "Tåklem + stortå",
-      "sek": 60,
+      "sek": 45,
       "sider": 1,
       "hint": "Spre tærne og klem dem sammen. Bøy så stortåa forsiktig opp og ned med hånden."
      }
@@ -586,7 +586,7 @@
    "H": {
     "navn": "H — Reserveøkt hjemme",
     "dag": "torsdag–søndag · bare når uka mangler en styrkeøkt",
-    "varighet": "~20 min",
+    "varighet": "ca. 20 min med pauser",
     "farge": "#0d9488",
     "visDag": [
      "tor",
@@ -856,7 +856,7 @@
    "A": {
     "navn": "A — Bein, rumpe og mage",
     "dag": "tirsdag",
-    "varighet": "~40 min",
+    "varighet": "ca. 50 min med pauser",
     "farge": "#db2777",
     "oppvarming": "5 min lett på sykkel eller tredemølle + 10 hoftehev på matta + 1 lett sett goblet knebøy.",
     "ferdigtekst": "Bein, rumpe og mage har fått sitt.",
@@ -1030,7 +1030,7 @@
    "B": {
     "navn": "B — Rygg, armer og mage",
     "dag": "torsdag",
-    "varighet": "~40 min",
+    "varighet": "ca. 45 min med pauser",
     "farge": "#9333ea",
     "oppvarming": "5 min lett på romaskin + 10 strikkdrag fra hverandre + 1 lett sett nedtrekk.",
     "ferdigtekst": "Rygg, armer og mage har fått sitt.",
@@ -1197,7 +1197,7 @@
    "H": {
     "navn": "H — Hjemmeøkt",
     "dag": "når tirsdag eller torsdag ryker · eller lørdag",
-    "varighet": "~25 min",
+    "varighet": "ca. 30 min med pauser",
     "farge": "#0891b2",
     "oppvarming": "2 min marsj på stedet + 10 armsirkler + 10 knebøy uten vekt.",
     "ferdigtekst": "Hjemmeøkta er gjort — den teller like mye som gymmet.",
