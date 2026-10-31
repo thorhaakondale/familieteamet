@@ -481,7 +481,7 @@ input,select,textarea,button{font-size:16px!important}
   <div class="sveip"><table class="tbl" id="lag-tbl"></table></div>
   <h3>Belønningstrappa</h3>
   <div class="sveip"><table class="tbl" id="trapp-tbl"></table></div>
-  <p class="small" style="margin-top:8px">Målet er tre firedeler av alt som er planlagt for uka — nok til at det er ærlig jobbet, ikke så mye at én dårlig dag ødelegger. Belønningene er tid sammen, ikke penger til den enkelte; bossen er et lite unntak som kommer sjelden.</p>
+  <p class="small" style="margin-top:8px">Målet regnes bare av barnas faste oppgaver — de voksnes vask og dugnader teller ikke, så barna alltid kan nå det selv. Det er tre firedeler av det barna har planlagt — nok til at det er ærlig jobbet, ikke så mye at én dårlig dag ødelegger. Belønningene er tid sammen, ikke penger til den enkelte; bossen er et lite unntak som kommer sjelden.</p>
 </section>
 
 <section class="card" id="uka">
@@ -607,7 +607,7 @@ input,select,textarea,button{font-size:16px!important}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.61.1';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.62.0';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -1956,12 +1956,17 @@ function tegnIdag(){
   document.addEventListener('click',function(){document.querySelectorAll('.velg').forEach(function(v){v.remove()})},{once:true});
 }
 
+var MAAL_BARN=['erik','vaarin','oscar'];
+/* v1.62 (Thor 31.10.2026): dugnad, engangsjobber og sesongjobber er alltid bonus — de skal aldri heve ukemålet, uansett hvem som legger dem inn */
+function laasBonus(){OPPG.forEach(function(o){if(!o||o.bonus)return;
+  if((o.int==='dato'&&o.kat!=='Huskelapper')||((o.kat==='Sesong'||o.kat==='Hytta')&&o.int==='uker'&&(o.hver||0)>=13))o.bonus=true})}
 function ukeTall(man){
   var key=ukeKey(man), slots=planUke(man), sum=0, gjort=0, per={};
   PERS.forEach(function(p){per[p.id]={plan:0,gjort:0,ant:0,antG:0,bonus:0}});
   /* v1.16: bonus:true = ekstra poeng utenfor ukemålet — teller i «gjort», aldri i «planlagt» eller målet */
-  slots.forEach(function(s){var pp=s.o.poeng||0,bo=!!s.o.bonus;if(!bo){sum+=pp;per[s.person].plan+=pp;per[s.person].ant++}
-    if(erGjort(key,s.key)){gjort+=pp;per[s.person].gjort+=pp;if(bo)per[s.person].bonus+=pp;else per[s.person].antG++}});
+  /* v1.62 (Thor 31.10.2026): ukemålet er BARNAS — bare barnas faste oppgaver avgjør målet, så de alltid kan nå det selv om de voksnes vask og dugnader ryker. De voksne vises i tabellen, men teller ikke. */
+  slots.forEach(function(s){var pp=s.o.poeng||0,bo=!!s.o.bonus,ba=MAAL_BARN.indexOf(s.person)>=0;if(!bo){if(ba)sum+=pp;per[s.person].plan+=pp;per[s.person].ant++}
+    if(erGjort(key,s.key)){if(ba)gjort+=pp;per[s.person].gjort+=pp;if(bo)per[s.person].bonus+=pp;else per[s.person].antG++}});
   var maal=Math.round(sum*(INNST.prosent||75)/100);
   return {key:key,sum:sum,gjort:gjort,maal:maal,per:per};
 }
@@ -1973,7 +1978,7 @@ function tegnLag(){
   document.getElementById('lag-fill').style.width=pct+'%';
   document.getElementById('lag-mark').style.left='calc('+mk+'% - 1px)';
   var rest=t.maal-t.gjort;
-  document.getElementById('lag-txt').innerHTML=(rest<=0?'<b>Ukemålet er nådd!</b>':'<b>'+fmt(rest)+' poeng igjen</b> til ukemålet')+' <span class="small">· planlagt i alt '+fmt(t.sum)+' poeng</span>';
+  document.getElementById('lag-txt').innerHTML=(rest<=0?'<b>Ukemålet er nådd!</b>':'<b>'+fmt(rest)+' poeng igjen</b> til ukemålet')+' <span class="small">· barnas planlagte '+fmt(t.sum)+' poeng — de voksnes vask og dugnad teller ikke</span>';
   var h='<tr><th>Spiller</th><th class="c">Poeng</th><th class="c">Av planlagt</th><th class="c">Oppgaver</th></tr>';
   PERS.forEach(function(p){var x=t.per[p.id];h+='<tr><td>'+ptag(p.id)+'</td><td class="c num"><b>'+x.gjort+'</b>'+(x.bonus?' <span class="small">(+'+x.bonus+' bonus)</span>':'')+'</td><td class="c num">'+x.plan+'</td><td class="c num">'+x.antG+' / '+x.ant+'</td></tr>'});
   document.getElementById('lag-tbl').innerHTML=h;
@@ -2236,11 +2241,12 @@ status('Lagret på denne enheten. Kobler til delt lagring …');
 function slaaSammenOppg(liste){
   liste.forEach(function(x){if(!x||!x.id)return;var o=OPPG.filter(function(y){return y.id===x.id})[0];
     if(o){Object.keys(x).forEach(function(k){o[k]=x[k]});if(!x.rull)delete o.rull}else OPPG.push(x)});
+  laasBonus();
 }
 (async function(){
   /* 1) innholdet: data/oppgaver.json + data/innstillinger.json — Bjørn og Liv oppdaterer disse i repoet */
   try{
-    var r1=await fetch('data/oppgaver.json?v='+Date.now(),{cache:'no-store'}); if(r1.ok){var lo=await r1.json(); if(lo&&lo.length){OPPG=JSON.parse(JSON.stringify(lo));}}
+    var r1=await fetch('data/oppgaver.json?v='+Date.now(),{cache:'no-store'}); if(r1.ok){var lo=await r1.json(); if(lo&&lo.length){OPPG=JSON.parse(JSON.stringify(lo));laasBonus();}}
     /* v1.22 (Thor 15.10): repo-banken kan være eldre enn delt lagring — oppgaver som er flyttet eller skrudd av blinket inn et halvt sekund.
        Legg på det enheten sist så fra delt lagring før første tegning; delt lagring overstyrer like etter som før. */
     try{var hu=JSON.parse(localStorage.getItem('ft-oppg-delt')||'null'); if(hu&&hu.length) slaaSammenOppg(hu)}catch(e){}
