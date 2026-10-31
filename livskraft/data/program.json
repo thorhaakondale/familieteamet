@@ -418,7 +418,7 @@
       "30 s per side"
      ],
      [
-      "Legg/akilles mot vegg",
+      "Ankelmobilisering – kne over tå",
       "30 s per side"
      ],
      [
@@ -500,11 +500,11 @@
       "hint": "Ligg på ryggen med håndkle rundt foten. Løft beinet så rett du klarer og trekk rolig mot deg."
      },
      {
-      "id": "m-legg",
-      "navn": "Legg/akilles mot vegg",
+      "id": "m-ankel",
+      "navn": "Ankelmobilisering – kne over tå",
       "sek": 30,
       "sider": 2,
-      "hint": "Hendene mot veggen, ett bein bak med hælen i gulvet. Halve tida med rett kne, halve med bøyd kne."
+      "hint": "Ett kne i matta, den andre foten flatt foran med hele foten i gulvet. Før kneet rolig fram over tærne og tilbake – hælen blir i gulvet hele tiden. Ikke press stortåa."
      },
      {
       "id": "m-rotasjon",
