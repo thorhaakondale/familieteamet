@@ -615,7 +615,7 @@ input,select,textarea,button{font-size:16px!important}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.66.0';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.67.0';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -665,6 +665,7 @@ function dagerIUka0(o,man){
   if(o.int==='hverdag') return (erFerie(key)&&o.iFerie!==true)?[]:[0,1,2,3,4]; /* v1.16: skoleferie = ingen skolerutiner */
   if(o.int==='daglig') return [0,1,2,3,4,5,6];
   if(o.int==='dager') return o.dager||[];
+  if(o.int==='annenhver'){var s0=new Date((o.start||'2026-11-03')+'T00:00:00'),r2=[];for(var i2=0;i2<7;i2++){var dd=Math.round((addDays(man,i2)-s0)/86400000);if(dd>=0&&dd%2===0)r2.push(i2)}return r2} /* v1.67: annenhver dag fra startdato */
   var dag=(o.unntak&&o.unntak[key]!==undefined)?o.unntak[key]:(o.dag===undefined?3:o.dag);
   if(o.int==='uke') return [dag];
   if(o.int==='uker'){var pl=vedlPlan();var wk=pl[o.id];if(wk){return wk[idx]?[dag]:[]}var n0=o.hver||4,st0=o.fra?ukeIndex(ukeFraKey(o.fra)):0;return ((idx-st0)%n0===0&&idx>=st0)?[dag]:[]}
@@ -799,6 +800,7 @@ function rytmeKort(o){ if(o.ikkeSammeUke) return '2 av 3 uker';
 function rytmeTekst(o){
   var d=DAGER[o.dag===undefined?3:o.dag].toLowerCase();
   if(o.int==='daglig')return 'hver dag';
+  if(o.int==='annenhver')return 'annenhver dag';
   if(o.int==='hverdag')return 'mandag til fredag';
   if(o.int==='dager')return (o.dager||[]).map(function(x){return DAGER[x].slice(0,3).toLowerCase()}).join(', ')||'faste dager';
   if(o.int==='dato')return o.dato?('én gang: '+datoNorsk(new Date(o.dato+'T00:00:00'))+o.dato.slice(0,4)):'én gang';
@@ -1783,7 +1785,7 @@ function tegnHvem(){
 
 /* Oppgaver som IKKE er rutiner og som ikke ble gjort på dagen sin, henger igjen til de er gjort (badet er fortsatt skittent).
    Rutiner (hverdag/daglig/faste dager) henger aldri igjen — de er nye hver dag, og den glemte dagen står tom i uketabellen. */
-function erRutine(o){return o.int==='hverdag'||o.int==='daglig'||o.int==='dager'}
+function erRutine(o){return o.int==='hverdag'||o.int==='daglig'||o.int==='dager'||o.int==='annenhver'}
 function forfalte(){
   var man=mandag(NAA), dIdx=(NAA.getDay()+6)%7, ut=[];
   for(var w=0;w<13;w++){var m=addDays(man,-7*w), k=ukeKey(m);
@@ -2161,11 +2163,11 @@ function tegnVedl(){
   h+='<tr><td colspan="3" class="small">Til sammen '+tot+' min de neste 12 ukene ≈ '+Math.round(tot/12)+' min per uke.</td></tr>';
   /* v1.16: jobber merket 💼 i notatet er kandidater for å sette bort — synlig så beslutningen kan tas, ikke glemmes */
   var sb=OPPG.filter(function(o){return o.aktiv!==false&&o.notat&&o.notat.indexOf('💼')>=0});
-  if(sb.length){var sm=0;h+='<tr><td colspan="3"><b>💼 Kandidater for å sette bort</b> <span class="small">— timer per år hjemme mot pris ute. Dere bestemmer; Bjørn fjerner raden når det er avgjort.</span><br>'+sb.map(function(o){var g=o.int==='uker'?Math.round(52/(o.hver||4)):({hverdag:260,daglig:365,uke:52,'2uke':26,'3uke':17,'4uke':13,kvartal:4,dager:52*((o.dager||[]).length||1)}[o.int]||1);var tm=Math.round((o.min||0)*g/60);sm+=tm;return o.ikon+' '+esc(o.navn)+' <span class="small num">· '+intNavn(o)+' · ≈ '+tm+' t/år</span>'}).join('<br>')+'<br><span class="small num">Til sammen ≈ '+sm+' timer i året.</span></td></tr>'}
+  if(sb.length){var sm=0;h+='<tr><td colspan="3"><b>💼 Kandidater for å sette bort</b> <span class="small">— timer per år hjemme mot pris ute. Dere bestemmer; Bjørn fjerner raden når det er avgjort.</span><br>'+sb.map(function(o){var g=o.int==='uker'?Math.round(52/(o.hver||4)):({hverdag:260,daglig:365,annenhver:183,uke:52,'2uke':26,'3uke':17,'4uke':13,kvartal:4,dager:52*((o.dager||[]).length||1)}[o.int]||1);var tm=Math.round((o.min||0)*g/60);sm+=tm;return o.ikon+' '+esc(o.navn)+' <span class="small num">· '+intNavn(o)+' · ≈ '+tm+' t/år</span>'}).join('<br>')+'<br><span class="small num">Til sammen ≈ '+sm+' timer i året.</span></td></tr>'}
   el.innerHTML=h;
 }
 
-var INTNAVN={hverdag:'hver hverdag',daglig:'hver dag',dager:'faste dager',uke:'hver uke',"2uke":'hver 2. uke',"3uke":'hver 3. uke',"4uke":'hver 4. uke',kvartal:'hver 3. mnd',uker:'hver N. uke',dato:'én dato'};
+var INTNAVN={hverdag:'hver hverdag',daglig:'hver dag',annenhver:'annenhver dag',dager:'faste dager',uke:'hver uke',"2uke":'hver 2. uke',"3uke":'hver 3. uke',"4uke":'hver 4. uke',kvartal:'hver 3. mnd',uker:'hver N. uke',dato:'én dato'};
 function intNavn(o){if(o.int==='uker'){var n=o.hver||4;return n===52?'hvert år':n===26?'hvert halvår':n===13?'hver 3. mnd':'hver '+n+'. uke'}return INTNAVN[o.int]||o.int}
 function nesteGang(o){
   var man=mandag(NAA), dIdx=(NAA.getDay()+6)%7;
