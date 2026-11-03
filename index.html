@@ -408,6 +408,12 @@ input,select,textarea,button{font-size:16px!important}
 #handle .hl-knapper .ok{background:var(--accent);color:#fff}
 #handle .hl-knapper .nei{background:var(--line2);color:var(--ink)}
 #handle .tom{color:var(--muted);font-size:14px;margin:6px 0}
+/* v1.66 (Thor 03.11): fullført-lista — sammenfoldet, gruppert per dag, trykk for å legge tilbake, slettes etter 14 dager */
+#handle #hl-ferdig-knapp{display:block;width:100%;text-align:left;font:inherit;font-weight:700;font-size:14px;color:var(--muted);background:transparent;border:0;border-top:1px solid var(--line);padding:10px 2px 6px;margin-top:8px;cursor:pointer}
+#handle #hl-ferdig h3{font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);margin:10px 0 2px}
+#handle #hl-ferdig li{font-size:15px;color:var(--muted)}
+#handle #hl-ferdig li .hl-txt{text-decoration:line-through}
+#handle #hl-ferdig li button{margin-left:8px;flex:0 0 auto;font:inherit;font-size:13px;font-weight:700;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);padding:5px 9px;cursor:pointer}
 </style>
 </head>
 <body>
@@ -461,7 +467,9 @@ input,select,textarea,button{font-size:16px!important}
     <button type="button" id="hl-lagre">Legg til</button>
   </div>
   <div id="hl-forslag" hidden></div>
-  <p class="small">Dikter alt i ett — «antisklimatte, batterier og tannkrem» blir tre linjer du kan rette før du lagrer. Haket av = kjøpt. Enkel huskeliste for småturer og ting som ikke er mat — Ukeshandel er egen.</p>
+  <button type="button" id="hl-ferdig-knapp" aria-expanded="false" hidden></button>
+  <div id="hl-ferdig" hidden></div>
+  <p class="small">Dikter alt i ett — «antisklimatte, batterier og tannkrem» blir tre linjer du kan rette før du lagrer. Haket av = kjøpt, og havner under «Fullført» i 14 dager — trykk «Legg tilbake» om du trykket feil. Enkel huskeliste for småturer og ting som ikke er mat — Ukeshandel er egen.</p>
 </section>
 <dialog id="nydlg" aria-labelledby="nydlg-t"><div class="ark-inn">
   <div class="ark-bar"><button type="button" id="ny-avbryt">Avbryt</button><span class="ark-tittel" id="nydlg-t">Ny huskelapp</span><span style="width:70px"></span></div>
@@ -607,7 +615,7 @@ input,select,textarea,button{font-size:16px!important}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.65.0';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.66.0';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -983,9 +991,35 @@ function tegnHandle(){
   var li=Object.keys(HANDLE).map(function(k){return HANDLE[k]}).filter(function(x){return x&&x.tekst&&!x.ok}).sort(function(a,b){return (a.ts||'')<(b.ts||'')?-1:1});
   ul.innerHTML=''; if(tom) tom.hidden=li.length>0;
   li.forEach(function(x){ var el=document.createElement('li'); var cb=document.createElement('input'); cb.type='checkbox'; cb.setAttribute('aria-label','Kjøpt: '+x.tekst);
-    cb.onchange=function(){ if(!cb.checked) return; x.ok=new Date().toISOString(); if(db) db.child('handleliste/'+x.id+'/ok').set(x.ok).catch(function(){status('Kunne ikke lagre delt.')}); toast('🛒 '+x.tekst+' — kjøpt'); tegnHandle() };
+    cb.onchange=function(){ if(!cb.checked) return; x.ok=new Date().toISOString(); x.okAv=valgt||''; if(db) db.child('handleliste/'+x.id).update({ok:x.ok,okAv:x.okAv}).catch(function(){status('Kunne ikke lagre delt.')}); toast('🛒 '+x.tekst+' — kjøpt'); tegnHandle() };
     var sp=document.createElement('span'); sp.textContent=x.tekst; var av=document.createElement('span'); av.className='hl-av'; av.textContent=(PMAP[x.av]?PMAP[x.av].dyr:'')+(x.ts?' '+x.ts.slice(8,10)+'.'+x.ts.slice(5,7):'');
     el.appendChild(cb); el.appendChild(sp); el.appendChild(av); ul.appendChild(el) });
+  tegnHandleFerdig();
+}
+/* v1.66 (Thor 03.11.2026): fullførte varer vises sammenfoldet, nyeste først, gruppert per dag; «Legg tilbake» angrer; eldre enn 14 dager slettes */
+var HL_DAGER=14, HL_APEN=false;
+function hlDag(iso){ var d=new Date(iso); if(isNaN(d)) return ''; var i=new Date(); i.setHours(0,0,0,0); var x=new Date(d); x.setHours(0,0,0,0); var n=Math.round((i-x)/864e5);
+  if(n<=0) return 'I dag'; if(n===1) return 'I går'; var dn=['søndag','mandag','tirsdag','onsdag','torsdag','fredag','lørdag'][x.getDay()];
+  return dn.charAt(0).toUpperCase()+dn.slice(1)+' '+x.getDate()+'.'+(x.getMonth()+1)+'.' }
+function tegnHandleFerdig(){
+  var kn=document.getElementById('hl-ferdig-knapp'), bx=document.getElementById('hl-ferdig'); if(!kn||!bx) return;
+  var grense=Date.now()-HL_DAGER*864e5, ferdig=[];
+  Object.keys(HANDLE).forEach(function(k){ var x=HANDLE[k]; if(!x||!x.tekst||!x.ok) return; var t=Date.parse(x.ok);
+    if(!isNaN(t)&&t<grense){ delete HANDLE[k]; if(db) db.child('handleliste/'+k).remove().catch(function(){}); return }
+    ferdig.push(x) });
+  ferdig.sort(function(a,b){return (a.ok||'')<(b.ok||'')?1:-1});
+  kn.hidden=!ferdig.length; if(!ferdig.length){ bx.hidden=true; bx.innerHTML=''; return }
+  kn.textContent=(HL_APEN?'▾':'▸')+' Fullført ('+ferdig.length+') — siste '+HL_DAGER+' dager'; kn.setAttribute('aria-expanded',HL_APEN?'true':'false');
+  kn.onclick=function(){ HL_APEN=!HL_APEN; tegnHandleFerdig() };
+  bx.hidden=!HL_APEN; bx.innerHTML=''; if(!HL_APEN) return;
+  var sist='', ul=null;
+  ferdig.forEach(function(x){ var dg=hlDag(x.ok);
+    if(dg!==sist){ sist=dg; var h=document.createElement('h3'); h.textContent=dg; bx.appendChild(h); ul=document.createElement('ul'); bx.appendChild(ul) }
+    var el=document.createElement('li'); var sp=document.createElement('span'); sp.className='hl-txt'; sp.textContent=x.tekst;
+    var av=document.createElement('span'); av.className='hl-av'; av.textContent=x.okAv&&PMAP[x.okAv]?PMAP[x.okAv].dyr:'';
+    var b=document.createElement('button'); b.type='button'; b.textContent='Legg tilbake'; b.setAttribute('aria-label','Legg tilbake på lista: '+x.tekst);
+    b.onclick=function(){ x.ok=null; x.okAv=null; if(db) db.child('handleliste/'+x.id).update({ok:null,okAv:null}).catch(function(){status('Kunne ikke lagre delt.')}); toast('🛒 '+x.tekst+' — tilbake på lista'); tegnHandle() };
+    el.appendChild(sp); el.appendChild(av); el.appendChild(b); ul.appendChild(el) });
 }
 function lagreHandle(linjer){
   var av=valgt||'thor', ts=new Date().toISOString(), n=0;
