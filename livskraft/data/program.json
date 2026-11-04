@@ -1,6 +1,6 @@
 {
- "versjon": "v1.10",
- "kilde": "Dale Livsstil & PT (programkortet) for øvelser og vekter · liv-treningsspesifikasjon.md v1.1 for mål, regler og progresjon · v1.6 12.10.2026: pauseøvelsene synlige, lette og med bilde · v1.7 14.10.2026: Annikens program (Liv) — to gymøkter, hjemmeøkt og månedssjekk · v1.8 16.10.2026: proteinkortet — lunsj og kvelds mot dagsmålet (Liv) · v1.9 17.10.2026: søndagsreserven H for Thor — kort hjemmeøkt bare på søndager uka mangler en styrkeøkt, turen går foran · v1.10 17.10.2026: reserveøkta H tilgjengelig torsdag–søndag (søndag uten gym-valg)",
+ "versjon": "v1.11",
+ "kilde": "Dale Livsstil & PT (programkortet) for øvelser og vekter · liv-treningsspesifikasjon.md v1.1 for mål, regler og progresjon · v1.6 12.10.2026: pauseøvelsene synlige, lette og med bilde · v1.7 14.10.2026: Annikens program (Liv) — to gymøkter, hjemmeøkt og månedssjekk · v1.8 16.10.2026: proteinkortet — lunsj og kvelds mot dagsmålet (Liv) · v1.9 17.10.2026: søndagsreserven H for Thor — kort hjemmeøkt bare på søndager uka mangler en styrkeøkt, turen går foran · v1.10 17.10.2026: reserveøkta H tilgjengelig torsdag–søndag (søndag uten gym-valg) · v1.11 4.11.2026: maks 15 reps per sett, prosjektuker (kort A + kort B, maks 4 i året), dypt knebøy-hold i 8-minutteren og to bevegelighetstester",
  "personer": {
   "thor": {
    "navn": "Thor",
@@ -39,7 +39,10 @@
    "rode_flagg_tekst": "Stopp økta. Ring fastlegen i dag. Brystsmerter eller besvimelse: 113.",
    "aldri_1rm_over_reps": 10,
    "affekt": "Det som avgjør om vi fortsetter er hvordan økta kjennes mens den pågår. «For hardt» to ganger på rad = intensiteten er lagt feil — ned 5 %, ikke opp.",
-   "pauseovelse": "Pauseøvelsen gjøres i pausen mellom settene på hovedøvelsen. Den er LETT og stopper langt før utmattelse — den skal ikke koste hovedsettet noe. Hovedløftene er vedlikeholdssett med vektene som tak; målet er ikke 180 kg, det er en rygg, et grep og en albue som tåler livet."
+   "pauseovelse": "Pauseøvelsen gjøres i pausen mellom settene på hovedøvelsen. Den er LETT og stopper langt før utmattelse — den skal ikke koste hovedsettet noe. Hovedløftene er vedlikeholdssett med vektene som tak; målet er ikke 180 kg, det er en rygg, et grep og en albue som tåler livet.",
+   "maks_reps": 15,
+   "maks_reps_tekst": "Maks 15 reps per sett (Thor 4.11.2026). Klarer du mer, er vekta for lett — gå opp, ikke flere reps. Lange sett sliter ut ryggstrekkerne før beina, og det er der korsryggen runder seg.",
+   "knebøy_dybde": "Mål for dybden: hofta så vidt under kneet med nøytral korsrygg. Begynner korsryggen å runde i bunnen, er det din bunn i dag — dybden bygges med ankel- og hoftearbeidet i 8-minutteren, ikke ved å presse."
   },
   "okter": {
    "A": {
@@ -52,7 +55,7 @@
      {
       "id": "kneboy",
       "navn": "Knebøy",
-      "hint": "vedlikeholdssett — vektene er tak · hælklosser eller box ved behov · 3 s ned, 1 s stopp i bunn · så dypt hofta tillater uten at halluxen sier nei",
+      "hint": "vedlikeholdssett — vektene er tak · hælklosser eller box ved behov · 3 s ned, 1 s stopp i bunn · så dypt hofta tillater uten at halluxen sier nei · mål: hofta så vidt under kneet med nøytral korsrygg — runder korsryggen i bunnen, er det bunnen din i dag · aldri over 15 reps",
       "sett": 3,
       "reps": [
        8,
@@ -422,6 +425,10 @@
       "30 s per side"
      ],
      [
+      "Dypt knebøy-hold",
+      "45 s"
+     ],
+     [
       "Brystryggrotasjon på siden",
       "30 s per side"
      ],
@@ -505,6 +512,13 @@
       "sek": 30,
       "sider": 2,
       "hint": "Ett kne i matta, den andre foten flatt foran med hele foten i gulvet. Før kneet rolig fram over tærne og tilbake – hælen blir i gulvet hele tiden. Ikke press stortåa."
+     },
+     {
+      "id": "m-dyp",
+      "navn": "Dypt knebøy-hold",
+      "sek": 45,
+      "sider": 1,
+      "hint": "Hold i en dørkarm eller et bord. Sett deg så dypt ned du kommer med hælene i gulvet og ryggen lang. Press knærne lett ut med albuene og pust rolig. Dette er det som gir dybden i knebøyen."
      },
      {
       "id": "m-rotasjon",
@@ -766,10 +780,34 @@
      "sideplanke",
      "Sideplanke — beste tid per side",
      "sek"
+    ],
+    [
+     "dybde",
+     "Knebøy-dybde med kroppsvekt, hælene i gulvet — hofta under kneet uten at korsryggen runder?",
+     "ja/nei"
+    ],
+    [
+     "taa",
+     "Stående framoverbøy, strake knær — fingrene mot gulvet",
+     "cm over (+) eller forbi (−) gulvet"
     ]
    ],
    "rm_test": "3RM knebøy + RDL i januar og august."
-  }
+  },
+  "ukeplan_prosjekt": [
+   [
+    "gym",
+    "Kort A"
+   ],
+   [
+    "gym",
+    "Kort B"
+   ],
+   [
+    "tur",
+    "Tur"
+   ]
+  ]
  },
  "sesonger": [
   {
@@ -794,7 +832,8 @@
  "ukemodus": {
   "normal": "A + B, 8-minutteren to ganger og to turer. Ikke mer.",
   "minimum": "Reise, vakt eller kaos: én kort gym-økt (25 min, ett arbeidssett per løft) + én tur på 30 min + trappa daglig teller som gjort. Da overlever vanen uka.",
-  "syk": "Syk = fri uten telling. Uka teller ikke, og det er ingenting å ta igjen. Første økt etterpå er lett — appen setter den opp."
+  "syk": "Syk = fri uten telling. Uka teller ikke, og det er ingenting å ta igjen. Første økt etterpå er lett — appen setter den opp.",
+  "prosjekt": "Prosjektuke (maks 4 i året): kort A + kort B, ett arbeidssett per hovedløft, og én tur. Styrken holder seg; prosjektet får resten av tida. Brukes unntaksvis, aldri to på rad."
  },
  "tilbakefall": {
   "en": "Én økt ikke gjort er ingenting. Neste økt er neste bokstav.",
@@ -1434,5 +1473,9 @@
    "merk": "Karbohydrater og fiber gir energien: knekkebrød, havre og grovt brød, fullkornsris/-pasta og potet, 1–2 frukt om dagen (kiwi, appelsin, bær og banan er skånsomme for magen — eple og pære kan gi oppblåsthet) og minst 150 g grønnsaker til middag. Mål: ca. 25–30 g fiber og aldri under 1 500 kcal. Reagerer magen på skyr eller cottage cheese, finnes laktosefrie varianter med samme protein."
   },
   "fotnote": "Omtrentlige gram, avrundet til nærmeste 5. Det er uka som teller, ikke hver dag."
+ },
+ "prosjektuker": {
+  "maks_per_aar": 4,
+  "tekst": "Prosjektuker er unntak: maks 4 i året. Når kvoten er brukt, forsvinner valget til 1. januar."
  }
 }

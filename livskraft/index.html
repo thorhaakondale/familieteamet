@@ -256,7 +256,7 @@ details.om summary{cursor:pointer;font-weight:700;color:var(--ag);font-size:13px
   </div>
   <div class="kort">
     <h2>Hva slags uke er dette?</h2>
-    <div class="seg" id="seg-modus"><button data-m="normal">Vanlig</button><button data-m="minimum">Minimumsuke</button><button data-m="syk">Syk</button></div>
+    <div class="seg" id="seg-modus"><button data-m="normal">Vanlig</button><button data-m="minimum">Minimumsuke</button><button data-m="prosjekt" id="m-prosjekt">Prosjektuke</button><button data-m="syk">Syk</button></div>
     <p class="lit" id="modus-tekst" style="margin:8px 0 0"></p>
   </div>
   <div class="kort" id="kropp-kort">
@@ -404,7 +404,7 @@ details.om summary{cursor:pointer;font-weight:700;color:var(--ag);font-size:13px
    ============================================================ */
 "use strict";
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
-var VERSJON='1.27.2'; /* v1.21: appversjonen, vises under Mer → Programmet */
+var VERSJON='1.28.0'; /* v1.21: appversjonen, vises under Mer → Programmet */
 var KODE=null, PERSON='thor', PROG=null, S=null, db=null, dbOk=false, PENDING=[];
 var AKTIV=null; /* pågående økt */
 var UKEVIS=0;   /* uke-offset i Uka-fanen */
@@ -482,6 +482,10 @@ function ukeskontekst(){
   return out;
 }
 function ukeModus(k){return ukeInfo(k).modus||'normal'}
+/* v1.28 (Thor 4.11.2026): prosjektuker — korte A og B i uker med mye prosjektarbeid. Maks 4 per kalenderår; når kvoten er brukt, forsvinner knappen til 1. januar. Teller uker merket «prosjekt» i S.uke. */
+function prosjektMaks(){return (PROG.prosjektuker&&PROG.prosjektuker.maks_per_aar)||4}
+function prosjektBrukt(aar){return Object.keys(S.uke||{}).filter(function(k){return k.slice(0,4)===String(aar)&&S.uke[k]&&S.uke[k].modus==='prosjekt'}).length}
+function erProsjekt(){return ukeModus(ukeKey(new Date()))==='prosjekt'}
 function erGymDag(d){var b=PP().standarduke[DAGKEY[(d.getDay()||7)-1]];return b==='A'||b==='B'}
 /* Tilbakefallsprotokollen (Liv-skill v2 §8): 1 miss = ingenting · 2 planlagte gym-økter på rad ikke gjort = lett økt · 21+ dager borte = retur på 70 % */
 function pauseStatus(){
@@ -549,6 +553,10 @@ function forslag(ov){ /* {kg, tekst, hold} for hovedløft/tilbehør med vekt */
   if(a1==='hard'&&a2==='hard'){var n5=rund(kg*0.95,steg);return {kg:n5,tekst:'«For hardt» to økter på rad: intensiteten er lagt feil. Ned 5 % til '+n5+' — tung, men trygg.'}}
   if(a1==='hard')return {kg:kg,tekst:'Sist kjentes det for hardt midt i: samme vekt, kutt siste sett. Tung, men trygg.',hold:true};
   if(underBunn&&underBunn2){var ny=Math.round((kg*0.95)/2.5)*2.5;return {kg:ny,tekst:'To økter på rad under '+lo+' reps: ned 5 % til '+ny+' og bygg opp igjen.'}}
+  /* v1.28 (Thor 4.11.2026): maks 15 reps per sett. Over 15 = vekta er for lett; lange sett sliter ut ryggstrekkerne før beina. */
+  var maksR=(PP().regler&&PP().regler.maks_reps)||15;var over=sett.some(function(s){return (s.reps||0)>maksR});
+  if(over){if(kg>=ov.vekt.tak)return {kg:kg,tekst:'Over '+maksR+' reps sist — og du er på taket ('+ov.vekt.tak+'). Stopp settet på '+hi+' reps og ta 3 s ned i stedet. Ber du Liv, vurderes taket.'};
+    var opp2=Math.min(ov.vekt.tak,kg+2*steg);return {kg:opp2,tekst:'Over '+maksR+' reps sist: vekta er for lett. Opp til '+opp2+' og hold deg på '+(lo===hi?lo:lo+'–'+hi)+' reps.'}}
   if(alleTopp){if(kg>=ov.vekt.tak)return {kg:kg,tekst:'Alle sett på '+hi+' — og du er på taket ('+ov.vekt.tak+'). Ikke tyngre: renere og raskere.'};
     var opp=Math.min(ov.vekt.tak,kg+ov.vekt.steg);return {kg:opp,tekst:'Alle sett nådde '+hi+' reps sist: opp til '+opp+'.'}}
   return {kg:kg,tekst:'Samme vekt ('+kg+'). Øk reps til alle sett når '+hi+', så går vekta opp.'}
@@ -616,7 +624,7 @@ setInterval(middagTikk,30000);
 /* ---------- I DAG ---------- */
 /* v1.13 (Thor 16.10.2026): styrkeøktene følger rekkefølgen A → B → A, ikke ukedagen. Ble en økt ikke tatt, ligger neste bokstav klar som et valg alle dager uka ikke er fullført. */
 function nesteGymBokstav(){var l=okterSortert().filter(function(o){return o.type==='A'||o.type==='B'});return l.length&&l[l.length-1].type==='A'?'B':'A'}
-function gymMaalUke(modus){if(modus==='minimum')return 1;var su=PP().standarduke,n=0;Object.keys(su).forEach(function(k){if(su[k]==='A'||su[k]==='B')n++});return n||2}
+function gymMaalUke(modus){if(modus==='minimum')return 1;if(modus==='prosjekt')return 2;var su=PP().standarduke,n=0;Object.keys(su).forEach(function(k){if(su[k]==='A'||su[k]==='B')n++});return n||2}
 function gymDenneUka(){var k=ukeKey(new Date());return okterSortert().filter(function(o){return o.uke===k&&(o.type==='A'||o.type==='B'||o.type==='H')}).length}
 function planForDag(d){var k=DAGKEY[(d.getDay()||7)-1];return PP().standarduke[k]}
 /* v1.18 (Thor 17.10.2026): én-trykks turlogg hver dag — med eller uten Oscar, ~1 time som standard. Bonusturer er bonus: målet er fortsatt to turer i uka. */
@@ -643,11 +651,11 @@ function tegnIdag(){
   if(modus==='syk'){h+='<div class="plan"><div class="bokstav" style="background:#9ca3af">–</div><div><b>Syk</b><div class="lit">Uka teller ikke. Ingenting å ta igjen.</div></div></div><p class="lit" style="margin:8px 0 0">'+esc(PROG.ukemodus.syk)+' Bytt uka tilbake til «Vanlig» under Uka når du er frisk.</p>';$('idag-kort').innerHTML='<h2>'+dagTittel+'</h2>'+h;$('raad-kort').hidden=true;tegnUkeKort();tegnSeier();tegnFem();return}
   h+='<div class="plan"><div class="bokstav" style="background:'+okt.farge+'">'+bok+'</div><div><b>'+esc(okt.navn)+'</b><div class="lit">'+esc(okt.dag)+(okt.ovelser?' · ca. '+estMin(okt,false)+' min med pauser':(okt.varighet?' · '+esc(okt.varighet):''))+'</div></div></div>'+byttet;
   if(erGjort)h+='<div class="ok">Gjort i dag.</div>';
-  if(erStyrke(bok)){var lett=ps.nivaa>0||modus==='minimum';
-    if(ps.nivaa===2)h+='<div class="varsel">'+esc(PROG.tilbakefall.tre_uker)+'</div>';else if(ps.nivaa===1)h+='<div class="varsel">'+esc(PROG.tilbakefall.to)+'</div>';if(modus==='minimum')h+='<div class="varsel">Minimumsuke: én kort økt og én tur teller som gjort.</div>';
+  if(erStyrke(bok)){var lett=ps.nivaa>0||modus==='minimum'||modus==='prosjekt';
+    if(ps.nivaa===2)h+='<div class="varsel">'+esc(PROG.tilbakefall.tre_uker)+'</div>';else if(ps.nivaa===1)h+='<div class="varsel">'+esc(PROG.tilbakefall.to)+'</div>';if(modus==='minimum')h+='<div class="varsel">Minimumsuke: én kort økt og én tur teller som gjort.</div>';if(modus==='prosjekt')h+='<div class="varsel">Prosjektuke: kort A og kort B — ett arbeidssett per hovedløft — og én tur. Det holder styrken; prosjektet får resten.</div>';
     if(!erGjort)h+=middagBoks();
     h+='<div class="rad" style="margin-top:12px"><button class="knapp'+(lett?' sek':'')+'" id="start-okt" data-t="'+bok+'">'+(erGjort?'Start '+bok+' en gang til':'Start økt '+bok+(lett?' — full':''))+' · ~'+estMin(PP().okter[bok],false)+' min</button></div>';
-    if(bok==='A'||bok==='B'){var altB=bok==='A'?'B':'A';h+='<div class="rad" style="margin-top:8px"><button class="knapp sek lit" id="start-annen" data-t="'+altB+'">'+(erGjort?'Start økt '+altB:'Eller ta økt '+altB+' i stedet')+' · ~'+estMin(PP().okter[altB],false)+' min</button></div>'}
+    if(bok==='A'||bok==='B'){var altB=bok==='A'?'B':'A';var PKa=modus==='prosjekt';h+='<div class="rad" style="margin-top:8px"><button class="knapp sek lit" id="start-annen" data-t="'+altB+'">'+(erGjort?'Start '+(PKa?'kort ':'')+'økt '+altB:'Eller ta '+(PKa?'kort ':'')+'økt '+altB+' i stedet')+' · ~'+estMin(PP().okter[altB],PKa)+' min</button></div>'}
     h+='<div class="rad" style="margin-top:8px"><button class="knapp'+(lett?'':' sek lit')+'" id="start-kort" data-t="'+bok+'">Kort økt '+bok+' — ett sett per løft, ca. '+estMin(PP().okter[bok],true)+' min</button></div>';
     if(bok!=='H'&&PP().okter.H&&!PP().okter.H.visDag&&!erGjort)h+='<div class="rad" style="margin-top:8px"><button class="knapp sek lit" id="start-hjemme">Kommer du deg ikke på gymmet? Hjemmeøkt i stedet · ~'+estMin(PP().okter.H,false)+' min</button></div>';
     var m=new Date();if(PP().regler.maanedlig_tungt_sett&&bok==='A'&&m.getDate()<=7&&m.getDay()===1&&!lett)h+='<div class="varsel">Første mandag i måneden: '+esc(PROG.thor.regler.maanedlig_tungt_sett)+'</div>'}
@@ -672,22 +680,22 @@ function tegnIdag(){
     var nb=nesteGymBokstav(),ab=nb==='A'?'B':'A';var h0=h;h='';
     h+='<div class="ta-igjen"><b>Ikke fått tatt styrkeøkta denne uka?</b><div class="lit">Ta den i dag — neste i rekkefølgen er '+nb+'.</div>';
     if(ps.nivaa===2)h+='<div class="varsel">'+esc(PROG.tilbakefall.tre_uker)+'</div>';else if(ps.nivaa===1)h+='<div class="varsel">'+esc(PROG.tilbakefall.to)+'</div>';
-    h+='<div class="rad" style="margin-top:10px"><button class="knapp" id="start-neste" data-t="'+nb+'">Start økt '+nb+' · '+esc(PP().okter[nb].navn)+' · ~'+estMin(PP().okter[nb],false)+' min</button></div>';
-    h+='<div class="rad" style="margin-top:8px"><button class="knapp sek lit" id="start-annen" data-t="'+ab+'">Eller økt '+ab+' · ~'+estMin(PP().okter[ab],false)+' min</button></div>';
+    var PKn=modus==='prosjekt';h+='<div class="rad" style="margin-top:10px"><button class="knapp" id="start-neste" data-t="'+nb+'">'+(PKn?'Kort økt ':'Start økt ')+nb+' · '+esc(PP().okter[nb].navn)+' · ~'+estMin(PP().okter[nb],PKn)+' min</button></div>';
+    h+='<div class="rad" style="margin-top:8px"><button class="knapp sek lit" id="start-annen" data-t="'+ab+'">Eller '+(PKn?'kort ':'')+'økt '+ab+' · ~'+estMin(PP().okter[ab],PKn)+' min</button></div>';
     if(resDag){h+='<div class="rad" style="margin-top:8px"><button class="knapp sek lit" id="start-reserve">Eller reserveøkt hjemme — yoga og kroppsvekt · ~'+estMin(hr,false)+' min</button></div>';
       h+='<ul class="lit" style="margin:8px 0 0;padding-left:18px">'+turForan+'<li>Overskudd, ikke krav: hopper du over, skal ingenting tas igjen.</li></ul>'}
     h+='</div>'+h0}}
   if(bok!=='T'&&bok!=='S'&&planForDag(d)!=='T'&&planForDag(d)!=='S')h+='<div style="margin-top:14px;padding-top:12px;border-top:1px dashed var(--kant)"><b>Gikk en tur i dag?</b>'+turRad(gj,'T')+'</div>';
   /* v1.25: A og B kan alltid startes — også på hviledager, turdager og etter at dagens økt er gjort */
   if(bok!=='A'&&bok!=='B'&&modus!=='syk'&&PP().okter.A&&PP().okter.B){var fl=(h.indexOf('id="start-neste"')<0&&h.indexOf('id="start-annen"')<0)?['A','B']:[];if(PP().okter.H&&bok!=='H'&&h.indexOf('id="start-hjemme"')<0&&h.indexOf('id="start-reserve"')<0)fl.push('H');
-    if(fl.length)h+='<div style="margin-top:14px;padding-top:12px;border-top:1px dashed var(--kant)"><b>Lyst på en økt i dag likevel?</b><div class="rad" style="margin-top:6px">'+fl.map(function(t){return '<button class="knapp sek lit" data-fristart="'+t+'">'+(t==='H'?'Hjemmeøkt (valgfri)':'Start økt '+t)+' · ~'+estMin(PP().okter[t],false)+' min</button>'}).join('')+'</div></div>'}
+    if(fl.length)h+='<div style="margin-top:14px;padding-top:12px;border-top:1px dashed var(--kant)"><b>Lyst på en økt i dag likevel?</b><div class="rad" style="margin-top:6px">'+fl.map(function(t){var pk=modus==='prosjekt'&&t!=='H';return '<button class="knapp sek lit" data-fristart="'+t+'">'+(t==='H'?'Hjemmeøkt (valgfri)':(pk?'Kort økt ':'Start økt ')+t)+' · ~'+estMin(PP().okter[t],pk)+' min</button>'}).join('')+'</div></div>'}
   var gjIdag=gjortDag(idag()).filter(function(o){return o.type!=='T'&&o.type!=='S'});
   if(gjIdag.length)h+='<div style="margin-top:14px;padding-top:12px;border-top:1px dashed var(--kant)"><b>Trykket feil?</b><div class="rad" style="margin-top:6px">'+gjIdag.map(function(o){var nv=(PP().okter[o.type]&&PP().okter[o.type].navn)||o.type;return '<button class="knapp sek lit" data-angre="'+o.id+'">'+(ANGRE===o.id?'Trykk igjen for å slette':'Angre: '+esc(nv)+(o.kort?' (kort)':''))+'</button>'}).join('')+'</div><span class="lit" style="display:block;margin-top:4px">Sletter økta fra i dag — på alle enheter.</span></div>';
   $('idag-kort').innerHTML='<h2>'+dagTittel+'</h2>'+h;
-  Array.prototype.forEach.call(document.querySelectorAll('#idag-kort button[data-fristart]'),function(x){x.onclick=function(){startOkt(x.getAttribute('data-fristart'),false)}});
+  Array.prototype.forEach.call(document.querySelectorAll('#idag-kort button[data-fristart]'),function(x){x.onclick=function(){var t=x.getAttribute('data-fristart');startOkt(t,t!=='H'&&erProsjekt())}});
   Array.prototype.forEach.call(document.querySelectorAll('#idag-kort button[data-angre]'),function(b){b.onclick=function(){var id=b.getAttribute('data-angre');if(ANGRE!==id){ANGRE=id;tegnIdag();return}ANGRE=null;slettOkt(id);tegnIdag();tegnUka();tegnFrem()}});
-  var bn=$('start-neste');if(bn)bn.onclick=function(){startOkt(bn.getAttribute('data-t'),false)};
-  var ba=$('start-annen');if(ba)ba.onclick=function(){startOkt(ba.getAttribute('data-t'),false)};
+  var bn=$('start-neste');if(bn)bn.onclick=function(){startOkt(bn.getAttribute('data-t'),erProsjekt())};
+  var ba=$('start-annen');if(ba)ba.onclick=function(){startOkt(ba.getAttribute('data-t'),erProsjekt())};
   var b=$('start-okt');if(b)b.onclick=function(){startOkt(b.getAttribute('data-t'),false)};
   var bk=$('start-kort');if(bk)bk.onclick=function(){startOkt(bk.getAttribute('data-t'),true)};
   var bh=$('start-hjemme');if(bh)bh.onclick=function(){startOkt('H',false)};
@@ -717,15 +725,15 @@ function tegnUkeKort(){
   if(!p.har_program){var deler=[];if(ant('G'))deler.push(ant('G')+' × gange');if(ant('K'))deler.push(ant('K')+' × kort styrke');if(ant('T')+ant('S'))deler.push((ant('T')+ant('S'))+' × tur');
     $('uka-kort').innerHTML='<h2>Uka så langt</h2><p class="lit" style="margin:0">'+(deler.length?deler.join(' · ')+'.':'Ingenting logget ennå.')+' Ingen fasit her — ditt program og dine mål lages sammen med Liv.</p>';return}
   if(modus==='syk'){$('uka-kort').innerHTML='<h2>Uka så langt</h2><p class="lit" style="margin:0">Syk. Uka teller ikke — ingenting å ta igjen. Første økt etterpå blir lett; appen setter den opp.</p>'+sesongLinje();return}
-  var plan=modus==='minimum'?(PP().ukeplan_min||[['gym','Kort gym-økt'],['tur','Tur 30 min']]):(PP().ukeplan||[['A','Gym A'],['B','Gym B'],['M','8-min'],['M','8-min'],['T','Torsdagstur'],['S','Søndagstur']]);
+  var plan=modus==='prosjekt'?(PP().ukeplan_prosjekt||[['gym','Kort A'],['gym','Kort B'],['tur','Tur']]):modus==='minimum'?(PP().ukeplan_min||[['gym','Kort gym-økt'],['tur','Tur 30 min']]):(PP().ukeplan||[['A','Gym A'],['B','Gym B'],['M','8-min'],['M','8-min'],['T','Torsdagstur'],['S','Søndagstur']]);
   var brukt={};var n=0;var igjen=[];
   var chips=plan.map(function(pl){var c=pl[0]==='gym'?ant('A')+ant('B')+ant('H'):pl[0]==='tur'?ant('T')+ant('S'):ant(pl[0]);var i=(brukt[pl[0]]||0);brukt[pl[0]]=i+1;var gjort=c>i;if(gjort)n++;else igjen.push(pl[1]);return '<span class="chip'+(gjort?' p':'')+'">'+(gjort?'✓ ':'')+pl[1]+'</span>'}).join('');
   var ps=pauseStatus();var tekst;
   if(ps.nivaa===2)tekst=PROG.tilbakefall.tre_uker;else if(ps.nivaa===1)tekst=PROG.tilbakefall.to;
-  else if(n===0)tekst=modus==='minimum'?'Minimumsuke: én kort gym-økt og én tur er hele jobben.':'Ingenting ennå. Den første teller like mye som den sjette.';
-  else if(igjen.length)tekst='Igjen: '+igjen.join(', ')+'.';else tekst=modus==='minimum'?'Minimumsuka er gjort. Det var det som skulle til.':'Alt i planen er gjort. Resten av uka er fri.';
+  else if(n===0)tekst=modus==='prosjekt'?'Prosjektuke: kort A, kort B og én tur er hele jobben.':modus==='minimum'?'Minimumsuke: én kort gym-økt og én tur er hele jobben.':'Ingenting ennå. Den første teller like mye som den sjette.';
+  else if(igjen.length)tekst='Igjen: '+igjen.join(', ')+'.';else tekst=modus==='prosjekt'?'Prosjektuka er gjort på treningssiden. Resten av tida er prosjektets.':modus==='minimum'?'Minimumsuka er gjort. Det var det som skulle til.':'Alt i planen er gjort. Resten av uka er fri.';
   var t=nesteTest();
-  $('uka-kort').innerHTML='<h2>Uka så langt'+(modus==='minimum'?' <span class="pill">minimumsuke</span>':'')+'</h2><div class="stor">'+n+' <span style="font-size:15px;font-weight:700;color:var(--mut)">av '+plan.length+'</span></div><div class="chips">'+chips+'</div><p class="lit" style="margin:4px 0 0">'+esc(tekst)+(t?' · <b>'+t+'</b>':'')+'</p>'+sesongLinje();
+  $('uka-kort').innerHTML='<h2>Uka så langt'+(modus==='minimum'?' <span class="pill">minimumsuke</span>':modus==='prosjekt'?' <span class="pill">prosjektuke</span>':'')+'</h2><div class="stor">'+n+' <span style="font-size:15px;font-weight:700;color:var(--mut)">av '+plan.length+'</span></div><div class="chips">'+chips+'</div><p class="lit" style="margin:4px 0 0">'+esc(tekst)+(t?' · <b>'+t+'</b>':'')+'</p>'+sesongLinje();
 }
 function nesteTest(){if(!PP().tester)return '';var tl=Object.keys(S.tester).map(function(k){return S.tester[k]}).sort(function(a,b){return a.dato<b.dato?1:-1});var d;
   if(tl.length){d=fraIso(tl[0].dato);d.setDate(d.getDate()+7*PROG.thor.tester.intervall_uker)}else{var f=PROG.thor.tester.forste.split('-W');d=new Date(+f[0],0,4);d=mandag(d);d.setDate(d.getDate()+(+f[1]-1)*7)}
@@ -800,8 +808,12 @@ function tegnUka(){
       else{var o={id:nyId(),person:PERSON,dato:iso,uke:ukeKey(fraIso(iso)),type:t,min:null};lagre('okter/'+o.id,o)}
       tegnUka();tegnIdag()}})}});
   var uk=ukeInfo(k);
-  Array.prototype.forEach.call(document.querySelectorAll('#seg-modus button'),function(b){b.className=b.getAttribute('data-m')===modus?'on':'';b.onclick=function(){var o=ukeInfo(k);o.modus=b.getAttribute('data-m');o.uke=k;lagre('uke/'+k,o);tegnUka();tegnIdag()}});
+  Array.prototype.forEach.call(document.querySelectorAll('#seg-modus button'),function(b){b.className=b.getAttribute('data-m')===modus?'on':'';b.onclick=function(){var m=b.getAttribute('data-m');if(m==='prosjekt'&&modus!=='prosjekt'&&prosjektBrukt(k.slice(0,4))>=prosjektMaks())return;var o=ukeInfo(k);o.modus=m;o.uke=k;lagre('uke/'+k,o);tegnUka();tegnIdag()}});
   $('modus-tekst').textContent=(erThor()?PROG.ukemodus[modus]:(modus==='minimum'?'Reise, vakt eller kaos: én styrkeøkt (kort på gymmet eller hjemmeøkta) og én tur på 30 min teller som gjort.':modus==='syk'?PROG.ukemodus.syk:'To styrkeøkter (tirsdag og torsdag) og to turer. Lørdag er valgfri.'));
+  (function(){var bp=$('m-prosjekt');if(!bp)return;var aar=k.slice(0,4),brukt=prosjektBrukt(aar),mx=prosjektMaks(),denne=modus==='prosjekt';
+    if(!erThor()||!PP().okter||!PP().okter.A){bp.hidden=true;return}
+    bp.hidden=!denne&&brukt>=mx;bp.textContent=denne?'Prosjektuke':'Prosjektuke · '+(mx-brukt)+' igjen';
+    var e=$('modus-tekst');if(denne||brukt>0)e.textContent=e.textContent+' Prosjektuker i '+aar+': '+brukt+' av '+mx+' brukt'+(brukt>=mx?(denne?' — dette var den siste.':' — kvoten er brukt, ny kvote 1. januar.'):'.')})();
   $('kropp-del').style.display=erThor()?'':'none';$('midje-del').style.display='none';$('in-vekt').placeholder=erThor()?'90,0':'60,0';
   var mj=uk.midje||[];$('midje-info').textContent=mj.length?('sist '+fmt(mj[mj.length-1])+' cm'):'';
   $('midje-lagre').onclick=function(){var x=tall($('in-midje').value);if(x===null)return;var o=ukeInfo(k);o.midje=(o.midje||[]).concat([x]);o.uke=k;lagre('uke/'+k,o);$('in-midje').value='';tegnUka()};
@@ -901,6 +913,7 @@ function tegnOkt(){
     if(ov.maaling==='gjort'){h+='<div class="rad"><button class="knapp sek lit" data-gjort="'+ov.id+'">'+(L.sett[0].ok?'Gjort ✓':'Marker som gjort')+'</button></div>'}
     else{var forr=sisteFor(ov.id);h+='<div class="setthode"><span></span><span>forrige</span><span>'+(ov.vekt?(ov.vekt.enhet?'kg/hånd':'kg'):'')+'</span><span>reps</span><span></span></div>';
       L.sett.forEach(function(s,si){h+='<div class="sett'+(s.ok?' ferdig':'')+'"><span class="nr">'+(si+1)+'</span><span class="forr">'+(forr[si]?esc(forr[si]):'—')+'</span>'+(ov.vekt?'<input type="text" inputmode="decimal" data-ov="'+ov.id+'" data-s="'+si+'" data-f="kg" value="'+(s.kg!==null&&s.kg!==undefined?String(s.kg).replace('.',','):'')+'">':'<span></span>')+'<input type="text" inputmode="numeric" data-ov="'+ov.id+'" data-s="'+si+'" data-f="reps" value="'+(s.reps!==null&&s.reps!==undefined?s.reps:'')+'" placeholder="'+ov.reps[1]+'"><button class="hak'+(s.ok?' p':'')+'" data-hak="'+ov.id+'" data-s="'+si+'">✓</button></div>'});
+      var mR=(PP().regler&&PP().regler.maks_reps)||15;if(ov.vekt&&L.sett.some(function(s){return (s.reps||0)>mR}))h+='<div class="varsel" style="margin:6px 0;font-size:12.5px">Over '+mR+' reps: vekta er for lett. Stopp settet på '+ov.reps[1]+' — neste gang går vekta opp. Lange sett sliter ut korsryggen før beina.</div>';
       h+='<div class="rpe"><span>RPE</span>'+[6,7,8,9,10].map(function(v){return '<button data-rpe="'+ov.id+'" data-v="'+v+'"'+(L.rpe===v?' class="on"':'')+'>'+v+'</button>'}).join('')+'</div>'}
     if(ov.fyllstoff){var fs=ov.fyllstoff;var F=AKTIV.fyll[fs.id];var vNavn=F.variant||fs.navn;h+='<div class="fyll"><span class="typ pau">Pauseøvelse — lett</span><div class="t" data-vt="'+fs.id+'">I pausene mellom settene: '+esc(vNavn)+'</div><div class="m">'+esc(fs.maal)+(F.forslag.tekst&&F.forslag.tekst!==fs.maal?'<br>'+esc(F.forslag.tekst):'')+'</div>'+fyllBlokk(fs,{aapen:!okterSortert().some(function(o){return o.fyll&&o.fyll[fs.id]})});
       if(fs.varianter)h+='<div class="rad" style="margin:0 0 6px">'+fs.varianter.map(function(v){return '<button class="knapp lit'+(v===vNavn?'':' sek')+'" data-var="'+fs.id+'" data-v="'+esc(v)+'" style="min-height:32px;padding:5px 10px;font-size:12.5px">'+esc(v)+'</button>'}).join('')+'<span class="lit">ditt valg — samme mål</span></div>';
@@ -1227,7 +1240,7 @@ function tegnUkerTabell(){
   var h='<div class="tb"><table><tr><th>Uke</th>'+(harP?'<th>A</th><th>B</th><th>8-min</th><th>Turer</th>':'<th>Gange</th><th>Styrke</th><th>Turer</th>')+'<th>Vekt</th>'+(harP?'<th>Puls</th>':'<th>Midje</th>')+'<th>Uke</th></tr>';
   for(var i=0;i<8;i++){var d=new Date(base);d.setDate(base.getDate()-i*7);var k=ukeKey(d);var ok=okterSortert().filter(function(o){return o.uke===k});var uk=ukeInfo(k);var mo=ukeModus(k);
     function n(t){return ok.filter(function(o){return o.type===t}).length}
-    var v=uk.vekt||[],p=uk.puls||[],mj=uk.midje||[];var merk=(mo==='syk'?'syk':mo==='minimum'?'min.':'')+(uk.kroppsarbeid?' 🪨':'')+(harP&&n('H')?' +hjemme':'');
+    var v=uk.vekt||[],p=uk.puls||[],mj=uk.midje||[];var merk=(mo==='syk'?'syk':mo==='minimum'?'min.':mo==='prosjekt'?'prosj.':'')+(uk.kroppsarbeid?' 🪨':'')+(harP&&n('H')?' +hjemme':'');
     h+='<tr><td>'+ukeNr(k)+'</td>'+(harP?'<td>'+(n('A')?'✓':'·')+'</td><td>'+(n('B')?'✓':'·')+'</td><td>'+n('M')+'/2</td><td>'+(n('T')+n('S'))+'/2</td>':'<td>'+n('G')+'</td><td>'+(n('A')+n('B')+n('H')+n('K'))+'</td><td>'+(n('T')+n('S'))+'</td>')+'<td>'+(v.length?fmt(v.reduce(function(a,b){return a+b},0)/v.length):'—')+'</td><td>'+(harP?(p.length?Math.round(p.reduce(function(a,b){return a+b},0)/p.length):'—'):(mj.length?fmt(mj[mj.length-1]):'—'))+'</td><td>'+merk+'</td></tr>'}
   $('frem-uker').innerHTML=h+'</table></div><p class="lit">'+(harP?'Vekt = ukesnitt. Målet er A + B, 8-minutteren × 2 og to turer — ikke mer. «min.» = minimumsuke, «syk» teller ikke.':'Vekt = ukesnitt. Styrke = gym og hjemmeøkter. Målet er to styrkeøkter og to turer i uka — ikke mer.')+'</p>';
 }
