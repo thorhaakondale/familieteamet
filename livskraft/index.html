@@ -404,7 +404,7 @@ details.om summary{cursor:pointer;font-weight:700;color:var(--ag);font-size:13px
    ============================================================ */
 "use strict";
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
-var VERSJON='1.29.0'; /* v1.21: appversjonen, vises under Mer → Programmet */
+var VERSJON='1.29.1'; /* v1.21: appversjonen, vises under Mer → Programmet */
 var KODE=null, PERSON='thor', PROG=null, S=null, db=null, dbOk=false, PENDING=[];
 var AKTIV=null; /* pågående økt */
 var UKEVIS=0;   /* uke-offset i Uka-fanen */
@@ -1388,7 +1388,7 @@ function tegnProtein(){var e=$('protein-kort');var P=PROG.protein&&PROG.protein[
   var bar=P.maaltider.map(function(m){return '<i class="'+(m.middag?'mid':'')+'" style="flex:'+m.g+'" title="'+esc(m.navn)+' '+m.g+' g"></i>'}).join('');
   var kort=P.maaltider.filter(function(m){return !m.middag}).map(function(m){return esc(m.navn.toLowerCase())+' '+m.g}).join(' · ');
   var rader=P.maaltider.map(function(m){return '<div class="prad'+(m.middag?' mid':'')+'"><b><span>'+esc(m.navn)+'</span><span>'+m.g+' g</span></b>'+m.eks.map(function(x,i){return '<div>'+(i?'eller: ':'')+esc(x)+'</div>'}).join('')+'</div>'}).join('');
-  e.innerHTML='<details><summary><h2 style="margin:0">Protein i dag</h2><span class="lit" style="margin-left:auto">'+P.maal+' g · '+esc(P.tekst)+'</span></summary>'
+  e.innerHTML=(P.motto?'<p style="margin:0 0 8px;font-size:14px;font-weight:600;line-height:1.4;color:#5b21b6">'+esc(P.motto)+'</p>':'')+'<details><summary><h2 style="margin:0">Protein i dag</h2><span class="lit" style="margin-left:auto">'+P.maal+' g · '+esc(P.tekst)+'</span></summary>'
     +'<div class="pbar">'+bar+'</div><p class="lit" style="margin:0 0 4px">'+kort+' g'+(sum!==P.maal?' (sum '+sum+' g)':'')+'<span class="phint"> — trykk for eksempler</span></p>'
     +rader+(P.merk?'<p class="lit" style="margin:8px 0 0">'+esc(P.merk)+'</p>':'')+(PROG.protein.fotnote?'<p class="lit" style="margin:6px 0 0">'+esc(PROG.protein.fotnote)+'</p>':'')+'</details>';
   e.hidden=false}

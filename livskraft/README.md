@@ -56,3 +56,6 @@ Thor: «sett det som en regel at jeg ikke bør over 15 reps» og «kortere A og 
 
 ## v1.29 — 7.11.2026
 Thor: «8-minutteren er nok mer enn 8 minutter — sikre at den faktisk bare er 10». **10-minutteren** (før 8-minutteren): hamstring med håndkle og figur 4 er tatt ut (RDL dekker baksiden av låret, 90/90 dekker hofterotasjonen), så holdene er 7 min 45 s og økta ca. 10 min med overganger — 12 steg i den guidede modusen. Tillegget (FlexBar, kort fot, hake, pull-apart, glute bridge, sideplanke) er ikke lenger en del av den guidede økta; etter «Ferdig» kommer en egen knapp «Valgfritt: tillegget · ca. 4 min». Faste dager: tirsdag kveld og søndag morgen (`okter.M.dager`, `standarduke.fre` = fri). På en fast dag der planen er noe annet (søndagsturen), ligger 10-minutteren åpen med «står på planen i dag». 90/90-hintet sier nå «len deg rett fram over den fremre leggen fra hofta — rett rygg, ikke til siden». Test: Playwright 390/1180 px, søndag/tirsdag/fredag, ingen pageerror, ingen sideskroll. `VERSJON='1.29.0'`, SW lk-v33, program.json v1.12.
+
+## v1.29.1 — 7.11.2026
+Thor: «se på kosthold som penger — det må være bevegelse og stor energimengde». Proteinkortet kan ha en kort `motto`-linje øverst (data/program.json → protein.<person>.motto), over fordelingsstripen. Thors: energi som kontantstrøm — høy omsetning i balanse. SW lk-v34.
