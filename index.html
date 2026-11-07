@@ -414,6 +414,61 @@ input,select,textarea,button{font-size:16px!important}
 #handle #hl-ferdig li{font-size:15px;color:var(--muted)}
 #handle #hl-ferdig li .hl-txt{text-decoration:line-through}
 #handle #hl-ferdig li button{margin-left:8px;flex:0 0 auto;font:inherit;font-size:13px;font-weight:700;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);padding:5px 9px;cursor:pointer}
+
+/* v1.68 Pengeplanen (Thor 7.11) */
+:root{--fgo:#b06718}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--fgo:#d6913f}}
+:root[data-theme="dark"]{--fgo:#d6913f}
+#penger>h2{flex-wrap:wrap}#penger>h2::after{order:2}
+.pp-per{font-size:13px;font-weight:700;color:var(--muted)}
+.pp-h2s{order:3;flex-basis:100%;font-size:13px;font-weight:700;color:var(--ink2);margin-top:2px;line-height:1.35}
+.pp-h2s .ok{color:var(--ok)}.pp-h2s .bad{color:var(--bad)}
+.pp-pott{border:1px solid var(--line);border-radius:12px;padding:10px 12px 8px;margin:10px 0;background:var(--card2)}
+.pp-ph{display:flex;justify-content:space-between;gap:4px 10px;align-items:baseline;flex-wrap:wrap}
+.pp-ph b{font-size:15.5px}.pp-ph span{font-size:12.5px;color:var(--muted)}
+.pp-bar{position:relative;display:flex;height:18px;border-radius:9px;background:var(--line2);overflow:hidden;margin:9px 0 5px}
+.pp-bar i{display:block;height:100%}.pp-bar i+i{box-shadow:inset 2px 0 0 var(--card2)}
+.pp-bar.over{box-shadow:0 0 0 2px var(--bad)}
+.pp-tak{position:absolute;top:0;bottom:0;width:3px;background:var(--bad)}
+.pp-bar .b.fgo{background:var(--fgo)}.pp-bar .v.fgo{background:var(--fgo);opacity:.4}
+.pp-bar .b.thor{background:var(--thor)}.pp-bar .v.thor{background:var(--thor);opacity:.4}
+.pp-bar .b.anniken{background:var(--anniken)}.pp-bar .v.anniken{background:var(--anniken);opacity:.4}
+.pp-tall{font-size:13.5px;color:var(--ink2);line-height:1.45}.pp-tall b{font-variant-numeric:tabular-nums}
+.pp-tall .ok{color:var(--ok)}.pp-tall .bad{color:var(--bad)}
+.pp-leg{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12px;color:var(--muted);margin:2px 0 6px}
+.pp-leg span{display:inline-flex;align-items:center;gap:5px}.pp-leg i{display:inline-block;width:14px;height:10px;border-radius:3px;background:var(--line2)}
+.pp-leg i.b{background:var(--ink2)}.pp-leg i.v{background:var(--ink2);opacity:.4}
+.pp-pers{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:6px 0 2px}
+.pp-pers>div{border:1px solid var(--line2);border-radius:9px;padding:6px 9px;background:var(--card);font-size:12.5px;color:var(--ink2);line-height:1.4}
+.pp-pers b{display:block;font-size:13.5px}
+.pp-inn{font-size:12.5px;color:var(--muted);line-height:1.45;margin:4px 0 2px}
+.pp-li{list-style:none;margin:4px 0 0;padding:0}
+.pp-rad{display:flex;align-items:flex-start;gap:8px;padding:8px 0;border-top:1px solid var(--line2)}
+.pp-rad>input[type=checkbox]{width:20px;height:20px;margin:2px 0 0;flex:0 0 auto;accent-color:var(--ok)}
+.pp-tx{flex:1;min-width:0;font-size:14.5px;line-height:1.35}.pp-tx small{color:var(--muted);font-size:12px}
+.pp-rad.brukt .pp-tn{color:var(--muted);text-decoration:line-through}
+.pp-bel{font:inherit;font-size:14px;font-weight:800;font-variant-numeric:tabular-nums;border:1px dashed var(--line);background:var(--card);color:var(--ink);border-radius:8px;padding:3px 9px;cursor:pointer;min-height:34px;flex:0 0 auto}
+.pp-belin{width:86px;font:inherit;font-size:14px;font-weight:800;text-align:right;padding:4px 6px;border:2px solid var(--ok);border-radius:8px;min-height:34px;background:var(--card);color:var(--ink)}
+.pp-x{border:1px solid var(--line);background:var(--card);color:var(--muted);border-radius:999px;min-width:34px;min-height:34px;cursor:pointer;font:inherit;font-size:13px;flex:0 0 auto}
+.pp-x.arm{background:var(--bad);border-color:var(--bad);color:#fff;padding:0 10px;font-weight:800}
+.pp-dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;vertical-align:1px}
+.pp-dot.thor{background:var(--thor)}.pp-dot.anniken{background:var(--anniken)}
+.pp-under summary{font-size:12.5px;color:var(--muted);cursor:pointer;margin-top:4px}
+.pp-under ul{list-style:none;padding:0;margin:4px 0 0}
+.pp-under li{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:13.5px;padding:4px 0;border-top:1px dashed var(--line2)}
+.pp-under li label{display:flex;align-items:center;gap:7px;cursor:pointer}.pp-under li input{width:18px;height:18px;accent-color:var(--ok)}
+.pp-under li.ok label{color:var(--muted);text-decoration:line-through}.pp-under li span{font-variant-numeric:tabular-nums;color:var(--ink2)}
+.pp-ny{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0 4px}
+.pp-ny input,.pp-ny select{font:inherit;font-size:14px;padding:7px 9px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);min-height:38px}
+.pp-ny input[name=x]{flex:1 1 100%}.pp-ny input[name=belop]{width:100px}
+.pp-ny button{font:inherit;font-weight:800;font-size:14px;padding:7px 14px;border-radius:8px;border:0;background:var(--ink);color:var(--card);cursor:pointer;min-height:38px}
+.pp-ny button.varsle{background:var(--bad);color:#fff}
+.pp-varsel{flex-basis:100%;font-size:12.5px;color:var(--bad);font-weight:700}
+.pp-neste{font-size:13px;color:var(--ink2);line-height:1.5}.pp-neste li{list-style:none;padding:2px 0}
+.pp-neste ul{padding:0;margin:4px 0}
+.pp-saldo{font-size:12.5px;color:var(--muted);margin-top:4px}.pp-saldo summary{cursor:pointer}
+.pp-saldo input{width:90px;font:inherit;font-size:13px;padding:4px 6px;border:1px solid var(--line);border-radius:7px;background:var(--card);color:var(--ink)}
+.pp-saldo label{display:inline-flex;align-items:center;gap:6px;margin:6px 12px 0 0}
 </style>
 </head>
 <body>
@@ -534,6 +589,12 @@ input,select,textarea,button{font-size:16px!important}
   <p class="small" style="margin-top:8px">Fire steg: 1) tøm Påminnelser hit, liste for liste · 2) Bjørn sorterer og foreslår rytme og slakk · 3) dere godkjenner i banken · 4) slett i Påminnelser — behold bare alarmene som må varsle (frost, medisin).</p>
 </section>
 
+<!-- v1.68 (Thor 7.11): Pengeplanen — FGO og brukskortene for to måneder om gangen, bare for de voksne -->
+<section class="card" id="penger" hidden>
+  <h2>💰 Pengeplanen <span class="pp-per" id="pp-per"></span><span class="pp-h2s" id="pp-sum"></span></h2>
+  <div id="pp-body"></div>
+</section>
+
 <section class="card pk" id="pakk">
   <h2>&#x1F9F3; Pakkelistene</h2>
   <p class="sub">Turene &#xF8;verst styrer pakkingen: start tidlig i uka, pakk ferdig dagen f&#xF8;r, restene p&#xE5; avreisedagen &#x2014; hvert slag ligger p&#xE5; tavla til den som reiser, med ett varsel. &#xC9;n liste per turtype pluss &#xAB;Alltid med&#xBB;; sesongen velges av seg selv. Hak av mens dere pakker &#x2014; ferdige grupper trekker seg sammen. Endre fritt med &#x270E;.</p>
@@ -615,7 +676,7 @@ input,select,textarea,button{font-size:16px!important}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.67.0';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.68.0';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -1762,7 +1823,7 @@ function tegnAjour(){
     var cls=t.henger?'varsel':(pct>=75?'ok':''); return '<div class="aj '+cls+'"><b>'+K[k].navn+'</b><div class="n">'+pct+' %</div><div class="m">'+t.gjort+' av '+t.plan+' siste 8 uker'+(t.henger?' \u00b7 <b style="display:inline;text-transform:none;letter-spacing:0;color:var(--warn)">'+t.henger+' henger</b>':'')+(nx?'<br>Neste: '+DAGK[(nx.getDay()+6)%7]+' '+datoNorsk(nx):'')+'</div></div>' }).join('');
 }
 /* seksjonene kan trekkes sammen; husk per enhet (Thor 13.10) */
-var SEK_STD={slik:1,historikk:1,aaret:1,bank:1,uka:0,lag:0,idag:0,pakk:1,ajour:0};
+var SEK_STD={slik:1,historikk:1,aaret:1,bank:1,uka:0,lag:0,idag:0,pakk:1,ajour:0,penger:1};
 function SEK_INN(id,std){ try{var v=localStorage.getItem('ft-sek-'+id); if(v!==null) return v==='1'}catch(e){} return std===undefined?!!SEK_STD[id]:!!std }
 document.addEventListener('click',function(e){ var h=e.target.closest&&e.target.closest('.card>h2'); if(!h) return; var c=h.parentNode; if(!c.id||c.id==='idag') return; var inn=!c.classList.contains('inn'); c.classList.toggle('inn',inn); try{localStorage.setItem('ft-sek-'+c.id,inn?'1':'0')}catch(err){} });
 (function(){ document.querySelectorAll('section.card[id]').forEach(function(c){ if(c.id==='idag'||c.id==='pakk') return; c.classList.toggle('inn',SEK_INN(c.id)); }); })();
@@ -2252,7 +2313,116 @@ function tegnNyRask(){
   try{tegnHandle()}catch(e){} /* v1.61 */
   if(!w.hidden&&window.__nyRaskHvem)window.__nyRaskHvem();
 }
-function tegn(){tegnHvem();tegnIdag();tegnLag();tegnUke();tegnSlik();tegnVedl();tegnHist();tegnBank();fyllInnst();tegnNyRask();tegnPakk();tegnAjour()}
+
+/* ---------- v1.68 Pengeplanen (Thor 7.11): pengeplan/<YYYY-MM> (første måned i perioden) =
+   {navn,status,potter:{fgo:{ramme,rammeTekst,inn:{id:{x,belop}}},kort:{thor:{mnd},anniken:{mnd},saldo:{thor,anniken,dato}}},
+    linjer:{id:{pott:'fgo'|'thor'|'anniken'|'utenfor',mnd,x,belop,tak,notat,betaler,rekke,kilde,brukt:{ts,av,belop},slettet,under:{id:{x,belop,rekke,ok}}}}}
+   Appen eier den aktive perioden. Bjørn lager neste periode den 25. og speiler hakene til Pengestrømmene hver kveld. ---------- */
+var PENGE={}, PP_MND=['','jan','feb','mar','apr','mai','jun','jul','aug','sep','okt','nov','des'], PP_ARM={}, PP_OPEN={}, PP_NY='';
+function ppPid(d){var y=d.getFullYear(),m=d.getMonth()+1,st=m%2?m:m-1;return y+'-'+(st<10?'0':'')+st}
+function ppNeste(pid){var y=+pid.slice(0,4),m=+pid.slice(5)+2;if(m>12){m-=12;y++}return y+'-'+(m<10?'0':'')+m}
+function ppKr(n){return Math.round(n||0).toLocaleString('nb-NO').replace(/[  ]/g,' ')}
+function ppNavn(pid){var m=+pid.slice(5);return PP_MND[m]+'–'+PP_MND[m+1>12?1:m+1]}
+function ppLinjer(P){var L=(P&&P.linjer)||{};return Object.keys(L).map(function(k){var x=L[k]||{};x.id=k;return x}).filter(function(x){return x.x&&!x.slettet})}
+function ppBelop(x){return x.brukt&&x.brukt.belop!=null?+x.brukt.belop:(+x.belop||0)}
+function ppSum(li){var b=0,v=0;li.forEach(function(x){if(x.brukt)b+=ppBelop(x);else v+=(+x.belop||0)});return {b:b,v:v}}
+function ppSort(a,b){var ab=a.brukt?1:0,bb=b.brukt?1:0;if(ab!==bb)return ab-bb;if((a.mnd||0)!==(b.mnd||0))return (a.mnd||0)-(b.mnd||0);return (a.rekke||0)-(b.rekke||0)}
+function ppBar(segs,tot,etikett){
+  var sum=0;segs.forEach(function(g){sum+=g.v>0?g.v:0});var max=Math.max(tot,sum)||1,over=sum>tot;
+  return '<div class="pp-bar'+(over?' over':'')+'" role="img" aria-label="'+esc(etikett)+'">'+segs.map(function(g){return g.v>0?'<i class="'+g.c+'" style="width:'+(g.v/max*100).toFixed(2)+'%"></i>':''}).join('')+(over?'<b class="pp-tak" style="left:calc('+(tot/max*100).toFixed(2)+'% - 1px)"></b>':'')+'</div>';
+}
+function ppLedig(n){return n>=0?'<b class="ok">ledig '+ppKr(n)+'</b>':'<b class="bad">over med '+ppKr(-n)+'</b>'}
+function ppRad(pid,x,pers){
+  var b=!!x.brukt, under='';
+  if(x.under){var U=Object.keys(x.under).map(function(k){var u=x.under[k]||{};u.id=k;return u}).sort(function(a,c){return (a.rekke||0)-(c.rekke||0)});
+    var ant=U.filter(function(u){return u.ok}).length, su=U.reduce(function(a,u){return a+(+u.belop||0)},0);
+    under='<details class="pp-under" data-ppu="'+x.id+'"'+(PP_OPEN[x.id]?' open':'')+'><summary>'+ant+' av '+U.length+' kjøpt · sum '+ppKr(su)+'</summary><ul>'+
+      U.map(function(u){return '<li class="'+(u.ok?'ok':'')+'"><label><input type="checkbox" data-pp="under" data-p="'+pid+'" data-id="'+x.id+'" data-u="'+u.id+'"'+(u.ok?' checked':'')+'> '+esc(u.x)+'</label><span>'+ppKr(u.belop)+'</span></li>'}).join('')+'</ul></details>';}
+  var meta=PP_MND[x.mnd]||''; if(x.tak) meta+=' · tak '+ppKr(x.tak); if(x.betaler) meta+=' · '+esc(x.betaler); if(x.notat) meta+=' · '+esc(x.notat); if(b&&x.brukt.av&&PMAP[x.brukt.av]) meta+=' · ✓ '+PMAP[x.brukt.av].navn;
+  return '<li class="pp-rad'+(b?' brukt':'')+'"><input type="checkbox" data-pp="hak" data-p="'+pid+'" data-id="'+x.id+'"'+(b?' checked':'')+' aria-label="Kjøpt: '+esc(x.x)+'">'+
+    '<span class="pp-tx"><span class="pp-tn">'+(pers?'<i class="pp-dot '+x.pott+'"></i>':'')+esc(x.x)+'</span> <small>'+meta+'</small>'+under+'</span>'+
+    '<button type="button" class="pp-bel" data-pp="bel" data-p="'+pid+'" data-id="'+x.id+'" aria-label="Endre beløp">'+ppKr(ppBelop(x))+'</button>'+
+    '<button type="button" class="pp-x'+(PP_ARM[x.id]?' arm':'')+'" data-pp="slett" data-p="'+pid+'" data-id="'+x.id+'" aria-label="Fjern linja">'+(PP_ARM[x.id]?'Fjern':'×')+'</button></li>';
+}
+function tegnPenger(){
+  var sek=document.getElementById('penger'); if(!sek) return;
+  var voks=!!(valgt&&(valgt==='thor'||valgt==='anniken')); sek.hidden=!voks; if(!voks) return;
+  var pk=document.getElementById('pakk'); if(pk&&sek.nextElementSibling!==pk) pk.insertAdjacentElement('beforebegin',sek);
+  var pid=ppPid(new Date()), P=PENGE[pid], per=document.getElementById('pp-per'), sum=document.getElementById('pp-sum'), w=document.getElementById('pp-body');
+  per.textContent='· '+ppNavn(pid);
+  if(!P){ sum.textContent='Ingen plan for perioden ennå'; w.innerHTML='<p class="small">Bjørn lager planen for neste periode den 25. i måneden før.</p>'; return }
+  var L=ppLinjer(P), F=L.filter(function(x){return x.pott==='fgo'}).sort(ppSort), K=L.filter(function(x){return x.pott==='thor'||x.pott==='anniken'}), U=L.filter(function(x){return x.pott==='utenfor'}).sort(ppSort);
+  var PO=P.potter||{}, fp=PO.fgo||{}, fr=+fp.ramme||0, fs=ppSum(F), fl=fr-fs.b-fs.v;
+  var kp=PO.kort||{}, tT=(+((kp.thor||{}).mnd)||0)*2, tA=(+((kp.anniken||{}).mnd)||0)*2;
+  var KT=K.filter(function(x){return x.pott==='thor'}), KA=K.filter(function(x){return x.pott==='anniken'}), sT=ppSum(KT), sA=ppSum(KA);
+  var kl=tT+tA-sT.b-sT.v-sA.b-sA.v;
+  sum.innerHTML='🎁 FGO '+(fl>=0?'<span class="ok">'+ppKr(fl)+' ledig</span>':'<span class="bad">'+ppKr(-fl)+' over</span>')+' · 💳 kortene '+(kl>=0?'<span class="ok">'+ppKr(kl)+' ledig</span>':'<span class="bad">'+ppKr(-kl)+' over</span>');
+  var h='<p class="sub" style="margin-top:4px">Vedtatt plan for '+ppNavn(pid)+'. Hak av når noe er kjøpt, så fyller søylen seg. Trykk på beløpet for å rette det. Det FGO ikke bruker, blir stående til neste år.</p>';
+  h+='<div class="pp-leg"><span><i class="b"></i>brukt</span><span><i class="v"></i>vedtatt, ikke kjøpt</span><span><i></i>ledig</span></div>';
+  /* FGO */
+  var inn=fp.inn?Object.keys(fp.inn).map(function(k){return fp.inn[k]}):[], innS=inn.reduce(function(a,x){return a+(+x.belop||0)},0);
+  h+='<div class="pp-pott"><div class="pp-ph"><b>🎁 FGO · ferie, gaver og gøy</b><span>ramme '+ppKr(fr)+(fp.rammeTekst?' · '+esc(fp.rammeTekst):'')+'</span></div>'+
+     ppBar([{v:fs.b,c:'b fgo'},{v:fs.v,c:'v fgo'}],fr,'FGO: brukt '+ppKr(fs.b)+', vedtatt '+ppKr(fs.v)+' av '+ppKr(fr))+
+     '<div class="pp-tall">Brukt <b>'+ppKr(fs.b)+'</b> · vedtatt <b>'+ppKr(fs.v)+'</b> · '+ppLedig(fl)+' av '+ppKr(fr)+'</div>'+
+     (inn.length?'<div class="pp-inn">Inn i perioden <b>'+ppKr(innS)+'</b> ('+inn.map(function(x){return esc(x.x)+' '+ppKr(x.belop)}).join(' · ')+') − ramme '+ppKr(fr)+' = <b>ca. '+ppKr(innS-fr)+'</b> + det som står på kontoen spares til neste år.</div>':'')+
+     '<ul class="pp-li">'+F.map(function(x){return ppRad(pid,x,false)}).join('')+'</ul></div>';
+  /* Brukskortene */
+  h+='<div class="pp-pott"><div class="pp-ph"><b>💳 Brukskortene · sammen</b><span>Thor '+ppKr(tT/2)+' + Anniken '+ppKr(tA/2)+' i måneden</span></div>'+
+     ppBar([{v:sT.b,c:'b thor'},{v:sT.v,c:'v thor'},{v:sA.b,c:'b anniken'},{v:sA.v,c:'v anniken'}],tT+tA,'Brukskortene: brukt '+ppKr(sT.b+sA.b)+', vedtatt '+ppKr(sT.v+sA.v)+' av '+ppKr(tT+tA))+
+     '<div class="pp-tall">Brukt <b>'+ppKr(sT.b+sA.b)+'</b> · vedtatt <b>'+ppKr(sT.v+sA.v)+'</b> · '+ppLedig(kl)+' av '+ppKr(tT+tA)+'</div>'+
+     '<div class="pp-pers"><div><b><i class="pp-dot thor"></i>Thor</b>brukt '+ppKr(sT.b)+' · vedtatt '+ppKr(sT.v)+'<br>'+ppLedig(tT-sT.b-sT.v)+' av '+ppKr(tT)+'</div>'+
+     '<div><b><i class="pp-dot anniken"></i>Anniken · familiekortet</b>brukt '+ppKr(sA.b)+' · vedtatt '+ppKr(sA.v)+'<br>'+ppLedig(tA-sA.b-sA.v)+' av '+ppKr(tA)+'</div></div>'+
+     '<ul class="pp-li">'+K.sort(function(a,b){return a.pott===b.pott?ppSort(a,b):(a.pott==='thor'?-1:1)}).map(function(x){return ppRad(pid,x,true)}).join('')+'</ul>';
+  var sd=kp.saldo||{};
+  h+='<details class="pp-saldo"'+(PP_OPEN._saldo?' open':'')+' data-ppu="_saldo"><summary>Saldo på kortene nå (valgfritt)'+(sd.dato?' · sist '+esc(sd.dato):'')+'</summary>'+
+     '<label>Thor <input type="number" inputmode="numeric" data-pp="saldo" data-p="'+pid+'" data-hvem="thor" value="'+(sd.thor!=null?sd.thor:'')+'"></label>'+
+     '<label>Anniken <input type="number" inputmode="numeric" data-pp="saldo" data-p="'+pid+'" data-hvem="anniken" value="'+(sd.anniken!=null?sd.anniken:'')+'"></label>'+
+     ((sd.thor!=null||sd.anniken!=null)?'<div>Gjenstår vedtatt, ikke kjøpt: Thor '+ppKr(sT.v)+(sd.thor!=null?' (saldo '+ppKr(sd.thor)+')':'')+' · Anniken '+ppKr(sA.v)+(sd.anniken!=null?' (saldo '+ppKr(sd.anniken)+')':'')+'</div>':'')+'</details></div>';
+  /* Utenfor */
+  if(U.length) h+='<div class="pp-pott"><div class="pp-ph"><b>🧾 Betales utenfor FGO og kortene</b><span>telles ikke i søylene</span></div><ul class="pp-li">'+U.map(function(x){return ppRad(pid,x,false)}).join('')+'</ul></div>';
+  /* Ny linje */
+  var m0=+pid.slice(5);
+  h+='<form class="pp-ny" data-pp="ny" data-p="'+pid+'" autocomplete="off"><input name="x" placeholder="Ny linje — hva? (f.eks. Skøyter Vårin)" maxlength="60" required>'+
+     '<input name="belop" type="number" inputmode="numeric" placeholder="kr" required min="0">'+
+     '<select name="pott"><option value="fgo">🎁 FGO</option><option value="anniken">💳 Anniken</option><option value="thor">💳 Thor</option><option value="utenfor">🧾 Utenfor</option></select>'+
+     '<select name="mnd"><option value="'+m0+'">'+PP_MND[m0]+'</option><option value="'+(m0+1)+'">'+PP_MND[m0+1]+'</option></select>'+
+     '<button type="submit" id="pp-nyknapp">Legg til</button><span class="pp-varsel" id="pp-varsel" hidden></span></form>';
+  /* Neste periode */
+  var nid=ppNeste(pid), N=PENGE[nid];
+  if(N){ var NL=ppLinjer(N).sort(ppSort), ikon={fgo:'🎁',thor:'💳 Thor',anniken:'💳 Anniken',utenfor:'🧾'};
+    h+='<div class="pp-pott"><div class="pp-ph"><b>→ Neste: '+ppNavn(nid)+'</b><span>'+(N.status==='utkast'?'utkast · dere retter det når perioden starter':'klar')+'</span></div><div class="pp-neste"><ul>'+
+      NL.map(function(x){return '<li>'+PP_MND[x.mnd]+' · '+esc(x.x)+' · <b>'+ppKr(x.belop)+'</b> <small>'+(ikon[x.pott]||'')+'</small></li>'}).join('')+'</ul></div></div>'; }
+  w.innerHTML=h;
+  w.querySelectorAll('details[data-ppu]').forEach(function(d){d.addEventListener('toggle',function(){PP_OPEN[d.getAttribute('data-ppu')]=d.open})});
+}
+function ppRef(p,id){return db.child('pengeplan/'+p+'/linjer/'+id)}
+document.addEventListener('change',function(e){
+  var t=e.target; if(!t||!t.getAttribute) return; var a=t.getAttribute('data-pp'); if(!a) return;
+  if(!db){toast('Trenger delt lagring');return}
+  var p=t.getAttribute('data-p'), id=t.getAttribute('data-id'), P=PENGE[p]||{}, x=((P.linjer||{})[id])||{}, naa=new Date().toISOString();
+  if(a==='hak'){ if(t.checked){ ppRef(p,id).update({brukt:{ts:naa,av:valgt||'',belop:+x.belop||0}}).then(function(){toast('✓ '+(x.x||'')+' · '+ppKr(x.belop))}).catch(function(){status('Kunne ikke lagre delt.')}) } else ppRef(p,id).child('brukt').set(null).catch(function(){}) }
+  else if(a==='under'){ ppRef(p,id).child('under/'+t.getAttribute('data-u')+'/ok').set(t.checked?naa:null).catch(function(){}) }
+  else if(a==='belin'){ var n=Math.round(+t.value); if(!(n>=0)){tegnPenger();return} var u=x.brukt?{'brukt/belop':n}:{belop:n}; u.endret=naa; u.endretAv=valgt||''; ppRef(p,id).update(u).catch(function(){}) }
+  else if(a==='saldo'){ var v=t.value===''?null:Math.round(+t.value), u2={dato:naa.slice(8,10)+'.'+naa.slice(5,7)}; u2[t.getAttribute('data-hvem')]=v; db.child('pengeplan/'+p+'/potter/kort/saldo').update(u2).catch(function(){}) }
+});
+document.addEventListener('click',function(e){
+  var b=e.target.closest&&e.target.closest('button[data-pp]'); if(!b) return; var a=b.getAttribute('data-pp'), p=b.getAttribute('data-p'), id=b.getAttribute('data-id');
+  if(a==='bel'){ var x=((PENGE[p]||{}).linjer||{})[id]||{}; var inp=document.createElement('input'); inp.type='number'; inp.inputMode='numeric'; inp.className='pp-belin'; inp.value=ppBelop(x); inp.setAttribute('data-pp','belin'); inp.setAttribute('data-p',p); inp.setAttribute('data-id',id); inp.setAttribute('aria-label','Nytt beløp');
+    inp.addEventListener('keydown',function(k){if(k.key==='Enter')inp.blur()}); inp.addEventListener('blur',function(){setTimeout(tegnPenger,300)}); b.replaceWith(inp); inp.focus(); inp.select(); }
+  else if(a==='slett'){ if(!db) return; if(!PP_ARM[id]){PP_ARM={};PP_ARM[id]=1;tegnPenger();setTimeout(function(){if(PP_ARM[id]){delete PP_ARM[id];tegnPenger()}},4000);return}
+    delete PP_ARM[id]; ppRef(p,id).update({slettet:new Date().toISOString(),slettetAv:valgt||''}).then(function(){toast('Linja er fjernet fra perioden')}).catch(function(){}) }
+});
+document.addEventListener('submit',function(e){
+  var f=e.target; if(!f||f.getAttribute('data-pp')!=='ny') return; e.preventDefault(); if(!db){toast('Trenger delt lagring');return}
+  var p=f.getAttribute('data-p'), P=PENGE[p]||{}, x=f.x.value.trim(), bel=Math.round(+f.belop.value), pott=f.pott.value, mnd=+f.mnd.value; if(!x||!(bel>=0)) return;
+  var vs=document.getElementById('pp-varsel'), kn=document.getElementById('pp-nyknapp');
+  if(pott==='fgo'){ var fr=+(((P.potter||{}).fgo||{}).ramme)||0, s=ppSum(ppLinjer(P).filter(function(y){return y.pott==='fgo'})), over=s.b+s.v+bel-fr, sig=x+'|'+bel;
+    if(over>0&&PP_NY!==sig){ PP_NY=sig; vs.hidden=false; vs.textContent='Dette sprenger FGO-rammen med '+ppKr(over)+' — de tas fra det som skulle spares til neste år.'; kn.textContent='Legg til likevel'; kn.className='varsle'; return } }
+  PP_NY=''; var id='n'+Date.now().toString(36);
+  db.child('pengeplan/'+p+'/linjer/'+id).set({x:x,belop:bel,pott:pott,mnd:mnd,rekke:99,av:valgt||'',ts:new Date().toISOString()}).then(function(){toast('Lagt til: '+x)}).catch(function(){status('Kunne ikke lagre delt.')});
+});
+
+function tegn(){tegnHvem();tegnIdag();tegnLag();tegnUke();tegnSlik();tegnVedl();tegnHist();tegnBank();fyllInnst();tegnNyRask();tegnPakk();tegnPenger();tegnAjour()}
 document.getElementById('uke-forrige').onclick=function(){visUke=addDays(visUke,-7);tegnUke()};
 document.getElementById('uke-neste').onclick=function(){visUke=addDays(visUke,7);tegnUke()};
 document.getElementById('uke-naa').onclick=function(){visUke=mandag(NAA);tegnUke()};
@@ -2342,6 +2512,7 @@ function slaaSammenOppg(liste){
     db.child('tilstand').on('value',function(snap){TILSTAND=snap.val()||{};tegn()});
     db.child('ferdig').on('value',function(snap){var v=snap.val()||{};Object.keys(v).forEach(function(d){FERDIG[d]=v[d]||{}});Object.keys(FERDIG).forEach(function(d){if(!v[d])FERDIG[d]={}});try{localStorage.setItem('ft-ferdig',JSON.stringify(FERDIG))}catch(e){};tegn();kveldStopp()});
     db.child('pakkelister').on('value',function(snap){PAKKL=snap.val()||{};tegnPakk()});
+    db.child('pengeplan').on('value',function(snap){PENGE=snap.val()||{};tegnPenger()}); /* v1.68 */
     db.child('turer').on('value',function(snap){TURER=snap.val()||{};synkTurOppg();tegn();VARSLET_NAA=false;planleggVarsler()});
     db.child('dyner').on('value',function(snap){DYNER=snap.val()||{};synkTurOppg();tegn()});
     db.child('pakk').on('value',function(snap){PAKK=snap.val()||{};tegnPakk()});
