@@ -85,6 +85,22 @@ dialog#nydlg,dialog#bortedlg{border:0;border-radius:16px;padding:0;max-width:560
 #nydlg .ark-inn,#bortedlg .ark-inn{padding:0 16px calc(18px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:12px}
 #nydlg .ark-tittel,#bortedlg .ark-tittel{font-weight:800;font-size:15px}
 #nydlg details.ny-rask{border:0;padding:0;margin:0}#nydlg details.ny-rask>summary{display:none}#nydlg #ny-rask-wrap{display:block}
+/* v1.69 (Thor 7.11): Søk — finn en oppgave, se når den kommer og endre rytmen (voksne) */
+dialog#sokdlg{border:0;border-radius:16px;padding:0;max-width:560px;width:calc(100% - 28px);background:var(--card);color:var(--ink);box-shadow:0 18px 50px rgba(0,0,0,.28)}dialog#sokdlg::backdrop{background:rgba(0,0,0,.45)}
+#sokdlg .ark-bar{position:sticky;top:0;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 -16px 2px;padding:10px 12px;background:var(--card);border-bottom:1px solid var(--line)}
+#sokdlg .ark-bar button{font:inherit;font-size:16px;min-height:40px;padding:6px 10px;border:0;background:transparent;cursor:pointer;color:var(--ink2);font-weight:600}
+#sokdlg .ark-inn{padding:0 16px calc(18px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:10px}
+#sokdlg .ark-tittel{font-weight:800;font-size:15px}
+#sok-inn{width:100%;box-sizing:border-box;font:inherit;font-size:17px;padding:11px 12px;border:1.5px solid var(--line);border-radius:12px;background:var(--card2);color:var(--ink)}
+.sok-rad{border:1px solid var(--line);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:6px;background:var(--card)}
+.sok-rad.av{opacity:.55}
+.sok-navn{display:flex;gap:10px;align-items:flex-start;text-align:left;border:0;background:transparent;padding:0;font:inherit;color:var(--ink);cursor:pointer;width:100%}
+.sok-navn .ik{font-size:22px;line-height:1.1}.sok-navn b{display:block;font-size:16px;line-height:1.25}.sok-navn .small{display:block;margin-top:2px}
+.sok-naar{font-size:15px;padding-left:32px}.sok-naar span{color:var(--ink2)}
+.sok-steg{display:flex;align-items:center;gap:8px;padding-left:32px;font-size:14px;color:var(--ink2)}
+.sok-steg button{width:40px;height:36px;border-radius:10px;border:1.5px solid var(--line);background:var(--card2);color:var(--ink);font:inherit;font-size:20px;font-weight:800;cursor:pointer}
+.sok-steg b{color:var(--ink);font-size:16px;min-width:26px;text-align:center}
+.sok-steg input{font:inherit;font-size:15px;padding:6px 8px;border:1.5px solid var(--line);border-radius:9px;background:var(--card2);color:var(--ink)}
 #bortedlg .borterad{margin:4px 0;text-align:left}#bortedlg .borterad form{justify-content:flex-start}#bortedlg .borterad form button[type=submit]{background:var(--accent);color:#fff;border:0;font-weight:800}
 .ferdigstripe{margin-top:14px;border-top:1px dashed var(--line);padding-top:8px}.ferdigstripe summary{cursor:pointer;font-weight:800;font-size:13px;color:var(--muted);list-style:none}.ferdigstripe summary::-webkit-details-marker{display:none}.ferdigstripe summary .small{font-weight:500}
 .ferdigstripe .tiles.kompakt .tile{min-height:30px;opacity:.7}.ferdigstripe .tiles.kompakt .tmain{padding:2px 4px 2px 9px}.ferdigstripe .tiles.kompakt .pt,.ferdigstripe .tiles.kompakt .mt,.ferdigstripe .tiles.kompakt .avs,.ferdigstripe .tiles.kompakt .tb{display:none}
@@ -134,7 +150,7 @@ dialog#nydlg,dialog#bortedlg{border:0;border-radius:16px;padding:0;max-width:560
 dialog#ark{border:0;border-radius:16px;padding:0;max-width:560px;width:calc(100% - 28px);background:var(--card);color:var(--ink);box-shadow:0 18px 50px rgba(0,0,0,.28)}
 dialog#ark::backdrop{background:rgba(0,0,0,.45)}
 /* v1.53.3 (Thor 19.10): rulling i arket skal rulle arket — ikke siden under */
-dialog#ark,dialog#nydlg,dialog#bortedlg{max-height:calc(100dvh - 24px);overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+dialog#ark,dialog#nydlg,dialog#bortedlg,dialog#sokdlg{max-height:calc(100dvh - 24px);overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
 body.side-laast{position:fixed;left:0;right:0;width:100%;overflow:hidden}
 #ark .ark-inn{padding:0 16px calc(18px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:12px}
 #ark .ark-bar{position:sticky;top:0;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 -16px 2px;padding:10px 12px;background:var(--card);border-bottom:1px solid var(--line)}
@@ -510,6 +526,7 @@ input,select,textarea,button{font-size:16px!important}
 <section class="handl" id="mer" hidden>
   <button type="button" class="hk1" id="ny-aapne">➕ Ny huskelapp</button>
   <button type="button" class="hk2" id="borte-btn">🧳 Jeg er borte</button>
+  <button type="button" class="hk2" id="sok-btn">🔍 Søk</button>
 </section>
 <!-- v1.61 (Thor 27.10): handlelista — dikter flere ting, appen deler i linjer; Liv tar den med i Ukeshandel søndag -->
 <section class="card" id="handle" hidden>
@@ -530,6 +547,12 @@ input,select,textarea,button{font-size:16px!important}
   <div class="ark-bar"><button type="button" id="ny-avbryt">Avbryt</button><span class="ark-tittel" id="nydlg-t">Ny huskelapp</span><span style="width:70px"></span></div>
   <div id="ny-body"></div>
 </div></dialog>
+<dialog id="sokdlg" aria-labelledby="sokdlg-t"><div class="ark-inn">
+  <div class="ark-bar"><button type="button" id="sok-x">Lukk</button><span class="ark-tittel" id="sokdlg-t">Finn en oppgave</span><span style="width:60px"></span></div>
+  <input type="search" id="sok-inn" placeholder="Søk, f.eks. frisør eller sluk" autocomplete="off" enterkeyhint="search" aria-label="Søk etter oppgave">
+  <div id="sok-ut"></div>
+</div></dialog>
+
 <dialog id="bortedlg" aria-labelledby="bortedlg-t"><div class="ark-inn">
   <div class="ark-bar"><button type="button" id="borte-x">Avbryt</button><span class="ark-tittel" id="bortedlg-t">Jeg er borte</span><span style="width:70px"></span></div>
   <div id="mer-borte"></div>
@@ -676,7 +699,7 @@ input,select,textarea,button{font-size:16px!important}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.68.0';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.69.0';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -2310,6 +2333,7 @@ function tegnNyRask(){
   if(body&&w.parentNode!==body){ body.appendChild(w); var dt=document.getElementById('ny-rask'); if(dt) dt.open=true; } /* v1.31: skjemaet bor i en egen dialog */
   var voks=!!(valgt&&VOKSNE.indexOf(valgt)>=0); w.hidden=!voks;
   if(mer) mer.hidden=!voks;
+  ['ny-aapne','sok-btn'].forEach(function(id){var b=document.getElementById(id); if(b) b.hidden=!voks}); /* v1.69: .handl{display:flex} overstyrer [hidden] på raden — skjul knappene selv, barna ser dem ikke */
   try{tegnHandle()}catch(e){} /* v1.61 */
   if(!w.hidden&&window.__nyRaskHvem)window.__nyRaskHvem();
 }
@@ -2475,6 +2499,59 @@ function gaaTil(id){var m=document.getElementById(id);if(!m)return;var off=0;doc
   var nd=document.getElementById('nydlg'), na=document.getElementById('ny-aapne'), nx=document.getElementById('ny-avbryt');
   if(na&&nd){ na.onclick=function(){ var dt=document.getElementById('ny-rask'); if(dt) dt.open=true; if(!nd.open) nd.showModal(); setTimeout(function(){tIn.focus()},50); };
     if(nx) nx.onclick=function(){nd.close()}; nd.addEventListener('click',function(e){if(e.target===nd)nd.close()}); }
+})();
+/* ---------- v1.69 (Thor 7.11): Søk — finn en oppgave, se når den kommer og hvor lenge det er igjen, og endre rytmen (bare voksne; knappen bor i #mer) ---------- */
+(function(){
+  var dlg=document.getElementById('sokdlg'), btn=document.getElementById('sok-btn'), inn=document.getElementById('sok-inn'), ut=document.getElementById('sok-ut');
+  if(!dlg||!btn||!inn||!ut) return;
+  var SJELDEN=['uker','2uke','3uke','4uke','kvartal','dato'];
+  function idag0(){return new Date(NAA.getFullYear(),NAA.getMonth(),NAA.getDate())}
+  function finn(id){return OPPG.filter(function(x){return x.id===id})[0]}
+  function neste(o){ if(o.aktiv===false) return null; if(o.int==='dato') return o.dato?new Date(o.dato+'T00:00:00'):null; try{return nesteGang(o)}catch(e){return null} }
+  function igjen(d){ var n=Math.round((new Date(d.getFullYear(),d.getMonth(),d.getDate())-idag0())/86400000);
+    if(n<0) return 'passert'; if(n===0) return 'i dag'; if(n===1) return 'i morgen';
+    return 'om '+n+' dager'+(n>=14?' (ca. '+Math.round(n/7)+' uker)':''); }
+  function norm(t){return String(t||'').toLowerCase()}
+  function ukerAv(o){ if(o.int==='uker') return o.hver||4; return {'uke':1,'2uke':2,'3uke':3,'4uke':4,'kvartal':13}[o.int]||0 }
+  function kanSteg(o){ return o.aktiv!==false && !o.ikkeSammeUke && ukerAv(o)>0 }
+  function hvemTxt(o){ return (o.rull&&o.rull.length?o.rull:(o.hvem||[])).map(function(h){return (PMAP[h]||{navn:h}).navn}).join(', ') }
+  function treff(q){
+    var liste=OPPG.filter(function(o){return !o.tur&&o.navn});
+    if(!q) return liste.filter(function(o){return o.aktiv!==false&&SJELDEN.indexOf(o.int)>=0}).map(function(o){return {o:o,d:neste(o),r:0}})
+      .filter(function(x){return x.d&&x.d>=idag0()}).sort(function(a,b){return a.d-b.d}).slice(0,12);
+    var ord=norm(q).split(/\s+/).filter(Boolean);
+    return liste.map(function(o){ var nv=norm(o.navn), alt=nv+' '+norm(o.notat)+' '+norm(o.kat);
+        if(!ord.every(function(w){return alt.indexOf(w)>=0})) return null;
+        return {o:o, d:neste(o), r:(ord.every(function(w){return nv.indexOf(w)>=0})?0:1)+(o.aktiv===false?2:0)} })
+      .filter(Boolean).sort(function(a,b){return a.r-b.r||((a.d?a.d.getTime():9e15)-(b.d?b.d.getTime():9e15))}).slice(0,25);
+  }
+  function rad(x){ var o=x.o, d=x.d, n=ukerAv(o), hv=hvemTxt(o);
+    var h='<div class="sok-rad'+(o.aktiv===false?' av':'')+'">';
+    h+='<button type="button" class="sok-navn" data-aapne="'+esc(o.id)+'"><span class="ik">'+(o.ikon||'🧺')+'</span><span><b>'+esc(o.navn)+'</b><span class="small">'+(o.aktiv===false?'slått av':esc(rytmeTekst(o)))+(hv?' · '+esc(hv):'')+'</span></span></button>';
+    if(o.aktiv!==false) h+='<div class="sok-naar">'+(d?'<b>'+DAGER[(d.getDay()+6)%7].slice(0,3).toLowerCase()+' '+datoNorsk(d)+(d.getFullYear()!==NAA.getFullYear()?d.getFullYear():'')+'</b> <span>· '+igjen(d)+'</span>':'<span>Ingen dato framover</span>')+'</div>';
+    if(o.aktiv!==false&&o.int==='dato') h+='<label class="sok-steg">Flytt til <input type="date" data-dato="'+esc(o.id)+'" value="'+esc(o.dato||'')+'"></label>';
+    else if(kanSteg(o)) h+='<div class="sok-steg"><button type="button" data-steg="-1" data-sid="'+esc(o.id)+'" aria-label="Oftere">−</button><b>'+(n===1?'hver uke':'hver '+n+'. uke')+'</b><button type="button" data-steg="1" data-sid="'+esc(o.id)+'" aria-label="Sjeldnere">+</button></div>';
+    return h+'</div>';
+  }
+  /* Som i Påminnelser: neste gang står som før, den nye rytmen gjelder derfra */
+  function steg(id,dlt){ var o=finn(id); if(!o) return; var n=ukerAv(o), ny=Math.max(1,Math.min(52,n+dlt)); if(ny===n) return;
+    var d=neste(o);
+    if(o.int!=='uker'){ if(o.dag===undefined) o.dag=3; o.int='uker'; delete o.skift; }
+    o.hver=ny; o.fra=ukeKey(d?mandag(d):NAA); o.by=valgt||'familie';
+    lagreOppg(o); tegn(); vis(); toast(ny===1?'Hver uke fra neste gang':'Hver '+ny+'. uke fra neste gang'); }
+  function flyttDato(id,v){ var o=finn(id); if(!o||!v||o.dato===v) return; o.dato=v; o.by=valgt||'familie';
+    lagreOppg(o); if(o.minn){VARSLET_NAA=false; try{ryddMinn();planleggVarsler()}catch(e){}} tegn(); vis(); toast('Flyttet til '+datoNorsk(new Date(v+'T12:00:00'))); }
+  function vis(){ var q=inn.value.trim(), L=treff(q);
+    ut.innerHTML=(q?'':'<p class="small" style="margin:0 0 8px">Det som kommer snart. Skriv for å søke i alle oppgavene. Trykk på en oppgave for å se notatet.</p>')
+      +(L.length?'<div style="display:flex;flex-direction:column;gap:8px">'+L.map(rad).join('')+'</div>':'<p class="small">Fant ingen oppgave med «'+esc(q)+'».</p>');
+    ut.querySelectorAll('[data-steg]').forEach(function(b){b.onclick=function(){steg(b.dataset.sid,+b.dataset.steg)}});
+    ut.querySelectorAll('input[data-dato]').forEach(function(i){i.onchange=function(){flyttDato(i.dataset.dato,i.value)}});
+    ut.querySelectorAll('[data-aapne]').forEach(function(b){b.onclick=function(){dlg.close(); aapneArk(b.dataset.aapne)}});
+  }
+  btn.onclick=function(){ if(!dlg.open) dlg.showModal(); vis(); setTimeout(function(){inn.focus()},50) };
+  inn.addEventListener('input',vis);
+  var sx=document.getElementById('sok-x'); if(sx) sx.onclick=function(){dlg.close()};
+  dlg.addEventListener('click',function(e){if(e.target===dlg)dlg.close()});
 })();
 fyllHvem();
 try{var lo=JSON.parse(localStorage.getItem('ft-oppg')||'null');if(lo&&lo.length)OPPG=lo}catch(e){}
