@@ -237,7 +237,7 @@ body.side-laast{position:fixed;left:0;right:0;width:100%;overflow:hidden}
 /* v1.70: skillere for dagen (helg) + turkortet på tavla + huskelapper bak ett trykk */
 .skille{margin:20px 0 2px;padding:6px 0 4px;border-top:2px solid var(--accent);font-size:14px;font-weight:900;letter-spacing:.02em;color:var(--ink)}.skille:first-child,.dagtxt+.skille,.glemt+.skille,.ferdigbadge+.skille,.fravchip+.skille{margin-top:8px}
 .skille+.grp{border-top:0;padding-top:0;margin-top:8px}
-.turkort{display:flex;align-items:center;gap:10px;border:1.5px solid var(--accent);border-radius:12px;padding:10px 12px;margin:8px 0;background:var(--accentbg)}.turkort .ti2{font-size:30px;flex:none}.turkort .tx{flex:1 1 auto;min-width:0}.turkort b{display:block;font-size:15px;line-height:1.25}.turkort .m{display:block;font-size:12.5px;color:var(--muted);margin-top:3px;line-height:1.35}.turkort .tk{flex:none;font-size:13px;font-weight:800;text-decoration:none;color:var(--accent)}
+.tile.turtile{border-color:var(--accent);background:var(--accentbg)}.tile.turtile .chk{display:none}
 .merlapper{margin:4px 0 8px}.merlapper summary{cursor:pointer;font-size:13px;font-weight:800;color:var(--muted);list-style:none;padding:6px 2px}.merlapper summary::-webkit-details-marker{display:none}.merlapper[open] summary{color:var(--ink)}
 .tile.hg{border-color:var(--warn);background:var(--warnbg)}
 .glemt{background:var(--warnbg);border:1px solid var(--warn);border-radius:10px;padding:8px 10px;margin:6px 0 8px;font-size:13.5px;font-weight:700;color:var(--ink)}
@@ -704,7 +704,7 @@ input,select,textarea,button{font-size:16px!important}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.70.0';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.70.1';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -1958,9 +1958,13 @@ function tegnIdag(){
      Dagens tur (turer/<id>, type dag) står som eget kort øverst i Ettermiddag med sitt eget ikon (🥾 tur, ⚽ fotball …) og lenke til pakkelista. */
   var erHelg=(dIdx===5||dIdx===6), ydag=ymd(NAA);
   var DELAV={'Huskelapper':'em','Kveld':'kv'}; var SEG={fm:'',em:'',kv:''};
+  /* v1.70.1: huskelapper og «I løpet av dagen» sorteres etter klokkeslettet på lappen (varsel/minn): før 12 = formiddag, 12–17 = ettermiddag, etter 17 = kveld; uten klokkeslett gjelder gruppas plass */
+  function segFor(o,g){ var t=(o.minn&&o.minn.tid)||''; if(t&&(g==='Huskelapper'||g==='Dagen')){ var h=+t.slice(0,2); return h<12?'fm':h<17?'em':'kv'; } return DELAV[g]||'fm'; }
   var turer=turListe().filter(function(t){return t.fra<=ydag&&(t.til||t.fra)>=ydag&&(!valgt||!(t.hvem&&t.hvem.length)||t.hvem.indexOf(valgt)>=0)});
-  var turK=turer.map(function(t){var L=PAKKL[t.type]||{}, inf=(t.info||[]).filter(function(i){return i&&i.v&&/^(plan|med)$/i.test(i.k||'')});
-    return '<div class="tur turkort"><span class="ti2">'+(t.ikon||L.ikon||'\uD83E\uDDF3')+'</span><span class="tx"><b>'+esc(t.navn)+'</b>'+inf.map(function(i){return '<span class="m">'+esc(i.k)+': '+esc(i.v)+'</span>'}).join('')+'</span><a class="tk" href="#pakk">Lista \u2192</a></div>'}).join('');
+  /* v1.70.1 (Thor 7.11): turen er en vanlig rute i samme størrelse som de andre — trykk åpner turen (plan, pakkeliste) i Pakkelistene */
+  var turK=turer.map(function(t){var L=PAKKL[t.type]||{}, med=((t.info||[]).filter(function(i){return i&&i.v&&/^med$/i.test(i.k||'')})[0]||{}).v||'';
+    return '<div class="tile turtile" style="--pc:var(--accent)"><button class="tmain" type="button" data-tur="'+esc(t.id)+'" data-tt="'+esc(t.type||'')+'"><span class="ik">'+(t.ikon||L.ikon||'\uD83E\uDDF3')+'</span><span class="tx"><span class="nm">'+esc(t.navn)+'</span><span class="mt">'+esc(med?'Med: '+med:'Trykk for plan og pakkeliste')+'</span></span></button></div>'}).join('');
+  if(turK) turK='<div class="tiles">'+turK+'</div>';
   rekke.forEach(function(g){
     if(!grp[g].length){ if(erTorsdag&&g==='Grovvask') html+='<div class="grp hv">'+esc(navnG[g])+'</div><p class="small" style="margin:4px 0 10px">'+(harTrening&&valgt?'Din husvask tok du på onsdag — i dag er det økta. 💪':'Ingenting på deg denne torsdagen — hjelp den som trenger det. 🙌')+'</p>'; return; }
     var gh='', ghArr=[];
@@ -1976,7 +1980,7 @@ function tegnIdag(){
         var av=s.felles.map(function(x){var q=PMAP[x.person];return '<span class="av'+(erGjort(fk,x.key)?' ok':'')+'" style="--pc:'+q.farge+'" title="'+esc(q.navn)+'">'+esc(q.kort)+'</span>'}).join('');
         var rkF=rytmeKort(s.o), metaF=(s.o.minn&&s.o.minn.tid?'⏰ '+s.o.minn.tid+' · ':'')+(rkF?'↻ '+rkF+' · ':'')+(s.o.min?s.o.min+' min · ':'')+'alle sammen · '+antD+' av '+s.felles.length+(s.o.notat||s.o.lenke?' · trykk ⓘ for stegene':'');
         var tF='<div class="tile'+(alleD?' done':'')+(s.o.bonus?' bonus':'')+'" style="--pc:var(--accent)"><button class="tmain" data-k="'+esc(fk)+'" data-f="'+esc(s.felles.map(function(x){return x.key}).join(','))+'" aria-pressed="'+alleD+'"><span class="chk">✓</span><span class="ik">'+s.o.ikon+'</span><span class="tx"><span class="nm">'+esc(s.o.navn)+'<span class="pt num">+'+(s.o.poeng*s.felles.length)+'</span></span><span class="mt">'+metaF+'</span><span class="avs">'+av+'</span></span></button><span class="side">'+arkKnapp(s.o)+'<button hidden class="tb" title="Utsett for alle" aria-label="Utsett for alle" data-k="'+esc(s.felles[0].ukeKey||key)+'" data-o="'+esc(s.o.id)+'" data-d="'+s.dag+'" data-dag0="'+(s.felles[0].flyttet?s.felles[0].fraDag:s.dag)+'" data-felles="'+esc(s.felles.map(function(x){return x.orig}).join(','))+'">⇄</button></span></div>';
-        if(alleD) FERD.push(tF); else ghArr.push(tF);
+        if(alleD) FERD.push(tF); else ghArr.push({h:tF,seg:segFor(s.o,g)});
         return;
       }
       var done=erGjort(s.ukeKey||key,s.key), p=PMAP[s.person];
@@ -1991,13 +1995,15 @@ function tegnIdag(){
       var tk=s.ukeKey||key;
       var navnVis=s.o.navn; if(s.o.kat==='Trening'&&done){var lt=lkType(s.key,tk); navnVis+=lt?' — logget i Livskraft ('+lt+') ✓':' — bonusøkt (ikke logget i Livskraft)';}
       var tS='<div class="tile'+(done?' done':'')+(s.forfalt?' hg':'')+(s.o.bonus?' bonus':'')+'" style="--pc:'+p.farge+'"><button class="tmain" data-k="'+esc(tk)+'" data-s="'+esc(s.key)+'" data-p="'+esc(s.person)+'" aria-pressed="'+done+'"><span class="chk">✓</span><span class="ik">'+s.o.ikon+'</span><span class="tx"><span class="nm">'+esc(navnVis)+mdTag(s.o,s.dato||NAA)+(s.o.bonus?'<span class="pt num bo">+'+s.o.poeng+' bonus</span>':'<span class="pt num">+'+s.o.poeng+'</span>')+'</span><span class="mt">'+meta+'</span></span></button><span class="side">'+arkKnapp(s.o)+'<button hidden class="tb" title="Bytt oppgaven til en annen" aria-label="Bytt til en annen" data-k="'+esc(tk)+'" data-o="'+esc(s.o.id)+'" data-d="'+s.dag+'" data-fra="'+esc(s.orig)+'" data-naa="'+esc(s.person)+'" data-dag0="'+(s.flyttet?s.fraDag:s.dag)+'"'+(s.forfalt?' data-forfalt="1"':'')+(s.utsatt?' data-uts="'+esc(s.fraUke)+'" data-utsk="'+esc(s.fraKey)+'"':'')+'>⇄</button></span></div>';
-      if(done) FERD.push(tS); else ghArr.push(tS);
+      if(done) FERD.push(tS); else ghArr.push({h:tS,seg:segFor(s.o,g)});
     });
     /* v1.70: huskelapper — de tre første vises, resten bak ett trykk, så de ikke skygger for det viktige (barna ser alle sine) */
-    var MAKS_LAPP=3; if(g==='Huskelapper'&&!erBarn&&ghArr.length>MAKS_LAPP){ gh=ghArr.slice(0,MAKS_LAPP).join('')+'</div><details class="merlapper"><summary>+ '+(ghArr.length-MAKS_LAPP)+' huskelapper til \u2014 trykk for \u00e5 se</summary><div class="tiles">'+ghArr.slice(MAKS_LAPP).join('')+'</div></details><div class="tiles" hidden>'; } else gh=ghArr.join('');
-    var seg=DELAV[g]||'fm';
-    if(!gh&&erTorsdag&&g==='Grovvask') SEG[seg]+='<div class="grp hv">'+esc(navnG[g])+'</div><p class="small" style="margin:4px 0 10px">✓ Din del av husvasken er gjort.</p>';
-    if(gh) SEG[seg]+='<div class="grp'+(g==='Henger igjen'?' hg':'')+(erTorsdag&&g==='Grovvask'?' hv':'')+'">'+esc(navnG[g]||g)+'</div><div class="tiles">'+gh+'</div>';
+    var MAKS_LAPP=3; gh=ghArr.length?'x':'';
+    if(!gh&&erTorsdag&&g==='Grovvask') SEG['fm']+='<div class="grp hv">'+esc(navnG[g])+'</div><p class="small" style="margin:4px 0 10px">✓ Din del av husvasken er gjort.</p>';
+    ['fm','em','kv'].forEach(function(seg){ var arr=ghArr.filter(function(x){return x.seg===seg}).map(function(x){return x.h}); if(!arr.length) return;
+      var inner=arr.join('');
+      if(g==='Huskelapper'&&!erBarn&&arr.length>MAKS_LAPP) inner=arr.slice(0,MAKS_LAPP).join('')+'</div><details class="merlapper"><summary>+ '+(arr.length-MAKS_LAPP)+' huskelapper til \u2014 trykk for \u00e5 se</summary><div class="tiles">'+arr.slice(MAKS_LAPP).join('')+'</div></details><div class="tiles" hidden>';
+      SEG[seg]+='<div class="grp'+(g==='Henger igjen'?' hg':'')+(erTorsdag&&g==='Grovvask'?' hv':'')+'">'+esc(navnG[g]||g)+'</div><div class="tiles">'+inner+'</div>'; });
   });
   if(erHelg&&(SEG.fm||SEG.em||SEG.kv||turK)){
     html+=(SEG.fm?'<div class="skille">\u2600\uFE0F Formiddag</div>'+SEG.fm:'')+(SEG.em||turK?'<div class="skille">\uD83E\uDDED Ettermiddag</div>'+turK+SEG.em:'')+(SEG.kv?'<div class="skille">\uD83C\uDF19 Kveld</div>'+SEG.kv:'');
@@ -2049,9 +2055,11 @@ function tegnIdag(){
       toast('Borte til og med '+DAGK[(new Date(til+'T00:00:00').getDay()+6)%7]+' '+datoNorsk(new Date(til+'T00:00:00'))+' — husoppgavene er på pause'); };
   }
   el.querySelectorAll('.gk').forEach(function(b){b.onclick=function(){toggle(b.dataset.k,b.dataset.s,b.dataset.p)}});
-  if(erVoksen()) el.querySelectorAll('.tiles:not(.kompakt) .tile').forEach(sveipBind); /* v1.51: sveip til venstre — Flytt og Slett (bare voksne) */
+  el.querySelectorAll('[data-tur]').forEach(function(b){b.onclick=function(ev){ev.stopPropagation(); var dd=document.querySelector('#pk-liste details[data-pkt="'+b.dataset.tt+'"]'), pk=document.getElementById('pakk');
+    if(dd){PK_OPEN[b.dataset.tt]=true; dd.open=true; dd.scrollIntoView({behavior:'smooth',block:'start'})} else if(pk) pk.scrollIntoView({behavior:'smooth',block:'start'}); }});
+  if(erVoksen()) el.querySelectorAll('.tiles:not(.kompakt) .tile:not(.turtile)').forEach(sveipBind); /* v1.51: sveip til venstre — Flytt og Slett (bare voksne) */
   el.querySelectorAll('.ti').forEach(function(b){b.onclick=function(ev){ev.stopPropagation();aapneArk(b.dataset.ark,b)}});
-  el.querySelectorAll('.tmain').forEach(function(b){b.onclick=function(){
+  el.querySelectorAll('.tmain:not([data-tur])').forEach(function(b){b.onclick=function(){
     if(b.dataset.f){var keys=b.dataset.f.split(','),alle=keys.every(function(k){return erGjort(b.dataset.k,k)});
       keys.forEach(function(k){if(erGjort(b.dataset.k,k)===alle)toggle(b.dataset.k,k,k.split('|')[2])});return}
     if(AAPNE_PAA_TRYKK){var oo=b.parentNode.querySelector('.ti');if(oo){aapneArk(oo.dataset.ark);return}}
