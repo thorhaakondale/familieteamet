@@ -1385,35 +1385,35 @@
  },
  "protein": {
   "thor": {
-   "maal": 170,
-   "tekst": "3 måltider + 1–2 frukt",
+   "maal": 155,
+   "tekst": "vedlikehold ~2 800 kcal · 3 måltider + 2 epler (ett kl. 14)",
    "maaltider": [
     {
      "navn": "Første måltid (~11)",
-     "g": 55,
+     "g": 50,
      "eks": [
-      "Grunnen på jobb: salat med 2 egg + 100 g stekt kyllingfilet + 30 g feta + 80 g kokt fullkornspasta + 80 g kikerter + mye grønt, lett dressing",
-      "helg: 200 g gresk yoghurt + 100 g cottage cheese + 20 g whey + blåbær, 3 knekkebrød med mager smøreost",
-      "kantine: proteinet først (to håndflater), så grønt, så litt potet/ris"
+      "Grunnen på jobb (ca. 850 kcal): salat med 2 egg + 100 g stekt kyllingfilet + 30 g feta + 150 g kokt fullkornspasta (før 80) + 80 g kikerter + mye grønt, lett dressing + 1 skive grovbrød",
+      "helg: 200 g gresk yoghurt + 100 g cottage cheese + 20 g whey + blåbær, 4 knekkebrød med mager smøreost + 1 banan",
+      "kantine: proteinet først (to håndflater), så grønt, så en full neve potet/ris — ikke en skvett"
      ]
     },
     {
-     "navn": "Middag",
-     "g": 55,
+     "navn": "Middag (~16:30)",
+     "g": 50,
      "middag": true,
      "eks": [
-      "Fra ukesmenyen — vekt på tallerken står i Ukeshandel, grønt fritt"
+      "Fra ukesmenyen (ca. 950 kcal) — vekt på tallerken står i Ukeshandel. Vedlikehold: ta én potet / én neve ris eller pasta mer enn før, grønt fritt"
      ]
     },
     {
-     "navn": "Kvelds",
-     "g": 60,
+     "navn": "Kvelds (19–20)",
+     "g": 55,
      "eks": [
-      "350 g gresk yoghurt (2 %) + 20 g whey + 100 g blåbær + 1 ss chia- eller linfrø — ca. 450 kcal"
+      "350 g gresk yoghurt (2 %) + 20 g whey + 100 g blåbær + 1 ss chia- eller linfrø + 1 knekkebrød med ost — ca. 550 kcal"
      ]
     }
    ],
-   "merk": "Karbohydrater og fiber gir energien gjennom dagen: 1–2 epler hver dag (ett før og ett etter lunsj — banan før gym man/ons), knekkebrød og fullkorn, kikerter i salaten, potet/ris/pasta til middag og minst 150 g grønnsaker. Mål: ca. 35 g fiber om dagen og ca. 2 300 kcal. Melk er ingen proteinstrategi — 3 dl lettmelk gir 10 g for 120 kcal."
+   "merk": "Fokus fra 7.11: nok mat — vedlikehold på ca. 2 800 kcal, ikke underskudd. Eplet kl. 14 tar ettermiddagsdippen (lunsj kl. 11 og middag 16:30 er 5,5 timer); det andre etter jobb eller før gym (banan man/ons). Ekstraen kommer som karbohydrater: mer pasta i salaten, én potet eller neve ris mer til middag, knekkebrød til kvelds. Proteinet ligger på 150–160 g. Helgekos og en vaffel på jobb er en del av uka, ikke et sprekk. Sjekk om to uker: energi på ettermiddagen, styrke og livvidde (øker den 2 cm, er det for mye)."
   },
   "anniken": {
    "maal": 120,
