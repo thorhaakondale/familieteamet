@@ -234,6 +234,11 @@ body.side-laast{position:fixed;left:0;right:0;width:100%;overflow:hidden}
 .dagfill{height:100%;background:linear-gradient(90deg,var(--accent),var(--ok));border-radius:999px;transition:width .5s}
 .dagtxt{font-size:14px;color:var(--ink2);margin:0 0 6px}
 .grp.hg{color:var(--warn)}
+/* v1.70: skillere for dagen (helg) + turkortet på tavla + huskelapper bak ett trykk */
+.skille{margin:20px 0 2px;padding:6px 0 4px;border-top:2px solid var(--accent);font-size:14px;font-weight:900;letter-spacing:.02em;color:var(--ink)}.skille:first-child,.dagtxt+.skille,.glemt+.skille,.ferdigbadge+.skille,.fravchip+.skille{margin-top:8px}
+.skille+.grp{border-top:0;padding-top:0;margin-top:8px}
+.turkort{display:flex;align-items:center;gap:10px;border:1.5px solid var(--accent);border-radius:12px;padding:10px 12px;margin:8px 0;background:var(--accentbg)}.turkort .ti2{font-size:30px;flex:none}.turkort .tx{flex:1 1 auto;min-width:0}.turkort b{display:block;font-size:15px;line-height:1.25}.turkort .m{display:block;font-size:12.5px;color:var(--muted);margin-top:3px;line-height:1.35}.turkort .tk{flex:none;font-size:13px;font-weight:800;text-decoration:none;color:var(--accent)}
+.merlapper{margin:4px 0 8px}.merlapper summary{cursor:pointer;font-size:13px;font-weight:800;color:var(--muted);list-style:none;padding:6px 2px}.merlapper summary::-webkit-details-marker{display:none}.merlapper[open] summary{color:var(--ink)}
 .tile.hg{border-color:var(--warn);background:var(--warnbg)}
 .glemt{background:var(--warnbg);border:1px solid var(--warn);border-radius:10px;padding:8px 10px;margin:6px 0 8px;font-size:13.5px;font-weight:700;color:var(--ink)}
 .glemt .gk{font:inherit;font-size:13px;font-weight:800;margin:3px 4px 3px 0;padding:4px 9px;border-radius:999px;border:1.5px solid var(--warn);background:var(--card);color:var(--ink);cursor:pointer}
@@ -699,7 +704,7 @@ input,select,textarea,button{font-size:16px!important}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.69.0';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.70.0';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -1647,7 +1652,8 @@ function turListe(){return Object.keys(TURER).map(function(k){var t=TURER[k]||{}
 function turDager(t){return Math.round((new Date((t.til||t.fra)+'T00:00:00')-new Date(t.fra+'T00:00:00'))/86400000)+1}
 function pakkeslag(t){ /* n\u00e5r pakkingen skjer (Thor 13.10: ikke dagen f\u00f8r \u2014 start tidlig i uka, s\u00e5 ferien ikke starter med pakking) */
   var D=new Date(t.fra+'T00:00:00'), n=turDager(t), wd=(D.getDay()+6)%7, ut=[];
-  if(t.type==='forretning'||t.type==='dag'||(n<=1&&t.type!=='solo'&&t.type!=='par')){ ut.push({n:1,dato:ymd(addDays(D,-1)),tid:'19:00',navn:'Pakk i kveld',tekst:'I morgen: '+t.navn+'. '+(TUR_BAG[t.type]||'bag')+' \u2014 \u00e5pne lista og hak av.'}); return ut; }
+  if(t.type==='dag') return ut; /* v1.70 (Thor 7.11): dagstur = lavterskel \u2014 ingen pakkepåminnelse dagen før; turen står som kort på tavla samme dag */
+  if(t.type==='forretning'||(n<=1&&t.type!=='solo'&&t.type!=='par')){ ut.push({n:1,dato:ymd(addDays(D,-1)),tid:'19:00',navn:'Pakk i kveld',tekst:'I morgen: '+t.navn+'. '+(TUR_BAG[t.type]||'bag')+' \u2014 \u00e5pne lista og hak av.'}); return ut; }
   var start=addDays(D,n>=5?-5:-3); if(wd>=3&&wd<=6&&n<5&&n>2){ start=addDays(D,-(wd-1)); } /* avreise tor\u2013s\u00f8n: start tirsdag samme uke; korte solo-/parturer (1\u20132 netter) starter tre dager f\u00f8r */
   if(ymd(start)>=t.fra) start=addDays(D,-1);
   var ferdig=addDays(D,-1);
@@ -1699,7 +1705,7 @@ function tegnPakk(){
   var kommende=turListe().filter(function(t){return (t.til||t.fra)>=naaY}).slice(0,4);
   kommende.forEach(function(t){ var D=new Date(t.fra+'T00:00:00'), om=Math.round((D-new Date(naaY+'T00:00:00'))/86400000), sl=pakkeslag(t), neste=sl.filter(function(x){return x.dato>=naaY})[0];
     var L=PAKKL[t.type]||{}, st=PAKK[t.type]||{}, hk=st.haket||{};
-    h+='<div class="tur"><span class="ti2">'+(L.ikon||'\uD83E\uDDF3')+'</span><span class="tx"><b>'+esc(t.navn)+'</b><span class="m">'+DAGK[(D.getDay()+6)%7]+' '+datoNorsk(D)+(t.til&&t.til!==t.fra?'\u2013'+datoNorsk(new Date(t.til+'T00:00:00')):'')+' \u00b7 '+(om<=0?'i dag':om===1?'i morgen':'om '+om+' dager')+' \u00b7 '+(t.hvem||[]).map(function(p){return (PMAP[p]||{}).dyr||''}).join('')+(neste?'<br>Neste: '+esc(neste.navn)+' \u00b7 '+DAGK[(new Date(neste.dato+'T00:00:00').getDay()+6)%7]+' '+datoNorsk(new Date(neste.dato+'T00:00:00'))+' kl. '+neste.tid.slice(0,2):'')+'</span></span><span class="tk">'+(t.plan?'<a href="'+esc(t.plan)+'" target="_blank" rel="noopener">\uD83D\uDCC4 Plan</a>':'')+'<button type="button" data-pk="aapne" data-t="'+esc(t.type)+'">Lista \u2192</button>'+(t.type==='dag'&&erVoksen()?'<button type="button" class="skyv" data-pk="skyv" data-t="'+esc(t.id)+'" title="Flytt turen én uke fram">Ikke denne uka \u2192</button>':'')+'</span></div>'+turInfo(t);
+    h+='<div class="tur"><span class="ti2">'+(t.ikon||L.ikon||'\uD83E\uDDF3')+'</span><span class="tx"><b>'+esc(t.navn)+'</b><span class="m">'+DAGK[(D.getDay()+6)%7]+' '+datoNorsk(D)+(t.til&&t.til!==t.fra?'\u2013'+datoNorsk(new Date(t.til+'T00:00:00')):'')+' \u00b7 '+(om<=0?'i dag':om===1?'i morgen':'om '+om+' dager')+' \u00b7 '+(t.hvem||[]).map(function(p){return (PMAP[p]||{}).dyr||''}).join('')+(neste?'<br>Neste: '+esc(neste.navn)+' \u00b7 '+DAGK[(new Date(neste.dato+'T00:00:00').getDay()+6)%7]+' '+datoNorsk(new Date(neste.dato+'T00:00:00'))+' kl. '+neste.tid.slice(0,2):'')+'</span></span><span class="tk">'+(t.plan?'<a href="'+esc(t.plan)+'" target="_blank" rel="noopener">\uD83D\uDCC4 Plan</a>':'')+'<button type="button" data-pk="aapne" data-t="'+esc(t.type)+'">Lista \u2192</button>'+(t.type==='dag'&&erVoksen()?'<button type="button" class="skyv" data-pk="skyv" data-t="'+esc(t.id)+'" title="Flytt turen én uke fram">Ikke denne uka \u2192</button>':'')+'</span></div>'+turInfo(t);
   });
   typer.forEach(function(t){
     var L=PAKKL[t]||{}, st=PAKK[t]||{}, hk=st.haket||{}, ses=st.ses||pkSesong(), sted=st.sted||'';
@@ -1948,9 +1954,16 @@ function tegnIdag(){
     rekke=rekke.filter(function(g){return g!=='Trening'});
     var etter=((erTorsdag)||(erOnsdag&&grp['Grovvask'].length))?rekke.indexOf('Grovvask')+1:0; rekke.splice(etter,0,'Trening'); }
   var FERD=[]; /* v1.29 (Thor 17.10): det som er huket flyttes ut av gruppene og ned i én lav stripe nederst */
+  /* v1.70 (Thor 7.11.2026): dagen brytes opp i Formiddag / Ettermiddag / Kveld på lørdag og søndag — jobbene før lunsj, turen og huskelappene etterpå, kvelden sist.
+     Dagens tur (turer/<id>, type dag) står som eget kort øverst i Ettermiddag med sitt eget ikon (🥾 tur, ⚽ fotball …) og lenke til pakkelista. */
+  var erHelg=(dIdx===5||dIdx===6), ydag=ymd(NAA);
+  var DELAV={'Huskelapper':'em','Kveld':'kv'}; var SEG={fm:'',em:'',kv:''};
+  var turer=turListe().filter(function(t){return t.fra<=ydag&&(t.til||t.fra)>=ydag&&(!valgt||!(t.hvem&&t.hvem.length)||t.hvem.indexOf(valgt)>=0)});
+  var turK=turer.map(function(t){var L=PAKKL[t.type]||{}, inf=(t.info||[]).filter(function(i){return i&&i.v&&/^(plan|med)$/i.test(i.k||'')});
+    return '<div class="tur turkort"><span class="ti2">'+(t.ikon||L.ikon||'\uD83E\uDDF3')+'</span><span class="tx"><b>'+esc(t.navn)+'</b>'+inf.map(function(i){return '<span class="m">'+esc(i.k)+': '+esc(i.v)+'</span>'}).join('')+'</span><a class="tk" href="#pakk">Lista \u2192</a></div>'}).join('');
   rekke.forEach(function(g){
     if(!grp[g].length){ if(erTorsdag&&g==='Grovvask') html+='<div class="grp hv">'+esc(navnG[g])+'</div><p class="small" style="margin:4px 0 10px">'+(harTrening&&valgt?'Din husvask tok du på onsdag — i dag er det økta. 💪':'Ingenting på deg denne torsdagen — hjelp den som trenger det. 🙌')+'</p>'; return; }
-    var gh='';
+    var gh='', ghArr=[];
     /* «Alle»-visning: samme oppgave for flere personer samme dag = én rute med avatarer */
     var liste=grp[g];
     /* Forfalte ruter slås IKKE sammen: de kan komme fra ulike uker, og hver av dem må beholde sin egen ukeKey */
@@ -1963,7 +1976,7 @@ function tegnIdag(){
         var av=s.felles.map(function(x){var q=PMAP[x.person];return '<span class="av'+(erGjort(fk,x.key)?' ok':'')+'" style="--pc:'+q.farge+'" title="'+esc(q.navn)+'">'+esc(q.kort)+'</span>'}).join('');
         var rkF=rytmeKort(s.o), metaF=(s.o.minn&&s.o.minn.tid?'⏰ '+s.o.minn.tid+' · ':'')+(rkF?'↻ '+rkF+' · ':'')+(s.o.min?s.o.min+' min · ':'')+'alle sammen · '+antD+' av '+s.felles.length+(s.o.notat||s.o.lenke?' · trykk ⓘ for stegene':'');
         var tF='<div class="tile'+(alleD?' done':'')+(s.o.bonus?' bonus':'')+'" style="--pc:var(--accent)"><button class="tmain" data-k="'+esc(fk)+'" data-f="'+esc(s.felles.map(function(x){return x.key}).join(','))+'" aria-pressed="'+alleD+'"><span class="chk">✓</span><span class="ik">'+s.o.ikon+'</span><span class="tx"><span class="nm">'+esc(s.o.navn)+'<span class="pt num">+'+(s.o.poeng*s.felles.length)+'</span></span><span class="mt">'+metaF+'</span><span class="avs">'+av+'</span></span></button><span class="side">'+arkKnapp(s.o)+'<button hidden class="tb" title="Utsett for alle" aria-label="Utsett for alle" data-k="'+esc(s.felles[0].ukeKey||key)+'" data-o="'+esc(s.o.id)+'" data-d="'+s.dag+'" data-dag0="'+(s.felles[0].flyttet?s.felles[0].fraDag:s.dag)+'" data-felles="'+esc(s.felles.map(function(x){return x.orig}).join(','))+'">⇄</button></span></div>';
-        if(alleD) FERD.push(tF); else gh+=tF;
+        if(alleD) FERD.push(tF); else ghArr.push(tF);
         return;
       }
       var done=erGjort(s.ukeKey||key,s.key), p=PMAP[s.person];
@@ -1978,11 +1991,17 @@ function tegnIdag(){
       var tk=s.ukeKey||key;
       var navnVis=s.o.navn; if(s.o.kat==='Trening'&&done){var lt=lkType(s.key,tk); navnVis+=lt?' — logget i Livskraft ('+lt+') ✓':' — bonusøkt (ikke logget i Livskraft)';}
       var tS='<div class="tile'+(done?' done':'')+(s.forfalt?' hg':'')+(s.o.bonus?' bonus':'')+'" style="--pc:'+p.farge+'"><button class="tmain" data-k="'+esc(tk)+'" data-s="'+esc(s.key)+'" data-p="'+esc(s.person)+'" aria-pressed="'+done+'"><span class="chk">✓</span><span class="ik">'+s.o.ikon+'</span><span class="tx"><span class="nm">'+esc(navnVis)+mdTag(s.o,s.dato||NAA)+(s.o.bonus?'<span class="pt num bo">+'+s.o.poeng+' bonus</span>':'<span class="pt num">+'+s.o.poeng+'</span>')+'</span><span class="mt">'+meta+'</span></span></button><span class="side">'+arkKnapp(s.o)+'<button hidden class="tb" title="Bytt oppgaven til en annen" aria-label="Bytt til en annen" data-k="'+esc(tk)+'" data-o="'+esc(s.o.id)+'" data-d="'+s.dag+'" data-fra="'+esc(s.orig)+'" data-naa="'+esc(s.person)+'" data-dag0="'+(s.flyttet?s.fraDag:s.dag)+'"'+(s.forfalt?' data-forfalt="1"':'')+(s.utsatt?' data-uts="'+esc(s.fraUke)+'" data-utsk="'+esc(s.fraKey)+'"':'')+'>⇄</button></span></div>';
-      if(done) FERD.push(tS); else gh+=tS;
+      if(done) FERD.push(tS); else ghArr.push(tS);
     });
-    if(!gh&&erTorsdag&&g==='Grovvask') html+='<div class="grp hv">'+esc(navnG[g])+'</div><p class="small" style="margin:4px 0 10px">✓ Din del av husvasken er gjort.</p>';
-    if(gh) html+='<div class="grp'+(g==='Henger igjen'?' hg':'')+(erTorsdag&&g==='Grovvask'?' hv':'')+'">'+esc(navnG[g]||g)+'</div><div class="tiles">'+gh+'</div>';
+    /* v1.70: huskelapper — de tre første vises, resten bak ett trykk, så de ikke skygger for det viktige (barna ser alle sine) */
+    var MAKS_LAPP=3; if(g==='Huskelapper'&&!erBarn&&ghArr.length>MAKS_LAPP){ gh=ghArr.slice(0,MAKS_LAPP).join('')+'</div><details class="merlapper"><summary>+ '+(ghArr.length-MAKS_LAPP)+' huskelapper til \u2014 trykk for \u00e5 se</summary><div class="tiles">'+ghArr.slice(MAKS_LAPP).join('')+'</div></details><div class="tiles" hidden>'; } else gh=ghArr.join('');
+    var seg=DELAV[g]||'fm';
+    if(!gh&&erTorsdag&&g==='Grovvask') SEG[seg]+='<div class="grp hv">'+esc(navnG[g])+'</div><p class="small" style="margin:4px 0 10px">✓ Din del av husvasken er gjort.</p>';
+    if(gh) SEG[seg]+='<div class="grp'+(g==='Henger igjen'?' hg':'')+(erTorsdag&&g==='Grovvask'?' hv':'')+'">'+esc(navnG[g]||g)+'</div><div class="tiles">'+gh+'</div>';
   });
+  if(erHelg&&(SEG.fm||SEG.em||SEG.kv||turK)){
+    html+=(SEG.fm?'<div class="skille">\u2600\uFE0F Formiddag</div>'+SEG.fm:'')+(SEG.em||turK?'<div class="skille">\uD83E\uDDED Ettermiddag</div>'+turK+SEG.em:'')+(SEG.kv?'<div class="skille">\uD83C\uDF19 Kveld</div>'+SEG.kv:'');
+  } else html+=SEG.fm+turK+SEG.em+SEG.kv;
   if(FERD.length) html+='<details class="ferdigstripe"'+(FERD_OPEN?' open':'')+' id="ferdigstripe"><summary>✓ Fullført'+(FRAM?'':' i dag')+' <span class="num">('+FERD.length+')</span> <span class="small">— trykk på en for å angre</span></summary><div class="tiles kompakt">'+FERD.join('')+'</div></details>';
   /* dagsframdrift + feiring */
   var pl=slots.filter(function(s){return !s.o.bonus});
