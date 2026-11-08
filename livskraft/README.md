@@ -59,3 +59,7 @@ Thor: «8-minutteren er nok mer enn 8 minutter — sikre at den faktisk bare er 
 
 ## v1.29.1 — 7.11.2026
 Thor: «se på kosthold som penger — det må være bevegelse og stor energimengde». Proteinkortet kan ha en kort `motto`-linje øverst (data/program.json → protein.<person>.motto), over fordelingsstripen. Thors: energi som kontantstrøm — høy omsetning i balanse. SW lk-v34.
+
+## v1.30.0 (8.11.2026, Liv/Thor)
+
+Thor: «sittende knebøy 2–3 minutter — kan det være bra for rygg, ankler og hofte, og bør det inn i 10-minutteren?» Ja, som aktivt hold, 2 min (1–2 min daglig gir det meste; 3 gir lite ekstra). **Dypt knebøy-hold 45 s → 2 min** (`m-dyp.sek` 120, nytt hint: knærne ut, brystet opp, rolig pust ~6/min, hæler på bok ved behov, stå over ved rygg 2+). For at økta fortsatt skal være ca. 10 min er katt–ku og tåklem 45 → 30 s; holdene = 8 min 30 s. Siste «8-min»-tekster i appen byttet til «10-min» (ukestabellen og «Første fulle uke»). Bilde på holdet lagt i Firebase `livskraft/bilder/thor/m-dyp` (flat vektor, ansiktsløs, marineblå — generert med Z-Image-Turbo på Hugging Face). Test: Playwright 390/1180 px, ingen pageerror, ingen sideskroll, «2 min» synlig på M-kortet. `VERSJON='1.30.0'`, SW lk-v35, program.json v1.13.

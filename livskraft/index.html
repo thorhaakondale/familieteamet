@@ -404,7 +404,7 @@ details.om summary{cursor:pointer;font-weight:700;color:var(--ag);font-size:13px
    ============================================================ */
 "use strict";
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
-var VERSJON='1.29.1'; /* v1.21: appversjonen, vises under Mer → Programmet */
+var VERSJON='1.30.0'; /* v1.21: appversjonen, vises under Mer → Programmet */
 var KODE=null, PERSON='thor', PROG=null, S=null, db=null, dbOk=false, PENDING=[];
 var AKTIV=null; /* pågående økt */
 var UKEVIS=0;   /* uke-offset i Uka-fanen */
@@ -662,7 +662,7 @@ function tegnIdag(){
   else if(bok==='M'){h+='<ol class="steg" style="margin:10px 0">'+okt.steg.map(function(s){return '<li><b>'+esc(s[0])+'</b> — '+esc(s[1])+'</li>'}).join('')+'</ol><p class="lit">+ sene- og nakketillegget: '+okt.tillegg.map(function(s){return esc(s[0])+' '+esc(s[1])}).join(' · ')+'</p><div class="rad">'+(okt.guide?'<button class="knapp" data-mstart="1">▶ Start 10-minutteren</button>':'')+'<button class="knapp'+(okt.guide?' sek lit':'')+'" id="gjort-enkel" data-t="M">'+(erGjort?'Gjort ✓':'10-minutteren gjort')+'</button></div>'}
   else if(bok==='T'||bok==='S'){h+='<p class="lit" style="margin:8px 0">'+esc(okt.tekst)+'</p>'+turRad(gj,bok)}
   else{h+='<p class="lit" style="margin:8px 0">'+esc(okt.tekst)+'</p>'}
-  /* v1.24.1 (Thor 31.10.2026): 8-minutteren kan åpnes og logges hvilken dag som helst — ikke bare tir/fre. */
+  /* v1.24.1 (Thor 31.10.2026): 10-minutteren (het 8-minutteren) kan åpnes og logges hvilken dag som helst — ikke bare tir/fre. */
   if(bok!=='M'&&erThor()&&PP().okter.M){var mo=PP().okter.M,mG=gj.some(function(o){return o.type==='M'});
     var mDag=[].concat(mo.dager||[]).indexOf(DAGKEY[(d.getDay()||7)-1])>-1;
     h+='<details'+(mDag&&!mG?' open':'')+' style="margin:14px 0 4px;border-top:1px dashed var(--kant);padding-top:12px"><summary style="cursor:pointer"><b>'+esc(mo.navn)+'</b> <span class="lit">— '+(mDag?'står på planen i dag · ca. 10 min':'kan tas hvilken dag som helst')+(mG?' · ✓ gjort i dag':'')+'</span></summary>'+
@@ -1088,7 +1088,7 @@ function lydStatus(){var e=$('lyd-status');if(!e)return;
   d.push(harVibrasjon()?'Vibrasjon: støttes':'Vibrasjon: støttes ikke av nettleseren på denne enheten (gjelder alle iPhone-er)');
   e.textContent=d.join(' · ');}
 
-/* ---------- 8-MINUTTEREN SOM ØKT (v1.26, Thor 31.10.2026) ----------
+/* ---------- 10-MINUTTEREN SOM ØKT (v1.26, Thor 31.10.2026; v1.30 8.11.2026: dypt knebøy-hold 2 min) ----------
    Én øvelse om gangen med bilde, tekst og nedtelling. Tiden regnes alltid fra klokka (tåler at iPhone legger appen i bakgrunnen).
    Bildene kommer fra fam/<kode>/livskraft/bilder/<person>/<id> (leggInnBilder) — mangler ett, står teksten alene til bildekøen har laget det. */
 var MG=null, MGIV=null, MGWAKE=null, MGKLAR=3000;
@@ -1140,7 +1140,7 @@ function milepaler(){ /* mestringsliste som bare vokser — regnet fra loggen, a
   ut.push({n:'Suitcase 24 kg rent',d:forste(function(o){return o.fyll&&o.fyll.suitcase&&o.fyll.suitcase.rent&&(o.fyll.suitcase.kg||0)>=24}),naa:null});
   ut.push({n:'Knebøy 3 × 8 på 100 kg',d:forste(function(o){var L=o.ovelser&&o.ovelser.kneboy;if(!L)return false;var ok=L.sett.filter(function(s){return s.ok});return ok.length>=3&&ok.every(function(s){return (s.kg||0)>=100&&(s.reps||0)>=8})}),naa:naaKB?naaKB+' kg':null});
   var uker={};alle.forEach(function(o){uker[o.uke]=uker[o.uke]||{};uker[o.uke][o.type]=(uker[o.uke][o.type]||0)+1});var fullUke=null;Object.keys(uker).sort().forEach(function(k){var u=uker[k];if(!fullUke&&u.A&&u.B&&(u.M||0)>=2&&((u.T||0)+(u.S||0))>=2)fullUke=k});
-  ut.push({n:'Første fulle uke (A, B, 8-min × 2, to turer)',d:fullUke?'uke '+ukeNr(fullUke):null,tekst:true});
+  ut.push({n:'Første fulle uke (A, B, 10-min × 2, to turer)',d:fullUke?'uke '+ukeNr(fullUke):null,tekst:true});
   var tl=Object.keys(S.tester).map(function(k){return S.tester[k]}).sort(function(a,b){return a.dato<b.dato?-1:1});ut.push({n:'Første sprek-test tatt',d:tl.length?tl[0].dato:null});
   return ut;
 }
@@ -1240,7 +1240,7 @@ function tegnHovedTabell(ids){
 }
 function tegnUkerTabell(){
   var base=mandag(new Date());var harP=erThor();
-  var h='<div class="tb"><table><tr><th>Uke</th>'+(harP?'<th>A</th><th>B</th><th>8-min</th><th>Turer</th>':'<th>Gange</th><th>Styrke</th><th>Turer</th>')+'<th>Vekt</th>'+(harP?'<th>Puls</th>':'<th>Midje</th>')+'<th>Uke</th></tr>';
+  var h='<div class="tb"><table><tr><th>Uke</th>'+(harP?'<th>A</th><th>B</th><th>10-min</th><th>Turer</th>':'<th>Gange</th><th>Styrke</th><th>Turer</th>')+'<th>Vekt</th>'+(harP?'<th>Puls</th>':'<th>Midje</th>')+'<th>Uke</th></tr>';
   for(var i=0;i<8;i++){var d=new Date(base);d.setDate(base.getDate()-i*7);var k=ukeKey(d);var ok=okterSortert().filter(function(o){return o.uke===k});var uk=ukeInfo(k);var mo=ukeModus(k);
     function n(t){return ok.filter(function(o){return o.type===t}).length}
     var v=uk.vekt||[],p=uk.puls||[],mj=uk.midje||[];var merk=(mo==='syk'?'syk':mo==='minimum'?'min.':mo==='prosjekt'?'prosj.':'')+(uk.kroppsarbeid?' 🪨':'')+(harP&&n('H')?' +hjemme':'');
