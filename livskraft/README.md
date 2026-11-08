@@ -63,3 +63,7 @@ Thor: «se på kosthold som penger — det må være bevegelse og stor energimen
 ## v1.30.0 (8.11.2026, Liv/Thor)
 
 Thor: «sittende knebøy 2–3 minutter — kan det være bra for rygg, ankler og hofte, og bør det inn i 10-minutteren?» Ja, som aktivt hold, 2 min (1–2 min daglig gir det meste; 3 gir lite ekstra). **Dypt knebøy-hold 45 s → 2 min** (`m-dyp.sek` 120, nytt hint: knærne ut, brystet opp, rolig pust ~6/min, hæler på bok ved behov, stå over ved rygg 2+). For at økta fortsatt skal være ca. 10 min er katt–ku og tåklem 45 → 30 s; holdene = 8 min 30 s. Siste «8-min»-tekster i appen byttet til «10-min» (ukestabellen og «Første fulle uke»). Bilde på holdet lagt i Firebase `livskraft/bilder/thor/m-dyp` (flat vektor, ansiktsløs, marineblå — generert med Z-Image-Turbo på Hugging Face). Test: Playwright 390/1180 px, ingen pageerror, ingen sideskroll, «2 min» synlig på M-kortet. `VERSJON='1.30.0'`, SW lk-v35, program.json v1.13.
+
+## v1.30.1 (8.11.2026, Liv/Thor)
+
+Thor kjente mye større strekk i hoftebøyer/sete da han la beinet langt bak i ankeldrillen. Svar: det er steg 4 som var for mildt, ikke steg 5 som skal endres. **Steg 4 = «Lang kneling – hoftebøyer m/strekk»** (bakre kne langt bak, bekkenet tippet under og setet strammet FØR hofta skyves fram — ikke svai i korsryggen), fortsatt 30 s per side. Ankeldrillen holdes stram (bakre kne under hofta, kneet over tærne). 90/90-bildet i Firebase fikk pil fra oppreist stilling og merking av fremre/bakre legg. `VERSJON='1.30.1'`, SW lk-v36, program.json v1.14.
