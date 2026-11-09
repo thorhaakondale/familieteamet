@@ -721,7 +721,7 @@ input,select,textarea,button{font-size:16px!important}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.74.0';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.74.1';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -797,7 +797,7 @@ function vedlPlan(){
   var sig=JSON.stringify(liste.map(function(o){return [o.id,o.hver,o.slakk,o.fra,o.til,o.poeng,o.min,o.lp?1:0,o.admin?1:0]}))+'|'+(INNST.vedlTak||2)+'|'+takMin+'|'+proKeys.join(',')+'|'+now;
   if(sig===VEDL_CACHE.sig) return VEDL_CACHE.plan;
   var pro={}; proKeys.forEach(function(k){pro[ukeIndex(ukeFraKey(k))]=true});
-  var tak=INNST.vedlTak||2, start=ukeIndex(STARTDATO), slutt=start+160, ev=[];
+  var tak=INNST.vedlTak||2, start=ukeIndex(STARTDATO), slutt=Math.max(start+160,now+260), ev=[]; /* v1.74.1: planen ruller alltid fem år fram */
   liste.forEach(function(o){var n=Math.max(1,o.hver||4), st=o.fra?ukeIndex(ukeFraKey(o.fra)):start, sl=o.til?Math.min(slutt,ukeIndex(ukeFraKey(o.til))+1):slutt; for(var w=st;w<sl;w+=n){if(w>=start-1)ev.push({o:o,w:w})}}); /* v1.16: `til` respekteres */
   ev.sort(function(a,b){return a.w-b.w||(b.o.poeng||0)-(a.o.poeng||0)||(a.o.id<b.o.id?-1:1)});
   var last={}, lastMin={}, plan={}; liste.forEach(function(o){plan[o.id]={}});
@@ -1117,6 +1117,7 @@ var HANDLE={};
 function tegnHandle(){
   var sek=document.getElementById('handle'), ul=document.getElementById('hl-liste'), tom=document.getElementById('hl-tom'); if(!sek||!ul) return;
   var voks=!!(valgt&&(valgt==='thor'||valgt==='anniken')); sek.hidden=!voks; if(!voks) return;
+  var anker=document.getElementById('mer')||document.getElementById('idag'); if(anker&&anker.nextElementSibling!==sek) anker.insertAdjacentElement('afterend',sek); /* v1.74.1 (Thor 9.11): handlelista øverst, rett under dagen og over pengeplanen */
   var li=Object.keys(HANDLE).map(function(k){return HANDLE[k]}).filter(function(x){return x&&x.tekst&&!x.ok}).sort(function(a,b){return (a.ts||'')<(b.ts||'')?-1:1});
   ul.innerHTML=''; if(tom) tom.hidden=li.length>0;
   li.forEach(function(x){ var el=document.createElement('li'); var cb=document.createElement('input'); cb.type='checkbox'; cb.setAttribute('aria-label','Kjøpt: '+x.tekst);
