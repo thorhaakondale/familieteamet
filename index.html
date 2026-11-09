@@ -364,9 +364,13 @@ details.om .in{padding:8px 0 0;font-size:14px;max-width:70ch}
 .aa-tile span{font-size:12.5px;font-weight:700}.aa-tile small{font-size:11px;color:var(--muted)}
 .aa-stripe{display:flex;gap:2px;align-items:flex-end;overflow-x:auto;padding:4px 0 2px;scrollbar-width:thin}
 .aa-col{flex:0 0 18px;cursor:pointer;text-align:center}
-.aa-barwrap{height:66px;display:flex;align-items:flex-end;justify-content:center}
+.aa-barwrap{height:66px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end}
 .aa-bar{width:12px;min-height:2px;background:#b8b5ac;border-radius:3px 3px 0 0}
 .aa-bar.over{background:var(--warn)}.aa-bar.naa{outline:2px solid var(--ink);outline-offset:1px}.aa-bar.valgt{background:var(--accent)}
+.aa-bar.pro{background:#6250d6;margin-bottom:2px;border-radius:3px}
+.aa-bar.ses{background:#a89f8c}
+.aa-sw{display:inline-block;width:11px;height:11px;border-radius:3px;background:#b8b5ac;vertical-align:-1px}.aa-sw.over{background:var(--warn)}.aa-sw.pro{background:#6250d6}
+@media (prefers-color-scheme:dark){.aa-bar.pro,.aa-sw.pro{background:#9085e9}}
 .aa-helg{font-size:11px;line-height:1.3;margin-top:2px}.aa-helg.t-fri{opacity:.35}
 .aa-lab{font-size:9.5px;color:var(--muted);height:12px}
 .aa-legend{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12px;color:var(--muted);margin:4px 0 8px;align-items:center}
@@ -605,7 +609,7 @@ input,select,textarea,button{font-size:16px!important}
 <section class="card" id="historikk">
   <h2>Uke for uke</h2>
   <div class="sveip"><table class="tbl" id="hist-tbl"></table></div>
-  <h3 style="margin:14px 0 4px">🔧 Vedlikehold — neste 12 uker</h3><p class="sub">Maks to vedlikeholdsjobber per uke; køen jevnes ut automatisk. Bjørn foreslår lengre intervaller når jobber viser seg å tåle det.</p>
+  <h3 style="margin:14px 0 4px">🔧 Vedlikehold — neste 12 uker</h3><p class="sub">Vedlikeholdet jevnes ut automatisk mot målet på 2,5 t i uka, og prosjekthelgene holdes fri. Bjørn foreslår lengre intervaller når jobber viser seg å tåle det.</p>
   <div class="sveip"><table class="tbl" id="vedl-tbl"></table></div>
 </section>
 
@@ -614,7 +618,7 @@ input,select,textarea,button{font-size:16px!important}
   <p class="sub">Hus og hytte skal klargjøres til hver sesong. Året viser hvor mange helger det faktisk tar, hvilke som allerede er sperret, og hva som kan flyttes. Omtrentlig med vilje: innsats = klokketid per jobb, avrundet til halve timer.</p>
   <div id="aa-regnskap"></div>
   <h3>Uke for uke — neste 52</h3>
-  <p class="small">Grå = under terskelen · farget = over · symbolet under viser helga. Trykk på en uke.</p>
+  <p class="small">Grå = vedlikehold · oransje = over terskelen · lilla = livsprosjekt (helga satt av). Symbolet under viser helga. Trykk på en uke.</p>
   <div id="aa-stripe"></div>
   <div id="aa-uke"></div>
   <h3>🔧 Sesonghelgene — to om høsten, to om våren</h3>
@@ -717,7 +721,7 @@ input,select,textarea,button{font-size:16px!important}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.73.0';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.74.0';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -781,20 +785,40 @@ function dagerIUka0(o,man){
 /* v1.9: vedlikeholdsplanen — oppgaver med int 'uker' (hver N. uke, fra en startuke) legges ut med et tak per uke
    (INNST.vedlTak, standard 2) og kan skyves inntil 'slakk' uker fram for å jevne ut køen. Deterministisk: samme data → samme plan. */
 var VEDL_CACHE={sig:'',plan:{}};
+/* v1.74 (Thor 9.11.2026): framtidige uker jevnes på MINUTTER mot et ukestak (INNST.vedlTakMin, standard 150 = målet 2,5 t),
+   kan flyttes både fram og tilbake innenfor 'slakk', og prosjekthelger (aaret/helg = 'prosjekt') holdes fri for vedlikehold —
+   så et livsprosjekt ikke drar husarbeid og trening med seg i dragsuget. Inneværende og tidligere uker planlegges som før,
+   så ingen hake flytter seg bakover i tid. Sesong-oppgaver med slakk > 0 er med i jevningen. */
+function vedlTell(o){return !o.lp&&!o.admin}
 function vedlPlan(){
-  var liste=OPPG.filter(function(o){return o.int==='uker'&&o.aktiv!==false&&(o.kat==='Vedlikehold'||o.kat==='Hytta')});
-  var sig=JSON.stringify(liste.map(function(o){return [o.id,o.hver,o.slakk,o.fra,o.til,o.poeng]}))+'|'+(INNST.vedlTak||2);
+  var liste=OPPG.filter(function(o){return o.int==='uker'&&o.aktiv!==false&&(o.kat==='Vedlikehold'||o.kat==='Hytta'||(o.kat==='Sesong'&&(o.slakk|0)>0))});
+  var HELG=window.AARET_HELG||{}, proKeys=Object.keys(HELG).filter(function(k){return HELG[k]==='prosjekt'}).sort();
+  var takMin=INNST.vedlTakMin||150, now=ukeIndex(NAA);
+  var sig=JSON.stringify(liste.map(function(o){return [o.id,o.hver,o.slakk,o.fra,o.til,o.poeng,o.min,o.lp?1:0,o.admin?1:0]}))+'|'+(INNST.vedlTak||2)+'|'+takMin+'|'+proKeys.join(',')+'|'+now;
   if(sig===VEDL_CACHE.sig) return VEDL_CACHE.plan;
+  var pro={}; proKeys.forEach(function(k){pro[ukeIndex(ukeFraKey(k))]=true});
   var tak=INNST.vedlTak||2, start=ukeIndex(STARTDATO), slutt=start+160, ev=[];
   liste.forEach(function(o){var n=Math.max(1,o.hver||4), st=o.fra?ukeIndex(ukeFraKey(o.fra)):start, sl=o.til?Math.min(slutt,ukeIndex(ukeFraKey(o.til))+1):slutt; for(var w=st;w<sl;w+=n){if(w>=start-1)ev.push({o:o,w:w})}}); /* v1.16: `til` respekteres */
   ev.sort(function(a,b){return a.w-b.w||(b.o.poeng||0)-(a.o.poeng||0)||(a.o.id<b.o.id?-1:1)});
-  var last={}, plan={}; liste.forEach(function(o){plan[o.id]={}});
-  OPPG.forEach(function(o){if(o.int==='dato'&&o.aktiv!==false&&(o.kat==='Vedlikehold'||o.kat==='Hytta')&&o.dato){var w=ukeIndex(new Date(o.dato+'T00:00:00'));last[w]=(last[w]||0)+1}});
-  ev.forEach(function(e){var n=Math.max(1,e.o.hver||4), sl=Math.min(e.o.slakk||0,Math.floor((n-1)/2)), w=e.w;
-    for(var k=0;k<=sl;k++){if((last[w+k]||0)<tak){w=w+k;break}}
-    /* ikke to forekomster av samme oppgave samme uke */
-    if(plan[e.o.id][w]) return;
-    last[w]=(last[w]||0)+1; plan[e.o.id][w]=true});
+  var last={}, lastMin={}, plan={}; liste.forEach(function(o){plan[o.id]={}});
+  OPPG.forEach(function(o){if(o.int==='dato'&&o.aktiv!==false&&(o.kat==='Vedlikehold'||o.kat==='Hytta'||o.kat==='Sesong')&&o.dato){var w=ukeIndex(new Date(o.dato+'T00:00:00'));if(o.kat!=='Sesong')last[w]=(last[w]||0)+1;if(vedlTell(o))lastMin[w]=(lastMin[w]||0)+(o.min||0)}});
+  ev.forEach(function(e){var o=e.o, n=Math.max(1,o.hver||4), sl=Math.min(o.slakk||0,Math.floor((n-1)/2)), w=e.w, m=vedlTell(o)?(o.min||0):0;
+    if(w<=now){ /* som før: bare framover, tak på antall — sesongoppgavene står fast der de alltid har stått */
+      if(o.kat==='Sesong'){if(!plan[o.id][w])plan[o.id][w]=true;return}
+      for(var k=0;k<=sl;k++){if((last[w+k]||0)<tak){w=w+k;break}}
+    } else {
+      var kand=[0]; for(var k2=1;k2<=sl;k2++){kand.push(k2);kand.push(-k2)}
+      if(n>=4&&sl<1){kand.push(1);kand.push(-1)} /* prosjekthelg: alt som går hver 4. uke eller sjeldnere kan vike én uke */
+      kand=kand.filter(function(k){return e.w+k>now});
+      var ok=kand.filter(function(k){return !pro[e.w+k]});
+      var valgt=null;
+      ok.some(function(k){if(!plan[o.id][e.w+k]&&(lastMin[e.w+k]||0)+m<=takMin){valgt=k;return true}return false});
+      if(valgt===null&&ok.length){valgt=ok.filter(function(k){return !plan[o.id][e.w+k]}).sort(function(a,b){return (lastMin[e.w+a]||0)-(lastMin[e.w+b]||0)||Math.abs(a)-Math.abs(b)})[0];}
+      if(valgt===null||valgt===undefined)valgt=0;
+      w=e.w+valgt;
+    }
+    if(plan[o.id][w]) return; /* ikke to forekomster av samme oppgave samme uke */
+    if(o.kat!=='Sesong')last[w]=(last[w]||0)+1; lastMin[w]=(lastMin[w]||0)+m; plan[o.id][w]=true});
   VEDL_CACHE={sig:sig,plan:plan}; return plan;
 }
 /* Alle planlagte "slots" for en uke: {o, dag, person, key} */
@@ -2675,7 +2699,7 @@ var tt=document.getElementById('dale-totop');
 window.addEventListener('scroll',function(){tt.classList.toggle('show',window.scrollY>500)},{passive:true});
 tt.onclick=function(){window.scrollTo({top:0,behavior:'smooth'})};
 </script>
-<script src="aaret.js?v=111"></script>
+<script src="aaret.js?v=174"></script>
 <script>
 if('scrollRestoration' in history) history.scrollRestoration='manual';
 (function(){var stop=false;function opp(){if(stop)return;window.scrollTo(0,0);document.documentElement.scrollTop=0;document.body.scrollTop=0}

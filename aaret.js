@@ -1,4 +1,5 @@
-/* 📅 Året — Familieteamet v1.11 (13.9.2026, Bjørn)
+/* 📅 Året — Familieteamet v1.11 (13.9.2026, Bjørn) · v1.74 (9.11.2026): vedlikehold, prosjekt og familieadmin skilles,
+   prosjekthelger vises i egen farge og holdes fri av jevningen i vedlPlan(), mål 2,5 t i snitt.
    Helgeregnskapet, ukestripa, sesonghelgene, flytteforslag og innboksen.
    Bruker planUke()/forfalte() fra index.html. Egne data ligger under fam/<kode>/aaret/ —
    aldri under uker/ eller innstillinger/ (innstillinger skrives med set() og ville slettet oss).
@@ -6,7 +7,7 @@
 (function(){
 'use strict';
 var KAL={perioder:[],hoytider:[],aktiviteter:[],sesonghelger:[]};
-var AARET={terskel:180,helg:{},sesong:{},tilbake:{},innboks:{}};
+var AARET={terskel:180,maal:150,prosjektMin:720,helg:{},sesong:{},tilbake:{},innboks:{}};
 var VEDLKAT={Vedlikehold:1,Hytta:1,Sesong:1};
 var TYPER=[null,'hytte','airbnb','prosjekt','fri'];
 var IKON={fri:'⚪',hytte:'🏔️',airbnb:'🔑',ferie:'🔒',langhelg:'🔒',prosjekt:'🧰',vedl:'🔧'};
@@ -45,7 +46,9 @@ function periodeFor(d){var s=ymd(d);for(var i=0;i<KAL.perioder.length;i++){var p
 function hoytidFor(d){var s=ymd(d);for(var i=0;i<KAL.hoytider.length;i++){if(KAL.hoytider[i].dato===s)return KAL.hoytider[i]}return null}
 function ukeInfo(man,sesong){
   var key=ukeKey(man), slots=planUke(man), min=0, oppg={}, sl=[];
-  slots.forEach(function(s){if(!VEDLKAT[s.o.kat])return;if(!oppg[s.o.id]){oppg[s.o.id]={o:s.o,dag:s.dag,ant:0};sl.push(oppg[s.o.id]);min+=(s.o.min||0)}oppg[s.o.id].ant++}); /* klokketid, ikke × personer: laget jobber parallelt */
+  var pro=0, adm=0;
+  slots.forEach(function(s){if(!VEDLKAT[s.o.kat]&&!s.o.lp)return;if(!oppg[s.o.id]){oppg[s.o.id]={o:s.o,dag:s.dag,ant:0};sl.push(oppg[s.o.id]);
+    if(s.o.lp)pro+=(s.o.min||0); else if(s.o.admin)adm+=(s.o.min||0); else min+=(s.o.min||0)}oppg[s.o.id].ant++}); /* klokketid, ikke × personer: laget jobber parallelt. v1.74: min = bare vedlikehold og sesong */
   var lo=addDays(man,5), so=addDays(man,6), auto=null, hvorfor='';
   var p=periodeFor(lo)||periodeFor(so); if(p){auto='ferie';hvorfor=p.navn}
   else {var h=hoytidFor(lo)||hoytidFor(so);if(h){auto='ferie';hvorfor=h.navn}
@@ -53,7 +56,8 @@ function ukeInfo(man,sesong){
   var ses=sesong.filter(function(s){return ymd(s.dato)>=ymd(lo)&&ymd(s.dato)<=ymd(so)})[0];
   var manuell=AARET.helg&&AARET.helg[key]||null;
   var type=manuell||(ses?'vedl':(auto||'fri'));
-  return {man:man,key:key,nr:isoWeek(man).w,min:min,oppg:sl,type:type,auto:auto,manuell:manuell,hvorfor:hvorfor,ses:ses,lo:lo};
+  var res=type==='prosjekt'?Math.max(0,(AARET.prosjektMin||720)-pro):0; /* prosjekthelg fre–søn: satt av, uansett om oppgavene er lagt inn ennå */
+  return {man:man,key:key,nr:isoWeek(man).w,min:min,pro:pro,res:res,adm:adm,oppg:sl,type:type,auto:auto,manuell:manuell,hvorfor:hvorfor,ses:ses,lo:lo};
 }
 function alleUker(){var man=mandag(NAA), ses=sesongListe(), ut=[];for(var w=0;w<52;w++){ut.push(ukeInfo(addDays(man,7*w),ses))}return ut}
 function etterslep(){var m=0;forfalte().forEach(function(s){if(erRutine(s.o))return;if(s.o.int==='uke')return;m+=(s.o.min||0)});return m}
@@ -74,13 +78,13 @@ function flyttDato(o,dager){
 /* ---------- flytteforslag ---------- */
 function forslag(uker){
   var ut=[], byKey={}; uker.forEach(function(u){byKey[u.key]=u});
-  uker.forEach(function(u,i){ if(u.min<=AARET.terskel||u.type==='vedl') return; /* sesonghelga SKAL være tung */
-    u.oppg.forEach(function(x){var o=x.o; if(o.int!=='dato'||o.fast) return; var sl=(o.slakk===undefined?1:o.slakk)|0; if(sl<1) return;
+  uker.forEach(function(u,i){ var proUke=u.type==='prosjekt'; if(!proUke&&(u.min<=AARET.terskel||u.type==='vedl')) return; /* sesonghelga SKAL være tung; prosjekthelga skal være fri for vedlikehold */
+    u.oppg.forEach(function(x){var o=x.o; if(o.int!=='dato'||o.fast||o.lp||o.admin) return; var sl=(o.slakk===undefined?1:o.slakk)|0; if(sl<1&&!proUke) return; if(sl<1)sl=1;
       var best=null;
-      for(var k=-sl;k<=sl;k++){ if(!k) continue; var v=uker[i+k]; if(!v) continue; if(v.type==='ferie'||v.type==='langhelg'||v.type==='airbnb'||v.type==='hytte') continue;
+      for(var k=-sl;k<=sl;k++){ if(!k) continue; var v=uker[i+k]; if(!v) continue; if(v.type==='ferie'||v.type==='langhelg'||v.type==='airbnb'||v.type==='hytte'||v.type==='prosjekt') continue;
         var score=v.min-(v.type==='vedl'?120:0); /* samle på sesonghelga */
         if(!best||score<best.score) best={u:v,score:score,k:k}; }
-      if(best&&best.u.min+(o.min||0)<u.min){ ut.push({o:o,fra:u,til:best.u,k:best.k}); }
+      if(best&&(proUke||best.u.min+(o.min||0)<u.min)){ ut.push({o:o,fra:u,til:best.u,k:best.k}); }
     });
   });
   return ut.slice(0,6);
@@ -91,7 +95,9 @@ function tegnAaret(){
   var sec=document.getElementById('aaret'); if(!sec) return;
   var voksen=!valgt||valgt==='thor'||valgt==='anniken'; sec.hidden=!voksen; if(!voksen) return;
   var uker=alleUker(), ses=sesongListe(), tot={fri:0,hytte:0,airbnb:0,ferie:0,langhelg:0,prosjekt:0,vedl:0}, over=0, sumMin=0;
-  uker.forEach(function(u){tot[u.type]=(tot[u.type]||0)+1;if(u.min>AARET.terskel)over++;sumMin+=u.min});
+  var sumPro=0, sumAdm=0, aktive=0;
+  uker.forEach(function(u){tot[u.type]=(tot[u.type]||0)+1;if(u.min>AARET.terskel&&u.type!=='vedl')over++;sumMin+=u.min;sumPro+=u.pro+u.res;sumAdm+=u.adm;if(u.type!=='ferie'&&u.type!=='langhelg')aktive++});
+  var snitt=aktive?sumMin/aktive:0, maal=AARET.maal||150;
   var sperret=tot.ferie+tot.langhelg, ett=etterslep();
 
   /* helgeregnskapet */
@@ -101,22 +107,25 @@ function tegnAaret(){
     tile(tot.prosjekt,'🧰 prosjekt','satt av')+
     tile(tot.hytte+tot.airbnb,'🏔️🔑 hytte/Airbnb','satt av')+
     tile(sperret,'🔒 ferie/høytid','fra skoleruta')+
+    tile(timer(snitt),(snitt<=maal?'✅':'⚠️')+' snitt per uke','mål '+timer(maal)+' · utenom ferie')+
     tile(timer(ett),'⏳ etterslep nå','legger seg på helgene')+
   '</div>'+
   '<p class="small">Det som ikke rekkes i uka havner i helga — og helger som allerede er sperret av ferie, hytte og prosjekter kan ikke ta det. '+
   (over?over+' av 52 uker ligger over terskelen på '+timer(AARET.terskel)+' innsats. ':'Ingen uke ligger over terskelen på '+timer(AARET.terskel)+'. ')+
-  'Vedlikehold og drift av hus og hytte trenger '+timer(sumMin)+' det neste året ≈ '+timer(sumMin/52)+' per uke.</p>';
+  'Vedlikehold og drift av hus og hytte trenger '+timer(sumMin)+' det neste året ≈ '+timer(snitt)+' i en vanlig uke (målet er '+timer(maal)+'). '+
+  'Livsprosjektene har '+timer(sumPro)+' i egen farge, og familieadmin (gaver, klær, ferieplaner) '+timer(sumAdm)+' — de teller ikke mot terskelen. Prosjekthelgene holdes fri for vedlikehold; det som faller på dem, flyttes automatisk en uke fram eller tilbake.</p>';
   document.getElementById('aa-regnskap').innerHTML=h;
 
   /* ukestripa */
-  var maks=Math.max(AARET.terskel*1.2,1); uker.forEach(function(u){if(u.min>maks)maks=u.min});
+  var maks=Math.max(AARET.terskel*2,1); uker.forEach(function(u){if(u.min+u.pro>maks)maks=Math.min(u.min+u.pro,AARET.terskel*3)});
   var s='<div class="aa-stripe">';
-  uker.forEach(function(u,i){var hh=Math.round(u.min/maks*64); var cls='aa-bar'+(u.min>AARET.terskel?' over':'')+(valgtUke===u.key?' valgt':'')+(u.key===ukeKey(mandag(NAA))?' naa':'');
-    s+='<div class="aa-col" data-uke="'+u.key+'" title="Uke '+u.nr+' · '+timer(u.min)+' · '+NAVN[u.type]+(u.hvorfor?' ('+esc(u.hvorfor)+')':'')+'">'+
-       '<div class="aa-barwrap"><div class="'+cls+'" style="height:'+hh+'px"></div></div>'+
+  uker.forEach(function(u,i){var p=u.pro+u.res, hp=p?Math.max(3,Math.round(Math.min(p,maks)/maks*64)):0, hh=Math.min(64-hp,Math.round(u.min/maks*64)); if(u.min>0&&hh<2)hh=2;
+    var cls='aa-bar'+(u.min>AARET.terskel&&u.type!=='vedl'?' over':'')+(u.type==='vedl'?' ses':'')+(valgtUke===u.key?' valgt':'')+(u.key===ukeKey(mandag(NAA))?' naa':'');
+    s+='<div class="aa-col" data-uke="'+u.key+'" title="Uke '+u.nr+' · vedlikehold '+timer(u.min)+(p?' · prosjekt '+timer(p):'')+' · '+NAVN[u.type]+(u.hvorfor?' ('+esc(u.hvorfor)+')':'')+'">'+
+       '<div class="aa-barwrap">'+(hp?'<div class="aa-bar pro" style="height:'+hp+'px"></div>':'')+'<div class="'+cls+'" style="height:'+hh+'px"></div></div>'+
        '<div class="aa-helg t-'+u.type+'">'+IKON[u.type]+'</div>'+
        '<div class="aa-lab">'+((i%4===0)?'u'+u.nr:'')+'</div></div>'});
-  s+='</div><div class="aa-legend">'+['fri','vedl','prosjekt','hytte','airbnb','ferie'].map(function(t){return '<span>'+IKON[t]+' '+NAVN[t]+'</span>'}).join('')+'<span class="aa-tersk">terskel <input type="number" id="aa-terskel" min="30" step="30" value="'+AARET.terskel+'" aria-label="Terskel minutter per uke"> min/uke</span></div>';
+  s+='</div><div class="aa-legend"><span><i class="aa-sw"></i> vedlikehold</span><span><i class="aa-sw over"></i> over terskelen</span><span><i class="aa-sw pro"></i> livsprosjekt</span>'+['fri','vedl','prosjekt','hytte','airbnb','ferie'].map(function(t){return '<span>'+IKON[t]+' '+NAVN[t]+'</span>'}).join('')+'<span class="aa-tersk">terskel <input type="number" id="aa-terskel" min="30" step="30" value="'+AARET.terskel+'" aria-label="Terskel minutter per uke"> min/uke</span></div>';
   document.getElementById('aa-stripe').innerHTML=s;
   Array.prototype.forEach.call(document.querySelectorAll('#aa-stripe .aa-col'),function(el){el.onclick=function(){valgtUke=(valgtUke===el.dataset.uke)?null:el.dataset.uke;tegnAaret()}});
   var ti=document.getElementById('aa-terskel'); if(ti){ti.onchange=function(){var v=Math.max(30,+ti.value||180);skriv('terskel',v)}}
@@ -125,7 +134,7 @@ function tegnAaret(){
   var vu=uker.filter(function(u){return u.key===valgtUke})[0], d=document.getElementById('aa-uke');
   if(!vu){d.innerHTML='<p class="small">Trykk på en uke i stripa for å se hva som ligger der — og merke helga som hytte, Airbnb, prosjekt eller fri.</p>'}
   else{
-    var t='<h3 style="margin-top:4px">Uke '+vu.nr+' <span class="small">'+datoNorsk(vu.man)+'–'+datoNorsk(addDays(vu.man,6))+' · '+timer(vu.min)+' innsats</span></h3>';
+    var t='<h3 style="margin-top:4px">Uke '+vu.nr+' <span class="small">'+datoNorsk(vu.man)+'–'+datoNorsk(addDays(vu.man,6))+' · '+timer(vu.min)+' vedlikehold'+(vu.pro+vu.res?' · '+timer(vu.pro+vu.res)+' prosjekt':'')+'</span></h3>';
     t+='<div class="aa-helgvalg">Helga '+datoNorsk(vu.lo)+': <b>'+IKON[vu.type]+' '+NAVN[vu.type]+'</b>'+(vu.hvorfor?' <span class="small">('+esc(vu.hvorfor)+')</span>':'')+(vu.ses?' <span class="small">('+esc(vu.ses.navn)+')</span>':'')+
       ' <span class="aa-btns">'+TYPER.map(function(x){var lab=x?IKON[x]+' '+NAVN[x]:'↺ automatisk';var on=(vu.manuell||null)===x;return '<button class="edit'+(on?' on':'')+'" data-t="'+(x||'')+'">'+lab+'</button>'}).join('')+'</span></div>';
     if(vu.oppg.length){t+='<table class="tbl aa-tbl">';vu.oppg.forEach(function(x){var o=x.o;var kan=o.int==='dato'&&!o.fast;
@@ -166,19 +175,20 @@ function tile(v,lab,sub){return '<div class="aa-tile"><b>'+v+'</b><span>'+lab+'<
 
 /* ---------- oppstart ---------- */
 function init(){
-  var l=lsGet(); if(l){AARET=Object.assign(AARET,l)}
+  var l=lsGet(); if(l){AARET=Object.assign(AARET,l)} window.AARET_HELG=AARET.helg||{};
   fetch('data/kalender.json?v='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.json():null}).then(function(j){if(j)KAL=Object.assign(KAL,j);tegnAaret()}).catch(function(){tegnAaret()});
   var f=document.getElementById('aa-innboks-form'); if(f){f.onsubmit=function(ev){ev.preventDefault();var t=document.getElementById('aa-innboks-tekst');var v=t.value.trim();if(!v)return;
     skriv('innboks/i'+Date.now(),{tekst:v,by:valgt||'familie',ts:new Date().toISOString()});t.value='';toast('📥 Lagt i innboksen — Bjørn sorterer')}}
   /* abonner når delt lagring er oppe (db settes av index.html) */
   var iv=setInterval(function(){if(abonnert)return clearInterval(iv);if(window.db&&window.dbOk){abonnert=true;clearInterval(iv);
-    db.child('aaret').on('value',function(snap){var v=snap.val()||{};AARET={terskel:v.terskel||AARET.terskel||180,helg:v.helg||{},sesong:v.sesong||{},tilbake:v.tilbake||{},innboks:v.innboks||{}};lsSet();tegnAaret()})}},800);
+    db.child('aaret').on('value',function(snap){var v=snap.val()||{};AARET={terskel:v.terskel||AARET.terskel||180,maal:v.maal||150,prosjektMin:v.prosjektMin||720,helg:v.helg||{},sesong:v.sesong||{},tilbake:v.tilbake||{},innboks:v.innboks||{}};lsSet();
+      var nyH=JSON.stringify(AARET.helg); if(nyH!==JSON.stringify(window.AARET_HELG||{})){window.AARET_HELG=AARET.helg; if(typeof window.tegn==='function'){window.tegn();return}} tegnAaret()})}},800);
   /* tegn når hovedappen tegner */
   var orig=window.tegn; if(typeof orig==='function'&&!orig.__aa){window.tegn=function(){orig();tegnAaret()};window.tegn.__aa=true}
   tegnAaret();
 }
 window.tegnAaret=tegnAaret;
 /* for Ukesjekken/Bjørn: øyeblikksbilde av året (52 uker) og sesonghelgene */
-window.aaretData=function(){return {uker:alleUker().map(function(u){return {key:u.key,nr:u.nr,man:ymd(u.man),min:u.min,type:u.type,hvorfor:u.hvorfor,oppg:u.oppg.map(function(x){return x.o.ikon+' '+x.o.navn})}}),sesong:sesongListe().map(function(s){return {id:s.id,key:s.key,navn:s.navn,dato:ymd(s.dato),overstyrt:s.overstyrt}}),terskel:AARET.terskel,etterslep:etterslep()}};
+window.aaretData=function(){return {maal:AARET.maal||150,uker:alleUker().map(function(u){return {key:u.key,nr:u.nr,man:ymd(u.man),min:u.min,pro:u.pro,res:u.res,adm:u.adm,type:u.type,hvorfor:u.hvorfor,oppg:u.oppg.map(function(x){return x.o.ikon+' '+x.o.navn})}}),sesong:sesongListe().map(function(s){return {id:s.id,key:s.key,navn:s.navn,dato:ymd(s.dato),overstyrt:s.overstyrt}}),terskel:AARET.terskel,etterslep:etterslep()}};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
