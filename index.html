@@ -721,7 +721,7 @@ input,select,textarea,button{font-size:16px!important}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.74.1';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.74.2';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -1789,7 +1789,7 @@ function tegnPakk(){
   w.querySelectorAll('details.turinfo').forEach(function(d){d.addEventListener('toggle',function(){TI_OPEN[d.getAttribute('data-tid')]=d.open})});
   /* Pakkelistene flytter h\u00f8yt opp n\u00e5r en tur er innen 10 dager (Thor 13.10) */
   var sek=document.getElementById('pakk'), idag=document.getElementById('idag'), naer=kommende.some(function(t){return (new Date(t.fra+'T00:00:00')-new Date(naaY+'T00:00:00'))/86400000<=10});
-  if(sek&&idag){ var anker=document.getElementById('mer')||idag; if(naer&&sek.previousElementSibling!==anker){anker.insertAdjacentElement('afterend',sek);} else if(!naer&&sek.previousElementSibling===anker){var bank=document.getElementById('bank'); if(bank) bank.insertAdjacentElement('beforebegin',sek);} sek.classList.toggle('inn',SEK_INN('pakk',!naer)); }
+  if(sek&&idag){ var hl=document.getElementById('handle'), anker=(hl&&!hl.hidden)?hl:(document.getElementById('mer')||idag); /* v1.74.2: handlelista står alltid først under knappene */ var fp=sek.previousElementSibling, paaPlass=fp===anker||(fp&&fp.id==='penger'&&fp.previousElementSibling===anker); if(naer&&!paaPlass){anker.insertAdjacentElement('afterend',sek);} else if(!naer&&paaPlass){var bank=document.getElementById('bank'); if(bank) bank.insertAdjacentElement('beforebegin',sek);} sek.classList.toggle('inn',SEK_INN('pakk',!naer)); }
 }
 var PK_OPEN={}, NIV_OPEN={};
 document.addEventListener('click',function(e){
