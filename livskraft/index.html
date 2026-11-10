@@ -237,6 +237,8 @@ input.tall,input.tekst{padding:8px 10px}
 .prot .prad{padding:7px 0}
 .prot .motto{margin:8px 0 2px;font-size:0.8125rem;font-weight:600;line-height:1.4;color:#5b21b6}
 @media (prefers-color-scheme:dark){.prot .motto{color:#c4b5fd}}
+#okt-avslutt.bekreft{background:var(--varsel)}#okt-avbryt.bekreft-rod{background:var(--rodbg);border-color:var(--rod);color:var(--rod)}
+#okt-advarsel .rodt{margin-top:10px}
 details.stegliste>summary{cursor:pointer;font-size:0.8125rem;font-weight:700;color:var(--ag);margin:6px 0}
 .klamp{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;cursor:pointer}
 
@@ -322,9 +324,9 @@ details.stegliste>summary{cursor:pointer;font-size:0.8125rem;font-weight:700;col
   <div class="kort">
     <h3 style="margin-top:0">Kommentar til Liv (valgfritt)</h3>
     <input class="tekst" id="okt-kommentar" placeholder="f.eks. ryggen kjentes fin, video av RDL sendt">
-    <div id="okt-advarsel"></div>
     <div class="rad" style="margin-top:12px"><button class="knapp" id="okt-avslutt">Avslutt og lagre økta</button></div>
-    <div class="rad" style="margin-top:8px"><button class="knapp sek lit" id="okt-avbryt">Avbryt uten å lagre</button></div>
+    <div class="rad" style="margin-top:22px"><button class="knapp sek lit" id="okt-avbryt">Avbryt uten å lagre</button></div>
+    <div id="okt-advarsel"></div><!-- v1.32.1: varselet står UNDER knappene, så de aldri flytter seg mellom to trykk -->
   </div>
 </div>
 
@@ -441,7 +443,7 @@ details.stegliste>summary{cursor:pointer;font-size:0.8125rem;font-weight:700;col
    ============================================================ */
 "use strict";
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
-var VERSJON='1.32.0'; /* v1.21: appversjonen, vises under Mer → Programmet */
+var VERSJON='1.32.1'; /* v1.21: appversjonen, vises under Mer → Programmet */
 var KODE=null, PERSON='thor', PROG=null, S=null, db=null, dbOk=false, PENDING=[];
 var AKTIV=null; /* pågående økt */
 var UKEVIS=0;   /* uke-offset i Uka-fanen */
@@ -881,7 +883,11 @@ function hensiktBlokk(okt,t){
     '<dl><dt>'+esc(forste[0])+'</dt><dd>'+esc(forste[1])+'</dd></dl>'+
     '<details><summary>'+esc(h.mer||'Mer')+'</summary><div class="varsel" style="margin:8px 0 0">'+esc(h.regel)+'</div><dl>'+resten.map(function(l){return '<dt>'+esc(l[0])+'</dt><dd>'+esc(l[1])+'</dd>'}).join('')+'</dl></details></div>';}
 
-var wake=null, BEKREFT=false;
+var wake=null, BEKREFT_LAGRE=false, BEKREFT_AVBRYT=false, BEKREFT_T=null;
+/* v1.32.1 (Thor 10.11.2026): hver knapp har sin egen bekreftelse — før delte de én, så et «Avslutt»-varsel gjorde at neste trykk på «Avbryt» slettet økta uten å spørre. Bekreftelsen vises på selve knappen (ingen kort som skyver knappene), og faller tilbake etter 8 s. */
+function nullstillBekreft(){BEKREFT_LAGRE=false;BEKREFT_AVBRYT=false;clearTimeout(BEKREFT_T);var a=$('okt-avslutt'),b=$('okt-avbryt'),adv=$('okt-advarsel');
+  if(a){a.textContent='Avslutt og lagre økta';a.classList.remove('bekreft')}if(b){b.textContent='Avbryt uten å lagre';b.classList.remove('bekreft-rod')}if(adv)adv.innerHTML=''}
+function bekreftTidsfrist(){clearTimeout(BEKREFT_T);BEKREFT_T=setTimeout(nullstillBekreft,8000)}
 function startOkt(type,kort){
   var okt=PP().okter[type];kort=!!kort;
   AKTIV={id:nyId(),person:PERSON,dato:idag(),uke:ukeKey(new Date()),type:type,start:Date.now(),kort:kort,affekt:null,ovelser:{},fyll:{}};
@@ -903,7 +909,7 @@ function redigerOkt(id){ /* v1.6: åpne en lagret økt på nytt for å rette ell
     if(ov.fyllstoff){var ff=fyllForslag(ov.fyllstoff);
       if(!AKTIV.fyll[ov.fyllstoff.id])AKTIV.fyll[ov.fyllstoff.id]={verdier:[],kg:ov.fyllstoff.vekt?ff.maal:null,rent:false,variant:sisteVariant(ov.fyllstoff.id)};
       AKTIV.fyll[ov.fyllstoff.id].forslag=ff}});
-  $('okt-kommentar').value=o.kommentar||'';BEKREFT=false;$('okt-advarsel').innerHTML='';
+  $('okt-kommentar').value=o.kommentar||'';nullstillBekreft();
   lagreAktiv();vis('okt');tegnOkt();window.scrollTo(0,0);}
 function lagreAktiv(){try{if(AKTIV)localStorage.setItem('lk-aktiv-'+PERSON,JSON.stringify(AKTIV));else{localStorage.removeItem('lk-aktiv-'+PERSON);localStorage.removeItem('lk-vis-'+PERSON)}}catch(e){}}
 /* v1.24 (Thor 30.10.2026): iOS kaster av og til ut appen i bakgrunnen (ntfy, Spotify). Da lastes siden på nytt: økta kom tilbake,
@@ -1013,10 +1019,11 @@ $('okt-avslutt').onclick=function(){
     if(n){var ov=finnOv(k);uhaket.push((ov?ov.navn:k)+' ('+n+')')}});
   var noe=false;Object.keys(AKTIV.ovelser).forEach(function(k){if(AKTIV.ovelser[k].sett.some(function(s){return s.ok}))noe=true});
   var adv=$('okt-advarsel');
-  if((uhaket.length||!noe)&&!BEKREFT){BEKREFT=true;
-    adv.innerHTML='<div class="rodt"><b>'+(uhaket.length?'Sett med tall, men uten hake: '+esc(uhaket.join(' · ')):'Ingen sett er haket av')+'.</b><br>Uten haken teller ikke settet — verken i fremgangen eller når neste vekt regnes ut. Hak av, eller trykk «Avslutt» en gang til for å lagre som det står.</div>';
-    adv.scrollIntoView({block:'center'});return}
-  adv.innerHTML='';BEKREFT=false;
+  if(BEKREFT_AVBRYT){nullstillBekreft()} /* et halvt avbrudd skal aldri henge igjen */
+  if((uhaket.length||!noe)&&!BEKREFT_LAGRE){BEKREFT_LAGRE=true;var kn=$('okt-avslutt');kn.textContent='Lagre likevel — trykk igjen';kn.classList.add('bekreft');
+    adv.innerHTML='<div class="rodt"><b>'+(uhaket.length?'Sett med tall, men uten hake: '+esc(uhaket.join(' · ')):'Ingen sett er haket av')+'.</b><br>Uten haken teller ikke settet — verken i fremgangen eller når neste vekt regnes ut. Hak av, eller trykk den grønne knappen en gang til for å lagre som det står.</div>';
+    bekreftTidsfrist();return}
+  nullstillBekreft();
   var red=AKTIV._rediger||null;
   var o=JSON.parse(JSON.stringify(AKTIV));delete o._rediger;
   if(red){o.id=red;o.endret=Date.now()}else o.slutt=Date.now();
@@ -1026,8 +1033,10 @@ $('okt-avslutt').onclick=function(){
   vis('idag');tegnIdag();tegnUka();tegnFrem();
 };
 $('okt-avbryt').onclick=function(){if(!AKTIV){vis('idag');return}
-  if(!BEKREFT){BEKREFT=true;$('okt-advarsel').innerHTML='<div class="rodt">Da slettes settene du har logget i denne økta. Trykk «Avbryt uten å lagre» en gang til hvis du mener det.</div>';return}
-  AKTIV=null;lagreAktiv();BEKREFT=false;$('okt-advarsel').innerHTML='';stoppTimer();vis('idag')};
+  if(BEKREFT_LAGRE){nullstillBekreft()}
+  if(!BEKREFT_AVBRYT){BEKREFT_AVBRYT=true;var kn=$('okt-avbryt');kn.textContent='Ja, slett økta — trykk igjen';kn.classList.add('bekreft-rod');
+    $('okt-advarsel').innerHTML='<div class="rodt">Da slettes settene du har logget i denne økta. Vil du beholde dem, trykk den grønne knappen.</div>';bekreftTidsfrist();return}
+  AKTIV=null;lagreAktiv();nullstillBekreft();stoppTimer();vis('idag')};
 
 /* ---------- pausetimer ---------- */
 var T={slutt:0,iv:null,ov:null,varslet:false};

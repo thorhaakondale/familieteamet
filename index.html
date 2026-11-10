@@ -597,7 +597,7 @@ h1.topp{margin:6px 0 4px;font-size:1.25rem}
   <div id="hl-forslag" hidden></div>
   <button type="button" id="hl-ferdig-knapp" aria-expanded="false" hidden></button>
   <div id="hl-ferdig" hidden></div>
-  <details class="small hjelp"><summary>Slik virker lista</summary>Dikter alt i ett — «antisklimatte, batterier og tannkrem» blir tre linjer du kan rette før du lagrer. Haket av = kjøpt, og havner under «Fullført» i 14 dager — trykk «Legg tilbake» om du trykket feil. Trykk på en vare for å rette teksten eller butikken, sveip til venstre for å slette. Lista grupperes etter butikk når det er mer enn én. Enkel huskeliste for småturer og ting som ikke er mat — Ukeshandel er egen.</details>
+  <details class="small hjelp"><summary>Slik virker lista</summary>Dikter alt i ett — «antisklimatte, batterier og tannkrem» blir tre linjer du kan rette før du lagrer. Haket av = kjøpt, og havner under «Fullført» i 14 dager — trykk «Legg tilbake» om du trykket feil. Trykk på en vare for å rette teksten eller butikken — retter du butikken, husker appen det til neste gang. Sveip til venstre for å slette. Lista grupperes etter butikk når det er mer enn én. Enkel huskeliste for småturer og ting som ikke er mat — Ukeshandel er egen.</details>
 </section>
 <dialog id="nydlg" aria-labelledby="nydlg-t"><div class="ark-inn">
   <div class="ark-bar"><button type="button" id="ny-avbryt">Avbryt</button><span class="ark-tittel" id="nydlg-t">Ny huskelapp</span><span style="width:70px"></span></div>
@@ -755,7 +755,7 @@ h1.topp{margin:6px 0 4px;font-size:1.25rem}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.76.0';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.77.0';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -1156,7 +1156,12 @@ var HL_ORD={apotek:['plaster','paracet','ibux','medisin','vitamin','tran','kreat
   elektronikk:['lader','kabel','usb','hdmi','datamus','tastatur','hodetelefon','øreplugg','airpods','minnekort','skriver','blekk','toner','adapter','powerbank'],
   hjem:['antisklimatte','matte','håndkle','sengetøy','laken','putetrekk','dynetrekk','dyne','pute','glass','kopp','tallerken','stearinlys','telys','kronelys','gardin','oppbevaring','kurv','boks','teppe','pledd','vase'],
   dagligvare:['melk','brød','ost','egg','smør','kaffe','frukt','eple','banan','grønnsak','kjøtt','kylling','fisk','laks','pasta','ris','mel','sukker','salt','yoghurt','juice','brus','vann','dopapir','tørkerull','oppvask','vaskemiddel','tøymykner','såpe','tannkrem','tannbørste','sjampo','balsam','bleie','klut','pose','folie','bakepapir','snacks','sjokolade','pizza','taco','saus','krydder','smoothie','agurk','tomat','løk','potet','gulrot','salat','skinke','pålegg','syltetøy','müsli','havre','gryn','rømme','fløte','is']};
-function hlGjett(t){var x=' '+(t||'').toLowerCase()+' ';var rek=['apotek','jernvare','klaer','elektronikk','hjem','dagligvare'];for(var i=0;i<rek.length;i++){var o=HL_ORD[rek[i]];for(var j=0;j<o.length;j++){var w=o[j];if(w.length<=3?x.indexOf(' '+w)>=0:x.indexOf(w)>=0)return rek[i]} /* korte ord må stå først i et ord: «is» skal ikke treffe «ris» */}return 'annet'}
+/* v1.77 (Thor 10.11.2026): appen lærer av rettelser — velger du en annen butikk for en vare, huskes det (delt i fam/<kode>/handlelaer) og neste gang havner varen der av seg selv. Lært valg går foran ordlista. */
+var HL_LAER={}; try{HL_LAER=JSON.parse(localStorage.getItem('ft-handlelaer')||'{}')||{}}catch(e){HL_LAER={}}
+function hlNokkel(t){return (t||'').toLowerCase().replace(/\d+\s*[x×](?![a-zæøå])/g,' ').replace(/[0-9.,#$\[\]\/()×%*+-]+/g,' ').replace(/\s+/g,' ').trim()}
+function hlLaer(tekst,butikk){var k=hlNokkel(tekst); if(!k) return; HL_LAER[k]=butikk; try{localStorage.setItem('ft-handlelaer',JSON.stringify(HL_LAER))}catch(e){} if(db) db.child('handlelaer/'+k.replace(/ /g,'_')).set(butikk).catch(function(){})}
+function hlLaertFor(t){var k=hlNokkel(t); if(!k) return null; if(HL_LAER[k]) return HL_LAER[k]; var ord=k.split(' '); for(var i=0;i<ord.length;i++){ if(ord[i].length>2&&HL_LAER[ord[i]]) return HL_LAER[ord[i]] } return null}
+function hlGjett(t){var l=hlLaertFor(t); if(l&&HL_BUTIKKER.some(function(b){return b[0]===l})) return l; var x=' '+(t||'').toLowerCase()+' ';var rek=['apotek','jernvare','klaer','elektronikk','hjem','dagligvare'];for(var i=0;i<rek.length;i++){var o=HL_ORD[rek[i]];for(var j=0;j<o.length;j++){var w=o[j];if(w.length<=3?x.indexOf(' '+w)>=0:x.indexOf(w)>=0)return rek[i]} /* korte ord må stå først i et ord: «is» skal ikke treffe «ris» */}return 'annet'}
 function hlButikk(x){return (x.butikk&&HL_BUTIKKER.some(function(b){return b[0]===x.butikk}))?x.butikk:hlGjett(x.tekst)}
 function hlLagreFelt(x,felt){Object.keys(felt).forEach(function(k){x[k]=felt[k]}); if(db) db.child('handleliste/'+x.id).update(felt).catch(function(){status('Kunne ikke lagre delt.')})}
 function hlSlett(x){delete HANDLE[x.id]; if(db) db.child('handleliste/'+x.id).remove().catch(function(){status('Kunne ikke slette delt.')}); toast('🛒 '+x.tekst+' — slettet'); tegnHandle()}
@@ -1184,7 +1189,7 @@ function hlRad(x){
     var ok=document.createElement('button'); ok.type='button'; ok.className='ok'; ok.textContent='Lagre';
     var av=document.createElement('button'); av.type='button'; av.textContent='Avbryt';
     var sl=document.createElement('button'); sl.type='button'; sl.className='slett'; sl.textContent='Slett';
-    ok.onclick=function(){var v=inp.value.trim(); HL_RED=null; if(!v){hlSlett(x);return} var felt={tekst:v}; if(sel.value!==hlGjett(v)||x.butikk) felt.butikk=sel.value; hlLagreFelt(x,felt); tegnHandle()};
+    ok.onclick=function(){var v=inp.value.trim(); HL_RED=null; if(!v){hlSlett(x);return} var felt={tekst:v}; if(sel.value!==hlGjett(v)||x.butikk) felt.butikk=sel.value; if(sel.value!==cur||sel.value!==hlGjett(v)) hlLaer(v,sel.value); hlLagreFelt(x,felt); tegnHandle()};
     av.onclick=function(){HL_RED=null; tegnHandle()};
     sl.onclick=function(){HL_RED=null; hlSlett(x)};
     inp.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();ok.click()} if(e.key==='Escape'){av.click()}});
@@ -2735,6 +2740,7 @@ function slaaSammenOppg(liste){
     db.child('oppgaver').on('value',function(snap){var v=snap.val()||{};OPPG_LASTET=true;setTimeout(planleggBackup,0);var li=Object.keys(v).map(function(k){return v[k]});try{localStorage.setItem('ft-oppg-delt',JSON.stringify(li))}catch(e){};slaaSammenOppg(li);synkTurOppg();tegn();ryddMinn();kveldStopp()});
     db.child('innlost').on('value',function(snap){INNLOST=snap.val()||{};tegn()});
     db.child('handleliste').on('value',function(snap){HANDLE=snap.val()||{};tegnHandle()}); /* v1.61 */
+    db.child('handlelaer').on('value',function(snap){var v=snap.val()||{}; Object.keys(v).forEach(function(k){HL_LAER[k.replace(/_/g,' ')]=v[k]}); try{localStorage.setItem('ft-handlelaer',JSON.stringify(HL_LAER))}catch(e){} tegnHandle()}); /* v1.77: lærte butikkvalg, delt */
     ['thor','anniken'].forEach(function(p){ db.child('okt/'+p+'/okter').limitToLast(60).on('value',function(snap){var m={}; snap.forEach(function(c){var o=c.val(); if(o&&o.dato&&(o.type==='A'||o.type==='B')) (m[o.dato]||(m[o.dato]=[])).push(o.type)}); LK[p]=m; tegn()},function(){}) }); /* v1.55: les Livskraft-øktene (bare lesing) */
     db.child('belonning').on('value',function(snap){BELONNING=snap.val()||{};tegn()});
     db.child('tilstand').on('value',function(snap){TILSTAND=snap.val()||{};tegn()});
