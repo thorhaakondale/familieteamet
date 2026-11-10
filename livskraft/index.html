@@ -2,6 +2,8 @@
 <html lang="nb">
 <head>
 <meta charset="utf-8">
+<script>/* Dynamisk tekst (10.11.2026, Thor): følger Tekststørrelse i iPhone-innstillingene. Standardvalget gir samme utseende som før; skalaen holdes i 15–20 px så oppsettet aldri sprenges. All tekst er i rem. */
+(function(){function s(){try{var d=document.documentElement,f=16;if(window.CSS&&CSS.supports&&CSS.supports('font','-apple-system-body')){var p=document.createElement('span');p.style.cssText='font:-apple-system-body;position:absolute;visibility:hidden';(document.body||d).appendChild(p);var px=parseFloat(getComputedStyle(p).fontSize);p.parentNode.removeChild(p);if(px>0)f=Math.min(20,Math.max(15,Math.round(px*16/17*2)/2))}if(d.style.fontSize!==f+'px')d.style.fontSize=f+'px'}catch(e){}}s();document.addEventListener('DOMContentLoaded',s);document.addEventListener('visibilitychange',function(){if(!document.hidden)s()});window.addEventListener('pageshow',s)})();</script>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#f1efe8">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -28,158 +30,158 @@
 }}
 *{box-sizing:border-box}
 html,body{overflow-x:clip;max-width:100%}
-body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums;padding-bottom:calc(76px + env(safe-area-inset-bottom))}
+body{margin:0;background:var(--bg);color:var(--tx);font:1rem/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums;padding-bottom:calc(76px + env(safe-area-inset-bottom))}
 .topp{position:sticky;top:0;z-index:50;background:var(--bg);border-bottom:1px solid var(--kant);padding:10px 14px;display:flex;align-items:center;gap:8px}
-.topp h1{font-size:18px;margin:0;font-weight:800;letter-spacing:-.01em}
-.pill{font-size:11.5px;font-weight:700;padding:3px 9px;border-radius:999px;border:1px solid var(--kant);color:var(--tx2);background:var(--kort);white-space:nowrap}
+.topp h1{font-size:1.125rem;margin:0;font-weight:800;letter-spacing:-.01em}
+.pill{font-size:0.7188rem;font-weight:700;padding:3px 9px;border-radius:999px;border:1px solid var(--kant);color:var(--tx2);background:var(--kort);white-space:nowrap}
 .pill.p{background:var(--ag);border-color:var(--ag);color:#fff}
 .pill.p.anniken{background:#b04a6e;border-color:#b04a6e}
 .pill.mangler{background:var(--rodbg);border-color:var(--rod);color:var(--rod);cursor:pointer}
 .chips{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 4px}
-.chip{font-size:12.5px;font-weight:800;padding:6px 10px;border-radius:999px;border:1.5px solid var(--kant);color:var(--mut);background:var(--kort)}
+.chip{font-size:0.7812rem;font-weight:800;padding:6px 10px;border-radius:999px;border:1.5px solid var(--kant);color:var(--mut);background:var(--kort)}
 .chip.p{background:var(--agbg);border-color:var(--agsv);color:var(--ag)}
 .vinn{background:linear-gradient(135deg,var(--agbg),transparent);border:1.5px solid var(--agsv);border-radius:12px;padding:14px 15px;margin:0 0 12px}
 .vinn h2{margin:0 0 4px}
 .vinn li{margin:3px 0}
-.stor{font-size:28px;font-weight:900;letter-spacing:-.02em;line-height:1.1}
+.stor{font-size:1.75rem;font-weight:900;letter-spacing:-.02em;line-height:1.1}
 .mest{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .mest>div{border:1px solid var(--kant);border-radius:10px;padding:10px 12px;background:var(--bg)}
-.mest .l{font-size:11.5px;font-weight:800;color:var(--mut);text-transform:uppercase;letter-spacing:.04em}
-.mest .v{font-size:20px;font-weight:900;margin:2px 0}
-.mest .d{font-size:12px;color:var(--mut)}
+.mest .l{font-size:0.7188rem;font-weight:800;color:var(--mut);text-transform:uppercase;letter-spacing:.04em}
+.mest .v{font-size:1.25rem;font-weight:900;margin:2px 0}
+.mest .d{font-size:0.75rem;color:var(--mut)}
 .pill.db{margin-left:auto;color:var(--mut);font-weight:600}
 .wrap{max-width:720px;margin:0 auto;padding:12px 14px 20px}
 .view{display:none}.view.on{display:block}
 .kort{background:var(--kort);border:1px solid var(--kant);border-radius:12px;box-shadow:var(--skygge);padding:14px 15px;margin:0 0 12px}
-.kort h2{font-size:16px;margin:0 0 6px;font-weight:800;letter-spacing:-.005em}
-.kort h3{font-size:13.5px;margin:12px 0 6px;font-weight:800;color:var(--tx2)}
-.lead{font-size:13.5px;color:var(--mut);margin:0 0 10px}
-.mut{color:var(--mut)}.lit{font-size:12.5px;color:var(--mut);line-height:1.5}
+.kort h2{font-size:1rem;margin:0 0 6px;font-weight:800;letter-spacing:-.005em}
+.kort h3{font-size:0.8438rem;margin:12px 0 6px;font-weight:800;color:var(--tx2)}
+.lead{font-size:0.8438rem;color:var(--mut);margin:0 0 10px}
+.mut{color:var(--mut)}.lit{font-size:0.7812rem;color:var(--mut);line-height:1.5}
 button{font-family:inherit;touch-action:manipulation}
-.knapp{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:12px;padding:14px 18px;font-size:16px;font-weight:800;background:var(--ag);color:#fff;cursor:pointer;width:100%;min-height:52px}
+.knapp{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:12px;padding:14px 18px;font-size:1rem;font-weight:800;background:var(--ag);color:#fff;cursor:pointer;width:100%;min-height:52px}
 .knapp.sek{background:var(--kort);color:var(--tx);border:1.5px solid var(--kant)}
-.knapp.lit{padding:9px 12px;font-size:14px;min-height:40px;width:auto}
+.knapp.lit{padding:9px 12px;font-size:0.875rem;min-height:40px;width:auto}
 .knapp:disabled{opacity:.45}
 .ta-igjen{margin:4px 0 14px;padding-bottom:14px;border-bottom:1px dashed var(--kant)}
 .rad{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .tab{position:fixed;left:0;right:0;bottom:0;z-index:60;background:var(--kort);border-top:1px solid var(--kant);display:flex;padding:6px 6px calc(6px + env(safe-area-inset-bottom))}
-.tab button{flex:1;border:0;background:none;color:var(--mut);font-size:11.5px;font-weight:700;padding:6px 2px 4px;border-radius:10px;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer}
-.tab button span.i{font-size:20px;line-height:1}
+.tab button{flex:1;border:0;background:none;color:var(--mut);font-size:0.7188rem;font-weight:700;padding:6px 2px 4px;border-radius:10px;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer}
+.tab button span.i{font-size:1.25rem;line-height:1}
 .tab button.on{color:var(--ag);background:var(--agbg)}
 /* dagens plan */
 .plan{display:flex;gap:12px;align-items:center}
-.plan .bokstav{flex:none;width:58px;height:58px;border-radius:14px;display:grid;place-items:center;font-size:26px;font-weight:900;color:#fff}
-.plan b{font-size:17px}
-.varsel{background:var(--varselbg);border-left:4px solid var(--varsel);border-radius:8px;padding:9px 12px;font-size:13.5px;line-height:1.5;margin:8px 0}
-.rodt{background:var(--rodbg);border-left:4px solid var(--rod);border-radius:8px;padding:9px 12px;font-size:13.5px;line-height:1.5;margin:8px 0}
-.ok{background:var(--agbg);border-left:4px solid var(--ag);border-radius:8px;padding:9px 12px;font-size:13.5px;line-height:1.5;margin:8px 0}
-.middag{border:1.5px dashed var(--kant);border-radius:10px;padding:10px 12px;margin:12px 0 0;font-size:13.5px;line-height:1.5}
-.middag b{font-size:15px}
+.plan .bokstav{flex:none;width:58px;height:58px;border-radius:14px;display:grid;place-items:center;font-size:1.625rem;font-weight:900;color:#fff}
+.plan b{font-size:1.0625rem}
+.varsel{background:var(--varselbg);border-left:4px solid var(--varsel);border-radius:8px;padding:9px 12px;font-size:0.8438rem;line-height:1.5;margin:8px 0}
+.rodt{background:var(--rodbg);border-left:4px solid var(--rod);border-radius:8px;padding:9px 12px;font-size:0.8438rem;line-height:1.5;margin:8px 0}
+.ok{background:var(--agbg);border-left:4px solid var(--ag);border-radius:8px;padding:9px 12px;font-size:0.8438rem;line-height:1.5;margin:8px 0}
+.middag{border:1.5px dashed var(--kant);border-radius:10px;padding:10px 12px;margin:12px 0 0;font-size:0.8438rem;line-height:1.5}
+.middag b{font-size:0.9375rem}
 .middag input[type=time]{font:inherit;padding:8px 10px;border:1.5px solid var(--kant);border-radius:9px;background:var(--kort);color:var(--tx);min-height:40px}
 /* dagens 5 sekunder */
 .fem{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.fem label{display:block;font-size:12px;font-weight:700;color:var(--mut);margin-bottom:4px}
+.fem label{display:block;font-size:0.75rem;font-weight:700;color:var(--mut);margin-bottom:4px}
 .seg{display:flex;border:1.5px solid var(--kant);border-radius:10px;overflow:hidden}
-.seg button{flex:1;border:0;background:var(--kort);color:var(--tx2);padding:10px 0;font-size:15px;font-weight:700;cursor:pointer;border-right:1px solid var(--kant)}
+.seg button{flex:1;border:0;background:var(--kort);color:var(--tx2);padding:10px 0;font-size:0.9375rem;font-weight:700;cursor:pointer;border-right:1px solid var(--kant)}
 .seg button:last-child{border-right:0}
 .seg button.on{background:var(--ag);color:#fff}
-input.tall{width:100%;border:1.5px solid var(--kant);border-radius:10px;padding:10px;font-size:17px;font-weight:700;background:var(--kort);color:var(--tx);font-family:inherit;text-align:center}
+input.tall{width:100%;border:1.5px solid var(--kant);border-radius:10px;padding:10px;font-size:1.0625rem;font-weight:700;background:var(--kort);color:var(--tx);font-family:inherit;text-align:center}
 input.tall:focus{outline:2px solid var(--ag);border-color:var(--ag)}
-input.tekst{width:100%;border:1.5px solid var(--kant);border-radius:10px;padding:10px;font-size:15px;background:var(--kort);color:var(--tx);font-family:inherit}
+input.tekst{width:100%;border:1.5px solid var(--kant);border-radius:10px;padding:10px;font-size:0.9375rem;background:var(--kort);color:var(--tx);font-family:inherit}
 /* uka */
 .uke{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
 .dag{border:1.5px solid var(--kant);border-radius:10px;padding:7px 3px;text-align:center;background:var(--kort);cursor:pointer;min-height:74px}
 .dag.idag{border-color:var(--ag);box-shadow:0 0 0 2px var(--agbg)}
-.dag .n{font-size:11px;font-weight:800;color:var(--mut);text-transform:uppercase}
-.dag .l{font-size:20px;font-weight:900;margin:2px 0}
-.dag .s{font-size:11px;font-weight:700}
+.dag .n{font-size:0.6875rem;font-weight:800;color:var(--mut);text-transform:uppercase}
+.dag .l{font-size:1.25rem;font-weight:900;margin:2px 0}
+.dag .s{font-size:0.6875rem;font-weight:700}
 .dag.gjort{background:var(--agbg);border-color:var(--agsv)}
 .dag.gjort .s{color:var(--ag)}
 /* økt */
 .ov{border:1px solid var(--kant);border-radius:12px;padding:12px;margin:0 0 10px;background:var(--kort)}
 .ov .h{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
-.ov .h b{font-size:16px}
-.ov .maal{font-size:13px;color:var(--ag);font-weight:800;white-space:nowrap}
-.ov .hint{font-size:12.5px;color:var(--mut);line-height:1.45;margin:3px 0 8px}
+.ov .h b{font-size:1rem}
+.ov .maal{font-size:0.8125rem;color:var(--ag);font-weight:800;white-space:nowrap}
+.ov .hint{font-size:0.7812rem;color:var(--mut);line-height:1.45;margin:3px 0 8px}
 .sett{display:grid;grid-template-columns:28px 1fr 1fr 1fr 52px;gap:6px;align-items:center;margin:5px 0}
-.sett .nr{font-size:12px;font-weight:800;color:var(--mut);text-align:center}
-.sett .forr{font-size:12px;color:var(--mut);text-align:center;line-height:1.2}
-.sett input{width:100%;border:1.5px solid var(--kant);border-radius:9px;padding:9px 4px;font-size:17px;font-weight:700;text-align:center;background:var(--bg);color:var(--tx);font-family:inherit}
+.sett .nr{font-size:0.75rem;font-weight:800;color:var(--mut);text-align:center}
+.sett .forr{font-size:0.75rem;color:var(--mut);text-align:center;line-height:1.2}
+.sett input{width:100%;border:1.5px solid var(--kant);border-radius:9px;padding:9px 4px;font-size:1.0625rem;font-weight:700;text-align:center;background:var(--bg);color:var(--tx);font-family:inherit}
 .sett input:focus{outline:2px solid var(--ag);border-color:var(--ag)}
-.sett .hak{height:42px;border:1.5px solid var(--kant);border-radius:9px;background:var(--kort);font-size:20px;font-weight:900;color:transparent;cursor:pointer}
+.sett .hak{height:42px;border:1.5px solid var(--kant);border-radius:9px;background:var(--kort);font-size:1.25rem;font-weight:900;color:transparent;cursor:pointer}
 .sett .hak.p{background:var(--ag);border-color:var(--ag);color:#fff}
 .sett.ferdig input{background:var(--agbg)}
-.setthode{display:grid;grid-template-columns:28px 1fr 1fr 1fr 52px;gap:6px;font-size:10.5px;font-weight:800;color:var(--mut);text-transform:uppercase;letter-spacing:.04em;text-align:center;margin-bottom:2px}
+.setthode{display:grid;grid-template-columns:28px 1fr 1fr 1fr 52px;gap:6px;font-size:0.6562rem;font-weight:800;color:var(--mut);text-transform:uppercase;letter-spacing:.04em;text-align:center;margin-bottom:2px}
 .ov.hoved{border-left:5px solid var(--b)}
 .ov.tilbehor{border-left:5px solid #9ca3af}
 .ov.avslutning{border-left:5px solid #9ca3af}
-.typ{display:inline-block;font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;border-radius:6px;padding:2px 7px;margin:0 0 4px;color:#fff;background:var(--b)}
+.typ{display:inline-block;font-size:0.6562rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;border-radius:6px;padding:2px 7px;margin:0 0 4px;color:#fff;background:var(--b)}
 .typ.til{background:#6b7280}.typ.pau{background:#7c3aed}
 /* v1.19: ukesrapporten og styrkebildet */
 :root{--s1:#2a78d6;--s2:#eb6834;--s3:#1baf7a;--s4:#7c3aed;--snull:#9b978f}
 @media (prefers-color-scheme:dark){:root{--s1:#3987e5;--s2:#d95926;--s3:#199e70;--s4:#9b7ae0;--snull:#8a867f}}
 .rap{display:grid;gap:10px}
-.rap label{display:block;font-size:13px;font-weight:700;color:var(--tx2);margin-bottom:4px}
-.rap .seg button{padding:11px 0;font-size:16px;min-height:44px}
+.rap label{display:block;font-size:0.8125rem;font-weight:700;color:var(--tx2);margin-bottom:4px}
+.rap .seg button{padding:11px 0;font-size:1rem;min-height:44px}
 .rap .seg button.on{background:var(--ag)}
 #k-rapport,#k-styrke,#k-mnd{scroll-margin-top:58px}
 #k-rapport.blink{box-shadow:0 0 0 3px var(--agsv)}
 .sty{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr) auto;gap:8px 10px;align-items:center;padding:8px 0;border-top:1px solid var(--kant2)}
 .sty:first-child{border-top:0}
-.sty .n{font-size:13.5px;font-weight:700;line-height:1.3;min-width:0}
-.sty .n .typ{margin:0 0 2px;font-size:9.5px}
+.sty .n{font-size:0.8438rem;font-weight:700;line-height:1.3;min-width:0}
+.sty .n .typ{margin:0 0 2px;font-size:0.5938rem}
 .sty svg{display:block;width:100%;height:40px;overflow:visible}
-.sty .v{text-align:right;font-size:13px;line-height:1.3;white-space:nowrap}
-.sty .v b{font-size:16px;font-weight:900;display:block}
-.sty .v .d{font-size:13px;font-weight:700}
+.sty .v{text-align:right;font-size:0.8125rem;line-height:1.3;white-space:nowrap}
+.sty .v b{font-size:1rem;font-weight:900;display:block}
+.sty .v .d{font-size:0.8125rem;font-weight:700}
 .sty .v .d.opp{color:var(--ag)}.sty .v .d.ned{color:var(--varsel)}
-.sty .tom{grid-column:2/4;font-size:13px;color:var(--mut)}
+.sty .tom{grid-column:2/4;font-size:0.8125rem;color:var(--mut)}
 .graf{display:block;width:100%;height:auto;overflow:visible;margin:6px 0 2px}
-.graf text{font-family:inherit;font-size:13px;fill:var(--mut)}
+.graf text{font-family:inherit;font-size:0.8125rem;fill:var(--mut)}
 .graf text.v{font-weight:800;fill:var(--tx)}
 .graf .grid{stroke:var(--kant);stroke-width:1}
 .graf .null{stroke:var(--kant);stroke-width:1.5}
-.leg{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;color:var(--mut);margin:4px 0 0}
+.leg{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:0.8125rem;color:var(--mut);margin:4px 0 0}
 .leg i{display:inline-block;width:12px;height:12px;border-radius:50%;vertical-align:-1px;margin-right:5px}
 .fyll{margin-top:10px;border:2px solid #7c3aed;border-radius:10px;padding:10px;background:#f5f0ff}
-.fyll .t{font-size:15px;font-weight:800;color:#5b21b6}
-.fyll .m{font-size:12.5px;color:#4c1d95;margin:1px 0 6px;line-height:1.45}
+.fyll .t{font-size:0.9375rem;font-weight:800;color:#5b21b6}
+.fyll .m{font-size:0.7812rem;color:#4c1d95;margin:1px 0 6px;line-height:1.45}
 .ov .ovbilde{display:block;width:100%;max-height:190px;object-fit:contain;border-radius:8px;background:#fff;margin:4px 0 8px}
 .fyll .bilde{display:block;width:100%;max-height:170px;object-fit:contain;border-radius:8px;background:#fff;margin:6px 0}
-.fyll .slik{margin:4px 0 6px;padding-left:18px;font-size:13px;line-height:1.45;color:var(--ink,#1f2937)}
+.fyll .slik{margin:4px 0 6px;padding-left:18px;font-size:0.8125rem;line-height:1.45;color:var(--ink,#1f2937)}
 .fyll .slik li{margin:2px 0}
-.fyll .hvorfor{font-size:12px;color:#5b21b6;margin:0 0 6px}
-.fyll details summary{font-size:12.5px;font-weight:800;color:#5b21b6;cursor:pointer;list-style:none;margin:4px 0}
+.fyll .hvorfor{font-size:0.75rem;color:#5b21b6;margin:0 0 6px}
+.fyll details summary{font-size:0.7812rem;font-weight:800;color:#5b21b6;cursor:pointer;list-style:none;margin:4px 0}
 .fyll details summary::before{content:'▸ '}
 .fyll details[open] summary::before{content:'▾ '}
-.ov .slik{margin:2px 0 8px;padding-left:18px;font-size:12.5px;line-height:1.45;color:var(--mut)}
-.tidest{font-size:12.5px;color:var(--mut);margin-top:2px}
+.ov .slik{margin:2px 0 8px;padding-left:18px;font-size:0.7812rem;line-height:1.45;color:var(--mut)}
+.tidest{font-size:0.7812rem;color:var(--mut);margin-top:2px}
 .fyllrad{display:grid;grid-template-columns:28px 1fr 1fr 1fr;gap:6px;align-items:center;margin:4px 0}
-.fyllrad .nr{font-size:12px;font-weight:800;color:var(--mut);text-align:center}
-.fyllrad input{width:100%;border:1.5px solid var(--kant);border-radius:9px;padding:8px 4px;font-size:16px;font-weight:700;text-align:center;background:var(--bg);color:var(--tx);font-family:inherit}
-.fyllrad .lbl{font-size:11px;color:var(--mut);text-align:center}
+.fyllrad .nr{font-size:0.75rem;font-weight:800;color:var(--mut);text-align:center}
+.fyllrad input{width:100%;border:1.5px solid var(--kant);border-radius:9px;padding:8px 4px;font-size:1rem;font-weight:700;text-align:center;background:var(--bg);color:var(--tx);font-family:inherit}
+.fyllrad .lbl{font-size:0.6875rem;color:var(--mut);text-align:center}
 .rpe{display:flex;gap:4px;flex-wrap:wrap;margin-top:8px;align-items:center}
-.rpe span{font-size:12px;font-weight:700;color:var(--mut);margin-right:4px}
-.rpe button{width:32px;height:32px;border-radius:8px;border:1.5px solid var(--kant);background:var(--kort);color:var(--tx2);font-weight:800;cursor:pointer;font-size:13px}
+.rpe span{font-size:0.75rem;font-weight:700;color:var(--mut);margin-right:4px}
+.rpe button{width:32px;height:32px;border-radius:8px;border:1.5px solid var(--kant);background:var(--kort);color:var(--tx2);font-weight:800;cursor:pointer;font-size:0.8125rem}
 .rpe button.on{background:var(--ag);border-color:var(--ag);color:#fff}
 /* timer */
 .timer{position:fixed;left:0;right:0;bottom:calc(64px + env(safe-area-inset-bottom));z-index:55;background:var(--tx);color:var(--bg);padding:10px 14px;display:none;align-items:center;gap:10px}
 .timer.on{display:flex}
-.timer .tid{font-size:30px;font-weight:900;font-variant-numeric:tabular-nums;min-width:90px}
-.timer .info{flex:1;font-size:12.5px;line-height:1.35;opacity:.9}
+.timer .tid{font-size:1.875rem;font-weight:900;font-variant-numeric:tabular-nums;min-width:90px}
+.timer .info{flex:1;font-size:0.7812rem;line-height:1.35;opacity:.9}
 .timer .over{display:block;font-weight:800;opacity:.85}
-.hensikt{border:1.5px solid var(--kant);border-radius:11px;padding:10px 12px;margin:0 0 12px;font-size:13px;line-height:1.5}
-.hensikt .hh{font-size:14px;margin-bottom:2px}
-.hensikt summary{cursor:pointer;font-size:12.5px;font-weight:700;color:var(--ag);margin-top:8px}
+.hensikt{border:1.5px solid var(--kant);border-radius:11px;padding:10px 12px;margin:0 0 12px;font-size:0.8125rem;line-height:1.5}
+.hensikt .hh{font-size:0.875rem;margin-bottom:2px}
+.hensikt summary{cursor:pointer;font-size:0.7812rem;font-weight:700;color:var(--ag);margin-top:8px}
 .hensikt dl{margin:8px 0 0}
-.hensikt dt{font-weight:800;font-size:12px;text-transform:uppercase;letter-spacing:.03em;color:var(--mut);margin-top:8px}
+.hensikt dt{font-weight:800;font-size:0.75rem;text-transform:uppercase;letter-spacing:.03em;color:var(--mut);margin-top:8px}
 .hensikt dd{margin:2px 0 0}
-.timer button{border:0;border-radius:9px;padding:9px 11px;font-weight:800;background:rgba(255,255,255,.14);color:var(--bg);cursor:pointer;font-size:13px}
+.timer button{border:0;border-radius:9px;padding:9px 11px;font-weight:800;background:rgba(255,255,255,.14);color:var(--bg);cursor:pointer;font-size:0.8125rem}
 .timer .fyllvarsel{background:var(--b);color:#fff}
 /* tabeller */
 .tb{overflow-x:auto;margin:6px 0}
-table{width:100%;border-collapse:collapse;font-size:13.5px}
-th{text-align:left;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--mut);padding:0 8px 6px 0;border-bottom:1px solid var(--kant);font-weight:800}
+table{width:100%;border-collapse:collapse;font-size:0.8438rem}
+th{text-align:left;font-size:0.6875rem;letter-spacing:.05em;text-transform:uppercase;color:var(--mut);padding:0 8px 6px 0;border-bottom:1px solid var(--kant);font-weight:800}
 td{padding:7px 8px 7px 0;border-bottom:1px solid var(--kant2);vertical-align:top}
 tr:last-child td{border-bottom:0}
 .trapp{display:flex;gap:6px;margin:6px 0}
@@ -188,9 +190,9 @@ tr:last-child td{border-bottom:0}
 .trapp div.naa{border-color:var(--ag);color:var(--ag)}
 .bar{height:8px;background:var(--kant2);border-radius:4px;overflow:hidden;margin:4px 0}
 .bar i{display:block;height:100%;background:var(--ag)}
-details.om{font-size:13.5px;color:var(--tx2)}
-details.om summary{cursor:pointer;font-weight:700;color:var(--ag);font-size:13px}
-.steg{margin:0;padding-left:20px;font-size:14px;line-height:1.6}
+details.om{font-size:0.8438rem;color:var(--tx2)}
+details.om summary{cursor:pointer;font-weight:700;color:var(--ag);font-size:0.8125rem}
+.steg{margin:0;padding-left:20px;font-size:0.875rem;line-height:1.6}
 .steg li b{color:var(--tx)}
 @media(max-width:400px){.sett{grid-template-columns:24px 1fr 1fr 1fr 46px}.setthode{grid-template-columns:24px 1fr 1fr 1fr 46px}}
 .prot summary{list-style:none;cursor:pointer;display:flex;align-items:baseline;gap:8px}
@@ -200,9 +202,9 @@ details.om summary{cursor:pointer;font-weight:700;color:var(--ag);font-size:13px
 .prot .pbar i.mid{background:var(--kant)}
 .prot .prad{border-top:1px solid var(--kant2);padding:9px 0}
 .prot details[open] .phint{display:none}
-.prot .prad b{display:flex;justify-content:space-between;font-size:14px}
+.prot .prad b{display:flex;justify-content:space-between;font-size:0.875rem}
 .prot .prad.mid b{color:var(--mut)}
-.prot .prad div{font-size:13px;color:var(--tx2);line-height:1.5;margin-top:2px}
+.prot .prad div{font-size:0.8125rem;color:var(--tx2);line-height:1.5;margin-top:2px}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
@@ -357,7 +359,7 @@ details.om summary{cursor:pointer;font-weight:700;color:var(--ag);font-size:13px
       <li>I ntfy: «Subscribe to topic» → skriv emnet under (eller trykk «Kopier emne» og lim inn). Server: ntfy.sh.</li>
       <li>Trykk «Send testvarsel» — legg telefonen fra deg; meldingen kommer om 10–20 sekunder.</li>
     </ol>
-    <div class="rad" style="margin-top:8px;flex-wrap:wrap;gap:6px"><code id="ntfy-emne" style="font-size:15px;padding:6px 10px;border-radius:8px;background:var(--kant2)"></code><button class="knapp lit sek" id="ntfy-kopier">Kopier emne</button><button class="knapp lit sek" id="ntfy-test">Send testvarsel</button></div>
+    <div class="rad" style="margin-top:8px;flex-wrap:wrap;gap:6px"><code id="ntfy-emne" style="font-size:0.9375rem;padding:6px 10px;border-radius:8px;background:var(--kant2)"></code><button class="knapp lit sek" id="ntfy-kopier">Kopier emne</button><button class="knapp lit sek" id="ntfy-test">Send testvarsel</button></div>
     <p class="lit" id="ntfy-status" style="margin:6px 0 0"></p>
     <p class="lit" style="margin:6px 0 0">Emnet er en tilfeldig nøkkel som bare denne enheten og ntfy kjenner — ingen familiekode, ingen navn. Nytt emne: trykk «Nytt emne» og abonner på nytt i ntfy. <button class="knapp lit sek" id="ntfy-nytt" style="padding:2px 8px">Nytt emne</button></p>
   </div>
@@ -404,7 +406,7 @@ details.om summary{cursor:pointer;font-weight:700;color:var(--ag);font-size:13px
    ============================================================ */
 "use strict";
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
-var VERSJON='1.30.2'; /* v1.21: appversjonen, vises under Mer → Programmet */
+var VERSJON='1.31.0'; /* v1.21: appversjonen, vises under Mer → Programmet */
 var KODE=null, PERSON='thor', PROG=null, S=null, db=null, dbOk=false, PENDING=[];
 var AKTIV=null; /* pågående økt */
 var UKEVIS=0;   /* uke-offset i Uka-fanen */
@@ -681,7 +683,7 @@ function tegnIdag(){
     var nb=nesteGymBokstav(),ab=nb==='A'?'B':'A';var h0=h;h='';
     h+='<div class="ta-igjen"><b>Ikke fått tatt styrkeøkta denne uka?</b><div class="lit">Ta den i dag — neste i rekkefølgen er '+nb+'.</div>';
     if(ps.nivaa===2)h+='<div class="varsel">'+esc(PROG.tilbakefall.tre_uker)+'</div>';else if(ps.nivaa===1)h+='<div class="varsel">'+esc(PROG.tilbakefall.to)+'</div>';
-    var PKn=modus==='prosjekt';h+='<div class="rad" style="margin-top:10px"><button class="knapp" id="start-neste" data-t="'+nb+'">'+(PKn?'Kort økt ':'Start økt ')+nb+' · '+esc(PP().okter[nb].navn)+' · ~'+estMin(PP().okter[nb],PKn)+' min</button></div>';
+    var PKn=modus==='prosjekt';h+='<div class="rad" style="margin-top:10px"><button class="knapp" id="start-neste" data-t="'+nb+'">'+(PKn?'Kort økt ':'Start økt ')+nb+' · '+esc(PP().okter[nb].navn.replace(/^[A-ZÆØÅ]\s*—\s*/,''))+' · ~'+estMin(PP().okter[nb],PKn)+' min</button></div>';
     h+='<div class="rad" style="margin-top:8px"><button class="knapp sek lit" id="start-annen" data-t="'+ab+'">Eller '+(PKn?'kort ':'')+'økt '+ab+' · ~'+estMin(PP().okter[ab],PKn)+' min</button></div>';
     if(resDag){h+='<div class="rad" style="margin-top:8px"><button class="knapp sek lit" id="start-reserve">Eller reserveøkt hjemme — yoga og kroppsvekt · ~'+estMin(hr,false)+' min</button></div>';
       h+='<ul class="lit" style="margin:8px 0 0;padding-left:18px">'+turForan+'<li>Overskudd, ikke krav: hopper du over, skal ingenting tas igjen.</li></ul>'}
@@ -734,7 +736,7 @@ function tegnUkeKort(){
   else if(n===0)tekst=modus==='prosjekt'?'Prosjektuke: kort A, kort B og én tur er hele jobben.':modus==='minimum'?'Minimumsuke: én kort gym-økt og én tur er hele jobben.':'Ingenting ennå. Den første teller like mye som den sjette.';
   else if(igjen.length)tekst='Igjen: '+igjen.join(', ')+'.';else tekst=modus==='prosjekt'?'Prosjektuka er gjort på treningssiden. Resten av tida er prosjektets.':modus==='minimum'?'Minimumsuka er gjort. Det var det som skulle til.':'Alt i planen er gjort. Resten av uka er fri.';
   var t=nesteTest();
-  $('uka-kort').innerHTML='<h2>Uka så langt'+(modus==='minimum'?' <span class="pill">minimumsuke</span>':modus==='prosjekt'?' <span class="pill">prosjektuke</span>':'')+'</h2><div class="stor">'+n+' <span style="font-size:15px;font-weight:700;color:var(--mut)">av '+plan.length+'</span></div><div class="chips">'+chips+'</div><p class="lit" style="margin:4px 0 0">'+esc(tekst)+(t?' · <b>'+t+'</b>':'')+'</p>'+sesongLinje();
+  $('uka-kort').innerHTML='<h2>Uka så langt'+(modus==='minimum'?' <span class="pill">minimumsuke</span>':modus==='prosjekt'?' <span class="pill">prosjektuke</span>':'')+'</h2><div class="stor">'+n+' <span style="font-size:0.9375rem;font-weight:700;color:var(--mut)">av '+plan.length+'</span></div><div class="chips">'+chips+'</div><p class="lit" style="margin:4px 0 0">'+esc(tekst)+(t?' · <b>'+t+'</b>':'')+'</p>'+sesongLinje();
 }
 function nesteTest(){if(!PP().tester)return '';var tl=Object.keys(S.tester).map(function(k){return S.tester[k]}).sort(function(a,b){return a.dato<b.dato?1:-1});var d;
   if(tl.length){d=fraIso(tl[0].dato);d.setDate(d.getDate()+7*PROG.thor.tester.intervall_uker)}else{var f=PROG.thor.tester.forste.split('-W');d=new Date(+f[0],0,4);d=mandag(d);d.setDate(d.getDate()+(+f[1]-1)*7)}
@@ -910,14 +912,14 @@ function tegnOkt(){
     if(ov.bilde)h+='<img class="bilde ovbilde" src="'+esc(ov.bilde)+'" alt="'+esc(ov.navn)+'" loading="lazy">';
     if(ov.hint)h+='<div class="hint">'+esc(ov.hint)+'</div>';
     if(ov.slik)h+='<ol class="slik">'+ov.slik.map(function(x){return '<li>'+esc(x)+'</li>'}).join('')+'</ol>';
-    if(f.tekst)h+='<div class="'+(f.hold?'varsel':'ok')+'" style="margin:0 0 8px;font-size:12.5px">'+esc(f.tekst)+'</div>';
+    if(f.tekst)h+='<div class="'+(f.hold?'varsel':'ok')+'" style="margin:0 0 8px;font-size:0.7812rem">'+esc(f.tekst)+'</div>';
     if(ov.maaling==='gjort'){h+='<div class="rad"><button class="knapp sek lit" data-gjort="'+ov.id+'">'+(L.sett[0].ok?'Gjort ✓':'Marker som gjort')+'</button></div>'}
     else{var forr=sisteFor(ov.id);h+='<div class="setthode"><span></span><span>forrige</span><span>'+(ov.vekt?(ov.vekt.enhet?'kg/hånd':'kg'):'')+'</span><span>reps</span><span></span></div>';
       L.sett.forEach(function(s,si){h+='<div class="sett'+(s.ok?' ferdig':'')+'"><span class="nr">'+(si+1)+'</span><span class="forr">'+(forr[si]?esc(forr[si]):'—')+'</span>'+(ov.vekt?'<input type="text" inputmode="decimal" data-ov="'+ov.id+'" data-s="'+si+'" data-f="kg" value="'+(s.kg!==null&&s.kg!==undefined?String(s.kg).replace('.',','):'')+'">':'<span></span>')+'<input type="text" inputmode="numeric" data-ov="'+ov.id+'" data-s="'+si+'" data-f="reps" value="'+(s.reps!==null&&s.reps!==undefined?s.reps:'')+'" placeholder="'+ov.reps[1]+'"><button class="hak'+(s.ok?' p':'')+'" data-hak="'+ov.id+'" data-s="'+si+'">✓</button></div>'});
-      var mR=(PP().regler&&PP().regler.maks_reps)||15;if(ov.vekt&&L.sett.some(function(s){return (s.reps||0)>mR}))h+='<div class="varsel" style="margin:6px 0;font-size:12.5px">Over '+mR+' reps: vekta er for lett. Stopp settet på '+ov.reps[1]+' — neste gang går vekta opp. Lange sett sliter ut korsryggen før beina.</div>';
+      var mR=(PP().regler&&PP().regler.maks_reps)||15;if(ov.vekt&&L.sett.some(function(s){return (s.reps||0)>mR}))h+='<div class="varsel" style="margin:6px 0;font-size:0.7812rem">Over '+mR+' reps: vekta er for lett. Stopp settet på '+ov.reps[1]+' — neste gang går vekta opp. Lange sett sliter ut korsryggen før beina.</div>';
       h+='<div class="rpe"><span>RPE</span>'+[6,7,8,9,10].map(function(v){return '<button data-rpe="'+ov.id+'" data-v="'+v+'"'+(L.rpe===v?' class="on"':'')+'>'+v+'</button>'}).join('')+'</div>'}
     if(ov.fyllstoff){var fs=ov.fyllstoff;var F=AKTIV.fyll[fs.id];var vNavn=F.variant||fs.navn;h+='<div class="fyll"><span class="typ pau">Pauseøvelse — lett</span><div class="t" data-vt="'+fs.id+'">I pausene mellom settene: '+esc(vNavn)+'</div><div class="m">'+esc(fs.maal)+(F.forslag.tekst&&F.forslag.tekst!==fs.maal?'<br>'+esc(F.forslag.tekst):'')+'</div>'+fyllBlokk(fs,{aapen:!okterSortert().some(function(o){return o.fyll&&o.fyll[fs.id]})});
-      if(fs.varianter)h+='<div class="rad" style="margin:0 0 6px">'+fs.varianter.map(function(v){return '<button class="knapp lit'+(v===vNavn?'':' sek')+'" data-var="'+fs.id+'" data-v="'+esc(v)+'" style="min-height:32px;padding:5px 10px;font-size:12.5px">'+esc(v)+'</button>'}).join('')+'<span class="lit">ditt valg — samme mål</span></div>';
+      if(fs.varianter)h+='<div class="rad" style="margin:0 0 6px">'+fs.varianter.map(function(v){return '<button class="knapp lit'+(v===vNavn?'':' sek')+'" data-var="'+fs.id+'" data-v="'+esc(v)+'" style="min-height:32px;padding:5px 10px;font-size:0.7812rem">'+esc(v)+'</button>'}).join('')+'<span class="lit">ditt valg — samme mål</span></div>';
       var rader=(fs.maaling==='sek'&&fs.perSide)?fs.sett*2:fs.sett;if(AKTIV.kort)rader=(fs.maaling==='sek'&&fs.perSide)?2:1;
       for(var i=0;i<rader;i++){var v=F.verdier[i];var side=(fs.maaling==='sek'&&fs.perSide)?(i%2===0?'høyre':'venstre'):'';h+='<div class="fyllrad"><span class="nr">'+(side?Math.floor(i/2)+1:(i+1))+'</span>';
         if(fs.maaling==='sek')h+='<input type="text" inputmode="numeric" data-fyll="'+fs.id+'" data-i="'+i+'" value="'+(v!==undefined?v:'')+'" placeholder="sek"><span class="lbl">'+(side?'sek '+side:'sekunder')+'</span><span></span>';
@@ -1095,7 +1097,7 @@ var MG=null, MGIV=null, MGWAKE=null, MGKLAR=3000;
 function mgSteg(){var o=PP().okter.M,a=[];(o.guide||[]).forEach(function(g){for(var s=1;s<=(g.sider||1);s++)a.push({g:g,side:g.sider>1?s:0,sek:g.sek})});if(MGTILLEGG)(o.guide_tillegg||[]).forEach(function(g){a.push({g:g,side:0,reps:g.reps})});return a}
 var MGTILLEGG=false; /* v1.29 (Thor 7.11.2026): tillegget er valgfritt — egen knapp etter hovedøkta */
 function mgTillegg(){var o=PP().okter.M,a=[];(o.guide_tillegg||[]).forEach(function(g){a.push({g:g,side:0,reps:g.reps})});return a}
-function mgCss(){if($('mg-css'))return;var st=document.createElement('style');st.id='mg-css';st.textContent='#mg{position:fixed;inset:0;z-index:90;background:var(--bg,#fff);overflow-y:auto;padding:max(12px,env(safe-area-inset-top)) 16px max(16px,env(safe-area-inset-bottom))}#mg .mg-top{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:14px}#mg .mg-bar{height:6px;border-radius:3px;background:rgba(124,58,237,.15);margin:8px 0 12px;overflow:hidden}#mg .mg-bar i{display:block;height:100%;background:#7c3aed}#mg img,#mg .mg-ph{display:block;width:100%;max-width:420px;aspect-ratio:1/1;max-height:42vh;object-fit:contain;margin:0 auto 10px;border-radius:12px;background:#fdf8ee}#mg .mg-ph{display:flex;align-items:center;justify-content:center;flex-direction:column;color:#7c3aed;font-size:48px}#mg .mg-ph small{font-size:13px;color:#6b7280;margin-top:6px}#mg h3{margin:4px 0 2px;font-size:22px}#mg .mg-side{display:inline-block;background:#7c3aed;color:#fff;border-radius:999px;padding:2px 10px;font-size:13px;font-weight:700;margin-bottom:6px}#mg .mg-hint{font-size:16px;line-height:1.45;margin:6px 0 10px}#mg .mg-tid{font-size:64px;font-weight:800;text-align:center;font-variant-numeric:tabular-nums;line-height:1.1;margin:6px 0}#mg .mg-klar{text-align:center;color:#7c3aed;font-weight:700;min-height:20px}#mg .mg-knapper{display:flex;gap:8px;margin-top:10px}#mg .mg-knapper button{flex:1;min-height:52px}#mg .mg-neste{font-size:13px;color:#6b7280;text-align:center;margin-top:10px}';document.head.appendChild(st)}
+function mgCss(){if($('mg-css'))return;var st=document.createElement('style');st.id='mg-css';st.textContent='#mg{position:fixed;inset:0;z-index:90;background:var(--bg,#fff);overflow-y:auto;padding:max(12px,env(safe-area-inset-top)) 16px max(16px,env(safe-area-inset-bottom))}#mg .mg-top{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:0.875rem}#mg .mg-bar{height:6px;border-radius:3px;background:rgba(124,58,237,.15);margin:8px 0 12px;overflow:hidden}#mg .mg-bar i{display:block;height:100%;background:#7c3aed}#mg img,#mg .mg-ph{display:block;width:100%;max-width:420px;aspect-ratio:1/1;max-height:42vh;object-fit:contain;margin:0 auto 10px;border-radius:12px;background:#fdf8ee}#mg .mg-ph{display:flex;align-items:center;justify-content:center;flex-direction:column;color:#7c3aed;font-size:3rem}#mg .mg-ph small{font-size:0.8125rem;color:#6b7280;margin-top:6px}#mg h3{margin:4px 0 2px;font-size:1.375rem}#mg .mg-side{display:inline-block;background:#7c3aed;color:#fff;border-radius:999px;padding:2px 10px;font-size:0.8125rem;font-weight:700;margin-bottom:6px}#mg .mg-hint{font-size:1rem;line-height:1.45;margin:6px 0 10px}#mg .mg-tid{font-size:4rem;font-weight:800;text-align:center;font-variant-numeric:tabular-nums;line-height:1.1;margin:6px 0}#mg .mg-klar{text-align:center;color:#7c3aed;font-weight:700;min-height:20px}#mg .mg-knapper{display:flex;gap:8px;margin-top:10px}#mg .mg-knapper button{flex:1;min-height:52px}#mg .mg-neste{font-size:0.8125rem;color:#6b7280;text-align:center;margin-top:10px}';document.head.appendChild(st)}
 function mgStart(){mgCss();MGTILLEGG=false;MG={steg:mgSteg(),i:0,slutt:0,klarSlutt:0,pause:true,rest:0,ferdig:false};var el=document.createElement('div');el.id='mg';document.body.appendChild(el);document.body.style.overflow='hidden';
   try{if(navigator.wakeLock)navigator.wakeLock.request('screen').then(function(w){MGWAKE=w}).catch(function(){})}catch(e){}
   MGIV=setInterval(mgTikk,250);mgGaaTil(0,false)}
@@ -1113,7 +1115,7 @@ function mgTall(){if(!MG)return;var st=MG.steg[MG.i],t=$('mg-tid'),k=$('mg-klar'
   t.textContent=mgFmt(MG.slutt-n);k.textContent=''}
 function mgTegn(){var el=$('mg');if(!el||!MG)return;var N=MG.steg.length;
   if(MG.ferdig){var mG=gjortDag(idag()).some(function(o){return o.type==='M'});
-    el.innerHTML='<div class="mg-top"><b>10-minutteren</b><button class="knapp sek lit" id="mg-x">Lukk</button></div><div class="mg-bar"><i style="width:100%"></i></div><div class="mg-tid" style="font-size:48px">Ferdig 🎉</div><p class="mg-hint" style="text-align:center">Godt jobbet — kroppen takker i morgen.</p><div class="mg-knapper"><button class="knapp" id="mg-logg">'+(mG?'Allerede logget i dag ✓ — lukk':'Logg 10-minutteren og lukk')+'</button></div>'+(MG.erTillegg||!(PP().okter.M.guide_tillegg||[]).length?'':'<div class="mg-knapper"><button class="knapp sek" id="mg-tillegg">Valgfritt: tillegget · ca. 4 min</button></div>')+'<div class="mg-knapper"><button class="knapp sek lit" id="mg-igjen">Ta den en gang til</button></div>';
+    el.innerHTML='<div class="mg-top"><b>10-minutteren</b><button class="knapp sek lit" id="mg-x">Lukk</button></div><div class="mg-bar"><i style="width:100%"></i></div><div class="mg-tid" style="font-size:3rem">Ferdig 🎉</div><p class="mg-hint" style="text-align:center">Godt jobbet — kroppen takker i morgen.</p><div class="mg-knapper"><button class="knapp" id="mg-logg">'+(mG?'Allerede logget i dag ✓ — lukk':'Logg 10-minutteren og lukk')+'</button></div>'+(MG.erTillegg||!(PP().okter.M.guide_tillegg||[]).length?'':'<div class="mg-knapper"><button class="knapp sek" id="mg-tillegg">Valgfritt: tillegget · ca. 4 min</button></div>')+'<div class="mg-knapper"><button class="knapp sek lit" id="mg-igjen">Ta den en gang til</button></div>';
     $('mg-x').onclick=mgLukk;$('mg-logg').onclick=function(){if(!gjortDag(idag()).some(function(o){return o.type==='M'}))loggEnkel('M',null);mgLukk()};$('mg-igjen').onclick=function(){MG.ferdig=false;mgGaaTil(0,false)};var bt=$('mg-tillegg');if(bt)bt.onclick=function(){MG.steg=mgTillegg();MG.erTillegg=true;MG.ferdig=false;mgGaaTil(0,false)};return}
   var st=MG.steg[MG.i],g=st.g,neste=MG.steg[MG.i+1];
   var bilde=g.bilde?'<img src="'+esc(g.bilde)+'" alt="'+esc(g.navn)+'">':'<div class="mg-ph">🧘<small>Bilde kommer — følg teksten</small></div>';
@@ -1154,7 +1156,7 @@ function tegnMestring(){
   if(!erThor()){tegnMestringAnniken(e,alle,iso4);return}
   /* økter siste 4 uker: x av 8 — syke uker trekkes fra nevneren */
   var gym4=alle.filter(function(o){return (o.type==='A'||o.type==='B')&&o.dato>=iso4}).length;var nevner=8;var dd=new Date();for(var w=0;w<4;w++){if(ukeModus(ukeKey(dd))==='syk')nevner-=2;dd.setDate(dd.getDate()-7)}
-  h+='<div><div class="l">Økter siste 4 uker</div><div class="v">'+gym4+' <span style="font-size:13px;color:var(--mut)">av '+nevner+'</span></div><div class="d">'+(nevner<8?'syke uker teller ikke':'gym-økter, A og B')+'</div></div>';
+  h+='<div><div class="l">Økter siste 4 uker</div><div class="v">'+gym4+' <span style="font-size:0.8125rem;color:var(--mut)">av '+nevner+'</span></div><div class="d">'+(nevner<8?'syke uker teller ikke':'gym-økter, A og B')+'</div></div>';
   [['deadhang','Dead hang','s'],['sideplanke','Sideplanke','s']].forEach(function(f){var naa=bestFyll(f[0],iso4,null),for4=bestFyll(f[0],null,iso4);if(naa===null&&for4===null)return;var v=naa!==null?naa:for4;h+='<div><div class="l">'+f[1]+'</div><div class="v">'+v+' '+f[2]+'</div><div class="d">'+(for4!==null&&naa!==null?(naa>for4?'+'+(naa-for4)+' s på fire uker':naa<for4?'ned fra '+for4:'som for fire uker siden'):(f[0]==='sideplanke'?'beste side · mål 60 s per side':'mål 60 s'))+'</div></div>'});
   var kn=okterMed('kneboy');if(kn.length){var b=0;kn.forEach(function(o){o.ovelser.kneboy.sett.forEach(function(s){if(s.ok)b=Math.max(b,(s.kg||0))})});h+='<div><div class="l">Knebøy</div><div class="v">'+b+' kg</div><div class="d">tyngste arbeidssett · tak 100</div></div>'}
   var t=rdlTrinn();if(okterMed('rdl').length)h+='<div><div class="l">Ryggtrappa</div><div class="v">'+t.naa+' kg</div><div class="d">trinn '+((t.idx||0)+1)+' av 4 · mål 90</div></div>';
@@ -1167,7 +1169,7 @@ function tegnMestring(){
 }
 function tegnMestringAnniken(e,alle,iso4){
   var gym4=alle.filter(function(o){return (o.type==='A'||o.type==='B'||o.type==='H')&&o.dato>=iso4}).length;var nevner=8;var dd=new Date();for(var w=0;w<4;w++){if(ukeModus(ukeKey(dd))==='syk')nevner-=2;dd.setDate(dd.getDate()-7)}
-  var h='<div><div class="l">Styrkeøkter siste 4 uker</div><div class="v">'+gym4+' <span style="font-size:13px;color:var(--mut)">av '+nevner+'</span></div><div class="d">gym og hjemme</div></div>';
+  var h='<div><div class="l">Styrkeøkter siste 4 uker</div><div class="v">'+gym4+' <span style="font-size:0.8125rem;color:var(--mut)">av '+nevner+'</span></div><div class="d">gym og hjemme</div></div>';
   [['goblet','Goblet knebøy'],['hipthrust','Hip thrust'],['nedtrekk','Nedtrekk'],['roing','Roing']].forEach(function(x){var l=okterMed(x[0]);if(!l.length)return;var forste=arbeidsKg(l[0].ovelser[x[0]])||0,naa=0;l.forEach(function(o){naa=Math.max(naa,arbeidsKg(o.ovelser[x[0]])||0)});
     h+='<div><div class="l">'+x[1]+'</div><div class="v">'+fmt(naa)+' kg</div><div class="d">'+(naa>forste?'+'+fmt(naa-forste)+' kg siden start':'start '+fmt(forste)+' kg')+'</div></div>'});
   e.innerHTML=h;
@@ -1303,7 +1305,7 @@ function tegnStyrkeOv(){
     var sikre=s.filter(function(p){return !p.usikker});var naa=s[s.length-1];var forste=sikre.length?sikre[0]:s[0];var sist=sikre.length?sikre[sikre.length-1]:naa;
     var pst=(forste.v>0&&sikre.length>=2)?(sist.v/forste.v-1)*100:null;
     var sp=sparkline(s,fra,til)||'<div class="tom">Siste økt er eldre enn 12 uker.</div>';
-    h+='<div>'+sp+'</div><div class="v"><b>'+(naa.usikker?'<span class="mut" style="font-weight:600">≈ </span>':'')+fmt(naa.v)+' <span class="mut" style="font-size:12px;font-weight:600">'+esc(enhet)+'</span></b>'+(pst!==null?'<span class="d '+(pst>0.5?'opp':pst<-0.5?'ned':'')+'">'+fmtPst(pst)+'</span><span class="mut" style="font-size:11.5px"> siden '+dato(forste.dato)+'</span>':'<span class="mut" style="font-size:12px">usikkert — over 15 reps</span>')+'</div></div>'});
+    h+='<div>'+sp+'</div><div class="v"><b>'+(naa.usikker?'<span class="mut" style="font-weight:600">≈ </span>':'')+fmt(naa.v)+' <span class="mut" style="font-size:0.75rem;font-weight:600">'+esc(enhet)+'</span></b>'+(pst!==null?'<span class="d '+(pst>0.5?'opp':pst<-0.5?'ned':'')+'">'+fmtPst(pst)+'</span><span class="mut" style="font-size:0.7188rem"> siden '+dato(forste.dato)+'</span>':'<span class="mut" style="font-size:0.75rem">usikkert — over 15 reps</span>')+'</div></div>'});
   e.innerHTML=h||'<p class="lit">Ingen øvelser med vekt i programmet.</p>'}
 /* generell linjegraf: serier=[{navn,farge,stiplet,pts:[{x,y,label}]}], x = ukeindeks 0..n-1 */
 function linjeGraf(serier,uker,ymin,ymax,ytick,fmtY){
@@ -1333,7 +1335,7 @@ function tegnIndeks(){
     return {x:i,y:ant?Math.round(sum/ant*10)/10:null}});
   var ys=pts.filter(function(p){return p.y!==null}).map(function(p){return p.y});var lo=Math.min(100,Math.floor(Math.min.apply(null,ys)/5)*5),hi=Math.max(105,Math.ceil(Math.max.apply(null,ys)/5)*5);
   var naa=ys[ys.length-1];
-  e.innerHTML='<p style="margin:0 0 2px;font-size:13.5px"><b style="font-size:20px">'+fmt(naa)+'</b> <span class="mut">nå · 100 = første økt · '+serier.length+' øvelse'+(serier.length>1?'r':'')+' teller</span></p>'+linjeGraf([{navn:'',kort:'',farge:'var(--ag)',pts:pts}],uker,lo,hi,(hi-lo)>30?10:5,{f:function(v){return fmt(v)},null:100})}
+  e.innerHTML='<p style="margin:0 0 2px;font-size:0.8438rem"><b style="font-size:1.25rem">'+fmt(naa)+'</b> <span class="mut">nå · 100 = første økt · '+serier.length+' øvelse'+(serier.length>1?'r':'')+' teller</span></p>'+linjeGraf([{navn:'',kort:'',farge:'var(--ag)',pts:pts}],uker,lo,hi,(hi-lo)>30?10:5,{f:function(v){return fmt(v)},null:100})}
 function tegnKropp(){
   var e=$('sty-kropp');if(!e)return;var uker=ukerBak(12);
   var farge={taa:'var(--s1)',rygg:'var(--s2)',albue:'var(--s3)',nakke:'var(--s4)'};var navn={taa:'Tå',rygg:'Rygg',albue:'Albue',nakke:'Nakke'};
@@ -1388,7 +1390,7 @@ function tegnProtein(){var e=$('protein-kort');var P=PROG.protein&&PROG.protein[
   var bar=P.maaltider.map(function(m){return '<i class="'+(m.middag?'mid':'')+'" style="flex:'+m.g+'" title="'+esc(m.navn)+' '+m.g+' g"></i>'}).join('');
   var kort=P.maaltider.filter(function(m){return !m.middag}).map(function(m){return esc(m.navn.toLowerCase())+' '+m.g}).join(' · ');
   var rader=P.maaltider.map(function(m){return '<div class="prad'+(m.middag?' mid':'')+'"><b><span>'+esc(m.navn)+'</span><span>'+m.g+' g</span></b>'+m.eks.map(function(x,i){return '<div>'+(i?'eller: ':'')+esc(x)+'</div>'}).join('')+'</div>'}).join('');
-  e.innerHTML=(P.motto?'<p style="margin:0 0 8px;font-size:14px;font-weight:600;line-height:1.4;color:#5b21b6">'+esc(P.motto)+'</p>':'')+'<details><summary><h2 style="margin:0">Protein i dag</h2><span class="lit" style="margin-left:auto">'+P.maal+' g · '+esc(P.tekst)+'</span></summary>'
+  e.innerHTML=(P.motto?'<p style="margin:0 0 8px;font-size:0.875rem;font-weight:600;line-height:1.4;color:#5b21b6">'+esc(P.motto)+'</p>':'')+'<details><summary><h2 style="margin:0">Protein i dag</h2><span class="lit" style="margin-left:auto">'+P.maal+' g · '+esc(P.tekst)+'</span></summary>'
     +'<div class="pbar">'+bar+'</div><p class="lit" style="margin:0 0 4px">'+kort+' g'+(sum!==P.maal?' (sum '+sum+' g)':'')+'<span class="phint"> — trykk for eksempler</span></p>'
     +rader+(P.merk?'<p class="lit" style="margin:8px 0 0">'+esc(P.merk)+'</p>':'')+(PROG.protein.fotnote?'<p class="lit" style="margin:6px 0 0">'+esc(PROG.protein.fotnote)+'</p>':'')+'</details>';
   e.hidden=false}
