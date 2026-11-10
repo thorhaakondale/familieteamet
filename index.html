@@ -512,6 +512,35 @@ input,select,textarea,button{font-size:1rem!important}
 .pp-saldo{font-size:0.7812rem;color:var(--muted);margin-top:4px}.pp-saldo summary{cursor:pointer}
 .pp-saldo input{width:90px;font:inherit;font-size:0.8125rem;padding:4px 6px;border:1px solid var(--line);border-radius:7px;background:var(--card);color:var(--ink)}
 .pp-saldo label{display:inline-flex;align-items:center;gap:6px;margin:6px 12px 0 0}
+
+/* v1.76 (Thor 10.11.2026): lavere topp, lavere personknapper og dagnavigasjon, mindre gruppeoverskrifter og tettere kort — mer av dagen på én skjerm, også med større tekst */
+h1.topp{margin:6px 0 4px;font-size:1.25rem}
+.hvem{gap:4px;margin:0 0 8px}.hvem button{padding:2px 9px;min-height:30px;font-size:0.8125rem;border-width:1.5px}.hvem button .dyr{font-size:0.9375rem;margin-right:4px}
+@media(max-width:700px){#hvem{position:relative;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;margin:0 -11px 8px;padding:1px 11px;scroll-padding:0 11px}#hvem::-webkit-scrollbar{display:none}#hvem button{flex:0 0 auto;white-space:nowrap}} /* v1.76: én rad på mobil — sveip for resten, den valgte rulles fram */
+.dagnav{margin:0 0 4px}.dagnav button{height:30px;min-width:36px;font-size:1rem;padding:0 9px}.dagnav .dn-dato{font-size:0.875rem}.dagnav .dn-ant{font-size:0.7188rem}.dagnav .dn-idag{height:24px}
+.grp{margin:12px 0 4px;padding-top:6px;font-size:0.6875rem;letter-spacing:.05em}
+.grp:first-child,.glemt+.grp,.dagtxt+.grp{margin-top:6px}
+.skille{margin:14px 0 2px;padding:4px 0 2px;font-size:0.8125rem}
+.card{padding:11px 13px;margin:0 0 10px}
+@media(max-width:700px){.card{padding:10px 11px}}
+.card>h2{margin-bottom:6px}
+.tiles{gap:4px}.tile{min-height:38px}
+.handl{margin:0 0 10px}.handl button{min-height:40px}
+/* v1.76: handlelista — trykk på teksten for å rette, sveip til venstre for å slette, gruppert etter butikk */
+#handle li{position:relative;padding:0;gap:0;overflow:hidden;touch-action:pan-y}
+#handle li .hl-inn{display:flex;align-items:center;gap:8px;flex:1;min-width:0;padding:6px 2px;background:var(--card);transition:transform .18s;position:relative;z-index:1}
+#handle li .hl-txt2{flex:1;min-width:0;cursor:text;overflow-wrap:anywhere}
+#handle li .hl-slett{visibility:hidden;position:absolute;right:0;top:0;bottom:0;border:0;background:#c0392b;color:#fff;font:inherit;font-weight:800;padding:0 16px;cursor:pointer}
+#handle li.sveipet .hl-inn{transform:translateX(-84px)}#handle li.sveipet .hl-slett,#handle li.drar .hl-slett{visibility:visible}
+#handle li .hl-red{padding:6px 2px}
+#handle li .hl-red{display:flex;flex-wrap:wrap;gap:6px;flex:1;min-width:0}
+#handle li .hl-red input{flex:1 1 140px;min-width:0;font:inherit;padding:6px 8px;border:1.5px solid var(--accent);border-radius:8px;background:var(--card);color:var(--ink)}
+#handle li .hl-red select{font:inherit;font-size:0.8125rem;padding:5px 6px;border:1px solid var(--line);border-radius:8px;background:var(--card2);color:var(--ink)}
+#handle li .hl-red button{font:inherit;font-size:0.8125rem;font-weight:800;border-radius:8px;border:0;padding:6px 10px;cursor:pointer;background:var(--line2);color:var(--ink)}
+#handle li .hl-red button.ok{background:var(--accent);color:#fff}
+#handle li .hl-red button.slett{background:transparent;color:#c0392b}
+#handle .hl-butikk{list-style:none;margin:10px 0 0;padding:0 2px 2px;font-size:0.6875rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--line)}
+#handle .hl-butikk:first-child{margin-top:4px}
 </style>
 </head>
 <body>
@@ -568,7 +597,7 @@ input,select,textarea,button{font-size:1rem!important}
   <div id="hl-forslag" hidden></div>
   <button type="button" id="hl-ferdig-knapp" aria-expanded="false" hidden></button>
   <div id="hl-ferdig" hidden></div>
-  <details class="small hjelp"><summary>Slik virker lista</summary>Dikter alt i ett — «antisklimatte, batterier og tannkrem» blir tre linjer du kan rette før du lagrer. Haket av = kjøpt, og havner under «Fullført» i 14 dager — trykk «Legg tilbake» om du trykket feil. Enkel huskeliste for småturer og ting som ikke er mat — Ukeshandel er egen.</details>
+  <details class="small hjelp"><summary>Slik virker lista</summary>Dikter alt i ett — «antisklimatte, batterier og tannkrem» blir tre linjer du kan rette før du lagrer. Haket av = kjøpt, og havner under «Fullført» i 14 dager — trykk «Legg tilbake» om du trykket feil. Trykk på en vare for å rette teksten eller butikken, sveip til venstre for å slette. Lista grupperes etter butikk når det er mer enn én. Enkel huskeliste for småturer og ting som ikke er mat — Ukeshandel er egen.</details>
 </section>
 <dialog id="nydlg" aria-labelledby="nydlg-t"><div class="ark-inn">
   <div class="ark-bar"><button type="button" id="ny-avbryt">Avbryt</button><span class="ark-tittel" id="nydlg-t">Ny huskelapp</span><span style="width:70px"></span></div>
@@ -726,7 +755,7 @@ input,select,textarea,button{font-size:1rem!important}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.75.0';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.76.0';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -1119,17 +1148,64 @@ function delLinjer(tekst){
   return ut;
 }
 var HANDLE={};
+/* v1.76 (Thor 10.11.2026): butikktype gjettes av ordene (kan endres når du retter varen), lista grupperes etter butikk når det er mer enn én. */
+var HL_BUTIKKER=[['dagligvare','🛒 Dagligvare'],['apotek','💊 Apotek'],['jernvare','🔧 Jernvare og bil'],['klaer','👕 Klær og sko'],['elektronikk','🔌 Elektronikk'],['hjem','🏠 Hjem og interiør'],['annet','📦 Annet']];
+var HL_ORD={apotek:['plaster','paracet','ibux','medisin','vitamin','tran','kreatin','omega','linse','solkrem','kompress','termometer','nesespray','hostesaft','apotek','reseptfri','zink','magnesium'],
+  jernvare:['batteri','lyspære','pære','skrue','spiker','maling','pensel','tape','lim','verktøy','strøsand','strøsalt','spylervæske','sikring','røykvarsler','ledning','skjøte','silikon','slange','biltema','jernvare','motorolje','frostvæske','vindusvisker','plugg','sandpapir','bensin'],
+  klaer:['sokk','bukse','genser','jakke','sko','støvl','lue','votter','vott','hansk','bokser','t-skjorte','skjorte','undertøy','klær','regntøy','truse','bh','tights','belte'],
+  elektronikk:['lader','kabel','usb','hdmi','datamus','tastatur','hodetelefon','øreplugg','airpods','minnekort','skriver','blekk','toner','adapter','powerbank'],
+  hjem:['antisklimatte','matte','håndkle','sengetøy','laken','putetrekk','dynetrekk','dyne','pute','glass','kopp','tallerken','stearinlys','telys','kronelys','gardin','oppbevaring','kurv','boks','teppe','pledd','vase'],
+  dagligvare:['melk','brød','ost','egg','smør','kaffe','frukt','eple','banan','grønnsak','kjøtt','kylling','fisk','laks','pasta','ris','mel','sukker','salt','yoghurt','juice','brus','vann','dopapir','tørkerull','oppvask','vaskemiddel','tøymykner','såpe','tannkrem','tannbørste','sjampo','balsam','bleie','klut','pose','folie','bakepapir','snacks','sjokolade','pizza','taco','saus','krydder','smoothie','agurk','tomat','løk','potet','gulrot','salat','skinke','pålegg','syltetøy','müsli','havre','gryn','rømme','fløte','is']};
+function hlGjett(t){var x=' '+(t||'').toLowerCase()+' ';var rek=['apotek','jernvare','klaer','elektronikk','hjem','dagligvare'];for(var i=0;i<rek.length;i++){var o=HL_ORD[rek[i]];for(var j=0;j<o.length;j++){var w=o[j];if(w.length<=3?x.indexOf(' '+w)>=0:x.indexOf(w)>=0)return rek[i]} /* korte ord må stå først i et ord: «is» skal ikke treffe «ris» */}return 'annet'}
+function hlButikk(x){return (x.butikk&&HL_BUTIKKER.some(function(b){return b[0]===x.butikk}))?x.butikk:hlGjett(x.tekst)}
+function hlLagreFelt(x,felt){Object.keys(felt).forEach(function(k){x[k]=felt[k]}); if(db) db.child('handleliste/'+x.id).update(felt).catch(function(){status('Kunne ikke lagre delt.')})}
+function hlSlett(x){delete HANDLE[x.id]; if(db) db.child('handleliste/'+x.id).remove().catch(function(){status('Kunne ikke slette delt.')}); toast('🛒 '+x.tekst+' — slettet'); tegnHandle()}
+var HL_RED=null;
 function tegnHandle(){
   var sek=document.getElementById('handle'), ul=document.getElementById('hl-liste'), tom=document.getElementById('hl-tom'); if(!sek||!ul) return;
   var voks=!!(valgt&&(valgt==='thor'||valgt==='anniken')); sek.hidden=!voks; if(!voks) return;
   var anker=document.getElementById('mer')||document.getElementById('idag'); if(anker&&anker.nextElementSibling!==sek) anker.insertAdjacentElement('afterend',sek); /* v1.74.1 (Thor 9.11): handlelista øverst, rett under dagen og over pengeplanen */
   var li=Object.keys(HANDLE).map(function(k){return HANDLE[k]}).filter(function(x){return x&&x.tekst&&!x.ok}).sort(function(a,b){return (a.ts||'')<(b.ts||'')?-1:1});
   ul.innerHTML=''; if(tom) tom.hidden=li.length>0;
-  li.forEach(function(x){ var el=document.createElement('li'); var cb=document.createElement('input'); cb.type='checkbox'; cb.setAttribute('aria-label','Kjøpt: '+x.tekst);
-    cb.onchange=function(){ if(!cb.checked) return; x.ok=new Date().toISOString(); x.okAv=valgt||''; if(db) db.child('handleliste/'+x.id).update({ok:x.ok,okAv:x.okAv}).catch(function(){status('Kunne ikke lagre delt.')}); toast('🛒 '+x.tekst+' — kjøpt'); tegnHandle() };
-    var sp=document.createElement('span'); sp.textContent=x.tekst; var av=document.createElement('span'); av.className='hl-av'; av.textContent=(PMAP[x.av]?PMAP[x.av].dyr:'')+(x.ts?' '+x.ts.slice(8,10)+'.'+x.ts.slice(5,7):'');
-    el.appendChild(cb); el.appendChild(sp); el.appendChild(av); ul.appendChild(el) });
+  var grupper={}; li.forEach(function(x){var b=hlButikk(x);(grupper[b]||(grupper[b]=[])).push(x)});
+  var bruk=HL_BUTIKKER.filter(function(b){return grupper[b[0]]}); var visHode=bruk.length>1;
+  bruk.forEach(function(b){
+    if(visHode){var h=document.createElement('li'); h.className='hl-butikk'; h.textContent=b[1]; ul.appendChild(h)}
+    grupper[b[0]].forEach(function(x){ ul.appendChild(hlRad(x)) }) });
   tegnHandleFerdig();
+}
+function hlRad(x){
+  var el=document.createElement('li'); el.dataset.id=x.id;
+  if(HL_RED===x.id){ /* rette-modus: tekst + butikk, lagre / avbryt / slett */
+    var r=document.createElement('div'); r.className='hl-red';
+    var inp=document.createElement('input'); inp.value=x.tekst; inp.setAttribute('aria-label','Rett varen');
+    var sel=document.createElement('select'); sel.setAttribute('aria-label','Butikk'); var cur=hlButikk(x);
+    HL_BUTIKKER.forEach(function(b){var o=document.createElement('option'); o.value=b[0]; o.textContent=b[1]; if(b[0]===cur) o.selected=true; sel.appendChild(o)});
+    var ok=document.createElement('button'); ok.type='button'; ok.className='ok'; ok.textContent='Lagre';
+    var av=document.createElement('button'); av.type='button'; av.textContent='Avbryt';
+    var sl=document.createElement('button'); sl.type='button'; sl.className='slett'; sl.textContent='Slett';
+    ok.onclick=function(){var v=inp.value.trim(); HL_RED=null; if(!v){hlSlett(x);return} var felt={tekst:v}; if(sel.value!==hlGjett(v)||x.butikk) felt.butikk=sel.value; hlLagreFelt(x,felt); tegnHandle()};
+    av.onclick=function(){HL_RED=null; tegnHandle()};
+    sl.onclick=function(){HL_RED=null; hlSlett(x)};
+    inp.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();ok.click()} if(e.key==='Escape'){av.click()}});
+    r.appendChild(inp); r.appendChild(sel); r.appendChild(ok); r.appendChild(av); r.appendChild(sl); el.appendChild(r);
+    setTimeout(function(){inp.focus()},0); return el }
+  var inn=document.createElement('div'); inn.className='hl-inn';
+  var cb=document.createElement('input'); cb.type='checkbox'; cb.setAttribute('aria-label','Kjøpt: '+x.tekst);
+  cb.onchange=function(){ if(!cb.checked) return; x.ok=new Date().toISOString(); x.okAv=valgt||''; if(db) db.child('handleliste/'+x.id).update({ok:x.ok,okAv:x.okAv}).catch(function(){status('Kunne ikke lagre delt.')}); toast('🛒 '+x.tekst+' — kjøpt'); tegnHandle() };
+  var sp=document.createElement('span'); sp.className='hl-txt2'; sp.textContent=x.tekst; sp.title='Trykk for å rette'; sp.onclick=function(){ if(el.classList.contains('sveipet')){el.classList.remove('sveipet');return} HL_RED=x.id; tegnHandle() };
+  var avs=document.createElement('span'); avs.className='hl-av'; avs.textContent=(PMAP[x.av]?PMAP[x.av].dyr:'')+(x.ts?' '+x.ts.slice(8,10)+'.'+x.ts.slice(5,7):'');
+  inn.appendChild(cb); inn.appendChild(sp); inn.appendChild(avs);
+  var del=document.createElement('button'); del.type='button'; del.className='hl-slett'; del.textContent='Slett'; del.tabIndex=-1; del.setAttribute('aria-label','Slett '+x.tekst); del.onclick=function(){hlSlett(x)};
+  el.appendChild(del); el.appendChild(inn);
+  /* sveip til venstre viser Slett — trykk Slett for å slette (aldri slett på selve sveipet, så et skjevt tommeltrykk ikke tar en vare) */
+  var x0=null,y0=0,dx=0,hor=null;
+  el.addEventListener('touchstart',function(e){var t=e.touches[0]; x0=t.clientX; y0=t.clientY; dx=0; hor=null; inn.style.transition='none'; el.classList.add('drar')},{passive:true});
+  el.addEventListener('touchmove',function(e){if(x0===null) return; var t=e.touches[0]; var ddx=t.clientX-x0, ddy=t.clientY-y0;
+    if(hor===null&&(Math.abs(ddx)>8||Math.abs(ddy)>8)) hor=Math.abs(ddx)>Math.abs(ddy);
+    if(!hor) return; var base=el.classList.contains('sveipet')?-84:0; dx=Math.max(-120,Math.min(0,base+ddx)); inn.style.transform='translateX('+dx+'px)'},{passive:true});
+  el.addEventListener('touchend',function(){ if(x0===null) return; inn.style.transition=''; inn.style.transform=''; el.classList.remove('drar'); if(hor){ var aapne=dx<-42; document.querySelectorAll('#hl-liste li.sveipet').forEach(function(o){if(o!==el)o.classList.remove('sveipet')}); el.classList.toggle('sveipet',aapne) } x0=null },{passive:true});
+  return el;
 }
 /* v1.66 (Thor 03.11.2026): fullførte varer vises sammenfoldet, nyeste først, gruppert per dag; «Legg tilbake» angrer; eldre enn 14 dager slettes */
 var HL_DAGER=14, HL_APEN=false;
@@ -1915,6 +1991,7 @@ function tegnHvem(){
     b.onclick=function(){valgt=p.id==='alle'?null:p.id;try{if(valgt)localStorage.setItem('ft-person',valgt);else localStorage.removeItem('ft-person')}catch(e){};tegn()};
     h.appendChild(b);
   });
+  var on=h.querySelector('.on'); if(on&&h.scrollWidth>h.clientWidth) h.scrollLeft=Math.max(0,on.offsetLeft-(h.clientWidth-on.offsetWidth)/2); /* v1.76: den valgte står synlig i den sveipbare raden */
 }
 
 /* Oppgaver som IKKE er rutiner og som ikke ble gjort på dagen sin, henger igjen til de er gjort (badet er fortsatt skittent).

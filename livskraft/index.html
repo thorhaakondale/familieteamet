@@ -206,6 +206,40 @@ details.om summary{cursor:pointer;font-weight:700;color:var(--ag);font-size:0.81
 .prot .prad.mid b{color:var(--mut)}
 .prot .prad div{font-size:0.8125rem;color:var(--tx2);line-height:1.5;margin-top:2px}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+/* v1.32 (Thor 10.11.2026): tettere oppsett så mer får plass med større tekst — luft, ikke innhold, er tatt ned.
+   Lange forklaringstekster vises med to linjer; trykk på teksten for å lese resten. Bildene er store nok til å se start og slutt, ikke større. */
+.wrap{padding:10px 12px 16px}
+.kort{padding:12px 13px;margin:0 0 10px}
+.kort h2{margin:0 0 4px}
+.kort h3{margin:10px 0 4px}
+.lead{margin:0 0 8px;line-height:1.4}
+.lit{line-height:1.4}
+.knapp{padding:11px 16px;min-height:46px}
+.knapp.lit{padding:8px 12px;min-height:38px}
+.plan{gap:10px}.plan .bokstav{width:44px;height:44px;border-radius:12px;font-size:1.375rem}
+.varsel,.rodt,.ok{padding:7px 11px;margin:6px 0;line-height:1.4}
+.ov{padding:10px 11px;margin:0 0 8px}
+.ov .hint{margin:2px 0 6px;line-height:1.4}
+.ov .ovbilde{max-height:150px;margin:2px 0 6px}
+.fyll{margin-top:8px;padding:9px}
+.fyll .bilde{max-height:130px;margin:4px 0}
+.sett{margin:4px 0}.sett input{padding:7px 4px}.sett .hak{height:38px}
+.seg button{padding:8px 0}
+.rap .seg button{padding:8px 0;min-height:40px}
+.rap{gap:8px}
+input.tall,input.tekst{padding:8px 10px}
+.dag{min-height:62px;padding:5px 3px}
+.hensikt{padding:8px 11px;margin:0 0 10px;line-height:1.4}
+.hensikt summary{margin-top:4px}
+.ta-igjen{margin:2px 0 10px;padding-bottom:10px}
+.steg{line-height:1.45}
+.mest>div{padding:8px 10px}
+.prot .prad{padding:7px 0}
+.prot .motto{margin:8px 0 2px;font-size:0.8125rem;font-weight:600;line-height:1.4;color:#5b21b6}
+@media (prefers-color-scheme:dark){.prot .motto{color:#c4b5fd}}
+details.stegliste>summary{cursor:pointer;font-size:0.8125rem;font-weight:700;color:var(--ag);margin:6px 0}
+.klamp{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;cursor:pointer}
+
 </style>
 </head>
 <body>
@@ -336,8 +370,9 @@ details.om summary{cursor:pointer;font-weight:700;color:var(--ag);font-size:0.81
   <div class="kort" id="k-testskjema">
     <h2>Registrer sprek-test</h2>
     <p class="lead">Hver 3. måned, første gang uke 40. Tallene føres her — ikke følelsen.</p>
+    <details class="stegliste"><summary>Registrer ny test</summary>
     <div id="test-skjema"></div>
-    <div class="rad" style="margin-top:10px"><button class="knapp lit" id="test-lagre">Lagre test</button></div>
+    <div class="rad" style="margin-top:10px"><button class="knapp lit" id="test-lagre">Lagre test</button></div></details>
   </div>
   <div class="kort">
     <h2>Pauser og lyd</h2>
@@ -406,7 +441,7 @@ details.om summary{cursor:pointer;font-weight:700;color:var(--ag);font-size:0.81
    ============================================================ */
 "use strict";
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
-var VERSJON='1.31.0'; /* v1.21: appversjonen, vises under Mer → Programmet */
+var VERSJON='1.32.0'; /* v1.21: appversjonen, vises under Mer → Programmet */
 var KODE=null, PERSON='thor', PROG=null, S=null, db=null, dbOk=false, PENDING=[];
 var AKTIV=null; /* pågående økt */
 var UKEVIS=0;   /* uke-offset i Uka-fanen */
@@ -661,7 +696,7 @@ function tegnIdag(){
     h+='<div class="rad" style="margin-top:8px"><button class="knapp'+(lett?'':' sek lit')+'" id="start-kort" data-t="'+bok+'">Kort økt '+bok+' — ett sett per løft, ca. '+estMin(PP().okter[bok],true)+' min</button></div>';
     if(bok!=='H'&&PP().okter.H&&!PP().okter.H.visDag&&!erGjort)h+='<div class="rad" style="margin-top:8px"><button class="knapp sek lit" id="start-hjemme">Kommer du deg ikke på gymmet? Hjemmeøkt i stedet · ~'+estMin(PP().okter.H,false)+' min</button></div>';
     var m=new Date();if(PP().regler.maanedlig_tungt_sett&&bok==='A'&&m.getDate()<=7&&m.getDay()===1&&!lett)h+='<div class="varsel">Første mandag i måneden: '+esc(PROG.thor.regler.maanedlig_tungt_sett)+'</div>'}
-  else if(bok==='M'){h+='<ol class="steg" style="margin:10px 0">'+okt.steg.map(function(s){return '<li><b>'+esc(s[0])+'</b> — '+esc(s[1])+'</li>'}).join('')+'</ol><p class="lit">+ sene- og nakketillegget: '+okt.tillegg.map(function(s){return esc(s[0])+' '+esc(s[1])}).join(' · ')+'</p><div class="rad">'+(okt.guide?'<button class="knapp" data-mstart="1">▶ Start 10-minutteren</button>':'')+'<button class="knapp'+(okt.guide?' sek lit':'')+'" id="gjort-enkel" data-t="M">'+(erGjort?'Gjort ✓':'10-minutteren gjort')+'</button></div>'}
+  else if(bok==='M'){h+='<details class="stegliste"><summary>Se stegene ('+okt.steg.length+')</summary><ol class="steg" style="margin:8px 0">'+okt.steg.map(function(s){return '<li><b>'+esc(s[0])+'</b> — '+esc(s[1])+'</li>'}).join('')+'</ol><p class="lit">+ sene- og nakketillegget: '+okt.tillegg.map(function(s){return esc(s[0])+' '+esc(s[1])}).join(' · ')+'</p></details><div class="rad">'+(okt.guide?'<button class="knapp" data-mstart="1">▶ Start 10-minutteren</button>':'')+'<button class="knapp'+(okt.guide?' sek lit':'')+'" id="gjort-enkel" data-t="M">'+(erGjort?'Gjort ✓':'10-minutteren gjort')+'</button></div>'}
   else if(bok==='T'||bok==='S'){h+='<p class="lit" style="margin:8px 0">'+esc(okt.tekst)+'</p>'+turRad(gj,bok)}
   else{h+='<p class="lit" style="margin:8px 0">'+esc(okt.tekst)+'</p>'}
   /* v1.24.1 (Thor 31.10.2026): 10-minutteren (het 8-minutteren) kan åpnes og logges hvilken dag som helst — ikke bare tir/fre. */
@@ -844,8 +879,7 @@ function hensiktBlokk(okt,t){
   var forste=h.linjer[0],resten=h.linjer.slice(1);
   return '<div class="hensikt"><div class="hh"><b>'+esc(h.tittel)+'</b>'+(tell?'<span class="lit"> — '+esc(tell)+esc(tr)+'</span>':'')+'</div>'+
     '<dl><dt>'+esc(forste[0])+'</dt><dd>'+esc(forste[1])+'</dd></dl>'+
-    '<details><summary>'+esc(h.mer||'Mer')+'</summary><dl>'+resten.map(function(l){return '<dt>'+esc(l[0])+'</dt><dd>'+esc(l[1])+'</dd>'}).join('')+'</dl></details>'+
-    '<div class="varsel" style="margin:8px 0 0">'+esc(h.regel)+'</div></div>';}
+    '<details><summary>'+esc(h.mer||'Mer')+'</summary><div class="varsel" style="margin:8px 0 0">'+esc(h.regel)+'</div><dl>'+resten.map(function(l){return '<dt>'+esc(l[0])+'</dt><dd>'+esc(l[1])+'</dd>'}).join('')+'</dl></details></div>';}
 
 var wake=null, BEKREFT=false;
 function startOkt(type,kort){
@@ -1379,6 +1413,15 @@ function tegnMer(){
     try{navigator.clipboard.writeText(txt).then(function(){alert('Kopiert. Lim inn til Liv.')})}catch(e){prompt('Kopier:',txt)}};
 }
 
+
+/* v1.32: lange forklaringstekster (over ~140 tegn, uten knapper/felt inni) vises med to linjer. Trykk på teksten for å lese resten, trykk igjen for å lukke. Ingenting er fjernet. */
+(function(){var SEL='.lead,.kort>p.lit,.kort>p.mut,.ov .hint,.ov>.lit,.kort .tb+p.lit';
+  function klem(rot){try{Array.prototype.forEach.call((rot||document).querySelectorAll(SEL),function(e){if(e.dataset.k)return;e.dataset.k='1';
+    if((e.textContent||'').length<140||e.querySelector('input,button,select,textarea,a,details'))return;
+    e.classList.add('klamp');e.setAttribute('role','button');e.setAttribute('aria-expanded','false');e.title='Trykk for å lese alt'})}catch(x){}}
+  document.addEventListener('click',function(ev){var e=ev.target.closest&&ev.target.closest('.klamp,.klamp-av');if(!e)return;var av=e.classList.toggle('klamp');e.classList.toggle('klamp-av',!av);e.setAttribute('aria-expanded',av?'false':'true')});
+  function start(){klem();var w=document.body;if(window.MutationObserver)new MutationObserver(function(){klem()}).observe(w,{childList:true,subtree:true})}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start()})();
 /* ---------- visning ---------- */
 function vis(v){Array.prototype.forEach.call(document.querySelectorAll('.view'),function(e){e.classList.toggle('on',e.id==='v-'+v)});Array.prototype.forEach.call(document.querySelectorAll('.tab button'),function(b){b.classList.toggle('on',b.getAttribute('data-v')===v)});window.scrollTo(0,0)}
 Array.prototype.forEach.call(document.querySelectorAll('.tab button'),function(b){b.onclick=function(){var v=b.getAttribute('data-v');if(AKTIV&&v==='idag'){vis('okt');return}vis(v);if(v==='frem')tegnFrem();if(v==='mer')tegnMer();if(v==='uka')tegnUka();if(v==='idag')tegnIdag()}});
@@ -1390,7 +1433,8 @@ function tegnProtein(){var e=$('protein-kort');var P=PROG.protein&&PROG.protein[
   var bar=P.maaltider.map(function(m){return '<i class="'+(m.middag?'mid':'')+'" style="flex:'+m.g+'" title="'+esc(m.navn)+' '+m.g+' g"></i>'}).join('');
   var kort=P.maaltider.filter(function(m){return !m.middag}).map(function(m){return esc(m.navn.toLowerCase())+' '+m.g}).join(' · ');
   var rader=P.maaltider.map(function(m){return '<div class="prad'+(m.middag?' mid':'')+'"><b><span>'+esc(m.navn)+'</span><span>'+m.g+' g</span></b>'+m.eks.map(function(x,i){return '<div>'+(i?'eller: ':'')+esc(x)+'</div>'}).join('')+'</div>'}).join('');
-  e.innerHTML=(P.motto?'<p style="margin:0 0 8px;font-size:0.875rem;font-weight:600;line-height:1.4;color:#5b21b6">'+esc(P.motto)+'</p>':'')+'<details><summary><h2 style="margin:0">Protein i dag</h2><span class="lit" style="margin-left:auto">'+P.maal+' g · '+esc(P.tekst)+'</span></summary>'
+  e.innerHTML='<details><summary><h2 style="margin:0;white-space:nowrap">Protein i dag</h2><span class="lit" style="margin-left:auto">'+P.maal+' g · '+esc(P.tekst)+'</span></summary>'
+    +(P.motto?'<p class="motto">'+esc(P.motto)+'</p>':'') /* v1.32 (Thor 10.11): mottoet ligger inne i kortet, ikke over det */
     +'<div class="pbar">'+bar+'</div><p class="lit" style="margin:0 0 4px">'+kort+' g'+(sum!==P.maal?' (sum '+sum+' g)':'')+'<span class="phint"> — trykk for eksempler</span></p>'
     +rader+(P.merk?'<p class="lit" style="margin:8px 0 0">'+esc(P.merk)+'</p>':'')+(PROG.protein.fotnote?'<p class="lit" style="margin:6px 0 0">'+esc(PROG.protein.fotnote)+'</p>':'')+'</details>';
   e.hidden=false}
