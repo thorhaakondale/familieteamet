@@ -755,7 +755,7 @@ h1.topp{margin:6px 0 4px;font-size:1.25rem}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.77.0';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.77.1';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -1505,14 +1505,21 @@ function ntfyPostId(topic,tittel,tekst,tag,atUnix,prio,click,seq){
 }
 /* v1.37 (Thor 18.10.2026): plenklipp-lappen ble flyttet, men varselet gikk likevel. Avbestilling går nå som GET /<emne>/<id>/delete — en enkel
    forespørsel uten CORS-preflight (DELETE med keepalive feiler stille i Safari) — og svarer om den lyktes, så posten i varsler/sendt bare fjernes når meldingen er borte. */
-function ntfyAvbestill(topic,id){if(!topic||!id||id==='ok'||!window.fetch)return Promise.resolve(true);try{return fetch(NTFY_URL+encodeURIComponent(topic)+'/'+encodeURIComponent(id)+'/delete',{cache:'no-store',keepalive:true}).then(function(r){return r.ok||r.status===404}).catch(function(){return false})}catch(e){return Promise.resolve(false)}}
+function ntfyAvbestill(topic,id){if(!topic||!id||id==='ok'||!window.fetch)return Promise.resolve(true); return ntfyDel(topic,id);}
+/* v1.77.1 (Thor 11.11.2026): flyttede lapper ringte likevel (Slekt og venner-tavla kl. 20, Markedsplanen 19:30). Avbestillingen godtok 404 som «borte»
+   og fjernet posten i varsler/sendt uten at noen sjekket at meldingen faktisk var avbestilt hos ntfy. Nå: DELETE /<emne>/<seq> (ntfy sin dokumenterte vei,
+   uten keepalive så Safari tar preflighten), GET /delete bare som reserve når DELETE ikke kommer fram, og bare et 2xx-svar teller som avbestilt.
+   I tillegg rydder sveipMinn() bort ethvert planlagt lapp-varsel hos ntfy som ikke lenger stemmer med tavla, uansett hvem som flyttet lappen. */
+function ntfyDel(topic,seq){ var u=NTFY_URL+encodeURIComponent(topic)+'/'+encodeURIComponent(seq);
+  try{ return fetch(u,{method:'DELETE',cache:'no-store'}).then(function(r){return r.ok}).catch(function(){
+      return fetch(u+'/delete',{cache:'no-store'}).then(function(r){return r.ok}).catch(function(){return false}); }); }catch(e){return Promise.resolve(false)} }
 /* v1.37: lapper bestilt før v1.32 har ingen lagret id. Da letes meldingen opp blant de planlagte hos ntfy (samme dato, tittelen Huskelapp, samme tekst eller klokkeslett) og slettes på meldings-id. null = fikk ikke lest lista. */
 function ntfyFinnLapp(topic,dato,tekst,tid){if(!topic||!window.fetch)return Promise.resolve([]);var naa=Date.now();
   return fetch(NTFY_URL+encodeURIComponent(topic)+'/json?poll=1&sched=1',{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.text()}).then(function(txt){
     return txt.split('\n').filter(Boolean).map(function(l){try{return JSON.parse(l)}catch(e){return null}}).filter(function(m){
       if(!m||m.event!=='message'||m.time*1000<=naa||String(m.title||'').indexOf('Familieteamet · Huskelapp')!==0) return false;
       var tm=new Date(m.time*1000), hm=('0'+tm.getHours()).slice(-2)+':'+('0'+tm.getMinutes()).slice(-2);
-      return ymd(tm)===dato&&((tekst!=null&&m.message===tekst)||(tid&&hm===tid)); }).map(function(m){return m.id});
+      return ymd(tm)===dato&&((tekst!=null&&m.message===tekst)||(tid&&hm===tid)); }).map(function(m){return m.sequence_id||m.id}); /* v1.77.1 */
   }).catch(function(){return null});}
 function avbestillMinn(e,dato,o){var n=lesNtfy(INNST.ntfy)||{};
   if(e.ids) return Promise.all(Object.keys(e.ids).map(function(p){var x=e.ids[p]; return x?ntfyAvbestill(x.t,x.id):true})).then(function(a){return a.every(Boolean)});
@@ -1547,7 +1554,7 @@ function oppgGjortP(id,p,yd){
   return mine.length>0&&mine.every(function(s){return erGjort(key,s.key)});
 }
 function varselFerdig(v,p,yd){return v.oppg?(v.oppgDag?oppgGjortP(v.oppg,p,yd):oppgGjort(v.oppg,yd)):dagFerdig(p,yd)}
-function ntfySlett(topic,seq){if(!topic||!seq||!window.fetch)return Promise.resolve(false);try{return fetch(NTFY_URL+encodeURIComponent(topic)+'/'+encodeURIComponent(seq)+'/delete',{cache:'no-store',keepalive:true}).then(function(r){return r.ok||r.status===404}).catch(function(){return false})}catch(e){return Promise.resolve(false)}} /* v1.37: GET /delete, se ntfyAvbestill */
+function ntfySlett(topic,seq){if(!topic||!seq||!window.fetch)return Promise.resolve(false);return ntfyDel(topic,seq)} /* v1.77.1: DELETE, se ntfyDel */
 var KVELD_T=null;
 function kveldStopp(){
   if(!db||!INNST.varsler||!INNST.ntfy) return; clearTimeout(KVELD_T);
@@ -1658,9 +1665,33 @@ function ryddMinn(){ /* kjører når oppgavene endres: varsler for lapper som ik
           var hm=String(o.minn.tid).split(':'), t=new Date(dag.getFullYear(),dag.getMonth(),dag.getDate(),+hm[0],+hm[1]||0,0).getTime();
           if(t-naaMs>120000&&minnMott(o,yd).some(function(p){return nt[p]&&!minnStille(o,p,dag)})) endret=true; }); })(addDays(new Date(),d)); }
       } finally { PU_MEMO=null; }
-      if(endret) Promise.all(jobber).then(function(){VARSLET_NAA=false; planleggVarsler()});
+      Promise.all(jobber).then(function(){ if(endret){VARSLET_NAA=false; planleggVarsler()} sveipMinn(); });
     }).catch(function(){});
   },1500);
+}
+/* v1.77.1: sveip hos ntfy — alle planlagte lapp-varsler (sekvens-id ft-<dato>-minn-<id>-<person>) som ikke lenger står på den datoen, det klokkeslettet
+   og til den personen på tavla, avbestilles. Fanger også opp varsler der posten i varsler/sendt er borte (flyttet på en annen enhet, av en kjøring, eller før v1.77.1). */
+var SVEIP_SIST=0;
+function sveipMinn(){
+  if(!db||!OPPG_LASTET||!UKER_LASTET||!FRAV_LASTET||!window.fetch) return; var naaMs=Date.now(); if(naaMs-SVEIP_SIST<45000) return; SVEIP_SIST=naaMs;
+  var nt=lesNtfy(INNST.ntfy)||{};
+  Object.keys(nt).filter(function(p){return nt[p]}).forEach(function(p){ var topic=nt[p];
+    fetch(NTFY_URL+encodeURIComponent(topic)+'/json?poll=1&sched=1',{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.text()}).then(function(txt){
+      var slettet={};
+      txt.split('\n').filter(Boolean).forEach(function(l){ var m; try{m=JSON.parse(l)}catch(e){return}
+        if(!m||m.event!=='message'||!m.sequence_id||m.time*1000<=Date.now()+60000) return;
+        var mt=/^ft-(\d{4}-\d{2}-\d{2})-minn-/.exec(m.sequence_id); if(!mt||slettet[m.sequence_id]) return; var dato=mt[1];
+        var o=null; for(var j=0;j<OPPG.length;j++){ if(ntfySeq('ft',dato,'minn',OPPG[j].id,p)===m.sequence_id){o=OPPG[j];break} }
+        var gyldig=false;
+        if(o&&o.minn&&o.minn.tid){ PU_MEMO={}; try{
+          var tm=new Date(m.time*1000), hm=('0'+tm.getHours()).slice(-2)+':'+('0'+tm.getMinutes()).slice(-2), dd=new Date(dato+'T00:00:00');
+          gyldig=ymd(tm)===dato&&hm===o.minn.tid&&minnPaa(o,dato)&&!minnGjort(o,dato)&&minnMott(o,dato).indexOf(p)>=0&&!minnStille(o,p,dd);
+        }catch(e){gyldig=true} finally{PU_MEMO=null} } /* i tvil: la varselet stå */
+        if(gyldig) return; slettet[m.sequence_id]=1;
+        ntfyDel(topic,m.sequence_id).then(function(ok){ if(!ok) return; var k=dato+'_minn_'+(o?o.id:''); if(o) db.child('varsler/sendt/'+k+'/ids/'+p).once('value').then(function(sn){var x=sn.val(); if(x&&x.id===m.sequence_id&&!gyldig) db.child('varsler/sendt/'+k+'/ids/'+p).set(null).catch(function(){})}).catch(function(){}) });
+      });
+    }).catch(function(){});
+  });
 }
 function varsle(tittel,tekst,tag){ /* til begge voksne nå */
   var n=lesNtfy(INNST.ntfy)||{}, ps=['thor','anniken'].filter(function(p){return n[p]}); if(!ps.length) return Promise.resolve(false);
