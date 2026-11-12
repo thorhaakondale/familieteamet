@@ -755,7 +755,7 @@ h1.topp{margin:6px 0 4px;font-size:1.25rem}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.78.0';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.78.1';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -796,22 +796,18 @@ function hvemUke(o,ukeIdx){
 /* Hvilke dager i uka (0–6) oppgaven faller på. Returnerer [] hvis ikke denne uka. */
 /* v1.43: «Slett alle framtidige» setter o.slutt (ÅÅÅÅ-MM-DD) — forekomster fra og med den dagen forsvinner, historikken står */
 function dagerIUka(o,man){var r=dagerIUka0(o,man); if(o.ikkeSammeUke&&r.length){var t=OPPG.filter(function(x){return x.id===o.ikkeSammeUke&&x.aktiv!==false})[0]; if(t&&dagerIUka0(t,man).length) return []} /* v1.54: lett bad bare de ukene badene ikke grovvaskes */ if(o.slutt&&r.length) r=r.filter(function(d){return ymd(addDays(man,d))<o.slutt}); return r}
-/* v1.78 (Thor 12.11.2026): «annenhver dag» har ingen faste dager. Neste gang er alltid to dager etter siste gang den faktisk
-   ble huket av (tidspunktet på haken, hvem som helst). Er den ikke tatt når dagen kommer, ligger den på i dag til den tas — aldri dobbelt.
-   Flyttes en kommende forekomst, regnes neste fra dagen den ble flyttet til. Uten noen hake ennå gjelder startdatoen. */
+/* v1.78.1 (Thor 12.11.2026): «annenhver dag» er en gjentakende lapp uten faste dager. Det finnes bare ÉN lapp om gangen:
+   neste lapp åpner 48 timer etter avhakingen (dagen to dager etter haken, hvem som helst). Den vises ikke på dagene framover
+   før forrige er huket av. Er den ikke tatt når dagen kommer, ligger den på i dag til den tas — aldri dobbelt.
+   Flyttes lappen, gjelder den nye dagen. Uten noen hake ennå gjelder startdatoen. */
 function annenhverDager(o,man){
   var t0=new Date(NAA.getFullYear(),NAA.getMonth(),NAA.getDate()), son=addDays(man,6), wkey=ukeKey(man), pre=o.id+'|', L=null, r={};
   Object.keys(UKER).forEach(function(uk){var g=UKER[uk]&&UKER[uk].gjort;if(!g)return;Object.keys(g).forEach(function(k){if(k.indexOf(pre)!==0||!g[k])return;
     var ts=+g[k];if(ts>1e12){var d=new Date(ts);d=new Date(d.getFullYear(),d.getMonth(),d.getDate());if(d<=t0&&(!L||d>L))L=d}
     var pa=k.split('|');if(uk===wkey&&pa.length===3){var dg=+pa[1];if(dg>=0&&dg<=6)r[dg]=1}})});
-  var cur=L?addDays(L,2):new Date((o.start||'2026-11-03')+'T00:00:00');
-  if(cur<t0)cur=t0;
-  for(var n=0;n<400&&cur<=son;n++){
-    var m=mandag(cur), d=Math.round((cur-m)/86400000), fl=(UKER[ukeKey(m)]&&UKER[ukeKey(m)].flytt)||{}, nd=null;
-    Object.keys(fl).forEach(function(k){var pa=k.split('|');if(pa[0]===o.id&&+pa[1]===d&&fl[k]!==null&&fl[k]!==undefined)nd=+fl[k]});
-    if(cur>=man)r[d]=1;
-    cur=addDays(nd!==null&&nd>=0&&nd<=6?addDays(m,nd):cur,2);
-  }
+  var neste=L?addDays(L,2):new Date((o.start||'2026-11-03')+'T00:00:00');
+  if(neste<t0)neste=t0;
+  if(neste>=man&&neste<=son)r[Math.round((neste-man)/86400000)]=1; /* bare én åpen lapp */
   return Object.keys(r).map(Number).sort(function(a,b){return a-b});
 }
 function dagerIUka0(o,man){
