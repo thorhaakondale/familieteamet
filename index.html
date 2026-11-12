@@ -755,7 +755,7 @@ h1.topp{margin:6px 0 4px;font-size:1.25rem}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.78.1';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.79.0';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -1650,7 +1650,7 @@ function minnMott(o,yd){ var ut=[], sl=[]; if(UKER_LASTET&&OPPG_LASTET){ try{sl=
   minnTil(o).forEach(function(p){ var mine=sl.filter(function(s){return s.orig===p&&s.person!==p}); /* byttet: varselet går til den som har overtatt */
     (mine.length?mine.map(function(s){return s.person}):[p]).forEach(function(q){ if(ut.indexOf(q)<0) ut.push(q) }); });
   return ut; }
-function minnStille(o,p,dag){ if(o&&o.minn&&o.minn.av===p) return false; return !!(fravFor(dag,p)||erFerie(ukeKey(dag))); }
+function minnStille(o,p,dag){ if(o&&o.minn&&(o.minn.av===p||o.minn.iFerie)) return false; /* v1.79: minn.iFerie — varselet går også i ferie/på tur (Thor 12.11: lett overflatevask i jula) */ return !!(fravFor(dag,p)||erFerie(ukeKey(dag))); }
 function minnTil(o){ return (o.minn&&o.minn.til&&o.minn.til.length?o.minn.til:(o.hvem||[])); }
 function ryddMinn(){ /* kjører når oppgavene endres: varsler for lapper som ikke lenger står på den datoen/det klokkeslettet, avbestilles */
   if(!db||!OPPG_LASTET||!UKER_LASTET) return; clearTimeout(RYDD_T); /* v1.56: vent på ukas haker og flytt, ellers stemmer ikke planen */
