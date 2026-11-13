@@ -755,7 +755,7 @@ h1.topp{margin:6px 0 4px;font-size:1.25rem}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.79.0';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.79.1';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -1448,7 +1448,7 @@ function taInnUke(id,gjortServer){
     if(p.val) g[p.slot]=p.val; else delete g[p.slot];
   });
   var gammel=UKER[id]||{};
-  UKER[id]={gjort:g,bytt:gammel.bytt||{},flytt:gammel.flytt||{},utsett:gammel.utsett||{}};
+  UKER[id]={gjort:g,bytt:gammel.bytt||{},flytt:gammel.flytt||{},utsett:gammel.utsett||{},hopp:gammel.hopp||{}}; /* v1.79.1 (Thor 13.11): hopp må med, ellers kommer «Slett bare denne gangen» tilbake ved neste synk */
 }
 function feir(){var f=['#2560a8','#b03a6e','#c9820c','#6a4fc4','#1a9463','#e0a33a'];for(var i=0;i<60;i++){var d=document.createElement('div');d.className='konf';d.style.left=Math.random()*100+'vw';d.style.background=f[i%f.length];d.style.animationDelay=(Math.random()*.6)+'s';d.style.animationDuration=(1.4+Math.random())+'s';document.body.appendChild(d);setTimeout(function(x){return function(){x.remove()}}(d),3000)}toast('🎉 Alt gjort!')}
 var toastT;function toast(t){var el=document.getElementById('toast');el.textContent=t;el.classList.add('show');clearTimeout(toastT);toastT=setTimeout(function(){el.classList.remove('show')},1400)}
@@ -2807,7 +2807,7 @@ function slaaSammenOppg(liste){
           Object.keys(lg).forEach(function(k){if(lg[k]&&!sv[k]){upd['uker/'+uk+'/gjort/'+k]=lg[k];ant++}})});
         if(ant){upd['uker/'+Object.keys(LOKALT_FOER)[0]+'/ts']=new Date().toISOString();db.update(upd).then(function(){toast('☁️ '+ant+' haker fra enheten lastet opp')}).catch(function(){})}
       }
-      Object.keys(v).forEach(function(id){var x=v[id]||{};taInnUke(id,x.gjort||{});var bt={};Object.keys(x.bytt||{}).forEach(function(k){if(x.bytt[k])bt[k]=x.bytt[k]});UKER[id].bytt=bt;var fl={};Object.keys(x.flytt||{}).forEach(function(k){if(x.flytt[k]!==null&&x.flytt[k]!==undefined)fl[k]=x.flytt[k]});UKER[id].flytt=fl;var ut2={};Object.keys(x.utsett||{}).forEach(function(k){if(x.utsett[k])ut2[k]=x.utsett[k]});UKER[id].utsett=ut2;n++});
+      Object.keys(v).forEach(function(id){var x=v[id]||{};taInnUke(id,x.gjort||{});var bt={};Object.keys(x.bytt||{}).forEach(function(k){if(x.bytt[k])bt[k]=x.bytt[k]});UKER[id].bytt=bt;var fl={};Object.keys(x.flytt||{}).forEach(function(k){if(x.flytt[k]!==null&&x.flytt[k]!==undefined)fl[k]=x.flytt[k]});UKER[id].flytt=fl;var ut2={};Object.keys(x.utsett||{}).forEach(function(k){if(x.utsett[k])ut2[k]=x.utsett[k]});UKER[id].utsett=ut2;var hp2={};Object.keys(x.hopp||{}).forEach(function(k){if(x.hopp[k])hp2[k]=x.hopp[k]});UKER[id].hopp=hp2;n++});
       lagreLokalt();tegn();UKER_LASTET=true;planleggBackup();kveldStopp();try{ryddMinn();ryddGjort()}catch(e){} /* v1.56: haker og flytt styrer også «Minn på», backup-luka og pakkingen */
       document.getElementById('dbpill').textContent='lagres delt';
       status('Delt lagring tilkoblet · '+n+' uke'+(n===1?'':'r')+' registrert.');
