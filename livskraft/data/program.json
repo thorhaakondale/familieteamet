@@ -1,6 +1,6 @@
 {
- "versjon": "v1.16",
- "kilde": "Dale Livsstil & PT (programkortet) for øvelser og vekter · liv-treningsspesifikasjon.md v1.1 for mål, regler og progresjon · v1.6 12.10.2026: pauseøvelsene synlige, lette og med bilde · v1.7 14.10.2026: Annikens program (Liv) — to gymøkter, hjemmeøkt og månedssjekk · v1.8 16.10.2026: proteinkortet — lunsj og kvelds mot dagsmålet (Liv) · v1.9 17.10.2026: søndagsreserven H for Thor — kort hjemmeøkt bare på søndager uka mangler en styrkeøkt, turen går foran · v1.10 17.10.2026: reserveøkta H tilgjengelig torsdag–søndag (søndag uten gym-valg) · v1.11 4.11.2026: maks 15 reps per sett, prosjektuker (kort A + kort B, maks 4 i året), dypt knebøy-hold i 8-minutteren (nå 10-minutteren) og to bevegelighetstester · v1.12 7.11.2026: 10-minutteren (tirsdag kveld og søndag morgen) — hamstring og figur 4 ut, tillegget valgfritt; 90/90-hintet presisert · v1.13 8.11.2026: dypt knebøy-hold 2 min (aktivt hold, hæler på bok ved behov, stå over ved rygg 2+), katt–ku og tåklem 30 s så holdene er 8 min 30 s og økta fortsatt ca. 10 min; bilde på holdet (Liv/Thor) · v1.14 8.11.2026: steg 4 er den lange knelingen (bakre kne langt bak, bekkenet tippet under før hofta skyves fram) — Thor kjente at kort kneling var for mild; ankeldrillen (steg 5) holdes stram · v1.15 10.11.2026: 90/90 med aktive skift i 10-minutteren, valgfri hip thrust i maskinen etter A (Thor) · v1.15b 10.11.2026: to tapte økter gir ikke lettere økt (Thor) · v1.16 14.11.2026: framoverbøy (baksidelår) og lårstrekk (forsidelår) først i tillegget, med klokke",
+ "versjon": "v1.17",
+ "kilde": "Dale Livsstil & PT (programkortet) for øvelser og vekter · liv-treningsspesifikasjon.md v1.1 for mål, regler og progresjon · v1.6 12.10.2026: pauseøvelsene synlige, lette og med bilde · v1.7 14.10.2026: Annikens program (Liv) — to gymøkter, hjemmeøkt og månedssjekk · v1.8 16.10.2026: proteinkortet — lunsj og kvelds mot dagsmålet (Liv) · v1.9 17.10.2026: søndagsreserven H for Thor — kort hjemmeøkt bare på søndager uka mangler en styrkeøkt, turen går foran · v1.10 17.10.2026: reserveøkta H tilgjengelig torsdag–søndag (søndag uten gym-valg) · v1.11 4.11.2026: maks 15 reps per sett, prosjektuker (kort A + kort B, maks 4 i året), dypt knebøy-hold i 8-minutteren (nå 10-minutteren) og to bevegelighetstester · v1.12 7.11.2026: 10-minutteren (tirsdag kveld og søndag morgen) — hamstring og figur 4 ut, tillegget valgfritt; 90/90-hintet presisert · v1.13 8.11.2026: dypt knebøy-hold 2 min (aktivt hold, hæler på bok ved behov, stå over ved rygg 2+), katt–ku og tåklem 30 s så holdene er 8 min 30 s og økta fortsatt ca. 10 min; bilde på holdet (Liv/Thor) · v1.14 8.11.2026: steg 4 er den lange knelingen (bakre kne langt bak, bekkenet tippet under før hofta skyves fram) — Thor kjente at kort kneling var for mild; ankeldrillen (steg 5) holdes stram · v1.15 10.11.2026: 90/90 med aktive skift i 10-minutteren, valgfri hip thrust i maskinen etter A (Thor) · v1.15b 10.11.2026: to tapte økter gir ikke lettere økt (Thor) · v1.16 14.11.2026: framoverbøy (baksidelår) og lårstrekk (forsidelår) først i tillegget, med klokke · v1.17 14.11.2026: takt på hvert steg i 10-minutteren (dynamisk/hold, sekunder per ledd)",
  "personer": {
   "thor": {
    "navn": "Thor",
@@ -494,56 +494,159 @@
       "navn": "Katt–ku",
       "sek": 30,
       "sider": 1,
-      "hint": "Alle fire. Rund rygg og blikket mot navlen, så svai rygg og blikket fram. Rolig, i takt med pusten."
+      "hint": "Alle fire. Rund rygg og blikket mot navlen, så svai rygg og blikket fram. Rolig, i takt med pusten.",
+      "takt": {
+       "type": "dynamisk",
+       "ledd": [
+        [
+         "Rund rygg – blikk mot navlen",
+         3
+        ],
+        [
+         "Svai rygg – blikk fram",
+         3
+        ]
+       ]
+      }
      },
      {
       "id": "m-kobra",
       "navn": "Barnestilling → kobra",
       "sek": 60,
       "sider": 1,
-      "hint": "Sitt på hælene med armene strakt fram. Skyv deg fram til magen og løft brystet med strake armer – hoftene blir i matta. Fram og tilbake."
+      "hint": "Sitt på hælene med armene strakt fram. Skyv deg fram til magen og løft brystet med strake armer – hoftene blir i matta. Fram og tilbake.",
+      "takt": {
+       "type": "dynamisk",
+       "ledd": [
+        [
+         "Fram til kobra",
+         3
+        ],
+        [
+         "Pust i kobra",
+         2
+        ],
+        [
+         "Tilbake til barnestilling",
+         3
+        ]
+       ]
+      }
      },
      {
       "id": "m-9090",
       "navn": "90/90-hofte med skift",
       "sek": 45,
       "sider": 2,
-      "hint": "Sitt med begge knær bøyd 90° og hendene i gulvet bak deg. FØRST 15 s: vipp begge knærne rolig over til den andre siden og tilbake, som vindusviskere — sitt høyt, og løft hendene fra gulvet når du klarer det. SÅ 30 s hold: stopp med ett bein foran og len deg rett fram over den fremre leggen fra hofta — rett rygg, ikke til siden. Bytt side."
+      "hint": "Sitt med begge knær bøyd 90° og hendene i gulvet bak deg. FØRST 15 s: vipp begge knærne rolig over til den andre siden og tilbake, som vindusviskere — sitt høyt, og løft hendene fra gulvet når du klarer det. SÅ 30 s hold: stopp med ett bein foran og len deg rett fram over den fremre leggen fra hofta — rett rygg, ikke til siden. Bytt side.",
+      "takt": {
+       "type": "kombinert",
+       "faser": [
+        {
+         "sek": 15,
+         "ledd": [
+          [
+           "Knærne over",
+           3
+          ],
+          [
+           "Knærne tilbake",
+           3
+          ]
+         ]
+        },
+        {
+         "sek": 30,
+         "hold": "Hold – len fram over leggen"
+        }
+       ]
+      }
      },
      {
       "id": "m-hoftebøyer",
       "navn": "Lang kneling – hoftebøyer m/strekk",
       "sek": 30,
       "sider": 2,
-      "hint": "Lang saks: bakre kne langt bak i matta, fremre fot godt foran. FØRST: stram bakre setemuskel og tipp bekkenet under deg (halebeinet mot kneet) — korsryggen skal ikke svaie. SÅ skyv hofta rolig fram og strekk armen på kne-siden over hodet. Strekket skal sitte foran i hofta og i setet, ikke i korsryggen."
+      "hint": "Lang saks: bakre kne langt bak i matta, fremre fot godt foran. FØRST: stram bakre setemuskel og tipp bekkenet under deg (halebeinet mot kneet) — korsryggen skal ikke svaie. SÅ skyv hofta rolig fram og strekk armen på kne-siden over hodet. Strekket skal sitte foran i hofta og i setet, ikke i korsryggen.",
+      "takt": {
+       "type": "hold",
+       "hold": "Hold – bekkenet tippet, hofta fram, armen opp"
+      }
      },
      {
       "id": "m-ankel",
       "navn": "Ankelmobilisering – kne over tå",
       "sek": 30,
       "sider": 2,
-      "hint": "Ett kne i matta, den andre foten flatt foran med hele foten i gulvet. Før kneet rolig fram over tærne og tilbake – hælen blir i gulvet hele tiden. Ikke press stortåa."
+      "hint": "Ett kne i matta, den andre foten flatt foran med hele foten i gulvet. Før kneet rolig fram over tærne og tilbake – hælen blir i gulvet hele tiden. Ikke press stortåa.",
+      "takt": {
+       "type": "dynamisk",
+       "ledd": [
+        [
+         "Kneet fram over tærne",
+         2
+        ],
+        [
+         "Tilbake",
+         2
+        ]
+       ]
+      }
      },
      {
       "id": "m-dyp",
       "navn": "Dypt knebøy-hold",
       "sek": 120,
       "sider": 1,
-      "hint": "Hold i en dørkarm eller et bord om du trenger det. Sett deg så dypt ned du kommer med hælene i gulvet — letter hælene, legg dem på en bok eller en tynn vektskive. Aktivt, ikke slapt: knærne lett ut med albuene, brystet opp, ryggen lang, rolig pust (ca. 6 i minuttet). Står ryggen på 2 eller mer i dag, hopp over dette steget."
+      "hint": "Hold i en dørkarm eller et bord om du trenger det. Sett deg så dypt ned du kommer med hælene i gulvet — letter hælene, legg dem på en bok eller en tynn vektskive. Aktivt, ikke slapt: knærne lett ut med albuene, brystet opp, ryggen lang, rolig pust (ca. 6 i minuttet). Står ryggen på 2 eller mer i dag, hopp over dette steget.",
+      "takt": {
+       "type": "hold",
+       "hold": "Hold i bunnen – knærne ut, brystet opp"
+      }
      },
      {
       "id": "m-rotasjon",
       "navn": "Brystryggrotasjon på siden",
       "sek": 30,
       "sider": 2,
-      "hint": "Ligg på siden med knærne bøyd og armene strakt fram. Åpne den øverste armen bakover i en bue og følg den med blikket. Knærne ligger stille."
+      "hint": "Ligg på siden med knærne bøyd og armene strakt fram. Åpne den øverste armen bakover i en bue og følg den med blikket. Knærne ligger stille.",
+      "takt": {
+       "type": "dynamisk",
+       "ledd": [
+        [
+         "Åpne armen bakover",
+         3
+        ],
+        [
+         "Hold åpen",
+         2
+        ],
+        [
+         "Tilbake",
+         2
+        ]
+       ]
+      }
      },
      {
       "id": "m-taer",
       "navn": "Tåklem + stortå",
       "sek": 30,
       "sider": 1,
-      "hint": "Spre tærne og klem dem sammen. Bøy så stortåa forsiktig opp og ned med hånden."
+      "hint": "Spre tærne og klem dem sammen. Bøy så stortåa forsiktig opp og ned med hånden.",
+      "takt": {
+       "type": "dynamisk",
+       "ledd": [
+        [
+         "Spre tærne",
+         2
+        ],
+        [
+         "Klem sammen",
+         2
+        ]
+       ]
+      }
      }
     ],
     "guide_tillegg": [
@@ -553,7 +656,11 @@
       "sek": 30,
       "sider": 1,
       "bonus": true,
-      "hint": "Føttene samlet, knærne strake men ikke låst. Bøy fra hofta og la armene henge – fingrene, etter hvert hele håndflaten, i gulvet. Synk litt for hver utpust. Ikke sprett. Rygg 2+: stå over."
+      "hint": "Føttene samlet, knærne strake men ikke låst. Bøy fra hofta og la armene henge – fingrene, etter hvert hele håndflaten, i gulvet. Synk litt for hver utpust. Ikke sprett. Rygg 2+: stå over.",
+      "takt": {
+       "type": "hold",
+       "hold": "Hold – heng fra hofta, synk på utpust"
+      }
      },
      {
       "id": "t-laarstrekk",
@@ -561,45 +668,122 @@
       "sek": 30,
       "sider": 2,
       "bonus": true,
-      "hint": "Hold i vegg eller stol. Ta vristen og trekk hælen mot setet. Knærne samlet, klem setet og skyv hofta litt fram – da kjenner du det foran på låret."
+      "hint": "Hold i vegg eller stol. Ta vristen og trekk hælen mot setet. Knærne samlet, klem setet og skyv hofta litt fram – da kjenner du det foran på låret.",
+      "takt": {
+       "type": "hold",
+       "hold": "Hold – knærne samlet, klem setet"
+      }
      },
      {
       "id": "t-flexbar",
       "navn": "Håndkle-/FlexBar-vri",
       "reps": "3 × 10 per arm",
-      "hint": "Vri håndkleet eller FlexBaren som om du vrir opp en klut – rolig tilbake. For albuen."
+      "hint": "Vri håndkleet eller FlexBaren som om du vrir opp en klut – rolig tilbake. For albuen.",
+      "takt": {
+       "type": "dynamisk",
+       "ledd": [
+        [
+         "Vri",
+         2
+        ],
+        [
+         "Rolig tilbake",
+         3
+        ]
+       ]
+      }
      },
      {
       "id": "t-kortfot",
       "navn": "«Kort fot»",
       "reps": "2 × 10 per fot",
-      "hint": "Foten flat. Løft fotbuen ved å trekke tåballen mot hælen – uten å krølle tærne."
+      "hint": "Foten flat. Løft fotbuen ved å trekke tåballen mot hælen – uten å krølle tærne.",
+      "takt": {
+       "type": "dynamisk",
+       "ledd": [
+        [
+         "Løft fotbuen og hold",
+         5
+        ],
+        [
+         "Slipp",
+         2
+        ]
+       ]
+      }
      },
      {
       "id": "t-hake",
       "navn": "Hakeinntrekk mot vegg",
       "reps": "10 × 3 s",
-      "hint": "Rygg og bakhode mot veggen. Trekk haka rett bakover (dobbelthake), hold 3 s."
+      "hint": "Rygg og bakhode mot veggen. Trekk haka rett bakover (dobbelthake), hold 3 s.",
+      "takt": {
+       "type": "dynamisk",
+       "ledd": [
+        [
+         "Trekk haka inn og hold",
+         3
+        ],
+        [
+         "Slipp",
+         2
+        ]
+       ]
+      }
      },
      {
       "id": "t-pullapart",
       "navn": "Strikk pull-apart",
       "reps": "2 × 15",
-      "hint": "Strak arm foran deg i skulderhøyde, dra strikken fra hverandre og klem skulderbladene sammen."
+      "hint": "Strak arm foran deg i skulderhøyde, dra strikken fra hverandre og klem skulderbladene sammen.",
+      "takt": {
+       "type": "dynamisk",
+       "ledd": [
+        [
+         "Dra ut og klem",
+         2
+        ],
+        [
+         "Rolig tilbake",
+         2
+        ]
+       ]
+      }
      },
      {
       "id": "t-glutebro",
       "navn": "Glute bridge",
-      "reps": "12 m/2 s hold",
+      "reps": "12 ganger",
       "hint": "På ryggen, føttene i gulvet. Løft hofta til rett linje kne–skulder, klem setet i 2 s.",
-      "bilde": "img/hoftehev.webp"
+      "bilde": "img/hoftehev.webp",
+      "takt": {
+       "type": "dynamisk",
+       "ledd": [
+        [
+         "Opp",
+         2
+        ],
+        [
+         "Hold og klem",
+         2
+        ],
+        [
+         "Ned",
+         2
+        ]
+       ]
+      }
      },
      {
       "id": "t-sideplanke",
       "navn": "Sideplanke",
       "reps": "20–30 s per side",
       "hint": "På underarmen, kroppen i rett linje fra hode til føtter. Hofta oppe.",
-      "bilde": "img/sideplanke.webp"
+      "bilde": "img/sideplanke.webp",
+      "takt": {
+       "type": "hold",
+       "hold": "Hold – hofta oppe, rett linje"
+      }
      }
     ],
     "dager": [
