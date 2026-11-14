@@ -444,7 +444,7 @@ details.stegliste>summary{cursor:pointer;font-size:0.8125rem;font-weight:700;col
    ============================================================ */
 "use strict";
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
-var VERSJON='1.36.2'; /* v1.21: appversjonen, vises under Mer → Programmet */
+var VERSJON='1.37.0'; /* v1.21: appversjonen, vises under Mer → Programmet */
 var KODE=null, PERSON='thor', PROG=null, S=null, db=null, dbOk=false, PENDING=[];
 var AKTIV=null; /* pågående økt */
 var UKEVIS=0;   /* uke-offset i Uka-fanen */
@@ -695,7 +695,7 @@ function tegnIdag(){
   var modus=ukeModus(ukeKey(d)),ps=pauseStatus();
   /* v1.33.0 (Thor 14.11.2026): syk-knappen ligger på I dag, og 10-minutteren står som bonus når uka er syk */
   if(modus==='syk'){h+='<div class="plan"><div class="bokstav" style="background:#9ca3af">–</div><div><b>Syk</b><div class="lit">Uka teller ikke. Ingenting å ta igjen.</div></div></div><p class="lit" style="margin:8px 0 0">'+esc(PROG.ukemodus.syk)+'</p>';
-    if(erThor()&&PP().okter.M){var mo2=PP().okter.M,mG2=gj.some(function(o){return o.type==='M'});
+    if(PP().okter.M){var mo2=PP().okter.M,mG2=gj.some(function(o){return o.type==='M'});
       h+='<details'+(mG2?'':' open')+' style="margin:14px 0 4px;border-top:1px dashed var(--kant);padding-top:12px"><summary style="cursor:pointer"><b>'+esc(mo2.navn)+'</b> <span class="lit">— bonus når du er syk: bare hvis det kjennes godt, teller ikke'+(mG2?' · ✓ gjort i dag':'')+'</span></summary>'+
         '<ol class="steg" style="margin:10px 0">'+mo2.steg.map(function(s){return '<li><b>'+esc(s[0])+'</b> — '+esc(s[1])+'</li>'}).join('')+'</ol>'+
         '<div class="rad">'+(mo2.guide?'<button class="knapp" data-mstart="1">▶ Start 10-minutteren</button>':'')+'<button class="knapp sek lit" id="gjort-m-ekstra">'+(mG2?'Gjort ✓':'10-minutteren gjort')+'</button></div></details>'}
@@ -718,9 +718,9 @@ function tegnIdag(){
   else if(bok==='T'||bok==='S'){h+='<p class="lit" style="margin:8px 0">'+esc(okt.tekst)+'</p>'+turRad(gj,bok)}
   else{h+='<p class="lit" style="margin:8px 0">'+esc(okt.tekst)+'</p>'}
   /* v1.24.1 (Thor 31.10.2026): 10-minutteren (het 8-minutteren) kan åpnes og logges hvilken dag som helst — ikke bare tir/fre. */
-  if(bok!=='M'&&erThor()&&PP().okter.M){var mo=PP().okter.M,mG=gj.some(function(o){return o.type==='M'});
+  if(bok!=='M'&&PP().okter.M){var mo=PP().okter.M /* v1.37.0: også Anniken */,mG=gj.some(function(o){return o.type==='M'});
     var mDag=[].concat(mo.dager||[]).indexOf(DAGKEY[(d.getDay()||7)-1])>-1;
-    h+='<details'+(mDag&&!mG?' open':'')+' style="margin:14px 0 4px;border-top:1px dashed var(--kant);padding-top:12px"><summary style="cursor:pointer"><b>'+esc(mo.navn)+'</b> <span class="lit">— '+(mDag?'står på planen i dag · ca. 10 min':'kan tas hvilken dag som helst')+(mG?' · ✓ gjort i dag':'')+'</span></summary>'+
+    h+='<details'+(mDag&&!mG?' open':'')+' style="margin:14px 0 4px;border-top:1px dashed var(--kant);padding-top:12px"><summary style="cursor:pointer"><b>'+esc(mo.navn)+'</b> <span class="lit">— '+(mDag?(erThor()?'står på planen i dag':'valgfritt i dag, når du har overskudd')+' · ca. 10 min':'kan tas hvilken dag som helst')+(mG?' · ✓ gjort i dag':'')+'</span></summary>'+
       '<ol class="steg" style="margin:10px 0">'+mo.steg.map(function(s){return '<li><b>'+esc(s[0])+'</b> — '+esc(s[1])+'</li>'}).join('')+'</ol>'+
       (mo.tillegg?'<p class="lit">+ tillegget (valgfritt): '+mo.tillegg.map(function(s){return esc(s[0])+' '+esc(s[1])}).join(' · ')+'</p>':'')+
       '<div class="rad">'+(mo.guide?'<button class="knapp" data-mstart="1">▶ Start 10-minutteren</button>':'')+'<button class="knapp sek lit" id="gjort-m-ekstra">'+(mG?'Gjort ✓':'10-minutteren gjort')+'</button></div></details>'}
@@ -837,7 +837,7 @@ function tegnUka(){
   $('uke-grid').innerHTML=h;$('dag-velger').style.display='none';
   $('uke-hjelp').textContent=harP?'Trykk på en dag for å logge tur eller 10-minutteren — hvilken kveld du tar den er ditt valg. Gym-økter startes fra «I dag». Ryker en gym-økt: neste bokstav neste gang — aldri to like på rad.':'Trykk på en dag for å logge gange, en kort styrkeøkt eller en tur.';
   Array.prototype.forEach.call(document.querySelectorAll('.dag'),function(el){el.onclick=function(){var iso=el.getAttribute('data-iso');var gj=gjortDag(iso);
-    var valg=harP?(erThor()?[['T','Tur'],['M','10-minutteren']]:[['T','Tur'],['G','10 min gange']]):[['G','10 min gange'],['K','Kort styrkeøkt'],['T','Tur']];
+    var valg=harP?(erThor()?[['T','Tur'],['M','10-minutteren']]:(PP().okter.M?[['T','Tur'],['G','10 min gange'],['M','10-minutteren']]:[['T','Tur'],['G','10 min gange']])):[['G','10 min gange'],['K','Kort styrkeøkt'],['T','Tur']];
     var v=$('dag-velger');var vh='<b>'+dagNavn((fraIso(iso).getDay()||7)-1)+' '+iso.slice(8)+'.'+(+iso.slice(5,7))+'</b> — logg: ';
     valg.forEach(function(x){var fins=gj.some(function(o){return o.type===x[0]});vh+='<button class="knapp lit'+(fins?'':' sek')+'" data-logg="'+x[0]+'" style="margin:4px 4px 0 0">'+(fins?'✓ ':'')+x[1]+'</button>'});
     var gym=gj.filter(function(o){return o.type==='A'||o.type==='B'||o.type==='H'});
