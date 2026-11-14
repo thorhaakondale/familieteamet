@@ -755,7 +755,7 @@ h1.topp{margin:6px 0 4px;font-size:1.25rem}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.79.2';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.80.0';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -810,6 +810,23 @@ function annenhverDager(o,man){
   if(neste>=man&&neste<=son)r[Math.round((neste-man)/86400000)]=1; /* bare én åpen lapp */
   return Object.keys(r).map(Number).sort(function(a,b){return a-b});
 }
+/* v1.80 (Thor 14.11.2026): «følger» = kommer opp hver N-te gang en annen oppgave kommer (robotstøvsugeren annenhver gang søppelet går ut).
+   Vises på den søppeldagen der minst N−1 søppelhaker er tatt etter forrige hake på denne oppgaven (dagen selv teller ikke). */
+function hakeInfo(id,wkey,t0){var pre=id+'|',L=null,ds={},r={};
+  Object.keys(UKER).forEach(function(uk){var g=UKER[uk]&&UKER[uk].gjort;if(!g)return;Object.keys(g).forEach(function(k){if(k.indexOf(pre)!==0||!g[k])return;
+    var ts=+g[k];if(ts>1e12){var d=new Date(ts);d=new Date(d.getFullYear(),d.getMonth(),d.getDate());ds[+d]=1;if(d<=t0&&(!L||d>L))L=d}
+    var pa=k.split('|');if(uk===wkey&&pa.length===3){var dg=+pa[1];if(dg>=0&&dg<=6)r[dg]=1}})});
+  return {L:L,ds:ds,r:r}}
+function folgerDager(o,man){
+  var t=OPPG.filter(function(x){return x.id===o.folger&&x.aktiv!==false})[0]; if(!t) return [];
+  var t0=new Date(NAA.getFullYear(),NAA.getMonth(),NAA.getDate()), wkey=ukeKey(man), n=o.hverN||2;
+  var R=hakeInfo(o.id,wkey,t0), T=hakeInfo(t.id,wkey,t0), r={};
+  Object.keys(R.r).forEach(function(d){r[d]=1});
+  dagerIUka0(t,man).forEach(function(dg){var D=addDays(man,dg); if(D<t0) return;
+    var k=0; Object.keys(T.ds).forEach(function(x){x=+x; if((!R.L||x>+R.L)&&x<+D)k++});
+    if(k>=n-1) r[dg]=1});
+  return Object.keys(r).map(Number).sort(function(a,b){return a-b});
+}
 function dagerIUka0(o,man){
   if(o.aktiv===false) return [];
   var key=ukeKey(man), idx=ukeIndex(man);
@@ -819,7 +836,8 @@ function dagerIUka0(o,man){
   if(o.int==='hverdag') return (erFerie(key)&&o.iFerie!==true)?[]:[0,1,2,3,4]; /* v1.16: skoleferie = ingen skolerutiner */
   if(o.int==='daglig') return [0,1,2,3,4,5,6];
   if(o.int==='dager') return o.dager||[];
-  if(o.int==='annenhver') return annenhverDager(o,man); /* v1.78: rullerende — se annenhverDager */
+  if(o.int==='annenhver') return annenhverDager(o,man);
+  if(o.int==='folger') return folgerDager(o,man); /* v1.78: rullerende — se annenhverDager */
   var dag=(o.unntak&&o.unntak[key]!==undefined)?o.unntak[key]:(o.dag===undefined?3:o.dag);
   if(o.int==='uke') return [dag];
   if(o.int==='uker'){var pl=vedlPlan();var wk=pl[o.id];if(wk){return wk[idx]?[dag]:[]}var n0=o.hver||4,st0=o.fra?ukeIndex(ukeFraKey(o.fra)):0;return ((idx-st0)%n0===0&&idx>=st0)?[dag]:[]}
@@ -966,6 +984,7 @@ function arkKnapp(o){return ''} /* v1.71 (Thor 7.11): ingen ⓘ/⋯-knapp på ru
 function tileOid(b){return ((b.dataset.s||(b.dataset.f||'').split(',')[0])||'').split('|')[0]}
 /* v1.44 (Thor 19.10.2026): hvor ofte står på ruta for alt som ikke er daglige rutiner — bare info, rytmen styres av Bjørn */
 function rytmeKort(o){ if(o.ikkeSammeUke) return '2 av 3 uker';
+  if(o.int==='folger') return 'annenhver gang søppelet går ut';
   if(o.int==='uke') return 'hver uke';
   var n={'2uke':2,'3uke':3,'4uke':4}[o.int]; if(n) return 'hver '+n+'. uke';
   if(o.int==='kvartal') return 'hver 3. måned';
@@ -2455,7 +2474,7 @@ function tegnVedl(){
 }
 
 var INTNAVN={hverdag:'hver hverdag',daglig:'hver dag',annenhver:'annenhver dag',dager:'faste dager',uke:'hver uke',"2uke":'hver 2. uke',"3uke":'hver 3. uke',"4uke":'hver 4. uke',kvartal:'hver 3. mnd',uker:'hver N. uke',dato:'én dato'};
-function intNavn(o){if(o.int==='uker'){var n=o.hver||4;return n===52?'hvert år':n===26?'hvert halvår':n===13?'hver 3. mnd':'hver '+n+'. uke'}return INTNAVN[o.int]||o.int}
+function intNavn(o){if(o.int==='folger')return 'annenhver søppeltur';if(o.int==='uker'){var n=o.hver||4;return n===52?'hvert år':n===26?'hvert halvår':n===13?'hver 3. mnd':'hver '+n+'. uke'}return INTNAVN[o.int]||o.int}
 function nesteGang(o){
   var man=mandag(NAA), dIdx=(NAA.getDay()+6)%7;
   for(var w=0;w<60;w++){var m=addDays(man,7*w);var dg=dagerIUka(o,m);for(var i=0;i<dg.length;i++){if(w===0&&dg[i]<dIdx)continue;return addDays(m,dg[i])}}
