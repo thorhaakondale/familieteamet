@@ -443,7 +443,7 @@ details.stegliste>summary{cursor:pointer;font-size:0.8125rem;font-weight:700;col
    ============================================================ */
 "use strict";
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
-var VERSJON='1.32.1'; /* v1.21: appversjonen, vises under Mer → Programmet */
+var VERSJON='1.33.0'; /* v1.21: appversjonen, vises under Mer → Programmet */
 var KODE=null, PERSON='thor', PROG=null, S=null, db=null, dbOk=false, PENDING=[];
 var AKTIV=null; /* pågående økt */
 var UKEVIS=0;   /* uke-offset i Uka-fanen */
@@ -521,6 +521,8 @@ function ukeskontekst(){
   return out;
 }
 function ukeModus(k){return ukeInfo(k).modus||'normal'}
+function sykKnapp(erSyk){return '<div class="rad" style="margin-top:14px"><button class="knapp sek lit" id="syk-bytt">'+(erSyk?'Jeg er frisk igjen — tilbake til vanlig uke':'Jeg er syk — uka teller ikke')+'</button></div>'}
+function koblSyk(){var b=$('syk-bytt');if(!b)return;b.onclick=function(){var k=ukeKey(new Date());var o=ukeInfo(k);o.modus=ukeModus(k)==='syk'?'normal':'syk';o.uke=k;lagre('uke/'+k,o);tegnIdag();tegnUka();if(typeof tegnFrem==='function')tegnFrem()}}
 /* v1.28 (Thor 4.11.2026): prosjektuker — korte A og B i uker med mye prosjektarbeid. Maks 4 per kalenderår; når kvoten er brukt, forsvinner knappen til 1. januar. Teller uker merket «prosjekt» i S.uke. */
 function prosjektMaks(){return (PROG.prosjektuker&&PROG.prosjektuker.maks_per_aar)||4}
 function prosjektBrukt(aar){return Object.keys(S.uke||{}).filter(function(k){return k.slice(0,4)===String(aar)&&S.uke[k]&&S.uke[k].modus==='prosjekt'}).length}
@@ -680,14 +682,24 @@ function tegnIdag(){
   $('k-rode').hidden=!p.har_program;$('raad-kort').hidden=!p.har_program;tegnMndPaaminn();
   if(!p.har_program){ /* Anniken: minimumsnivået fra Liv-skill v2 §10 — ingen gjettede tall */
     var gG=gj.some(function(o){return o.type==='G'}),gK=gj.some(function(o){return o.type==='K'}),gT=gj.some(function(o){return o.type==='T'});
-    $('idag-kort').innerHTML='<h2>'+dagTittel+'</h2><p class="lead">Ingenting av dette er plikt. Logg det du faktisk gjorde — det er alt Liv trenger.</p><div class="rad"><button class="knapp lit'+(gG?'':' sek')+'" data-enkel="G">'+(gG?'✓ 10 min gange':'10 min gange')+'</button><button class="knapp lit'+(gK?'':' sek')+'" data-enkel="K">'+(gK?'✓ Kort styrkeøkt':'Kort styrkeøkt')+'</button><button class="knapp lit'+(gT?'':' sek')+'" data-enkel="T">'+(gT?'✓ Tur':'Tur')+'</button></div>';
+    $('idag-kort').innerHTML='<h2>'+dagTittel+'</h2><p class="lead">Ingenting av dette er plikt. Logg det du faktisk gjorde — det er alt Liv trenger.</p><div class="rad"><button class="knapp lit'+(gG?'':' sek')+'" data-enkel="G">'+(gG?'✓ 10 min gange':'10 min gange')+'</button><button class="knapp lit'+(gK?'':' sek')+'" data-enkel="K">'+(gK?'✓ Kort styrkeøkt':'Kort styrkeøkt')+'</button><button class="knapp lit'+(gT?'':' sek')+'" data-enkel="T">'+(gT?'✓ Tur':'Tur')+'</button></div>'+sykKnapp(ukeModus(ukeKey(d))==='syk');koblSyk();
     Array.prototype.forEach.call(document.querySelectorAll('#idag-kort button[data-enkel]'),function(b){b.onclick=function(){var t=b.getAttribute('data-enkel');var fins=gj.filter(function(o){return o.type===t});if(fins.length){fins.forEach(function(o){delete S.okter[o.id];skrivLokalt();if(dbOk)db.child('okter/'+o.id).remove()})}else loggEnkel(t,null);tegnIdag();tegnUka()}});
     $('seier-kort').innerHTML='';tegnUkeKort();tegnFem();return}
   var sg=sisteGym();var byttet='';
   if((bok==='A'||bok==='B')&&sg&&sg.type===bok&&gj.every(function(o){return o.type!==bok})){var alt=bok==='A'?'B':'A';byttet='<div class="varsel">Sist gjorde du <b>'+bok+'</b> ('+sg.dato.slice(8)+'.'+sg.dato.slice(5,7)+'). Regelen er aldri to like på rad — kjør <b>'+alt+'</b> i dag.</div>';bok=alt;okt=PP().okter[bok]}
   var erGjort=gj.some(function(o){return o.type===bok});
   var modus=ukeModus(ukeKey(d)),ps=pauseStatus();
-  if(modus==='syk'){h+='<div class="plan"><div class="bokstav" style="background:#9ca3af">–</div><div><b>Syk</b><div class="lit">Uka teller ikke. Ingenting å ta igjen.</div></div></div><p class="lit" style="margin:8px 0 0">'+esc(PROG.ukemodus.syk)+' Bytt uka tilbake til «Vanlig» under Uka når du er frisk.</p>';$('idag-kort').innerHTML='<h2>'+dagTittel+'</h2>'+h;$('raad-kort').hidden=true;tegnUkeKort();tegnSeier();tegnFem();return}
+  /* v1.33.0 (Thor 14.11.2026): syk-knappen ligger på I dag, og 10-minutteren står som bonus når uka er syk */
+  if(modus==='syk'){h+='<div class="plan"><div class="bokstav" style="background:#9ca3af">–</div><div><b>Syk</b><div class="lit">Uka teller ikke. Ingenting å ta igjen.</div></div></div><p class="lit" style="margin:8px 0 0">'+esc(PROG.ukemodus.syk)+'</p>';
+    if(erThor()&&PP().okter.M){var mo2=PP().okter.M,mG2=gj.some(function(o){return o.type==='M'});
+      h+='<details'+(mG2?'':' open')+' style="margin:14px 0 4px;border-top:1px dashed var(--kant);padding-top:12px"><summary style="cursor:pointer"><b>'+esc(mo2.navn)+'</b> <span class="lit">— bonus når du er syk: bare hvis det kjennes godt, teller ikke'+(mG2?' · ✓ gjort i dag':'')+'</span></summary>'+
+        '<ol class="steg" style="margin:10px 0">'+mo2.steg.map(function(s){return '<li><b>'+esc(s[0])+'</b> — '+esc(s[1])+'</li>'}).join('')+'</ol>'+
+        '<div class="rad">'+(mo2.guide?'<button class="knapp" data-mstart="1">▶ Start 10-minutteren</button>':'')+'<button class="knapp sek lit" id="gjort-m-ekstra">'+(mG2?'Gjort ✓':'10-minutteren gjort')+'</button></div></details>'}
+    h+=sykKnapp(true);
+    $('idag-kort').innerHTML='<h2>'+dagTittel+'</h2>'+h;$('raad-kort').hidden=true;
+    Array.prototype.forEach.call(document.querySelectorAll('#idag-kort [data-mstart]'),function(x){x.onclick=function(){mgStart()}});
+    var gm2=$('gjort-m-ekstra');if(gm2)gm2.onclick=function(){if(!gjortDag(idag()).some(function(o){return o.type==='M'}))loggEnkel('M',null);tegnIdag();tegnUka()};
+    koblSyk();tegnUkeKort();tegnSeier();tegnFem();return}
   h+='<div class="plan"><div class="bokstav" style="background:'+okt.farge+'">'+bok+'</div><div><b>'+esc(okt.navn)+'</b><div class="lit">'+esc(okt.dag)+(okt.ovelser?' · ca. '+estMin(okt,false)+' min med pauser':(okt.varighet?' · '+esc(okt.varighet):''))+'</div></div></div>'+byttet;
   if(erGjort)h+='<div class="ok">Gjort i dag.</div>';
   if(erStyrke(bok)){var lett=ps.nivaa>0||modus==='minimum'||modus==='prosjekt';
@@ -731,7 +743,8 @@ function tegnIdag(){
     if(fl.length)h+='<div style="margin-top:14px;padding-top:12px;border-top:1px dashed var(--kant)"><b>Lyst på en økt i dag likevel?</b><div class="rad" style="margin-top:6px">'+fl.map(function(t){var pk=modus==='prosjekt'&&t!=='H';return '<button class="knapp sek lit" data-fristart="'+t+'">'+(t==='H'?'Hjemmeøkt (valgfri)':(pk?'Kort økt ':'Start økt ')+t)+' · ~'+estMin(PP().okter[t],pk)+' min</button>'}).join('')+'</div></div>'}
   var gjIdag=gjortDag(idag()).filter(function(o){return o.type!=='T'&&o.type!=='S'});
   if(gjIdag.length)h+='<div style="margin-top:14px;padding-top:12px;border-top:1px dashed var(--kant)"><b>Trykket feil?</b><div class="rad" style="margin-top:6px">'+gjIdag.map(function(o){var nv=(PP().okter[o.type]&&PP().okter[o.type].navn)||o.type;return '<button class="knapp sek lit" data-angre="'+o.id+'">'+(ANGRE===o.id?'Trykk igjen for å slette':'Angre: '+esc(nv)+(o.kort?' (kort)':''))+'</button>'}).join('')+'</div><span class="lit" style="display:block;margin-top:4px">Sletter økta fra i dag — på alle enheter.</span></div>';
-  $('idag-kort').innerHTML='<h2>'+dagTittel+'</h2>'+h;
+  h+=sykKnapp(false);
+  $('idag-kort').innerHTML='<h2>'+dagTittel+'</h2>'+h;koblSyk();
   Array.prototype.forEach.call(document.querySelectorAll('#idag-kort button[data-fristart]'),function(x){x.onclick=function(){var t=x.getAttribute('data-fristart');startOkt(t,t!=='H'&&erProsjekt())}});
   Array.prototype.forEach.call(document.querySelectorAll('#idag-kort button[data-angre]'),function(b){b.onclick=function(){var id=b.getAttribute('data-angre');if(ANGRE!==id){ANGRE=id;tegnIdag();return}ANGRE=null;slettOkt(id);tegnIdag();tegnUka();tegnFrem()}});
   var bn=$('start-neste');if(bn)bn.onclick=function(){startOkt(bn.getAttribute('data-t'),erProsjekt())};
