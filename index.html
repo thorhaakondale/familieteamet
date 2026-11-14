@@ -755,7 +755,7 @@ h1.topp{margin:6px 0 4px;font-size:1.25rem}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.80.0';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.80.1';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -984,7 +984,7 @@ function arkKnapp(o){return ''} /* v1.71 (Thor 7.11): ingen ⓘ/⋯-knapp på ru
 function tileOid(b){return ((b.dataset.s||(b.dataset.f||'').split(',')[0])||'').split('|')[0]}
 /* v1.44 (Thor 19.10.2026): hvor ofte står på ruta for alt som ikke er daglige rutiner — bare info, rytmen styres av Bjørn */
 function rytmeKort(o){ if(o.ikkeSammeUke) return '2 av 3 uker';
-  if(o.int==='folger') return 'annenhver gang søppelet går ut';
+  if(o.int==='folger') return (o.hverN===3?'hver 3.':o.hverN>3?'hver '+o.hverN+'.':'annenhver')+' gang søppelet går ut';
   if(o.int==='uke') return 'hver uke';
   var n={'2uke':2,'3uke':3,'4uke':4}[o.int]; if(n) return 'hver '+n+'. uke';
   if(o.int==='kvartal') return 'hver 3. måned';
@@ -2474,7 +2474,7 @@ function tegnVedl(){
 }
 
 var INTNAVN={hverdag:'hver hverdag',daglig:'hver dag',annenhver:'annenhver dag',dager:'faste dager',uke:'hver uke',"2uke":'hver 2. uke',"3uke":'hver 3. uke',"4uke":'hver 4. uke',kvartal:'hver 3. mnd',uker:'hver N. uke',dato:'én dato'};
-function intNavn(o){if(o.int==='folger')return 'annenhver søppeltur';if(o.int==='uker'){var n=o.hver||4;return n===52?'hvert år':n===26?'hvert halvår':n===13?'hver 3. mnd':'hver '+n+'. uke'}return INTNAVN[o.int]||o.int}
+function intNavn(o){if(o.int==='folger')return (o.hverN>2?'hver '+o.hverN+'.':'annenhver')+' søppeltur';if(o.int==='uker'){var n=o.hver||4;return n===52?'hvert år':n===26?'hvert halvår':n===13?'hver 3. mnd':'hver '+n+'. uke'}return INTNAVN[o.int]||o.int}
 function nesteGang(o){
   var man=mandag(NAA), dIdx=(NAA.getDay()+6)%7;
   for(var w=0;w<60;w++){var m=addDays(man,7*w);var dg=dagerIUka(o,m);for(var i=0;i<dg.length;i++){if(w===0&&dg[i]<dIdx)continue;return addDays(m,dg[i])}}
