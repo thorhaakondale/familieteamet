@@ -1,6 +1,6 @@
 {
- "versjon": "v1.19",
- "kilde": "Dale Livsstil & PT (programkortet) for øvelser og vekter · liv-treningsspesifikasjon.md v1.1 for mål, regler og progresjon · v1.6 12.10.2026: pauseøvelsene synlige, lette og med bilde · v1.7 14.10.2026: Annikens program (Liv) — to gymøkter, hjemmeøkt og månedssjekk · v1.8 16.10.2026: proteinkortet — lunsj og kvelds mot dagsmålet (Liv) · v1.9 17.10.2026: søndagsreserven H for Thor — kort hjemmeøkt bare på søndager uka mangler en styrkeøkt, turen går foran · v1.10 17.10.2026: reserveøkta H tilgjengelig torsdag–søndag (søndag uten gym-valg) · v1.11 4.11.2026: maks 15 reps per sett, prosjektuker (kort A + kort B, maks 4 i året), dypt knebøy-hold i 8-minutteren (nå 10-minutteren) og to bevegelighetstester · v1.12 7.11.2026: 10-minutteren (tirsdag kveld og søndag morgen) — hamstring og figur 4 ut, tillegget valgfritt; 90/90-hintet presisert · v1.13 8.11.2026: dypt knebøy-hold 2 min (aktivt hold, hæler på bok ved behov, stå over ved rygg 2+), katt–ku og tåklem 30 s så holdene er 8 min 30 s og økta fortsatt ca. 10 min; bilde på holdet (Liv/Thor) · v1.14 8.11.2026: steg 4 er den lange knelingen (bakre kne langt bak, bekkenet tippet under før hofta skyves fram) — Thor kjente at kort kneling var for mild; ankeldrillen (steg 5) holdes stram · v1.15 10.11.2026: 90/90 med aktive skift i 10-minutteren, valgfri hip thrust i maskinen etter A (Thor) · v1.15b 10.11.2026: to tapte økter gir ikke lettere økt (Thor) · v1.16 14.11.2026: framoverbøy (baksidelår) og lårstrekk (forsidelår) først i tillegget, med klokke · v1.17 14.11.2026: takt på hvert steg i 10-minutteren (dynamisk/hold, sekunder per ledd) · v1.18 14.11.2026: takt på alle øvelser i A, B og H for Thor og Anniken (dynamisk/hold, sekunder per ledd, én spenn-cue) · v1.19 14.11.2026: bird dog (Thor) — 8–10 s hold i stedet for flere reps",
+ "versjon": "v1.20",
+ "kilde": "Dale Livsstil & PT (programkortet) for øvelser og vekter · liv-treningsspesifikasjon.md v1.1 for mål, regler og progresjon · v1.6 12.10.2026: pauseøvelsene synlige, lette og med bilde · v1.7 14.10.2026: Annikens program (Liv) — to gymøkter, hjemmeøkt og månedssjekk · v1.8 16.10.2026: proteinkortet — lunsj og kvelds mot dagsmålet (Liv) · v1.9 17.10.2026: søndagsreserven H for Thor — kort hjemmeøkt bare på søndager uka mangler en styrkeøkt, turen går foran · v1.10 17.10.2026: reserveøkta H tilgjengelig torsdag–søndag (søndag uten gym-valg) · v1.11 4.11.2026: maks 15 reps per sett, prosjektuker (kort A + kort B, maks 4 i året), dypt knebøy-hold i 8-minutteren (nå 10-minutteren) og to bevegelighetstester · v1.12 7.11.2026: 10-minutteren (tirsdag kveld og søndag morgen) — hamstring og figur 4 ut, tillegget valgfritt; 90/90-hintet presisert · v1.13 8.11.2026: dypt knebøy-hold 2 min (aktivt hold, hæler på bok ved behov, stå over ved rygg 2+), katt–ku og tåklem 30 s så holdene er 8 min 30 s og økta fortsatt ca. 10 min; bilde på holdet (Liv/Thor) · v1.14 8.11.2026: steg 4 er den lange knelingen (bakre kne langt bak, bekkenet tippet under før hofta skyves fram) — Thor kjente at kort kneling var for mild; ankeldrillen (steg 5) holdes stram · v1.15 10.11.2026: 90/90 med aktive skift i 10-minutteren, valgfri hip thrust i maskinen etter A (Thor) · v1.15b 10.11.2026: to tapte økter gir ikke lettere økt (Thor) · v1.16 14.11.2026: framoverbøy (baksidelår) og lårstrekk (forsidelår) først i tillegget, med klokke · v1.17 14.11.2026: takt på hvert steg i 10-minutteren (dynamisk/hold, sekunder per ledd) · v1.18 14.11.2026: takt på alle øvelser i A, B og H for Thor og Anniken (dynamisk/hold, sekunder per ledd, én spenn-cue) · v1.19 14.11.2026: bird dog (Thor) — 8–10 s hold i stedet for flere reps · v1.20 14.11.2026: glute bridge i tillegget — 5 s hold med bekkenet tippet, ettbeins som progresjon",
  "personer": {
   "thor": {
    "navn": "Thor",
@@ -663,7 +663,7 @@
      ],
      [
       "Glute bridge",
-      "12 m/2 s hold — sete/bekken"
+      "10 × 5 s hold — sete/bekken"
      ],
      [
       "Sideplanke",
@@ -935,25 +935,26 @@
      {
       "id": "t-glutebro",
       "navn": "Glute bridge",
-      "reps": "12 ganger",
-      "hint": "På ryggen, føttene i gulvet. Løft hofta til rett linje kne–skulder, klem setet i 2 s.",
+      "reps": "10 ganger",
+      "hint": "Føttene en håndsbredd fra setet. Tipp bekkenet bakover (korsryggen ned), løft til rett linje kne–skulder og klem setet hardt. Lett? Ett bein, 8 per side.",
       "bilde": "img/hoftehev.webp",
       "takt": {
        "type": "dynamisk",
        "ledd": [
         [
          "Opp",
-         2
+         1
         ],
         [
          "Hold og klem",
-         2
+         5
         ],
         [
          "Ned",
          2
         ]
-       ]
+       ],
+       "spenn": "Ribbena ned, klem setet"
       }
      },
      {
