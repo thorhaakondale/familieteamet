@@ -444,7 +444,7 @@ details.stegliste>summary{cursor:pointer;font-size:0.8125rem;font-weight:700;col
    ============================================================ */
 "use strict";
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
-var VERSJON='1.36.0'; /* v1.21: appversjonen, vises under Mer → Programmet */
+var VERSJON='1.36.1'; /* v1.21: appversjonen, vises under Mer → Programmet */
 var KODE=null, PERSON='thor', PROG=null, S=null, db=null, dbOk=false, PENDING=[];
 var AKTIV=null; /* pågående økt */
 var UKEVIS=0;   /* uke-offset i Uka-fanen */
@@ -1192,7 +1192,7 @@ function mgTaktMerke(g,st){var t=g.takt;if(!t)return '';var ps=st.side?' per sid
   return '<div class="mg-takt mg-'+t.type+'">'+h+'</div>'}
 function mgTegn(){var el=$('mg');if(!el||!MG)return;var N=MG.steg.length;
   if(MG.ferdig){el.className='';var mG=gjortDag(idag()).some(function(o){return o.type==='M'});
-    el.innerHTML='<div class="mg-top"><b>10-minutteren</b><button class="knapp sek lit" id="mg-x">Lukk</button></div><div class="mg-bar"><i style="width:100%"></i></div><div class="mg-tid" style="font-size:3rem">Ferdig 🎉</div><p class="mg-hint" style="text-align:center">Godt jobbet — kroppen takker i morgen.</p><div class="mg-knapper"><button class="knapp" id="mg-logg">'+(mG?'Allerede logget i dag ✓ — lukk':'Logg 10-minutteren og lukk')+'</button></div>'+(MG.erTillegg||!(PP().okter.M.guide_tillegg||[]).length?'':'<div class="mg-knapper"><button class="knapp sek" id="mg-tillegg">Valgfritt: tillegget · ca. 6 min</button></div>')+'<div class="mg-knapper"><button class="knapp sek lit" id="mg-igjen">Ta den en gang til</button></div>';
+    el.innerHTML='<div class="mg-top"><b>10-minutteren</b><button class="knapp sek lit" id="mg-x">Lukk</button></div><div class="mg-bar"><i style="width:100%"></i></div><div class="mg-tid" style="font-size:3rem">Ferdig 🎉</div><p class="mg-hint" style="text-align:center">Godt jobbet — kroppen takker i morgen.</p><div class="mg-knapper"><button class="knapp" id="mg-logg">'+(mG?'Allerede logget i dag ✓ — lukk':'Logg 10-minutteren og lukk')+'</button></div>'+(MG.erTillegg||!(PP().okter.M.guide_tillegg||[]).length?'':'<div class="mg-knapper"><button class="knapp sek" id="mg-tillegg">Valgfritt: tillegget · viktigst først, stopp når du vil</button></div>')+'<div class="mg-knapper"><button class="knapp sek lit" id="mg-igjen">Ta den en gang til</button></div>';
     $('mg-x').onclick=mgLukk;$('mg-logg').onclick=function(){if(!gjortDag(idag()).some(function(o){return o.type==='M'}))loggEnkel('M',null);mgLukk()};$('mg-igjen').onclick=function(){MG.ferdig=false;mgGaaTil(0,false)};var bt=$('mg-tillegg');if(bt)bt.onclick=function(){MG.steg=mgTillegg();MG.erTillegg=true;MG.ferdig=false;mgGaaTil(0,false)};return}
   var st=MG.steg[MG.i],g=st.g,neste=MG.steg[MG.i+1];
   var bilde=g.bilde?'<img src="'+esc(g.bilde)+'" alt="'+esc(g.navn)+'">':'<div class="mg-ph">🧘<small>Bilde kommer — følg teksten</small></div>';
