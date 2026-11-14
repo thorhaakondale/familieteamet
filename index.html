@@ -755,7 +755,7 @@ h1.topp{margin:6px 0 4px;font-size:1.25rem}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.79.1';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.79.2';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -1535,7 +1535,9 @@ function ntfyFinnLapp(topic,dato,tekst,tid){if(!topic||!window.fetch)return Prom
       var tm=new Date(m.time*1000), hm=('0'+tm.getHours()).slice(-2)+':'+('0'+tm.getMinutes()).slice(-2);
       return ymd(tm)===dato&&((tekst!=null&&m.message===tekst)||(tid&&hm===tid)); }).map(function(m){return m.sequence_id||m.id}); /* v1.77.1 */
   }).catch(function(){return null});}
-function avbestillMinn(e,dato,o){var n=lesNtfy(INNST.ntfy)||{};
+function avbestillMinn(e,dato,o,id){var n=lesNtfy(INNST.ntfy)||{};
+  if(!e.ids&&(id||o)){ var oid=id||o.id; /* v1.79.2: posten mangler id-er (bestillingen ble avbrutt underveis) — sekvens-id-en er fast, så slett den hos alle */
+    return Promise.all(Object.keys(n).filter(function(p){return n[p]}).map(function(p){return ntfyDel(n[p],ntfySeq('ft',dato,'minn',oid,p))})).then(function(a){return a.every(Boolean)}); }
   if(e.ids) return Promise.all(Object.keys(e.ids).map(function(p){var x=e.ids[p]; return x?ntfyAvbestill(x.t,x.id):true})).then(function(a){return a.every(Boolean)});
   var tekst=o?o.navn:null; if(tekst==null&&!e.tid) return Promise.resolve(true);
   return Promise.all(Object.keys(n).filter(function(p){return n[p]}).map(function(p){return ntfyFinnLapp(n[p],dato,tekst,e.tid).then(function(ids){
@@ -1671,7 +1673,8 @@ function ryddMinn(){ /* kjører når oppgavene endres: varsler for lapper som ik
           }
         }
         if(gyldig) return;
-        endret=true; jobber.push(avbestillMinn(e,dato,o).then(function(ok){ if(ok) return db.child('varsler/sendt/'+k).set(null); }).catch(function(){})); /* v1.37: feilet den, står posten og prøves igjen neste gang */
+        if(!e.ids&&e.ts&&naaMs-e.ts<180000) return; /* v1.79.2: bestilles akkurat nå på en enhet — sveipMinn tar den om den ikke stemmer */
+        endret=true; jobber.push(avbestillMinn(e,dato,o,id).then(function(ok){ if(ok) return db.child('varsler/sendt/'+k).set(null); }).catch(function(){})); /* v1.37: feilet den, står posten og prøves igjen neste gang */
       });
       /* v1.56: mangler et varsel som skal gå (haken angret, flyttet hit, byttet hit) — bestill */
       for(var d=0;d<3&&!endret;d++){ (function(dag){ var yd=ymd(dag);
@@ -1760,7 +1763,7 @@ function planleggBackup(){
   });
 }
 function planleggVarsler(){
-  if(VARSLET_NAA||!db||!INNST.varsler||!INNST.ntfy||!FRAV_LASTET) return; VARSLET_NAA=true; /* v1.17: vent til fraværet er lest, ellers går faste varsler til den som er borte */
+  if(VARSLET_NAA||!db||!INNST.varsler||!INNST.ntfy||!FRAV_LASTET||!UKER_LASTET||!OPPG_LASTET) return; VARSLET_NAA=true; /* v1.79.2 (Thor 14.11.2026): XPeng-vasken ringte lørdag selv om den var flyttet til fredag og hakket av — en enhet som åpnet tavla før ukas haker og flytt var lastet, bestilte ut fra grunnplanen. Nå venter all bestilling på ferske oppgaver OG uker; listenerne under kaller planleggVarsler når de er på plass. */ /* v1.17: vent til fraværet er lest, ellers går faste varsler til den som er borte */
   var naa=new Date(), n=lesNtfy(INNST.ntfy)||{};
   var liste=Array.isArray(INNST.varsler)?INNST.varsler:Object.keys(INNST.varsler).map(function(k){return INNST.varsler[k]});
   for(var d=0;d<3;d++){(function(d){var dag=addDays(naa,d), yd=ymd(dag), wd=(dag.getDay()+6)%7;
@@ -2782,7 +2785,7 @@ function slaaSammenOppg(liste){
   try{
     firebase.initializeApp(FIREBASE);
     db=firebase.database().ref('fam/'+KODE); dbOk=true;
-    db.child('oppgaver').on('value',function(snap){var v=snap.val()||{};OPPG_LASTET=true;setTimeout(planleggBackup,0);var li=Object.keys(v).map(function(k){return v[k]});try{localStorage.setItem('ft-oppg-delt',JSON.stringify(li))}catch(e){};slaaSammenOppg(li);synkTurOppg();tegn();ryddMinn();kveldStopp()});
+    db.child('oppgaver').on('value',function(snap){var v=snap.val()||{};OPPG_LASTET=true;setTimeout(planleggBackup,0);var li=Object.keys(v).map(function(k){return v[k]});try{localStorage.setItem('ft-oppg-delt',JSON.stringify(li))}catch(e){};slaaSammenOppg(li);synkTurOppg();tegn();ryddMinn();kveldStopp();planleggVarsler()});
     db.child('innlost').on('value',function(snap){INNLOST=snap.val()||{};tegn()});
     db.child('handleliste').on('value',function(snap){HANDLE=snap.val()||{};tegnHandle()}); /* v1.61 */
     db.child('handlelaer').on('value',function(snap){var v=snap.val()||{}; Object.keys(v).forEach(function(k){HL_LAER[k.replace(/_/g,' ')]=v[k]}); try{localStorage.setItem('ft-handlelaer',JSON.stringify(HL_LAER))}catch(e){} tegnHandle()}); /* v1.77: lærte butikkvalg, delt */
@@ -2808,7 +2811,7 @@ function slaaSammenOppg(liste){
         if(ant){upd['uker/'+Object.keys(LOKALT_FOER)[0]+'/ts']=new Date().toISOString();db.update(upd).then(function(){toast('☁️ '+ant+' haker fra enheten lastet opp')}).catch(function(){})}
       }
       Object.keys(v).forEach(function(id){var x=v[id]||{};taInnUke(id,x.gjort||{});var bt={};Object.keys(x.bytt||{}).forEach(function(k){if(x.bytt[k])bt[k]=x.bytt[k]});UKER[id].bytt=bt;var fl={};Object.keys(x.flytt||{}).forEach(function(k){if(x.flytt[k]!==null&&x.flytt[k]!==undefined)fl[k]=x.flytt[k]});UKER[id].flytt=fl;var ut2={};Object.keys(x.utsett||{}).forEach(function(k){if(x.utsett[k])ut2[k]=x.utsett[k]});UKER[id].utsett=ut2;var hp2={};Object.keys(x.hopp||{}).forEach(function(k){if(x.hopp[k])hp2[k]=x.hopp[k]});UKER[id].hopp=hp2;n++});
-      lagreLokalt();tegn();UKER_LASTET=true;planleggBackup();kveldStopp();try{ryddMinn();ryddGjort()}catch(e){} /* v1.56: haker og flytt styrer også «Minn på», backup-luka og pakkingen */
+      lagreLokalt();tegn();UKER_LASTET=true;planleggBackup();kveldStopp();try{ryddMinn();ryddGjort();planleggVarsler()}catch(e){} /* v1.56: haker og flytt styrer også «Minn på», backup-luka og pakkingen */
       document.getElementById('dbpill').textContent='lagres delt';
       status('Delt lagring tilkoblet · '+n+' uke'+(n===1?'':'r')+' registrert.');
     },function(e){status('Delt lagring avviste tilkoblingen — er familiekoden riktig? ('+(e&&e.message)+')');document.getElementById('dbpill').textContent='lagres på enheten'});
