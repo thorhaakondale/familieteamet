@@ -143,6 +143,7 @@ input.tekst{width:100%;border:1.5px solid var(--kant);border-radius:10px;padding
 .graf .null{stroke:var(--kant);stroke-width:1.5}
 .leg{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:0.8125rem;color:var(--mut);margin:4px 0 0}
 .leg i{display:inline-block;width:12px;height:12px;border-radius:50%;vertical-align:-1px;margin-right:5px}
+.takt{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 8px}.takt .tk{font-size:0.8125rem;font-weight:700;border-radius:999px;padding:3px 10px;line-height:1.35}.takt .dyn{background:rgba(124,58,237,.12);color:#4c1d95}.takt .hold{background:rgba(16,185,129,.15);color:#065f46}.takt .spenn{background:rgba(234,88,12,.12);color:#9a3412}
 .fyll{margin-top:10px;border:2px solid #7c3aed;border-radius:10px;padding:10px;background:#f5f0ff}
 .fyll .t{font-size:0.9375rem;font-weight:800;color:#5b21b6}
 .fyll .m{font-size:0.7812rem;color:#4c1d95;margin:1px 0 6px;line-height:1.45}
@@ -443,7 +444,7 @@ details.stegliste>summary{cursor:pointer;font-size:0.8125rem;font-weight:700;col
    ============================================================ */
 "use strict";
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
-var VERSJON='1.35.0'; /* v1.21: appversjonen, vises under Mer → Programmet */
+var VERSJON='1.36.0'; /* v1.21: appversjonen, vises under Mer → Programmet */
 var KODE=null, PERSON='thor', PROG=null, S=null, db=null, dbOk=false, PENDING=[];
 var AKTIV=null; /* pågående økt */
 var UKEVIS=0;   /* uke-offset i Uka-fanen */
@@ -626,6 +627,9 @@ function estMin(okt,kort){var sek=0,hj=!!(okt.navn&&okt.navn[0]==='H');var oppv=
     sek+=sett*arb+Math.max(0,sett-1)*p+(hj?60:120)}); /* hjemme: ingen kø eller vekter å hente */
   return Math.round(sek*1.1/60/5)*5}
 function typeLabel(t){return t==='hoved'?'<span class="typ">Hovedøvelse</span>':t==='tilbehor'?'<span class="typ til">Tilbehør</span>':'<span class="typ til">Avslutning</span>'}
+/* v1.36.0 (Thor 14.11.2026): takt på hver øvelse — dynamisk eller hold, sekunder per ledd, og én cue for hva som skal spennes. Én linje, lett å se. */
+function taktLinje(t){if(!t)return '';var a=t.type==='hold'?'<span class="tk hold">⏸ Hold '+esc(t.hold||'')+'</span>':'<span class="tk dyn">🔁 '+t.ledd.map(function(l){return l[1]+' s '+esc(l[0])}).join(' · ')+'</span>';
+  return '<div class="takt">'+a+(t.spenn?'<span class="tk spenn">💪 '+esc(t.spenn)+'</span>':'')+'</div>'}
 function fyllBlokk(fs,ekstra){var h='';
   if(fs.bilde)h+='<img class="bilde" src="'+esc(fs.bilde)+'" alt="'+esc(fs.navn)+'" loading="lazy">';
   if(fs.slik)h+='<details'+(ekstra&&ekstra.aapen?' open':'')+'><summary>Slik gjør du den</summary><ol class="slik">'+fs.slik.map(function(x){return '<li>'+esc(x)+'</li>'}).join('')+'</ol>'+(fs.hvorfor?'<div class="hvorfor">'+esc(fs.hvorfor)+'</div>':'')+'</details>';
@@ -962,16 +966,17 @@ function tegnOkt(){
   okt.ovelser.forEach(function(ov,oi){var L=AKTIV.ovelser[ov.id];if(!L)return;var f=L.forslag;
     var maal=ov.maaling==='gjort'?'gjort':(ov.settmal?ov.settmal.join(' + '):ov.sett+' × '+(ov.reps[0]===ov.reps[1]?ov.reps[0]:ov.reps[0]+'–'+ov.reps[1]))+(ov.perSide?' /side':'');
     h+='<div class="ov '+esc(ov.type||'')+'" id="ov-'+ov.id+'">'+typeLabel(ov.type)+'<div class="h"><b>'+(oi+1)+' · '+esc(ov.navn)+'</b><span class="maal">'+esc(maal)+(f.kg!==null&&f.kg!==undefined&&ov.vekt?' @ '+f.kg+(ov.vekt.enhet?' '+ov.vekt.enhet:' kg'):'')+'</span></div>';
+    h+=taktLinje(ov.takt);
     if(ov.bilde)h+='<img class="bilde ovbilde" src="'+esc(ov.bilde)+'" alt="'+esc(ov.navn)+'" loading="lazy">';
     if(ov.hint)h+='<div class="hint">'+esc(ov.hint)+'</div>';
-    if(ov.slik)h+='<ol class="slik">'+ov.slik.map(function(x){return '<li>'+esc(x)+'</li>'}).join('')+'</ol>';
+    if(ov.slik)h+='<details'+(sisteFor(ov.id).some(function(x){return x&&x!=='—'})?'':' open')+'><summary class="lit">Slik gjør du den</summary><ol class="slik">'+ov.slik.map(function(x){return '<li>'+esc(x)+'</li>'}).join('')+'</ol></details>'; /* v1.36.0: åpen første gang, så lukket — taktlinja bærer resten */
     if(f.tekst)h+='<div class="'+(f.hold?'varsel':'ok')+'" style="margin:0 0 8px;font-size:0.7812rem">'+esc(f.tekst)+'</div>';
     if(ov.maaling==='gjort'){h+='<div class="rad"><button class="knapp sek lit" data-gjort="'+ov.id+'">'+(L.sett[0].ok?'Gjort ✓':'Marker som gjort')+'</button></div>'}
     else{var forr=sisteFor(ov.id);h+='<div class="setthode"><span></span><span>forrige</span><span>'+(ov.vekt?(ov.vekt.enhet?'kg/hånd':'kg'):'')+'</span><span>reps</span><span></span></div>';
       L.sett.forEach(function(s,si){h+='<div class="sett'+(s.ok?' ferdig':'')+'"><span class="nr">'+(si+1)+'</span><span class="forr">'+(forr[si]?esc(forr[si]):'—')+'</span>'+(ov.vekt?'<input type="text" inputmode="decimal" data-ov="'+ov.id+'" data-s="'+si+'" data-f="kg" value="'+(s.kg!==null&&s.kg!==undefined?String(s.kg).replace('.',','):'')+'">':'<span></span>')+'<input type="text" inputmode="numeric" data-ov="'+ov.id+'" data-s="'+si+'" data-f="reps" value="'+(s.reps!==null&&s.reps!==undefined?s.reps:'')+'" placeholder="'+ov.reps[1]+'"><button class="hak'+(s.ok?' p':'')+'" data-hak="'+ov.id+'" data-s="'+si+'">✓</button></div>'});
       var mR=(PP().regler&&PP().regler.maks_reps)||15;if(ov.vekt&&L.sett.some(function(s){return (s.reps||0)>mR}))h+='<div class="varsel" style="margin:6px 0;font-size:0.7812rem">Over '+mR+' reps: vekta er for lett. Stopp settet på '+ov.reps[1]+' — neste gang går vekta opp. Lange sett sliter ut korsryggen før beina.</div>';
       h+='<div class="rpe"><span>RPE</span>'+[6,7,8,9,10].map(function(v){return '<button data-rpe="'+ov.id+'" data-v="'+v+'"'+(L.rpe===v?' class="on"':'')+'>'+v+'</button>'}).join('')+'</div>'}
-    if(ov.fyllstoff){var fs=ov.fyllstoff;var F=AKTIV.fyll[fs.id];var vNavn=F.variant||fs.navn;h+='<div class="fyll"><span class="typ pau">Pauseøvelse — lett</span><div class="t" data-vt="'+fs.id+'">I pausene mellom settene: '+esc(vNavn)+'</div><div class="m">'+esc(fs.maal)+(F.forslag.tekst&&F.forslag.tekst!==fs.maal?'<br>'+esc(F.forslag.tekst):'')+'</div>'+fyllBlokk(fs,{aapen:!okterSortert().some(function(o){return o.fyll&&o.fyll[fs.id]})});
+    if(ov.fyllstoff){var fs=ov.fyllstoff;var F=AKTIV.fyll[fs.id];var vNavn=F.variant||fs.navn;h+='<div class="fyll"><span class="typ pau">Pauseøvelse — lett</span><div class="t" data-vt="'+fs.id+'">I pausene mellom settene: '+esc(vNavn)+'</div>'+taktLinje(fs.takt)+'<div class="m">'+esc(fs.maal)+(F.forslag.tekst&&F.forslag.tekst!==fs.maal?'<br>'+esc(F.forslag.tekst):'')+'</div>'+fyllBlokk(fs,{aapen:!okterSortert().some(function(o){return o.fyll&&o.fyll[fs.id]})});
       if(fs.varianter)h+='<div class="rad" style="margin:0 0 6px">'+fs.varianter.map(function(v){return '<button class="knapp lit'+(v===vNavn?'':' sek')+'" data-var="'+fs.id+'" data-v="'+esc(v)+'" style="min-height:32px;padding:5px 10px;font-size:0.7812rem">'+esc(v)+'</button>'}).join('')+'<span class="lit">ditt valg — samme mål</span></div>';
       var rader=(fs.maaling==='sek'&&fs.perSide)?fs.sett*2:fs.sett;if(AKTIV.kort)rader=(fs.maaling==='sek'&&fs.perSide)?2:1;
       for(var i=0;i<rader;i++){var v=F.verdier[i];var side=(fs.maaling==='sek'&&fs.perSide)?(i%2===0?'høyre':'venstre'):'';h+='<div class="fyllrad"><span class="nr">'+(side?Math.floor(i/2)+1:(i+1))+'</span>';

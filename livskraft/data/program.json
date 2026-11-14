@@ -1,6 +1,6 @@
 {
- "versjon": "v1.17",
- "kilde": "Dale Livsstil & PT (programkortet) for øvelser og vekter · liv-treningsspesifikasjon.md v1.1 for mål, regler og progresjon · v1.6 12.10.2026: pauseøvelsene synlige, lette og med bilde · v1.7 14.10.2026: Annikens program (Liv) — to gymøkter, hjemmeøkt og månedssjekk · v1.8 16.10.2026: proteinkortet — lunsj og kvelds mot dagsmålet (Liv) · v1.9 17.10.2026: søndagsreserven H for Thor — kort hjemmeøkt bare på søndager uka mangler en styrkeøkt, turen går foran · v1.10 17.10.2026: reserveøkta H tilgjengelig torsdag–søndag (søndag uten gym-valg) · v1.11 4.11.2026: maks 15 reps per sett, prosjektuker (kort A + kort B, maks 4 i året), dypt knebøy-hold i 8-minutteren (nå 10-minutteren) og to bevegelighetstester · v1.12 7.11.2026: 10-minutteren (tirsdag kveld og søndag morgen) — hamstring og figur 4 ut, tillegget valgfritt; 90/90-hintet presisert · v1.13 8.11.2026: dypt knebøy-hold 2 min (aktivt hold, hæler på bok ved behov, stå over ved rygg 2+), katt–ku og tåklem 30 s så holdene er 8 min 30 s og økta fortsatt ca. 10 min; bilde på holdet (Liv/Thor) · v1.14 8.11.2026: steg 4 er den lange knelingen (bakre kne langt bak, bekkenet tippet under før hofta skyves fram) — Thor kjente at kort kneling var for mild; ankeldrillen (steg 5) holdes stram · v1.15 10.11.2026: 90/90 med aktive skift i 10-minutteren, valgfri hip thrust i maskinen etter A (Thor) · v1.15b 10.11.2026: to tapte økter gir ikke lettere økt (Thor) · v1.16 14.11.2026: framoverbøy (baksidelår) og lårstrekk (forsidelår) først i tillegget, med klokke · v1.17 14.11.2026: takt på hvert steg i 10-minutteren (dynamisk/hold, sekunder per ledd)",
+ "versjon": "v1.18",
+ "kilde": "Dale Livsstil & PT (programkortet) for øvelser og vekter · liv-treningsspesifikasjon.md v1.1 for mål, regler og progresjon · v1.6 12.10.2026: pauseøvelsene synlige, lette og med bilde · v1.7 14.10.2026: Annikens program (Liv) — to gymøkter, hjemmeøkt og månedssjekk · v1.8 16.10.2026: proteinkortet — lunsj og kvelds mot dagsmålet (Liv) · v1.9 17.10.2026: søndagsreserven H for Thor — kort hjemmeøkt bare på søndager uka mangler en styrkeøkt, turen går foran · v1.10 17.10.2026: reserveøkta H tilgjengelig torsdag–søndag (søndag uten gym-valg) · v1.11 4.11.2026: maks 15 reps per sett, prosjektuker (kort A + kort B, maks 4 i året), dypt knebøy-hold i 8-minutteren (nå 10-minutteren) og to bevegelighetstester · v1.12 7.11.2026: 10-minutteren (tirsdag kveld og søndag morgen) — hamstring og figur 4 ut, tillegget valgfritt; 90/90-hintet presisert · v1.13 8.11.2026: dypt knebøy-hold 2 min (aktivt hold, hæler på bok ved behov, stå over ved rygg 2+), katt–ku og tåklem 30 s så holdene er 8 min 30 s og økta fortsatt ca. 10 min; bilde på holdet (Liv/Thor) · v1.14 8.11.2026: steg 4 er den lange knelingen (bakre kne langt bak, bekkenet tippet under før hofta skyves fram) — Thor kjente at kort kneling var for mild; ankeldrillen (steg 5) holdes stram · v1.15 10.11.2026: 90/90 med aktive skift i 10-minutteren, valgfri hip thrust i maskinen etter A (Thor) · v1.15b 10.11.2026: to tapte økter gir ikke lettere økt (Thor) · v1.16 14.11.2026: framoverbøy (baksidelår) og lårstrekk (forsidelår) først i tillegget, med klokke · v1.17 14.11.2026: takt på hvert steg i 10-minutteren (dynamisk/hold, sekunder per ledd) · v1.18 14.11.2026: takt på alle øvelser i A, B og H for Thor og Anniken (dynamisk/hold, sekunder per ledd, én spenn-cue)",
  "personer": {
   "thor": {
    "navn": "Thor",
@@ -67,7 +67,25 @@
        "steg": 2.5
       },
       "pause": 180,
-      "type": "hoved"
+      "type": "hoved",
+      "takt": {
+       "type": "dynamisk",
+       "ledd": [
+        [
+         "ned",
+         3
+        ],
+        [
+         "stopp i bunn",
+         1
+        ],
+        [
+         "opp",
+         1
+        ]
+       ],
+       "spenn": "Pust inn, spenn magen"
+      }
      },
      {
       "id": "sideutfall",
@@ -93,7 +111,21 @@
        "Hælen i gulvet hele veien. Så dypt som hofta tillater uten at kneet faller inn.",
        "3 sekunder ned, hurtig opp. Bytt side etter settet."
       ],
-      "bilde": "img/sideutfall.webp"
+      "bilde": "img/sideutfall.webp",
+      "takt": {
+       "type": "dynamisk",
+       "ledd": [
+        [
+         "ned",
+         2
+        ],
+        [
+         "opp",
+         1
+        ]
+       ],
+       "spenn": "Brystet opp"
+      }
      },
      {
       "id": "rdl",
@@ -134,7 +166,39 @@
         "Strekk høyre arm fram og venstre bein bak samtidig — til de er i høyde med ryggen, ikke høyere.",
         "Hold 3 sekunder uten at hofta vrir seg, tilbake, bytt side. 6 per side."
        ],
-       "hvorfor": "Ryggen: lærer korsryggen å holde seg i ro mens armer og bein jobber — McGill Big 3."
+       "hvorfor": "Ryggen: lærer korsryggen å holde seg i ro mens armer og bein jobber — McGill Big 3.",
+       "takt": {
+        "type": "dynamisk",
+        "ledd": [
+         [
+          "strekk ut",
+          2
+         ],
+         [
+          "hold",
+          3
+         ],
+         [
+          "tilbake",
+          2
+         ]
+        ],
+        "spenn": "Hofta i ro"
+       }
+      },
+      "takt": {
+       "type": "dynamisk",
+       "ledd": [
+        [
+         "ned",
+         3
+        ],
+        [
+         "opp",
+         1
+        ]
+       ],
+       "spenn": "Flat rygg, stram mage"
       }
      },
      {
@@ -156,7 +220,24 @@
        "steg": 5
       },
       "pause": 90,
-      "type": "tilbehor"
+      "type": "tilbehor",
+      "takt": {
+       "type": "dynamisk",
+       "ledd": [
+        [
+         "opp",
+         1
+        ],
+        [
+         "hold",
+         2
+        ],
+        [
+         "ned",
+         2
+        ]
+       ]
+      }
      },
      {
       "id": "taaklem",
@@ -169,7 +250,11 @@
       ],
       "maaling": "gjort",
       "pause": 0,
-      "type": "avslutning"
+      "type": "avslutning",
+      "takt": {
+       "type": "hold",
+       "hold": "30 s per runde"
+      }
      },
      {
       "id": "hipthrust",
@@ -194,7 +279,25 @@
        "Haka inn og ribbeina ned hele veien — svaier korsryggen på toppen, har du gått for høyt.",
        "Senk rolig ned på 2–3 sekunder."
       ],
-      "hvorfor": "Sete og korsrygg: et sterkt sete tar jobben i hengslingen, så korsryggen slipper. Valgfri — teller ikke mot økta."
+      "hvorfor": "Sete og korsrygg: et sterkt sete tar jobben i hengslingen, så korsryggen slipper. Valgfri — teller ikke mot økta.",
+      "takt": {
+       "type": "dynamisk",
+       "ledd": [
+        [
+         "opp",
+         1
+        ],
+        [
+         "klem",
+         1
+        ],
+        [
+         "ned",
+         2
+        ]
+       ],
+       "spenn": "Haka inn, klem setet"
+      }
      }
     ],
     "hensikt": {
@@ -269,7 +372,26 @@
         "Skuldrene får henge — ingen trekk. Pust rolig.",
         "Slipp mens du fortsatt har god kontroll. Maks tid måles bare på testdagen."
        ],
-       "hvorfor": "Grep og albue: senene i underarmen tåler mer når de belastes jevnt og rolig."
+       "hvorfor": "Grep og albue: senene i underarmen tåler mer når de belastes jevnt og rolig.",
+       "takt": {
+        "type": "hold",
+        "hold": "20–40 s",
+        "spenn": "Aktive skuldre"
+       }
+      },
+      "takt": {
+       "type": "dynamisk",
+       "ledd": [
+        [
+         "ned",
+         2
+        ],
+        [
+         "opp",
+         1
+        ]
+       ],
+       "spenn": "Skulderbladene ned og bak"
       }
      },
      {
@@ -310,7 +432,30 @@
         "Gå 20 m helt rett i overkroppen — skuldrene like høye, ikke len deg fra vekta.",
         "Bytt hånd, gå tilbake. Det er ett sett."
        ],
-       "hvorfor": "Kjerne og rygg: trener siden av kroppen til å holde deg oppreist mot en skjev last — anti-sidebøy."
+       "hvorfor": "Kjerne og rygg: trener siden av kroppen til å holde deg oppreist mot en skjev last — anti-sidebøy.",
+       "takt": {
+        "type": "hold",
+        "hold": "20 m per side",
+        "spenn": "Stå rett, ikke len"
+       }
+      },
+      "takt": {
+       "type": "dynamisk",
+       "ledd": [
+        [
+         "dra",
+         1
+        ],
+        [
+         "klem",
+         1
+        ],
+        [
+         "ned",
+         2
+        ]
+       ],
+       "spenn": "Flat rygg, stram mage"
       }
      },
      {
@@ -347,7 +492,30 @@
        "varianter": [
         "Sideplanke",
         "Copenhagen-planke (innside lår)"
-       ]
+       ],
+       "takt": {
+        "type": "hold",
+        "hold": "20–30 s per side",
+        "spenn": "Hofta oppe"
+       }
+      },
+      "takt": {
+       "type": "dynamisk",
+       "ledd": [
+        [
+         "ned",
+         1
+        ],
+        [
+         "klem",
+         1
+        ],
+        [
+         "opp",
+         2
+        ]
+       ],
+       "spenn": "Brystet opp"
       }
      },
      {
@@ -371,7 +539,20 @@
        "Løft hånda opp med den friske hånda — senk den SAKTE alene, tell til 4.",
        "15 ganger håndflata ned, 15 ganger håndflata opp. Så strikk: albuen inntil siden, roter underarmen utover."
       ],
-      "hvorfor": "Albuen: senen tåler mer når den bremser last sakte — det er dette som gjør noe med murringen, ikke de tunge settene."
+      "hvorfor": "Albuen: senen tåler mer når den bremser last sakte — det er dette som gjør noe med murringen, ikke de tunge settene.",
+      "takt": {
+       "type": "dynamisk",
+       "ledd": [
+        [
+         "opp med hjelp",
+         1
+        ],
+        [
+         "senk",
+         4
+        ]
+       ]
+      }
      },
      {
       "id": "aatte",
@@ -870,7 +1051,21 @@
        "Stå med ryggen til sofaen, legg den ene vristen på setet bak deg. Framfoten et langt steg fram, hele foten i gulvet.",
        "Senk bakre kne rett ned mot gulvet, overkroppen litt foroverlent.",
        "Press opp gjennom hælen på framfoten. Alle reps, så bytt. Vondt i stortåa: kortere bevegelse."
-      ]
+      ],
+      "takt": {
+       "type": "dynamisk",
+       "ledd": [
+        [
+         "ned",
+         2
+        ],
+        [
+         "opp",
+         1
+        ]
+       ],
+       "spenn": "Brystet opp"
+      }
      },
      {
       "id": "hs-hofteloft",
@@ -897,13 +1092,49 @@
         "Strekk høyre arm fram og venstre bein bak samtidig — til de er i høyde med ryggen, ikke høyere.",
         "Hold 3 sekunder uten at hofta vrir seg, tilbake, bytt side. 6 per side."
        ],
-       "hvorfor": "Ryggen: lærer korsryggen å holde seg i ro mens armer og bein jobber — McGill Big 3."
+       "hvorfor": "Ryggen: lærer korsryggen å holde seg i ro mens armer og bein jobber — McGill Big 3.",
+       "takt": {
+        "type": "dynamisk",
+        "ledd": [
+         [
+          "strekk ut",
+          2
+         ],
+         [
+          "hold",
+          3
+         ],
+         [
+          "tilbake",
+          2
+         ]
+        ],
+        "spenn": "Hofta i ro"
+       }
       },
       "slik": [
        "Sitt på gulvet med skulderbladene mot sofakanten, knærne bøyd og føttene i gulvet.",
        "Press hofta opp til kroppen er rett fra knær til skuldre — klem setet, ikke svai i korsryggen.",
        "Hold 1 sekund, ned rolig."
-      ]
+      ],
+      "takt": {
+       "type": "dynamisk",
+       "ledd": [
+        [
+         "opp",
+         1
+        ],
+        [
+         "hold",
+         1
+        ],
+        [
+         "ned",
+         2
+        ]
+       ],
+       "spenn": "Klem setet"
+      }
      },
      {
       "id": "hs-push",
@@ -931,13 +1162,32 @@
         "Løft hofta til kroppen er én rett linje fra hode til føtter. Øverste hånd på hofta.",
         "Hold 20–30 s rolig pust, ned, bytt side. Blir det tungt: nederste kne i gulvet."
        ],
-       "hvorfor": "Kjerne og korsrygg: sidemusklene som holder ryggen stabil — McGill Big 3."
+       "hvorfor": "Kjerne og korsrygg: sidemusklene som holder ryggen stabil — McGill Big 3.",
+       "takt": {
+        "type": "hold",
+        "hold": "20–30 s per side",
+        "spenn": "Hofta oppe"
+       }
       },
       "slik": [
        "Hendene på sofakanten litt bredere enn skuldrene, beina strake bak.",
        "Senk brystet mot sofakanten med albuene skrått bakover, ikke rett ut.",
        "Press opp. Murrer albuen: kortere bevegelse, eller hopp over."
-      ]
+      ],
+      "takt": {
+       "type": "dynamisk",
+       "ledd": [
+        [
+         "ned",
+         2
+        ],
+        [
+         "opp",
+         1
+        ]
+       ],
+       "spenn": "Kroppen rett som en planke"
+      }
      },
      {
       "id": "hs-yoga",
@@ -954,7 +1204,11 @@
        "Figur-4: ligg på ryggen, ankelen over motsatt kne, trekk beinet inn mot deg. 30 s per side.",
        "Liggende vridning: knærne til den ene siden, blikket mot den andre. 30 s per side.",
        "Ligg stille og pust rolig ut seks ganger, lengre ut enn inn."
-      ]
+      ],
+      "takt": {
+       "type": "hold",
+       "hold": "3 min, rolig pust"
+      }
      }
     ],
     "utenGym": [
@@ -1174,7 +1428,35 @@
         "Press korsryggen ned i matta og pust ut. Senk motsatt arm og bein sakte mot gulvet — bare så langt ryggen holder seg nede.",
         "Tilbake, bytt side. Rolig tempo, 6 per side."
        ],
-       "hvorfor": "Den dype magen (transversus) — det som gir flat, fast mage og en rygg som tåler løftene."
+       "hvorfor": "Den dype magen (transversus) — det som gir flat, fast mage og en rygg som tåler løftene.",
+       "takt": {
+        "type": "dynamisk",
+        "ledd": [
+         [
+          "strekk ut",
+          3
+         ],
+         [
+          "tilbake",
+          2
+         ]
+        ],
+        "spenn": "Korsryggen i matta"
+       }
+      },
+      "takt": {
+       "type": "dynamisk",
+       "ledd": [
+        [
+         "ned",
+         3
+        ],
+        [
+         "opp",
+         1
+        ]
+       ],
+       "spenn": "Brystet opp, stram mage"
       }
      },
      {
@@ -1211,7 +1493,43 @@
         "Spenn magen og rumpa, press armene rett fram og hold 2 sekunder — ikke la kabelen vri deg.",
         "Inn igjen rolig. 8 reps, snu deg og ta andre siden."
        ],
-       "hvorfor": "Skrå magemuskler som holder midjen stram uten å bygge den bredere — og som beskytter ryggen."
+       "hvorfor": "Skrå magemuskler som holder midjen stram uten å bygge den bredere — og som beskytter ryggen.",
+       "takt": {
+        "type": "dynamisk",
+        "ledd": [
+         [
+          "press ut",
+          1
+         ],
+         [
+          "hold",
+          2
+         ],
+         [
+          "inn",
+          1
+         ]
+        ],
+        "spenn": "Ikke la deg vri"
+       }
+      },
+      "takt": {
+       "type": "dynamisk",
+       "ledd": [
+        [
+         "opp",
+         1
+        ],
+        [
+         "klem",
+         1
+        ],
+        [
+         "ned",
+         2
+        ]
+       ],
+       "spenn": "Haka inn, klem rumpa"
       }
      },
      {
@@ -1236,7 +1554,21 @@
        "Stå med en manual i hver hånd foran lårene, knærne litt bøyd.",
        "Skyv hofta bakover og senk manualene tett langs beina med flat rygg — til du kjenner strekk bak på lårene.",
        "Press hofta fram og reis deg. Det er rumpa som løfter, ikke ryggen."
-      ]
+      ],
+      "takt": {
+       "type": "dynamisk",
+       "ledd": [
+        [
+         "ned",
+         3
+        ],
+        [
+         "opp",
+         1
+        ]
+       ],
+       "spenn": "Flat rygg, stram mage"
+      }
      },
      {
       "id": "splitt",
@@ -1260,7 +1592,21 @@
        "Stå i et langt steg, bakre fot på tærne.",
        "Senk bakre kne rett ned mot gulvet til begge knærne er ca. 90 grader. Overkroppen rett.",
        "Press opp gjennom fremre hæl. Alle reps på én side, så bytt."
-      ]
+      ],
+      "takt": {
+       "type": "dynamisk",
+       "ledd": [
+        [
+         "ned",
+         2
+        ],
+        [
+         "opp",
+         1
+        ]
+       ],
+       "spenn": "Brystet opp"
+      }
      },
      {
       "id": "utrulling",
@@ -1277,7 +1623,21 @@
        "Stå på knærne på matta med hjulet (eller en vektstang med runde skiver) under skuldrene.",
        "Spenn magen og rull rolig fram — stopp før korsryggen svaier.",
        "Trekk deg tilbake med magen, ikke med armene. Start kort; lengden kommer."
-      ]
+      ],
+      "takt": {
+       "type": "dynamisk",
+       "ledd": [
+        [
+         "ut",
+         3
+        ],
+        [
+         "inn",
+         2
+        ]
+       ],
+       "spenn": "Navlen inn, ikke svai"
+      }
      }
     ]
    },
@@ -1343,7 +1703,30 @@
         "Løft hofta til kroppen er en rett linje fra hode til knær/føtter.",
         "Hold, pust rolig. Senk før hofta synker — bytt side."
        ],
-       "hvorfor": "Midjen og sidene av magen. Gir holdning og en stram midje."
+       "hvorfor": "Midjen og sidene av magen. Gir holdning og en stram midje.",
+       "takt": {
+        "type": "hold",
+        "hold": "20–30 s per side",
+        "spenn": "Hofta oppe"
+       }
+      },
+      "takt": {
+       "type": "dynamisk",
+       "ledd": [
+        [
+         "ned",
+         1
+        ],
+        [
+         "klem",
+         1
+        ],
+        [
+         "opp",
+         2
+        ]
+       ],
+       "spenn": "Brystet opp"
       }
      },
      {
@@ -1380,7 +1763,43 @@
         "Strekk høyre arm fram og venstre bein bak samtidig — til de er i høyde med ryggen, ikke høyere.",
         "Hold 3 sekunder uten at hofta vrir seg, tilbake, bytt side. 6 per side."
        ],
-       "hvorfor": "Ryggen: lærer korsryggen å holde seg i ro mens armer og bein jobber — McGill Big 3."
+       "hvorfor": "Ryggen: lærer korsryggen å holde seg i ro mens armer og bein jobber — McGill Big 3.",
+       "takt": {
+        "type": "dynamisk",
+        "ledd": [
+         [
+          "strekk ut",
+          2
+         ],
+         [
+          "hold",
+          3
+         ],
+         [
+          "tilbake",
+          2
+         ]
+        ],
+        "spenn": "Hofta i ro"
+       }
+      },
+      "takt": {
+       "type": "dynamisk",
+       "ledd": [
+        [
+         "dra",
+         1
+        ],
+        [
+         "klem",
+         1
+        ],
+        [
+         "ut",
+         2
+        ]
+       ],
+       "spenn": "Rett rygg"
       }
      },
      {
@@ -1404,7 +1823,21 @@
        "Ligg på en benk med ryggstøtten på ca. 30 grader, en manual i hver hånd over brystet.",
        "Senk manualene rolig til siden av brystet, albuene litt inn mot kroppen.",
        "Press rett opp. Skuldrene ned og bak hele veien."
-      ]
+      ],
+      "takt": {
+       "type": "dynamisk",
+       "ledd": [
+        [
+         "ned",
+         2
+        ],
+        [
+         "opp",
+         1
+        ]
+       ],
+       "spenn": "Skulderbladene ned og bak"
+      }
      },
      {
       "id": "skulderpress",
@@ -1427,7 +1860,21 @@
        "Sitt med ryggen mot støtten og manualene i skulderhøyde.",
        "Press rett opp til armene nesten er strake.",
        "Ned rolig til skulderhøyde. Magen spent — ikke svai."
-      ]
+      ],
+      "takt": {
+       "type": "dynamisk",
+       "ledd": [
+        [
+         "opp",
+         1
+        ],
+        [
+         "ned",
+         2
+        ]
+       ],
+       "spenn": "Stram mage, ikke svai"
+      }
      },
      {
       "id": "kneloft",
@@ -1444,7 +1891,21 @@
        "Stå i kneløftstativet med underarmene på putene og ryggen mot puta.",
        "Løft knærne mot brystet og vipp bekkenet litt opp — det er der magen jobber.",
        "Senk rolig uten å svinge. For tungt: ett kne om gangen."
-      ]
+      ],
+      "takt": {
+       "type": "dynamisk",
+       "ledd": [
+        [
+         "opp",
+         1
+        ],
+        [
+         "ned",
+         2
+        ]
+       ],
+       "spenn": "Ingen sving"
+      }
      }
     ]
    },
@@ -1487,7 +1948,21 @@
        "Stå med føttene litt bredere enn hoftene, armene fram for balanse.",
        "Sitt ned så dypt du klarer med brystet opp og knærne ut over tærne.",
        "Press opp. Bli for lett: på med vektvesten."
-      ]
+      ],
+      "takt": {
+       "type": "dynamisk",
+       "ledd": [
+        [
+         "ned",
+         3
+        ],
+        [
+         "opp",
+         1
+        ]
+       ],
+       "spenn": "Brystet opp"
+      }
      },
      {
       "id": "h-hoftehev",
@@ -1507,7 +1982,25 @@
        "Ligg på ryggen, knærne bøyd og føttene i matta. (Bildet viser to bein — start der.)",
        "Løft det ene beinet, press hofta opp gjennom hælen på det andre til kroppen er rett.",
        "Hold 1 sekund, ned rolig. Alle reps, så bytt."
-      ]
+      ],
+      "takt": {
+       "type": "dynamisk",
+       "ledd": [
+        [
+         "opp",
+         1
+        ],
+        [
+         "hold",
+         1
+        ],
+        [
+         "ned",
+         2
+        ]
+       ],
+       "spenn": "Klem setet"
+      }
      },
      {
       "id": "h-roing",
@@ -1540,7 +2033,30 @@
         "Løft hofta til kroppen er en rett linje fra hode til knær/føtter.",
         "Hold, pust rolig. Senk før hofta synker — bytt side."
        ],
-       "hvorfor": "Midjen og sidene av magen. Gir holdning og en stram midje."
+       "hvorfor": "Midjen og sidene av magen. Gir holdning og en stram midje.",
+       "takt": {
+        "type": "hold",
+        "hold": "20–30 s per side",
+        "spenn": "Hofta oppe"
+       }
+      },
+      "takt": {
+       "type": "dynamisk",
+       "ledd": [
+        [
+         "dra",
+         1
+        ],
+        [
+         "klem",
+         1
+        ],
+        [
+         "tilbake",
+         2
+        ]
+       ],
+       "spenn": "Skulderbladene sammen"
       }
      },
      {
@@ -1559,7 +2075,21 @@
        "Hendene litt bredere enn skuldrene på gulvet (eller på en benk/sofa — lettere).",
        "Knærne i matta, kroppen rett. Senk brystet ned mot gulvet.",
        "Press opp. Når 12 er lett: høyere vanskelighetsgrad (lavere benk, så fra tærne)."
-      ]
+      ],
+      "takt": {
+       "type": "dynamisk",
+       "ledd": [
+        [
+         "ned",
+         2
+        ],
+        [
+         "opp",
+         1
+        ]
+       ],
+       "spenn": "Kroppen rett"
+      }
      },
      {
       "id": "h-deadbug",
@@ -1578,7 +2108,21 @@
        "Ligg på ryggen, armene rett opp mot taket, hofter og knær i 90 grader.",
        "Press korsryggen ned i matta og pust ut. Senk motsatt arm og bein sakte mot gulvet — bare så langt ryggen holder seg nede.",
        "Tilbake, bytt side. Rolig tempo, 6 per side."
-      ]
+      ],
+      "takt": {
+       "type": "dynamisk",
+       "ledd": [
+        [
+         "strekk ut",
+         3
+        ],
+        [
+         "tilbake",
+         2
+        ]
+       ],
+       "spenn": "Korsryggen i matta"
+      }
      }
     ]
    },
