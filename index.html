@@ -62,7 +62,7 @@ b,strong{font-weight:800}
   .dale-nav::-webkit-scrollbar{display:none}
   .dale-nav>*{flex:0 0 auto}
   .dale-nav a,.dale-nav span{font-size:0.6875rem !important;padding:4px 9px !important}}
-.dale-totop{position:fixed;right:14px;bottom:18px;z-index:40;border:0;border-radius:999px;padding:10px 14px;font-size:0.875rem;font-weight:700;font-family:inherit;background:var(--ink);color:var(--bg);box-shadow:0 3px 12px rgba(0,0,0,.3);cursor:pointer;opacity:0;pointer-events:none;transition:opacity .2s}
+/* v1.80.2 (Thor 15.11.2026): en halv knapphøyde høyere, og alltid over iPhone-hjemlinja */ .dale-totop{position:fixed;right:14px;bottom:max(36px,calc(14px + env(safe-area-inset-bottom,0px)));z-index:40;border:0;border-radius:999px;padding:10px 14px;font-size:0.875rem;font-weight:700;font-family:inherit;background:var(--ink);color:var(--bg);box-shadow:0 3px 12px rgba(0,0,0,.3);cursor:pointer;opacity:0;pointer-events:none;transition:opacity .2s}
 .dale-totop.show{opacity:.92;pointer-events:auto}
 /* who */
 .hvem{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 12px}
@@ -755,7 +755,7 @@ h1.topp{margin:6px 0 4px;font-size:1.25rem}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.80.1';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.80.2';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
