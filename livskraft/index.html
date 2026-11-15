@@ -444,7 +444,7 @@ details.stegliste>summary{cursor:pointer;font-size:0.8125rem;font-weight:700;col
    ============================================================ */
 "use strict";
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
-var VERSJON='1.37.1'; /* v1.21: appversjonen, vises under Mer → Programmet */
+var VERSJON='1.38.0'; /* v1.21: appversjonen, vises under Mer → Programmet */
 var KODE=null, PERSON='thor', PROG=null, S=null, db=null, dbOk=false, PENDING=[];
 var AKTIV=null; /* pågående økt */
 var UKEVIS=0;   /* uke-offset i Uka-fanen */
@@ -1159,7 +1159,7 @@ var MG=null, MGIV=null, MGWAKE=null;
 /* v1.37.1 (Thor 15.11.2026): 10 s ble litt mye — 7 s til ny øvelse (posisjon + pust), 6 s ved sidebytte. Gjelder Thor og Anniken. */ var KLAR_NY=7, KLAR_SIDE=6; function mgKlar(){var st=MG.steg[MG.i],f=MG.steg[MG.i-1];return ((f&&f.g===st.g)?KLAR_SIDE:KLAR_NY)*1000}
 function mgSteg(){var o=PP().okter.M,a=[];(o.guide||[]).forEach(function(g){for(var s=1;s<=(g.sider||1);s++)a.push({g:g,side:g.sider>1?s:0,sek:g.sek})});if(MGTILLEGG)a=a.concat(mgTillegg());return a}
 var MGTILLEGG=false; /* v1.29 (Thor 7.11.2026): tillegget er valgfritt — egen knapp etter hovedøkta */
-function mgTillegg(){var o=PP().okter.M,a=[];(o.guide_tillegg||[]).forEach(function(g){if(g.sek){for(var s=1;s<=(g.sider||1);s++)a.push({g:g,side:g.sider>1?s:0,sek:g.sek,tillegg:true})}else a.push({g:g,side:0,reps:g.reps})});return a} /* v1.34.0: tillegg med sek får klokke, som hovedøkta */
+function mgTillegg(){var o=PP().okter.M,a=[];(o.guide_tillegg||[]).forEach(function(g){if(g.sek){for(var s=1;s<=(g.sider||1);s++)a.push({g:g,side:g.sider>1?s:0,sek:g.sek,tillegg:true,reps:g.takt&&g.takt.type==='hold'?null:g.reps})}else a.push({g:g,side:0,reps:g.reps})});return a} /* v1.34.0: tillegg med sek får klokke, som hovedøkta */
 function mgCss(){if($('mg-css'))return;var st=document.createElement('style');st.id='mg-css';st.textContent='#mg{position:fixed;inset:0;z-index:90;background:var(--bg,#fff);overflow-y:auto;padding:max(12px,env(safe-area-inset-top)) 16px max(16px,env(safe-area-inset-bottom))}#mg .mg-top{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:0.875rem}#mg .mg-bar{height:6px;border-radius:3px;background:rgba(124,58,237,.15);margin:8px 0 12px;overflow:hidden}#mg .mg-bar i{display:block;height:100%;background:#7c3aed}#mg img,#mg .mg-ph{display:block;width:100%;max-width:420px;aspect-ratio:1/1;max-height:42vh;object-fit:contain;margin:0 auto 10px;border-radius:12px;background:#fdf8ee}#mg .mg-ph{display:flex;align-items:center;justify-content:center;flex-direction:column;color:#7c3aed;font-size:3rem}#mg .mg-ph small{font-size:0.8125rem;color:#6b7280;margin-top:6px}#mg h3{margin:4px 0 2px;font-size:1.375rem}#mg .mg-side{display:inline-block;background:#7c3aed;color:#fff;border-radius:999px;padding:2px 10px;font-size:0.8125rem;font-weight:700;margin-bottom:6px}#mg .mg-hint{font-size:1rem;line-height:1.45;margin:6px 0 10px}#mg .mg-tid{font-size:4rem;font-weight:800;text-align:center;font-variant-numeric:tabular-nums;line-height:1.1;margin:6px 0}#mg .mg-klar{text-align:center;color:#7c3aed;font-weight:700;min-height:20px}#mg .mg-knapper{display:flex;gap:8px;margin-top:10px}#mg .mg-knapper button{flex:1;min-height:52px}#mg .mg-neste{font-size:0.8125rem;color:#6b7280;text-align:center;margin-top:10px}#mg .mg-fot{position:sticky;bottom:calc(-1 * max(16px,env(safe-area-inset-bottom)));background:var(--bg,#fff);padding:8px 0 max(16px,env(safe-area-inset-bottom));margin-top:4px;box-shadow:0 -10px 12px -8px rgba(0,0,0,.12)}#mg .mg-fot .mg-tid{margin:0}#mg .mg-takt{font-size:0.9375rem;line-height:1.35;border-radius:10px;padding:8px 10px;margin:6px 0 10px;background:rgba(124,58,237,.08)}#mg .mg-takt.mg-hold{background:rgba(16,185,129,.12)}#mg .mg-ledd{text-align:center;font-size:1.25rem;font-weight:800;color:#7c3aed;min-height:1.6em;line-height:1.3}#mg.lang img,#mg.lang .mg-ph{max-height:22vh}#mg.lang .mg-hint{font-size:0.9375rem;line-height:1.4}';document.head.appendChild(st)}
 function mgStart(){mgCss();MGTILLEGG=false;MG={steg:mgSteg(),i:0,slutt:0,klarSlutt:0,pause:true,rest:0,ferdig:false};var el=document.createElement('div');el.id='mg';document.body.appendChild(el);document.body.style.overflow='hidden';
   try{if(navigator.wakeLock)navigator.wakeLock.request('screen').then(function(w){MGWAKE=w}).catch(function(){})}catch(e){}
@@ -1176,7 +1176,9 @@ function mgTall(){if(!MG)return;var st=MG.steg[MG.i],t=$('mg-tid'),k=$('mg-klar'
   var L=$('mg-ledd'),g=st.g,tot=st.sek*1000;
   if(MG.pause){t.textContent=mgFmt(MG.rest);k.textContent='';if(L)L.textContent=mgForst(g,0);return}
   if(MG.klarSlutt&&n<MG.klarSlutt){t.textContent=mgFmt(MG.rest);k.textContent='Klar om '+Math.ceil((MG.klarSlutt-n)/1000)+' …';if(L)L.textContent=mgForst(g,tot-MG.rest);return}
-  t.textContent=mgFmt(MG.slutt-n);k.textContent='';if(L){var x=mgLedd(g,tot-(MG.slutt-n));L.textContent=x?x.navn+(x.igjen?' · '+x.igjen+' s':''):''}}
+  t.textContent=mgFmt(MG.slutt-n);k.textContent='';if(L){var x=mgLedd(g,tot-(MG.slutt-n));L.textContent=mgRask(g)?'Egen rolig takt':x?x.navn+(x.igjen&&x.lang>=3?' · '+x.igjen+' s':''):''}}
+/* v1.38.0 (Thor 15.11.2026): 2/2 ble masete. Som en PT: tempoet står i merkelappen; under klokka vises bare ledd som er lange nok til å følge (≥ 3 s gir nedtelling), og en hel runde under 5 s vises som «egen rolig takt» uten å bytte tekst. */
+function mgRask(g){var t=g.takt;if(!t||!t.ledd)return false;return t.ledd.reduce(function(a,l){return a+l[1]},0)<5}
 /* v1.35.0 (Thor 14.11.2026): tydelig om steget er dynamisk eller hold, og sekunder per ledd — både som merkelapp og live under klokka */
 /* v1.36.2 (Thor 14.11.2026): ærlig tid — hvert steg og «igjen» regnes fra klokke + klar-tid (10 s ny øvelse, 6 s sidebytte), eller est for steg uten klokke */
 function mgEttSek(a,i){var s=a[i],f=a[i-1],ny=!(f&&f.g===s.g);if(s.sek)return s.sek+(ny?KLAR_NY:KLAR_SIDE);return ny&&s.g.est?s.g.est+5:0}
@@ -1185,14 +1187,14 @@ function mgMin(sek){if(sek<45)return Math.max(5,Math.round(sek/5)*5)+' s';var h=
 function mgForst(g,e){var x=g.takt&&mgLedd(g,e);return x?(x.igjen?'Først: ':'')+x.navn:''}
 function mgFaser(g){var t=g.takt;if(!t)return [];return t.faser||[{sek:1e9,ledd:t.ledd,hold:t.hold}]}
 function mgLedd(g,e){var F=mgFaser(g);e=Math.max(0,e||0);for(var i=0;i<F.length;i++){var f=F[i],lang=f.sek*1000;
-    if(e<lang||i===F.length-1){if(f.ledd){var cyc=f.ledd.reduce(function(a,l){return a+l[1]},0)*1000,q=e%cyc;for(var j=0;j<f.ledd.length;j++){var d=f.ledd[j][1]*1000;if(q<d)return {navn:f.ledd[j][0],igjen:Math.ceil((d-q)/1000)};q-=d}}return {navn:f.hold||'Hold',igjen:null}}
+    if(e<lang||i===F.length-1){if(f.ledd){var cyc=f.ledd.reduce(function(a,l){return a+l[1]},0)*1000,q=e%cyc;for(var j=0;j<f.ledd.length;j++){var d=f.ledd[j][1]*1000;if(q<d)return {navn:f.ledd[j][0],igjen:Math.ceil((d-q)/1000),lang:f.ledd[j][1]};q-=d}}return {navn:f.hold||'Hold',igjen:null}}
     e-=lang}return null}
 function mgSekTekst(s){return s<60?s+' s':(s%60?Math.floor(s/60)+' min '+(s%60)+' s':(s/60)+' min')}
 function mgTaktMerke(g,st){var t=g.takt;if(!t)return '';var ps=st.side?' per side':'';
   function lt(l){return l.map(function(x){return x[1]+' s '+x[0].charAt(0).toLowerCase()+x[0].slice(1)}).join(' · ')}
   var h;if(t.type==='hold')h='<b>⏸ Hold</b> — '+(st.sek?mgSekTekst(st.sek)+ps+' i samme stilling':esc(g.reps||''));
   else if(t.type==='kombinert'){var f=t.faser;h='<b>🔁 Dynamisk, så ⏸ hold</b> — '+f[0].sek+' s: '+esc(lt(f[0].ledd))+', så '+f[1].sek+' s hold'+ps}
-  else{var sum=t.ledd.reduce(function(a,l){return a+l[1]},0);h='<b>🔁 Dynamisk</b> — '+esc(lt(t.ledd))+(st.sek?' · ca. '+Math.floor(st.sek/sum)+' runder'+ps:(g.reps?' · '+esc(g.reps):''))}
+  else{var sum=t.ledd.reduce(function(a,l){return a+l[1]},0);h='<b>🔁 Dynamisk</b> — '+esc(lt(t.ledd))+(g.reps?' · <b>'+esc(g.reps)+(st.side?' per side':'')+'</b>':(st.sek?' · ca. '+Math.floor(st.sek/sum)+' runder'+ps:''))}
   var a=MG&&MG.steg,ix=a?a.indexOf(st):-1,sk=ix>=0?mgEttSek(a,ix):0;if(sk)h+=' · <b>≈ '+mgMin(sk)+'</b>';
   return '<div class="mg-takt mg-'+t.type+'">'+h+'</div>'}
 function mgTegn(){var el=$('mg');if(!el||!MG)return;var N=MG.steg.length;
