@@ -444,7 +444,7 @@ details.stegliste>summary{cursor:pointer;font-size:0.8125rem;font-weight:700;col
    ============================================================ */
 "use strict";
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
-var VERSJON='1.37.0'; /* v1.21: appversjonen, vises under Mer → Programmet */
+var VERSJON='1.37.1'; /* v1.21: appversjonen, vises under Mer → Programmet */
 var KODE=null, PERSON='thor', PROG=null, S=null, db=null, dbOk=false, PENDING=[];
 var AKTIV=null; /* pågående økt */
 var UKEVIS=0;   /* uke-offset i Uka-fanen */
@@ -1156,7 +1156,7 @@ function lydStatus(){var e=$('lyd-status');if(!e)return;
    Bildene kommer fra fam/<kode>/livskraft/bilder/<person>/<id> (leggInnBilder) — mangler ett, står teksten alene til bildekøen har laget det. */
 var MG=null, MGIV=null, MGWAKE=null;
 /* v1.34.0 (Thor 14.11.2026): 3 s var for stressende — 10 s til ny øvelse (komme i posisjon + to dype pust), 6 s ved sidebytte */
-function mgKlar(){var st=MG.steg[MG.i],f=MG.steg[MG.i-1];return (f&&f.g===st.g)?6000:10000}
+/* v1.37.1 (Thor 15.11.2026): 10 s ble litt mye — 7 s til ny øvelse (posisjon + pust), 6 s ved sidebytte. Gjelder Thor og Anniken. */ var KLAR_NY=7, KLAR_SIDE=6; function mgKlar(){var st=MG.steg[MG.i],f=MG.steg[MG.i-1];return ((f&&f.g===st.g)?KLAR_SIDE:KLAR_NY)*1000}
 function mgSteg(){var o=PP().okter.M,a=[];(o.guide||[]).forEach(function(g){for(var s=1;s<=(g.sider||1);s++)a.push({g:g,side:g.sider>1?s:0,sek:g.sek})});if(MGTILLEGG)a=a.concat(mgTillegg());return a}
 var MGTILLEGG=false; /* v1.29 (Thor 7.11.2026): tillegget er valgfritt — egen knapp etter hovedøkta */
 function mgTillegg(){var o=PP().okter.M,a=[];(o.guide_tillegg||[]).forEach(function(g){if(g.sek){for(var s=1;s<=(g.sider||1);s++)a.push({g:g,side:g.sider>1?s:0,sek:g.sek,tillegg:true})}else a.push({g:g,side:0,reps:g.reps})});return a} /* v1.34.0: tillegg med sek får klokke, som hovedøkta */
@@ -1179,7 +1179,7 @@ function mgTall(){if(!MG)return;var st=MG.steg[MG.i],t=$('mg-tid'),k=$('mg-klar'
   t.textContent=mgFmt(MG.slutt-n);k.textContent='';if(L){var x=mgLedd(g,tot-(MG.slutt-n));L.textContent=x?x.navn+(x.igjen?' · '+x.igjen+' s':''):''}}
 /* v1.35.0 (Thor 14.11.2026): tydelig om steget er dynamisk eller hold, og sekunder per ledd — både som merkelapp og live under klokka */
 /* v1.36.2 (Thor 14.11.2026): ærlig tid — hvert steg og «igjen» regnes fra klokke + klar-tid (10 s ny øvelse, 6 s sidebytte), eller est for steg uten klokke */
-function mgEttSek(a,i){var s=a[i],f=a[i-1],ny=!(f&&f.g===s.g);if(s.sek)return s.sek+(ny?10:6);return ny&&s.g.est?s.g.est+5:0}
+function mgEttSek(a,i){var s=a[i],f=a[i-1],ny=!(f&&f.g===s.g);if(s.sek)return s.sek+(ny?KLAR_NY:KLAR_SIDE);return ny&&s.g.est?s.g.est+5:0}
 function mgSumSek(a,fra){var t=0;for(var i=fra||0;i<a.length;i++)t+=mgEttSek(a,i);return t}
 function mgMin(sek){if(sek<45)return Math.max(5,Math.round(sek/5)*5)+' s';var h=Math.round(sek/30)/2;return String(h).replace('.5','½').replace(/^0½/,'½')+' min'}
 function mgForst(g,e){var x=g.takt&&mgLedd(g,e);return x?(x.igjen?'Først: ':'')+x.navn:''}
