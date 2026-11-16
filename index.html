@@ -755,7 +755,7 @@ h1.topp{margin:6px 0 4px;font-size:1.25rem}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.80.2';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.80.3';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -1404,6 +1404,18 @@ function tegnDagnav(){var el=document.getElementById('dagnav'); if(!el) return; 
   var ti=document.getElementById('dn-idag'); if(ti) ti.onclick=function(){VIS_OFF=0;tegn()};}
 document.addEventListener('visibilitychange',function(){ if(document.hidden){SKJULT_TS=Date.now();return}
   if(VIS_OFF&&SKJULT_TS&&Date.now()-SKJULT_TS>5*60000){VIS_OFF=0;try{tegn()}catch(e){}} }); /* tilbake i appen etter en stund = i dag */
+/* v1.80.3 (Thor 16.11.2026): NAA ble bare satt da appen ble lastet. Sto appen åpen over natta (kjøkken-iPad, eller i bakgrunnen på telefonen),
+   ble den stående på gårsdagen til den ble lukket. Nå sjekkes datoen hvert minutt og hver gang appen kommer fram igjen — nytt døgn = ny dag, ny uke og nye varsler. */
+function dagSkifte(){ var n=new Date(); if(ymd(n)===ymd(NAA)) return false;
+  var gammelMan=mandag(NAA), nyUke=ymd(mandag(n))!==ymd(gammelMan);
+  if(ymd(visUke)===ymd(gammelMan)) visUke=mandag(n); /* ukeoversikten følger med hvis den sto på denne uka */
+  NAA=n; VIS_OFF=0; VARSLET_NAA=false; if(nyUke) BACKUP_NAA=false;
+  try{tegn()}catch(e){}
+  try{planleggVarsler()}catch(e){} try{planleggBackup()}catch(e){} try{ryddMinn()}catch(e){}
+  return true }
+document.addEventListener('visibilitychange',function(){ if(!document.hidden) dagSkifte() });
+window.addEventListener('pageshow',dagSkifte); window.addEventListener('focus',dagSkifte);
+setInterval(dagSkifte,60000);
 try{valgt=localStorage.getItem('ft-person')||null}catch(e){}
 (function(){var q='';try{q=(new URLSearchParams(location.search).get('p')||location.hash.replace('#','')||'').toLowerCase()}catch(e){}
   if(q==='vårin'||q==='varin')q='vaarin';
