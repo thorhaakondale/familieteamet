@@ -389,6 +389,12 @@ details.stegliste>summary{cursor:pointer;font-size:0.8125rem;font-weight:700;col
     <p class="lit" id="lyd-status" style="margin:6px 0 0"></p>
     <p class="lit" style="margin:8px 0 0">Spesifikasjonen sier 2–3 minutter på hovedløftene. <b>Hører du ingenting:</b> sjekk ringelyd-bryteren på siden av telefonen — er den på lydløs, får ingen nettside lov til å lage lyd på iPhone. <b>Alarmen</b> piper i inntil 10 sekunder og stopper ved første trykk — så slipper appen lyden, og musikk du hadde på spiller videre (iOS 17 eller nyere). <b>Skal det varsle mens telefonen ligger i lomma eller skjermen er av</b>, slå på «Varsel i bakgrunnen» under — en nettside får ikke lage lyd i bakgrunnen på iPhone på egen hånd, så varselet går som en push-melding gjennom appen ntfy.</p>
   </div>
+  <div class="kort" id="k-varsel" style="display:none">
+    <h2>Varsler fra Livskraft</h2>
+    <p class="lit" style="margin:0 0 8px">Pausevarselet kommer fra Livskraft selv — med Livskraft-ikonet på telefonen og Apple Watch — og et trykk på varselet åpner økta her. Ingen egen varslingsapp. Varselet inneholder bare «Pausen er over» og øvelsen.</p>
+    <div class="rad" style="flex-wrap:wrap;gap:6px"><button class="knapp lit" id="varsel-knapp">Slå på Livskraft-varsler</button><button class="knapp lit sek" id="varsel-test" style="display:none">Send testvarsel</button></div>
+    <p class="lit" id="varsel-status" style="margin:6px 0 0"></p>
+  </div>
   <div class="kort" id="k-ntfy">
     <h2>Varsel i bakgrunnen</h2>
     <p class="lit" style="margin:0 0 8px">Når pausen er over og Livskraft ligger i bakgrunnen, får du en push-melding med lyd og vibrasjon — også med Spotify på og skjermen låst. Meldingen sendes fra gratistjenesten ntfy.sh og inneholder bare «Pausen er over» og øvelsen. Kommer alarmen i appen (den er synlig), avbestilles push-meldingen. Varselet er alltid på — det er ingen bryter å glemme.</p>
@@ -444,7 +450,7 @@ details.stegliste>summary{cursor:pointer;font-size:0.8125rem;font-weight:700;col
    ============================================================ */
 "use strict";
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
-var VERSJON='1.39.0'; /* v1.21: appversjonen, vises under Mer → Programmet */
+var VERSJON='1.40.0'; /* v1.21: appversjonen, vises under Mer → Programmet */
 var KODE=null, PERSON='thor', PROG=null, S=null, db=null, dbOk=false, PENDING=[];
 var AKTIV=null; /* pågående økt */
 var UKEVIS=0;   /* uke-offset i Uka-fanen */
@@ -1076,6 +1082,7 @@ function tegnTimer(){ /* v1.4: regnes alltid fra klokka, aldri fra en teller som
   if(!T.slutt)return;
   tegnFase();
   var r=restSek();
+  if(r>0&&r<=3&&VS.plan&&document.visibilityState==='visible')varselAvlys(); /* du ser på skjermen: appen ringer selv, ikke send push i tillegg */
   if(r>0){$('timer-tid').textContent=Math.floor(r/60)+':'+pad(r%60);$('timer-over').textContent='';return}
   var over=-r;$('timer-tid').textContent='Kjør';
   $('timer-over').textContent=over>=5?('ute for '+Math.floor(over/60)+':'+pad(over%60)+' siden'):'';
@@ -1110,10 +1117,53 @@ document.addEventListener('pointerdown',function(){if(ALARM.iv)alarmStopp()},tru
    Ringer appen selv (synlig), avbestilles meldingen. ntfy leverer forsinkede meldinger hvert 10. sekund, så varselet
    kan komme inntil 10 s etter at pausen er ute. Emnet er en tilfeldig nøkkel (lk-…) — ingen familiekode, ingen navn. */
 var NTFY_URL='https://ntfy.sh/', NT={id:null,topic:null};
+/* ---------- Livskraft-varsler (v1.40, Thor 21.11.2026) ----------
+   Egen push-tjeneste (Cloudflare Worker «dale-varsel») i stedet for ntfy: varselet kommer fra Livskraft selv — med
+   Livskraft-ikonet på telefonen og Apple Watch — og et trykk åpner Livskraft, ikke en annen app. Appen sender bare
+   «varsle om N sekunder» med en tilfeldig enhets-id; ingen familiekode og ingen navn forlater telefonen.
+   Krever at appen er åpnet fra Hjem-skjermen og at varsler er tillatt. Er det ikke slått på, brukes ntfy som før. */
+var VS={plan:false};
+function varselUrl(){return (PROG&&PROG.varsel&&PROG.varsel.url)||''}
+function varselStotte(){try{return !!(varselUrl()&&'serviceWorker' in navigator&&'PushManager' in window&&'Notification' in window&&(navigator.standalone||matchMedia('(display-mode: standalone)').matches))}catch(e){return false}}
+function varselDev(){var d=null;try{d=localStorage.getItem('lk-varsel-dev')}catch(e){}if(!d){var a=new Uint8Array(18);crypto.getRandomValues(a);d=btoa(String.fromCharCode.apply(null,a)).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');try{localStorage.setItem('lk-varsel-dev',d)}catch(e){}}return d}
+function varselPaa(){try{return !!(varselUrl()&&localStorage.getItem('lk-varsel-paa')==='1'&&Notification.permission!=='denied') /* ikke ==='granted': iOS kan melde «default» etter at et varsel har åpnet appen (WebKit-feil); varselSjekk() ser etter selve abonnementet */}catch(e){return false}}
+function varselPost(sti,b){b.dev=varselDev();return fetch(varselUrl()+sti,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(b),keepalive:true}).then(function(r){return r.json()})}
+function varselLenke(){return location.origin+location.pathname+'?p='+PERSON+'#okt'}
+function varselPlan(sek,ov,si){var navn=ov&&ov.navn?ov.navn:'';
+  var tekst='Pausen er over'+(navn?' — '+navn+(si!==undefined&&si!==null?' sett '+(si+2):''):'')+'. Kjør.';
+  VS.plan=true;varselPost('/plan',{sek:Math.max(1,Math.round(sek||0)-1),tittel:'Livskraft',tekst:tekst,url:varselLenke(),tag:'pause'}).then(function(j){if(!j||!j.ok){VS.plan=false;varselFeil(j)}}).catch(function(){VS.plan=false})} /* 1 s før: Apple bruker normalt 1–2 s på leveringen */
+function varselAvlys(){if(!VS.plan)return;VS.plan=false;try{varselPost('/avlys',{}).catch(function(){})}catch(e){}}
+function varselFeil(j){var e=$('varsel-status');if(e&&j&&j.feil==='ikke abonnert')e.textContent='Varslene er ikke koblet til lenger — trykk «Slå på Livskraft-varsler» igjen.'}
+function b64tilBytes(s){s=s.replace(/-/g,'+').replace(/_/g,'/');while(s.length%4)s+='=';var b=atob(s),u=new Uint8Array(b.length);for(var i=0;i<b.length;i++)u[i]=b.charCodeAt(i);return u}
+function varselSlaPaa(){var st=$('varsel-status');if(st)st.textContent='Spør om lov …';
+  Notification.requestPermission().then(function(p){if(p!=='granted')throw new Error('Varsler er ikke tillatt. Åpne Innstillinger → Varslinger → Livskraft og slå på «Tillat varslinger».');
+    return Promise.all([navigator.serviceWorker.ready,fetch(varselUrl()+'/vapid').then(function(r){return r.json()})])})
+  .then(function(a){var reg=a[0],key=a[1].key;return reg.pushManager.getSubscription().then(function(s){return s||reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:b64tilBytes(key)})})})
+  .then(function(sub){return varselPost('/abonner',{app:'livskraft',sub:sub.toJSON()})})
+  .then(function(j){if(!j||!j.ok)throw new Error('Varseltjenesten svarte ikke riktig ('+(j&&j.feil||'ukjent')+').');
+    try{localStorage.setItem('lk-varsel-paa','1')}catch(e){}if(st)st.textContent='På ✓ Et testvarsel kommer om et øyeblikk.';return varselPost('/test',{tittel:'Livskraft',tekst:'Varslene er på. Slik ser pausevarselet ut.',url:varselLenke()})})
+  .then(function(){tegnVarsel()})
+  .catch(function(e){if(st)st.textContent=String(e&&e.message||e)})}
+function varselSlaAv(){try{localStorage.removeItem('lk-varsel-paa')}catch(e){}varselAvlys();navigator.serviceWorker.ready.then(function(reg){return reg.pushManager.getSubscription()}).then(function(s){if(s)return s.unsubscribe()}).catch(function(){});tegnVarsel()}
+function varselSjekk(){ /* ved oppstart: abonnementet kan forsvinne (iOS-oppdatering, appen lagt til på nytt) — da faller vi tilbake til ntfy og sier fra */
+  if(!varselPaa()||!varselStotte())return;
+  navigator.serviceWorker.ready.then(function(reg){return reg.pushManager.getSubscription()}).then(function(s){
+    if(!s){try{localStorage.removeItem('lk-varsel-paa')}catch(e){}tegnVarsel();return}
+    varselPost('/abonner',{app:'livskraft',sub:s.toJSON()}).catch(function(){})}).catch(function(){})}
+function tegnVarsel(){var k=$('k-varsel');if(!k)return;
+  if(!varselUrl()){k.style.display='none';return}k.style.display='';
+  var paa=varselPaa(),st=$('varsel-status'),kn=$('varsel-knapp'),te=$('varsel-test');
+  if(!varselStotte()){kn.style.display='none';te.style.display='none';if(st)st.textContent='Åpne Livskraft fra ikonet på Hjem-skjermen (ikke i Safari) for å slå på varslene. Til da brukes ntfy.';return}
+  kn.style.display='';kn.textContent=paa?'Slå av Livskraft-varsler':'Slå på Livskraft-varsler';kn.className='knapp lit'+(paa?' sek':'');
+  kn.onclick=paa?varselSlaAv:varselSlaPaa;te.style.display=paa?'':'none';
+  te.onclick=function(){if(st)st.textContent='Sender testvarsel …';varselPost('/test',{tittel:'Livskraft',tekst:'Testvarsel fra Livskraft. Trykk på meg — da åpnes Livskraft.',url:varselLenke()}).then(function(j){if(st)st.textContent=j&&j.ok?'Sendt ✓ Lås skjermen gjerne for å se det på klokka.':'Kom ikke fram ('+(j&&(j.feil||j.status)||'ukjent')+').'}).catch(function(){if(st)st.textContent='Fikk ikke kontakt med varseltjenesten — er du på nett?'})};
+  var nk=$('k-ntfy');if(nk)nk.style.display=paa?'none':'';
+  if(st&&!st.textContent)st.textContent=paa?'På ✓ Pausevarslene kommer fra Livskraft. ntfy trengs ikke lenger på denne telefonen.':'Av. Pausevarslene går via ntfy til du slår dette på.'}
 function ntfyPaa(){var n=ntfyN();if(!n.topic){n.topic=ntfyNyttEmne();ntfyLagre();n=ntfyN()}return !!n.topic} /* v1.21 (Thor 19.10): alltid på — ingen av/på-bryter */
 function ntfyNyttEmne(){var a='abcdefghijkmnpqrstuvwxyz23456789',t='lk-';try{var r=new Uint8Array(14);crypto.getRandomValues(r);for(var i=0;i<14;i++)t+=a[r[i]%a.length]}catch(e){for(var j=0;j<14;j++)t+=a[Math.floor(Math.random()*a.length)]}return t}
 function ntfyLagre(){var n=ntfyN();lagre('innst/ntfy',{on:1,topic:n.topic||''})}
 function ntfyPlan(sek,ov,si){ /* bestill en forsinket push når pausen starter — alltid (v1.21) */
+  if(varselPaa()){varselPlan(sek,ov,si);return} /* v1.40: Livskraft-varsler går foran ntfy når de er slått på */
   if(!ntfyPaa()||!window.fetch)return;
   var d=Math.max(10,Math.round((sek||0)-5));if(d<10)return; /* v1.11 (Thor 13.10): bestilles 5 s før pausen er over — ntfy + Apple bruker 5–15 s på leveringen */
   var navn=ov&&ov.navn?ov.navn:'';var tekst='Pausen er over'+(navn?' — '+navn+(si!==undefined&&si!==null?' sett '+(si+2):''):'')+'. Kjør.';
@@ -1121,6 +1171,7 @@ function ntfyPlan(sek,ov,si){ /* bestill en forsinket push når pausen starter �
   var u=NTFY_URL+encodeURIComponent(topic)+'?delay='+d+'s&priority=5&title='+encodeURIComponent('Livskraft')+'&tags=alarm_clock';
   try{fetch(u,{method:'POST',body:tekst,keepalive:true}).then(function(r){return r.json()}).then(function(j){if(j&&j.id&&NT.topic===topic){NT.id=j.id;lagreVis()}}).catch(function(){})}catch(e){}}
 function ntfyAvlys(){ /* pausen ble avbrutt, forlenget eller ringte i appen — trekk meldingen tilbake før ntfy sender den */
+  varselAvlys();
   if(!NT.id)return;var id=NT.id,topic=NT.topic;NT.id=null;
   try{fetch(NTFY_URL+encodeURIComponent(topic)+'/'+encodeURIComponent(id),{method:'DELETE',keepalive:true}).catch(function(){})}catch(e){}}
 function ntfyTest(){if(!ntfyPaa())return;var e=$('ntfy-status');if(e)e.textContent='Sender testvarsel — legg telefonen fra deg, det kommer om 10–20 sekunder.';
@@ -1455,7 +1506,7 @@ function tegnMer(){
   Array.prototype.forEach.call(document.querySelectorAll('#seg-lyd button'),function(b){b.className=(+b.getAttribute('data-v')===(S.innst.lyd?1:0))?'on':'';b.onclick=function(){S.innst.lyd=+b.getAttribute('data-v');lagre('innst/lyd',{v:S.innst.lyd});tegnMer()}});
   $('lyd-test').onclick=function(){laasOppLyd();var ok=pip();var e=$('lyd-status');
     setTimeout(function(){lydStatus();if(e)e.textContent=(ok?'Prøvde å spille nå. ':'Fikk ikke spilt. ')+e.textContent},120)};
-  lydStatus();tegnNtfy();
+  lydStatus();tegnNtfy();tegnVarsel();
   Array.prototype.forEach.call(document.querySelectorAll('button[data-person]'),function(b){b.className='knapp lit '+(b.getAttribute('data-person')===PERSON?'':'sek');b.onclick=function(){var p=b.getAttribute('data-person');try{localStorage.setItem('lk-person',p)}catch(e){};location.search='?p='+p}});
   $('k-testskjema').hidden=!PROG.personer[PERSON].har_program||!erThor();$('program-tittel').textContent=PROG.personer[PERSON].har_program?'Programmet':'Thors program (ditt lages sammen med deg)';
   $('program-versjon').textContent=PROG.versjon+' · '+PROG.kilde+' · app v'+VERSJON;
@@ -1550,7 +1601,7 @@ function hentBilder(){
     })
     .catch(function(){});
 }
-fetch('data/program.json?v='+Math.floor(Date.now()/3600000)).then(function(r){return r.json()}).then(function(p){PROG=p;lesLokalt();$('personpill').textContent=PROG.personer[PERSON].navn;$('personpill').className='pill p '+PERSON;tegnAlt();kobleDb();hentAktiv();hashRute();hentBilder()}).catch(function(e){console.error('Livskraft feil:',e);if(PROG){throw e}document.querySelector('.wrap').innerHTML='<div class="kort"><h2>Fikk ikke lastet programmet</h2><p class="lead">Sjekk nettet og last siden på nytt. Er du på gymmet uten dekning, må siden ha vært åpnet én gang med nett først.</p></div>'});
+fetch('data/program.json?v='+Math.floor(Date.now()/3600000)).then(function(r){return r.json()}).then(function(p){PROG=p;lesLokalt();$('personpill').textContent=PROG.personer[PERSON].navn;$('personpill').className='pill p '+PERSON;tegnAlt();kobleDb();hentAktiv();hashRute();hentBilder();varselSjekk();tegnVarsel()}).catch(function(e){console.error('Livskraft feil:',e);if(PROG){throw e}document.querySelector('.wrap').innerHTML='<div class="kort"><h2>Fikk ikke lastet programmet</h2><p class="lead">Sjekk nettet og last siden på nytt. Er du på gymmet uten dekning, må siden ha vært åpnet én gang med nett først.</p></div>'});
 $('dbpill').onclick=function(){if(KODE&&KODE.length>=12)return;vis('mer');setTimeout(function(){var e=$('in-kode');if(e){e.focus();e.scrollIntoView({block:'center'})}},60)};
 if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){})})}
 </script>

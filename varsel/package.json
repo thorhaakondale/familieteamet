@@ -1,0 +1,13 @@
+{
+  "name": "dale-varsel",
+  "private": true,
+  "type": "module",
+  "description": "Egen push-tjeneste for Livskraft og Familieteamet (Cloudflare Worker + Durable Object + Web Push).",
+  "scripts": {
+    "test:rfc": "node test/rfc8291.mjs",
+    "test:e2e": "node test/e2e.mjs"
+  },
+  "devDependencies": {
+    "wrangler": "4.166.0"
+  }
+}

@@ -1,0 +1,78 @@
+name: Varsel — test og utrulling
+# Egen push-tjeneste for Livskraft/Familieteamet (Cloudflare Worker). Kjører ved endring i varsel/ eller for hånd.
+# Krever repo-hemmelighetene CLOUDFLARE_API_TOKEN og CLOUDFLARE_ACCOUNT_ID (Thor legger dem inn i GitHub).
+on:
+  push:
+    branches: [main]
+    paths: ['varsel/**', '.github/workflows/varsel.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: varsel
+  cancel-in-progress: false
+
+jobs:
+  test-og-utrull:
+    runs-on: ubuntu-latest
+    env:
+      CF_KLAR: ${{ secrets.CLOUDFLARE_API_TOKEN != '' && secrets.CLOUDFLARE_ACCOUNT_ID != '' }}
+    defaults:
+      run:
+        working-directory: varsel
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci
+
+      - name: Test 1 — kryptering mot RFC 8291
+        run: npm run test:rfc
+
+      - name: Test 2 — ende-til-ende lokalt (Worker + alarm + falsk push-tjeneste)
+        run: |
+          node -e "crypto.subtle.generateKey({name:'ECDSA',namedCurve:'P-256'},true,['sign']).then(k=>crypto.subtle.exportKey('jwk',k.privateKey)).then(j=>require('fs').writeFileSync('.dev.vars','VAPID_JWK=\''+JSON.stringify({d:j.d,x:j.x,y:j.y})+'\'\nTEST=\"1\"\nORIGINS=\"http://localhost:8799,https://thorhaakondale.github.io\"\n'))"
+          npx wrangler dev --port 8787 --ip 127.0.0.1 > /tmp/wd.log 2>&1 &
+          for i in $(seq 1 40); do curl -sf http://127.0.0.1:8787/helse && break; sleep 1; done
+          npm run test:e2e
+          rm -f .dev.vars
+
+      - name: Utrull til Cloudflare
+        if: ${{ env.CF_KLAR == 'true' }}
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          npx wrangler deploy 2>&1 | tee /tmp/deploy.log
+          URL=$(grep -oE 'https://[a-z0-9.-]+\.workers\.dev' /tmp/deploy.log | head -1)
+          test -n "$URL" || { echo "Fant ikke workers.dev-adressen — er workers.dev-underdomenet valgt i Cloudflare?"; exit 1; }
+          echo "URL=$URL" >> $GITHUB_ENV
+          # VAPID-nøkkelen lages bare første gang, inne i Cloudflare. Den skrives aldri til logg eller repo.
+          if ! npx wrangler secret list --format json | grep -q '"VAPID_JWK"'; then
+            node -e "crypto.subtle.generateKey({name:'ECDSA',namedCurve:'P-256'},true,['sign']).then(k=>crypto.subtle.exportKey('jwk',k.privateKey)).then(j=>process.stdout.write(JSON.stringify({d:j.d,x:j.x,y:j.y})))" | npx wrangler secret put VAPID_JWK
+          fi
+
+      - name: Røyktest mot den ekte tjenesten
+        if: ${{ env.URL != '' }}
+        run: |
+          sleep 5
+          curl -sf "$URL/helse" | grep -q '"ok":true'
+          curl -sf "$URL/vapid" | grep -qE '"key":"B[A-Za-z0-9_-]{86}"'
+          curl -s -X POST "$URL/plan" -H 'Content-Type: application/json' -H 'Origin: https://thorhaakondale.github.io' \
+            -d '{"dev":"roeyktest-roeyktest-1","sek":5,"tekst":"x"}' | grep -q 'ikke abonnert'
+          curl -s -o /dev/null -w '%{http_code}' -X POST "$URL/abonner" -H 'Content-Type: application/json' \
+            -d '{"dev":"roeyktest-roeyktest-1","sub":{"endpoint":"https://evil.example/x","keys":{"p256dh":"x","auth":"y"}}}' | grep -q 400
+          echo "Varseltjenesten svarer riktig på $URL" >> $GITHUB_STEP_SUMMARY
+
+      - name: Skriv adressen i repoet
+        if: ${{ env.URL != '' }}
+        run: |
+          if [ "$(cat adresse.txt 2>/dev/null)" != "$URL" ]; then
+            echo "$URL" > adresse.txt
+            git config user.name "varsel-utrulling"
+            git config user.email "actions@users.noreply.github.com"
+            git add adresse.txt && git commit -m "Varsel: adressen til tjenesten [skip ci]" && git push
+          fi

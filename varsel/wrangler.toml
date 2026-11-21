@@ -1,0 +1,16 @@
+name = "dale-varsel"
+main = "src/index.js"
+compatibility_date = "2026-11-01"
+workers_dev = true
+
+[vars]
+ORIGINS = "https://thorhaakondale.github.io"
+VAPID_SUB = "https://thorhaakondale.github.io/familieteamet/"
+
+[[durable_objects.bindings]]
+name = "ENHET"
+class_name = "Enhet"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["Enhet"]
