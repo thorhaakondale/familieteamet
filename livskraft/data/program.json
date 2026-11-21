@@ -1,6 +1,6 @@
 {
- "versjon": "v1.35",
- "kilde": "Dale Livsstil & PT (programkortet) for øvelser og vekter · liv-treningsspesifikasjon.md v1.1 for mål, regler og progresjon · v1.6 12.10.2026: pauseøvelsene synlige, lette og med bilde · v1.7 14.10.2026: Annikens program (Liv) — to gymøkter, hjemmeøkt og månedssjekk · v1.8 16.10.2026: proteinkortet — lunsj og kvelds mot dagsmålet (Liv) · v1.9 17.10.2026: søndagsreserven H for Thor — kort hjemmeøkt bare på søndager uka mangler en styrkeøkt, turen går foran · v1.10 17.10.2026: reserveøkta H tilgjengelig torsdag–søndag (søndag uten gym-valg) · v1.11 4.11.2026: maks 15 reps per sett, prosjektuker (kort A + kort B, maks 4 i året), dypt knebøy-hold i 8-minutteren (nå 10-minutteren) og to bevegelighetstester · v1.12 7.11.2026: 10-minutteren (tirsdag kveld og søndag morgen) — hamstring og figur 4 ut, tillegget valgfritt; 90/90-hintet presisert · v1.13 8.11.2026: dypt knebøy-hold 2 min (aktivt hold, hæler på bok ved behov, stå over ved rygg 2+), katt–ku og tåklem 30 s så holdene er 8 min 30 s og økta fortsatt ca. 10 min; bilde på holdet (Liv/Thor) · v1.14 8.11.2026: steg 4 er den lange knelingen (bakre kne langt bak, bekkenet tippet under før hofta skyves fram) — Thor kjente at kort kneling var for mild; ankeldrillen (steg 5) holdes stram · v1.15 10.11.2026: 90/90 med aktive skift i 10-minutteren, valgfri hip thrust i maskinen etter A (Thor) · v1.15b 10.11.2026: to tapte økter gir ikke lettere økt (Thor) · v1.16 14.11.2026: framoverbøy (baksidelår) og lårstrekk (forsidelår) først i tillegget, med klokke · v1.17 14.11.2026: takt på hvert steg i 10-minutteren (dynamisk/hold, sekunder per ledd) · v1.18 14.11.2026: takt på alle øvelser i A, B og H for Thor og Anniken (dynamisk/hold, sekunder per ledd, én spenn-cue) · v1.19 14.11.2026: bird dog (Thor) — 8–10 s hold i stedet for flere reps · v1.20 14.11.2026: glute bridge i tillegget — 5 s hold med bekkenet tippet, ettbeins som progresjon · v1.21 14.11.2026: tillegget sortert viktigst først (sete, sideplanke, strekk, så albue/nakke/fot); sideplanke med klokke · v1.22 14.11.2026: tid på hvert steg i tillegget (est i sekunder) · v1.23 14.11.2026: 10-minutteren + tillegg for Anniken (valgfri tir/søn, magepust i stedet for tåklem; uten FlexBar og kort fot) · v1.24 15.11.2026: klokke på alle øvelser i tillegget (tidsramme + reps som mål); ankel, tåklem og pull-apart med hold ytterst i stedet for 2/2 (Thor: 2/2 ble masete) · v1.26 21.11.2026: halvpause-regelen for Anniken — pauseøvelsen tar maks halve pausen (bird dog 4 per side 2 s hold, sideplanke 20 s per side med tak 30 s, Pallof 6 per side), så det er minst ca. 60 s ekte hvile før neste hovedsett · v1.34 21.11.2026: pauseøvelsen tas i første del av hvilen (pauseSek, ca. 45–75 s), resten er ren hvile — timeren viser ① pauseøvelse → ② hvil, og et sett på en annen øvelse midt i hvilen starter ikke ny timer; «world's greatest stretch» (utfall med rotasjon) i Thors tillegg; feil sideplankebilde (viste vanlig planke) tatt ut (Thor)",
+ "versjon": "v1.36",
+ "kilde": "Dale Livsstil & PT (programkortet) for øvelser og vekter · liv-treningsspesifikasjon.md v1.1 for mål, regler og progresjon · v1.6 12.10.2026: pauseøvelsene synlige, lette og med bilde · v1.7 14.10.2026: Annikens program (Liv) — to gymøkter, hjemmeøkt og månedssjekk · v1.8 16.10.2026: proteinkortet — lunsj og kvelds mot dagsmålet (Liv) · v1.9 17.10.2026: søndagsreserven H for Thor — kort hjemmeøkt bare på søndager uka mangler en styrkeøkt, turen går foran · v1.10 17.10.2026: reserveøkta H tilgjengelig torsdag–søndag (søndag uten gym-valg) · v1.11 4.11.2026: maks 15 reps per sett, prosjektuker (kort A + kort B, maks 4 i året), dypt knebøy-hold i 8-minutteren (nå 10-minutteren) og to bevegelighetstester · v1.12 7.11.2026: 10-minutteren (tirsdag kveld og søndag morgen) — hamstring og figur 4 ut, tillegget valgfritt; 90/90-hintet presisert · v1.13 8.11.2026: dypt knebøy-hold 2 min (aktivt hold, hæler på bok ved behov, stå over ved rygg 2+), katt–ku og tåklem 30 s så holdene er 8 min 30 s og økta fortsatt ca. 10 min; bilde på holdet (Liv/Thor) · v1.14 8.11.2026: steg 4 er den lange knelingen (bakre kne langt bak, bekkenet tippet under før hofta skyves fram) — Thor kjente at kort kneling var for mild; ankeldrillen (steg 5) holdes stram · v1.15 10.11.2026: 90/90 med aktive skift i 10-minutteren, valgfri hip thrust i maskinen etter A (Thor) · v1.15b 10.11.2026: to tapte økter gir ikke lettere økt (Thor) · v1.16 14.11.2026: framoverbøy (baksidelår) og lårstrekk (forsidelår) først i tillegget, med klokke · v1.17 14.11.2026: takt på hvert steg i 10-minutteren (dynamisk/hold, sekunder per ledd) · v1.18 14.11.2026: takt på alle øvelser i A, B og H for Thor og Anniken (dynamisk/hold, sekunder per ledd, én spenn-cue) · v1.19 14.11.2026: bird dog (Thor) — 8–10 s hold i stedet for flere reps · v1.20 14.11.2026: glute bridge i tillegget — 5 s hold med bekkenet tippet, ettbeins som progresjon · v1.21 14.11.2026: tillegget sortert viktigst først (sete, sideplanke, strekk, så albue/nakke/fot); sideplanke med klokke · v1.22 14.11.2026: tid på hvert steg i tillegget (est i sekunder) · v1.23 14.11.2026: 10-minutteren + tillegg for Anniken (valgfri tir/søn, magepust i stedet for tåklem; uten FlexBar og kort fot) · v1.24 15.11.2026: klokke på alle øvelser i tillegget (tidsramme + reps som mål); ankel, tåklem og pull-apart med hold ytterst i stedet for 2/2 (Thor: 2/2 ble masete) · v1.26 21.11.2026: halvpause-regelen for Anniken — pauseøvelsen tar maks halve pausen (bird dog 4 per side 2 s hold, sideplanke 20 s per side med tak 30 s, Pallof 6 per side), så det er minst ca. 60 s ekte hvile før neste hovedsett · v1.34 21.11.2026: pauseøvelsen tas i første del av hvilen (pauseSek, ca. 45–75 s), resten er ren hvile — timeren viser ① pauseøvelse → ② hvil, og et sett på en annen øvelse midt i hvilen starter ikke ny timer; «world's greatest stretch» (utfall med rotasjon) i Thors tillegg; feil sideplankebilde (viste vanlig planke) tatt ut (Thor) · v1.36 21.11.2026: hip thrust fast i B (ikke lenger valgfri, 2 sett), sittende tåhev som siste løft i A med 1 tung + 2 lette (3 sett, ikke 4) (Thor/Liv)",
  "personer": {
   "thor": {
    "navn": "Thor",
@@ -24,7 +24,7 @@
   },
   "regler": {
    "maks_styrkeokter_per_uke": 2,
-   "okt_minutter": "Morgenøkt (fra 23.11.2026): ca. 40 min A og 35 min B (+ 6 min valgfri hip thrust i B). Pausene er låst i programmet: 2,5 min knebøy, 3 min RDL, 2 min overkropp, 1 min tåhev, 45 s albuevern. Før var det 50 og 55 min.",
+   "okt_minutter": "Morgenøkt (fra 23.11.2026): ca. 40 min A og 40 min B (hip thrust fast i B). Pausene er låst i programmet: 2,5 min knebøy, 3 min RDL, 2 min overkropp, 1 min tåhev, 45 s albuevern. Før var det 50 og 55 min.",
    "aldri_to_like_paa_rad": true,
    "maanedlig_tungt_sett": "Første mandag i måneden: ett tungt sett knebøy 5 × 115–120 kg etter oppvarming — påminnelsen som holder maksstyrken ved like.",
    "kroppsarbeid": "Tung kroppsarbeidsuke = én gym-økt, ingen progresjon den uka. Aldri RDL dagen etter spadedag.",
@@ -212,7 +212,7 @@
      {
       "id": "taahev",
       "navn": "Sittende tåhev — isolert",
-      "hint": "maskinen bak knebøystativet · 1 tungt sett (+20 kg) + 3 lette · 2 s pause på topp · hælen ned bare så langt det er smertefritt",
+      "hint": "siste løft i økta (tåklem tas sittende i samme maskin etterpå) · maskinen bak knebøystativet · 1 tungt sett (+20 kg) + 2 lette · 2 s pause på topp · hælen ned bare så langt det er smertefritt for stortåa",
       "sett": 3,
       "reps": [
        8,
@@ -220,7 +220,7 @@
       ],
       "settmal": [
        "1 × 8 tung",
-       "3 × 12–15"
+       "2 × 12–15"
       ],
       "vekt": {
        "start": 50,
@@ -301,7 +301,7 @@
    "B": {
     "navn": "B — Overkropp, bæring og kjerne",
     "dag": "torsdag",
-    "varighet": "ca. 35 min med pauser · + ca. 6 min valgfri hip thrust",
+    "varighet": "ca. 40 min med pauser",
     "farge": "#7c3aed",
     "oppvarming": "5 min lett romaskin + armsirkler og brystryggrotasjon + 1 lett sett av første øvelse.",
     "ovelser": [
@@ -528,8 +528,8 @@
      },
      {
       "id": "hipthrust",
-      "navn": "Hip thrust i maskinen — valgfri",
-      "hint": "bare hvis du har tid og ork etter økta — hopp over uten dårlig samvittighet · startvekta er et anslag, juster første gang · 2 s klem på toppen, haka inn, ribbeina ned — setet løfter, ikke korsryggen · aldri over 15 reps",
+      "navn": "Hip thrust i maskinen",
+      "hint": "sist i økta · startvekta er et anslag, juster første gang · 2 s klem på toppen, haka inn, ribbeina ned — setet løfter, ikke korsryggen · aldri over 15 reps",
       "sett": 2,
       "reps": [
        10,
@@ -542,14 +542,13 @@
       },
       "pause": 90,
       "type": "tilbehor",
-      "valgfri": true,
       "slik": [
        "Sett deg i maskinen med øvre rygg mot puta og beltet over hofta, føttene i hoftebredde så leggene står loddrett på toppen.",
        "Press hofta opp gjennom hælene til kroppen er rett fra knær til skuldre. Klem setet i 2 sekunder.",
        "Haka inn og ribbeina ned hele veien — svaier korsryggen på toppen, har du gått for høyt.",
        "Senk rolig ned på 2–3 sekunder."
       ],
-      "hvorfor": "Sete og korsrygg: et sterkt sete tar jobben i hengslingen, så korsryggen slipper. Valgfri — teller ikke mot økta.",
+      "hvorfor": "Sete og korsrygg: et sterkt sete bærer SI-leddet og tar jobben i hengslingen, så korsryggen slipper. Fast del av B fra 23.11.2026.",
       "takt": {
        "type": "dynamisk",
        "ledd": [
