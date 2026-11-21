@@ -755,7 +755,7 @@ h1.topp{margin:6px 0 4px;font-size:1.25rem}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.80.3';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.81.0';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -835,7 +835,7 @@ function dagerIUka0(o,man){
   if(o.int==='dato'){var d=new Date(o.dato+'T00:00:00');var diff=Math.round((d-man)/86400000);return (diff>=0&&diff<7)?[diff]:[]}
   if(o.int==='hverdag') return (erFerie(key)&&o.iFerie!==true)?[]:[0,1,2,3,4]; /* v1.16: skoleferie = ingen skolerutiner */
   if(o.int==='daglig') return [0,1,2,3,4,5,6];
-  if(o.int==='dager') return o.dager||[];
+  if(o.int==='dager') return (o.ferieFri===true&&erFerie(key))?[]:(o.dager||[]); /* v1.81: ferieFri — treningsøkter og pakkelapper hviler i ferieukene (Thor 21.11.2026) */
   if(o.int==='annenhver') return annenhverDager(o,man);
   if(o.int==='folger') return folgerDager(o,man); /* v1.78: rullerende — se annenhverDager */
   var dag=(o.unntak&&o.unntak[key]!==undefined)?o.unntak[key]:(o.dag===undefined?3:o.dag);
