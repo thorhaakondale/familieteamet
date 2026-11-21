@@ -444,7 +444,7 @@ details.stegliste>summary{cursor:pointer;font-size:0.8125rem;font-weight:700;col
    ============================================================ */
 "use strict";
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
-var VERSJON='1.38.0'; /* v1.21: appversjonen, vises under Mer → Programmet */
+var VERSJON='1.38.1'; /* v1.21: appversjonen, vises under Mer → Programmet */
 var KODE=null, PERSON='thor', PROG=null, S=null, db=null, dbOk=false, PENDING=[];
 var AKTIV=null; /* pågående økt */
 var UKEVIS=0;   /* uke-offset i Uka-fanen */
@@ -607,7 +607,7 @@ function fyllForslag(f){ /* mål for fyllstoff denne økta */
   var l=okterSortert().filter(function(o){return o.fyll&&o.fyll[f.id]});
   if(f.maaling==='sek'){if(!l.length)return {maal:null,tekst:'Første gang: hold rolig og slipp lenge før du må — skriv tida. Maks måles bare på testdagen.'};
     var sist=l[l.length-1];var best=Math.max.apply(null,(sist.fyll[f.id].verdier||[0]).map(Number));var nyUke=ukeKey(new Date())>sist.uke;
-    if(best>=(f.maaltid||60))return {maal:best,tekst:f.id==='deadhang'?'60 s nådd: +2,5 kg i belte, hold 60.':'60 s nådd: vanskeligere variant (fot hevet), ikke lengre.'};
+    if(best>=(f.maaltid||60))return {maal:best,tekst:f.id==='deadhang'?(f.maaltid||60)+' s nådd: +2,5 kg i belte, hold '+(f.maaltid||60)+'.':(f.maaltid||60)+' s nådd: vanskeligere variant (fot hevet), ikke lengre.'};
     var m=nyUke?Math.min(f.maaltid||60,best+5):best;return {maal:m,tekst:(nyUke?'Ny uke: +5 s → mål '+m+' s.':'Samme uke: hold '+m+' s.')+' Beste sist: '+best+' s.'}}
   if(f.maaling==='m'){if(!l.length)return {maal:f.vekt.start,tekst:'Første økt: '+f.vekt.start+' kg × 20 m per side. Hak «rent» bare hvis kroppen holdt seg rett.'};
     var sist=l[l.length-1];var kg=sist.fyll[f.id].kg||f.vekt.start;var rent=!!sist.fyll[f.id].rent;
