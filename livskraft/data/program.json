@@ -1,5 +1,5 @@
 {
- "versjon": "v1.24",
+ "versjon": "v1.25",
  "kilde": "Dale Livsstil & PT (programkortet) for øvelser og vekter · liv-treningsspesifikasjon.md v1.1 for mål, regler og progresjon · v1.6 12.10.2026: pauseøvelsene synlige, lette og med bilde · v1.7 14.10.2026: Annikens program (Liv) — to gymøkter, hjemmeøkt og månedssjekk · v1.8 16.10.2026: proteinkortet — lunsj og kvelds mot dagsmålet (Liv) · v1.9 17.10.2026: søndagsreserven H for Thor — kort hjemmeøkt bare på søndager uka mangler en styrkeøkt, turen går foran · v1.10 17.10.2026: reserveøkta H tilgjengelig torsdag–søndag (søndag uten gym-valg) · v1.11 4.11.2026: maks 15 reps per sett, prosjektuker (kort A + kort B, maks 4 i året), dypt knebøy-hold i 8-minutteren (nå 10-minutteren) og to bevegelighetstester · v1.12 7.11.2026: 10-minutteren (tirsdag kveld og søndag morgen) — hamstring og figur 4 ut, tillegget valgfritt; 90/90-hintet presisert · v1.13 8.11.2026: dypt knebøy-hold 2 min (aktivt hold, hæler på bok ved behov, stå over ved rygg 2+), katt–ku og tåklem 30 s så holdene er 8 min 30 s og økta fortsatt ca. 10 min; bilde på holdet (Liv/Thor) · v1.14 8.11.2026: steg 4 er den lange knelingen (bakre kne langt bak, bekkenet tippet under før hofta skyves fram) — Thor kjente at kort kneling var for mild; ankeldrillen (steg 5) holdes stram · v1.15 10.11.2026: 90/90 med aktive skift i 10-minutteren, valgfri hip thrust i maskinen etter A (Thor) · v1.15b 10.11.2026: to tapte økter gir ikke lettere økt (Thor) · v1.16 14.11.2026: framoverbøy (baksidelår) og lårstrekk (forsidelår) først i tillegget, med klokke · v1.17 14.11.2026: takt på hvert steg i 10-minutteren (dynamisk/hold, sekunder per ledd) · v1.18 14.11.2026: takt på alle øvelser i A, B og H for Thor og Anniken (dynamisk/hold, sekunder per ledd, én spenn-cue) · v1.19 14.11.2026: bird dog (Thor) — 8–10 s hold i stedet for flere reps · v1.20 14.11.2026: glute bridge i tillegget — 5 s hold med bekkenet tippet, ettbeins som progresjon · v1.21 14.11.2026: tillegget sortert viktigst først (sete, sideplanke, strekk, så albue/nakke/fot); sideplanke med klokke · v1.22 14.11.2026: tid på hvert steg i tillegget (est i sekunder) · v1.23 14.11.2026: 10-minutteren + tillegg for Anniken (valgfri tir/søn, magepust i stedet for tåklem; uten FlexBar og kort fot) · v1.24 15.11.2026: klokke på alle øvelser i tillegget (tidsramme + reps som mål); ankel, tåklem og pull-apart med hold ytterst i stedet for 2/2 (Thor: 2/2 ble masete)",
  "personer": {
   "thor": {
@@ -16,15 +16,15 @@
   "standarduke": {
    "man": "A",
    "tir": "M",
-   "ons": "B",
-   "tor": "T",
+   "ons": "T",
+   "tor": "B",
    "fre": "F",
    "lor": "F",
    "son": "S"
   },
   "regler": {
    "maks_styrkeokter_per_uke": 2,
-   "okt_minutter": "37–42 min med standardpausene (3 min knebøy/RDL, 2,5 min overkropp) — regnes ut fra settene og pausene dine og vises på hver økt",
+   "okt_minutter": "Morgenøkt (fra 23.11.2026): ca. 45 min A og 35–40 min B med standardpausene (2,5 min knebøy, 3 min RDL, 2 min overkropp) — før var det 50 og 55 min. Regnes ut fra settene og pausene dine og vises på hver økt.",
    "aldri_to_like_paa_rad": true,
    "maanedlig_tungt_sett": "Første mandag i måneden: ett tungt sett knebøy 5 × 115–120 kg etter oppvarming — påminnelsen som holder maksstyrken ved like.",
    "kroppsarbeid": "Tung kroppsarbeidsuke = én gym-økt, ingen progresjon den uka. Aldri RDL dagen etter spadedag.",
@@ -42,13 +42,15 @@
    "pauseovelse": "Pauseøvelsen gjøres i pausen mellom settene på hovedøvelsen. Den er LETT og stopper langt før utmattelse — den skal ikke koste hovedsettet noe. Hovedløftene er vedlikeholdssett med vektene som tak; målet er ikke 180 kg, det er en rygg, et grep og en albue som tåler livet.",
    "maks_reps": 15,
    "maks_reps_tekst": "Maks 15 reps per sett (Thor 4.11.2026). Klarer du mer, er vekta for lett — gå opp, ikke flere reps. Lange sett sliter ut ryggstrekkerne før beina, og det er der korsryggen runder seg.",
-   "knebøy_dybde": "Mål for dybden: hofta så vidt under kneet med nøytral korsrygg. Begynner korsryggen å runde i bunnen, er det din bunn i dag — dybden bygges med ankel- og hoftearbeidet i 10-minutteren, ikke ved å presse."
+   "knebøy_dybde": "Mål for dybden: hofta så vidt under kneet med nøytral korsrygg. Begynner korsryggen å runde i bunnen, er det din bunn i dag — dybden bygges med ankel- og hoftearbeidet i 10-minutteren, ikke ved å presse.",
+   "morgenokt": "Morgenøkt mandag og torsdag 07:05–08:00 (Thor 21.11.2026). Banan + saft før økta — aldri fastende. Torsdag (B) og mandag (A): 10 min roing først — ryggen er stivere den første timen etter at du har stått opp; ta ett ekstra rampesett på knebøy og RDL.",
+   "vedlikehold": "Fra 21.11.2026: hovedløftene er vedlikehold — 2 harde sett ved taket holder styrken (Bickel 2011; Spiering 2021). Tiden som spares brukes ikke på mer volum. Brystet holder 3 sett fordi det er der Thor vil se mer form; mage og midje er fettprosent, ikke flere magesett."
   },
   "okter": {
    "A": {
     "navn": "A — Underkropp",
     "dag": "mandag",
-    "varighet": "ca. 50 min med pauser · + ca. 6 min valgfri hip thrust",
+    "varighet": "ca. 45 min med pauser · hip thrust bare når du har tid",
     "farge": "#2563eb",
     "oppvarming": "5 min lett på romaskin eller tredemølle + 2 lette sett knebøy: 40 kg, så 60 kg.",
     "ovelser": [
@@ -56,7 +58,7 @@
       "id": "kneboy",
       "navn": "Knebøy",
       "hint": "vedlikeholdssett — vektene er tak · hælklosser eller box ved behov · 3 s ned, 1 s stopp i bunn · så dypt hofta tillater uten at halluxen sier nei · mål: hofta så vidt under kneet med nøytral korsrygg — runder korsryggen i bunnen, er det bunnen din i dag · aldri over 15 reps",
-      "sett": 3,
+      "sett": 2,
       "reps": [
        8,
        8
@@ -66,7 +68,7 @@
        "tak": 100,
        "steg": 2.5
       },
-      "pause": 180,
+      "pause": 150,
       "type": "hoved",
       "takt": {
        "type": "dynamisk",
@@ -206,7 +208,7 @@
       "id": "taahev",
       "navn": "Sittende tåhev — isolert",
       "hint": "maskinen bak knebøystativet · 1 tungt sett (+20 kg) + 3 lette · 2 s pause på topp · hælen ned bare så langt det er smertefritt",
-      "sett": 4,
+      "sett": 3,
       "reps": [
        8,
        15
@@ -220,7 +222,7 @@
        "tak": 80,
        "steg": 5
       },
-      "pause": 90,
+      "pause": 60,
       "type": "tilbehor",
       "takt": {
        "type": "dynamisk",
@@ -335,8 +337,8 @@
    },
    "B": {
     "navn": "B — Overkropp, bæring og kjerne",
-    "dag": "onsdag",
-    "varighet": "ca. 55 min med pauser",
+    "dag": "torsdag",
+    "varighet": "ca. 35–40 min med pauser",
     "farge": "#7c3aed",
     "oppvarming": "5 min lett romaskin + armsirkler og brystryggrotasjon + 1 lett sett av første øvelse.",
     "ovelser": [
@@ -354,7 +356,7 @@
        "tak": 55,
        "steg": 2.5
       },
-      "pause": 150,
+      "pause": 120,
       "type": "hoved",
       "fyllstoff": {
        "id": "deadhang",
@@ -399,7 +401,7 @@
       "id": "roing",
       "navn": "Bent over-roing",
       "hint": "rygg parallell, ingen rykk · skulderbladene ett sekund ned og sammen på toppen (nakken) · vedlikeholdssett",
-      "sett": 3,
+      "sett": 2,
       "reps": [
        8,
        10
@@ -409,7 +411,7 @@
        "tak": 65,
        "steg": 2.5
       },
-      "pause": 150,
+      "pause": 120,
       "type": "hoved",
       "fyllstoff": {
        "id": "suitcase",
@@ -463,7 +465,7 @@
       "id": "nedtrekk",
       "navn": "Nedtrekk full ROM",
       "hint": "full bevegelsesbane — strake armer øverst, stanga til brystet · vedlikeholdssett",
-      "sett": 3,
+      "sett": 2,
       "reps": [
        8,
        10
@@ -473,7 +475,7 @@
        "tak": 70,
        "steg": 2.5
       },
-      "pause": 150,
+      "pause": 120,
       "type": "hoved",
       "fyllstoff": {
        "id": "sideplanke",
@@ -554,19 +556,6 @@
         ]
        ]
       }
-     },
-     {
-      "id": "aatte",
-      "navn": "10-minutteren",
-      "hint": "gjøres på gymmet mens du er varm — teller som ukas ene mobilitetsøkt",
-      "sett": 1,
-      "reps": [
-       1,
-       1
-      ],
-      "maaling": "gjort",
-      "pause": 0,
-      "type": "avslutning"
      }
     ],
     "hensikt": {
@@ -987,11 +976,11 @@
     ]
    },
    "T": {
-    "navn": "Torsdagsturen",
-    "dag": "torsdag",
+    "navn": "Onsdagsturen",
+    "dag": "onsdag",
     "varighet": "40–60 min",
     "farge": "#16a34a",
-    "tekst": "Rask gange med bakker. 4–6 × 1 min hardt oppover = ukas intervall. Ryker den, blir søndagsturen rask."
+    "tekst": "Rask gange med bakker mens barna er på fotball — samme tid som gymmet før, så den koster ingenting. 4–6 × 1 min hardt oppover = ukas intervall. Rakk du ikke morgenøkta mandag eller torsdag: ta styrkeøkta på gymmet i stedet for turen. Ryker den, blir søndagsturen rask."
    },
    "S": {
     "navn": "Søndagsturen",
@@ -1009,7 +998,7 @@
    },
    "H": {
     "navn": "H — Reserveøkt hjemme",
-    "dag": "torsdag–søndag · bare når uka mangler en styrkeøkt",
+    "dag": "fredag–søndag · bare når uka mangler en styrkeøkt (onsdag kveld på gymmet er første reserve)",
     "varighet": "ca. 20 min med pauser",
     "farge": "#0d9488",
     "visDag": [
@@ -2541,7 +2530,7 @@
      ]
     }
    ],
-   "merk": "Fokus fra 7.11: nok mat — vedlikehold på ca. 2 800 kcal, ikke underskudd. Eplet kl. 14 tar ettermiddagsdippen (lunsj kl. 11 og middag 16:30 er 5,5 timer); det andre etter jobb eller før gym (banan man/ons). Ekstraen kommer som karbohydrater: mer pasta i salaten, én potet eller neve ris mer til middag, knekkebrød til kvelds. Proteinet ligger på 150–160 g. Helgekos og en vaffel på jobb er en del av uka, ikke et sprekk. Sjekk om to uker: energi på ettermiddagen, styrke og livvidde (øker den 2 cm, er det for mye).",
+   "merk": "Fokus fra 7.11: nok mat — vedlikehold på ca. 2 800 kcal, ikke underskudd. Eplet kl. 14 tar ettermiddagsdippen (lunsj kl. 11 og middag 16:30 er 5,5 timer); det andre etter jobb eller før gym (banan + saft før morgenøkta man/tor). Ekstraen kommer som karbohydrater: mer pasta i salaten, én potet eller neve ris mer til middag, knekkebrød til kvelds. Proteinet ligger på 150–160 g. Helgekos og en vaffel på jobb er en del av uka, ikke et sprekk. Sjekk om to uker: energi på ettermiddagen, styrke og livvidde (øker den 2 cm, er det for mye).",
    "motto": "Energi er som kontantstrøm: det sunne er høy omsetning i balanse — spis nok, beveg deg mye. Lite inn og lite ut er stillestående vann: mindre muskler, mindre overskudd."
   },
   "anniken": {
