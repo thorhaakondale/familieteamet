@@ -760,7 +760,7 @@ h1.topp{margin:6px 0 4px;font-size:1.25rem}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.84.3';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.84.4';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -2226,6 +2226,8 @@ function tegnIdag(){
     navnG['Trening']='🏋️ Trening'+(tider.length?' · '+tider.join(' / '):'');
     rekke=rekke.filter(function(g){return g!=='Trening'});
     var etter=((erTorsdag)||(erOnsdag&&grp['Grovvask'].length))?rekke.indexOf('Grovvask')+1:0; rekke.splice(etter,0,'Trening'); }
+  /* v1.84.4 (Thor 23.11.2026): husvasken kommer ETTER morgenen, treningsøkta og dagens faste punkter — den tas på ettermiddagen/kvelden, så den skal ikke stå øverst */
+  if(erTorsdag||(erOnsdag&&grp['Grovvask'].length)){ var forst=['Morgen','Trening','Etter skolen','Dagen'].filter(function(g){return rekke.indexOf(g)>=0}); rekke=forst.concat(rekke.filter(function(g){return forst.indexOf(g)<0})); }
   var FERD=[]; /* v1.29 (Thor 17.10): det som er huket flyttes ut av gruppene og ned i én lav stripe nederst */
   /* v1.70 (Thor 7.11.2026): dagen brytes opp i Formiddag / Ettermiddag / Kveld på lørdag og søndag — jobbene før lunsj, turen og huskelappene etterpå, kvelden sist.
      Dagens tur (turer/<id>, type dag) står som eget kort øverst i Ettermiddag med sitt eget ikon (🥾 tur, ⚽ fotball …) og lenke til pakkelista. */
@@ -2239,7 +2241,7 @@ function tegnIdag(){
     return '<div class="tile turtile" style="--pc:var(--accent)"><button class="tmain" type="button" data-tur="'+esc(t.id)+'" data-tt="'+esc(t.type||'')+'"><span class="ik">'+(t.ikon||L.ikon||'\uD83E\uDDF3')+'</span><span class="tx"><span class="nm">'+esc(t.navn)+'</span><span class="mt">'+esc(med?'Med: '+med:'Trykk for plan og pakkeliste')+'</span></span></button></div>'}).join('');
   if(turK) turK='<div class="tiles">'+turK+'</div>';
   rekke.forEach(function(g){
-    if(!grp[g].length){ if(erTorsdag&&g==='Grovvask') html+='<div class="grp hv">'+esc(navnG[g])+'</div><p class="small" style="margin:4px 0 10px">'+(harTrening&&valgt?'Din husvask tok du på onsdag — i dag er det økta. 💪':'Ingenting på deg denne torsdagen — hjelp den som trenger det. 🙌')+'</p>'; return; }
+    if(!grp[g].length){ if(erTorsdag&&g==='Grovvask') SEG['fm']+='<div class="grp hv">'+esc(navnG[g])+'</div><p class="small" style="margin:4px 0 10px">'+(harTrening&&valgt?'Din husvask tok du på onsdag — i dag er det økta. 💪':'Ingenting på deg denne torsdagen — hjelp den som trenger det. 🙌')+'</p>'; return; }
     var gh='', ghArr=[];
     /* «Alle»-visning: samme oppgave for flere personer samme dag = én rute med avatarer */
     var liste=grp[g];
