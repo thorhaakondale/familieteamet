@@ -117,6 +117,8 @@ input.tekst{width:100%;border:1.5px solid var(--kant);border-radius:10px;padding
 .ov.avslutning{border-left:5px solid #9ca3af}
 .typ{display:inline-block;font-size:0.6562rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;border-radius:6px;padding:2px 7px;margin:0 0 4px;color:#fff;background:var(--b)}
 .typ.til{background:#6b7280}.typ.pau{background:#7c3aed}
+.typ.rol{background:#e5e7eb;color:#111827;margin-left:4px}.typ.rol.vekst{background:#16a34a;color:#fff}.typ.rol.opptrapping{background:#d97706;color:#fff}
+.oppv{display:grid;grid-template-columns:2.2em 1fr auto;gap:8px;align-items:center;padding:6px 0;border-bottom:1px dashed #e5e7eb;font-size:0.875rem;color:#4b5563}.oppv.ferdig{opacity:.55}.oppv .nr{font-weight:800;color:#9ca3af}
 /* v1.19: ukesrapporten og styrkebildet */
 :root{--s1:#2a78d6;--s2:#eb6834;--s3:#1baf7a;--s4:#7c3aed;--snull:#9b978f}
 @media (prefers-color-scheme:dark){:root{--s1:#3987e5;--s2:#d95926;--s3:#199e70;--s4:#9b7ae0;--snull:#8a867f}}
@@ -450,7 +452,7 @@ details.stegliste>summary{cursor:pointer;font-size:0.8125rem;font-weight:700;col
    ============================================================ */
 "use strict";
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
-var VERSJON='1.41.0'; /* v1.21: appversjonen, vises under Mer → Programmet */
+var VERSJON='1.42.0'; /* v1.21: appversjonen, vises under Mer → Programmet */
 var KODE=null, PERSON='thor', PROG=null, S=null, db=null, dbOk=false, PENDING=[];
 var AKTIV=null; /* pågående økt */
 var UKEVIS=0;   /* uke-offset i Uka-fanen */
@@ -575,7 +577,10 @@ function rdlTrinn(){ /* returnerer {naa, neste, grunn} */
   else{grunn='Toppen av trappa (90 kg). Nå gjelder dobbel progresjon innenfor 80–90 — renere og raskere, ikke tyngre.'}
   return {naa:kg,neste:neste,grunn:grunn,idx:idx}
 }
-function forslag(ov){ /* {kg, tekst, hold} for hovedløft/tilbehør med vekt */
+/* v1.42.0 (Thor 23.11.2026): maskiner med faste vekttrinn (nedtrekk: 68 eller 73) — forslaget legges på et trinn som finnes. */
+function forslag(ov){var r=forslagRaa(ov);var m=ov.vekt&&ov.vekt.mulige;if(!m||!r||r.kg===null||r.kg===undefined||m.indexOf(r.kg)>=0)return r;
+  var under=m.filter(function(x){return x<=r.kg});var ny=under.length?Math.max.apply(null,under):Math.min.apply(null,m);r.tekst=(r.tekst||'').split(String(r.kg).replace('.',',')).join(String(ny)).split(String(r.kg)).join(String(ny));r.kg=ny;return r}
+function forslagRaa(ov){ /* {kg, tekst, hold} for hovedløft/tilbehør med vekt */
   if(!ov.vekt)return {kg:null,tekst:''};
   var ctx=ukeskontekst(), rs=ryggsjekk();
   if(ov.trapp){var t=rdlTrinn();var kg=t.neste;var tx=t.grunn;
@@ -632,6 +637,9 @@ function estMin(okt,kort){var sek=0,hj=!!(okt.navn&&okt.navn[0]==='H');var oppv=
     var arb=(ov.type==='hoved'?45:(ov.perSide?60:35))+15;var p=pauseFor(ov)+15;
     sek+=sett*arb+Math.max(0,sett-1)*p+(hj?60:120)}); /* hjemme: ingen kø eller vekter å hente */
   return Math.round(sek*1.1/60/5)*5}
+/* v1.42.0 (Thor 23.11.2026): hver øvelse sier hva den er til — vedlikehold, vekst, opptrapping, helse eller bevegelighet. */
+var ROLLER={vedlikehold:'Vedlikehold — hold vekta',vekst:'Vekst — opp når alle sett når toppen',opptrapping:'Opptrapping — ett steg om gangen',helse:'Helse — sener og ledd',bevegelighet:'Bevegelighet + styrke',reserve:'Reserve hjemme'};
+function rolleLabel(r){return r&&ROLLER[r]?'<span class="typ rol '+esc(r)+'">'+esc(ROLLER[r])+'</span>':''}
 function typeLabel(t){return t==='hoved'?'<span class="typ">Hovedøvelse</span>':t==='tilbehor'?'<span class="typ til">Tilbehør</span>':'<span class="typ til">Avslutning</span>'}
 /* v1.36.0 (Thor 14.11.2026): takt på hver øvelse — dynamisk eller hold, sekunder per ledd, og én cue for hva som skal spennes. Én linje, lett å se. */
 function taktLinje(t){if(!t)return '';var a=t.type==='hold'?'<span class="tk hold">⏸ Hold '+esc(t.hold||'')+'</span>':'<span class="tk dyn">🔁 '+t.ledd.map(function(l){return l[1]+' s '+esc(l[0])}).join(' · ')+'</span>';
@@ -975,14 +983,16 @@ function tegnOkt(){
   var h='';
   okt.ovelser.forEach(function(ov,oi){var L=AKTIV.ovelser[ov.id];if(!L)return;var f=L.forslag;
     var maal=ov.maaling==='gjort'?'gjort':(ov.settmal?ov.settmal.join(' + '):ov.sett+' × '+(ov.reps[0]===ov.reps[1]?ov.reps[0]:ov.reps[0]+'–'+ov.reps[1]))+(ov.perSide?' /side':'');
-    h+='<div class="ov '+esc(ov.type||'')+'" id="ov-'+ov.id+'">'+typeLabel(ov.type)+'<div class="h"><b>'+(oi+1)+' · '+esc(ov.navn)+'</b><span class="maal">'+esc(maal)+(f.kg!==null&&f.kg!==undefined&&ov.vekt?' @ '+f.kg+(ov.vekt.enhet?' '+ov.vekt.enhet:' kg'):'')+'</span></div>';
+    h+='<div class="ov '+esc(ov.type||'')+'" id="ov-'+ov.id+'">'+typeLabel(ov.type)+rolleLabel(ov.rolle)+'<div class="h"><b>'+(oi+1)+' · '+esc(ov.navn)+'</b><span class="maal">'+esc(maal)+(f.kg!==null&&f.kg!==undefined&&ov.vekt?' @ '+f.kg+(ov.vekt.enhet?' '+ov.vekt.enhet:' kg'):'')+'</span></div>';
     h+=taktLinje(ov.takt);
     if(ov.bilde)h+='<img class="bilde ovbilde" src="'+esc(ov.bilde)+'" alt="'+esc(ov.navn)+'" loading="lazy">';
     if(ov.hint)h+='<div class="hint">'+esc(ov.hint)+'</div>';
     if(ov.slik)h+='<details'+(sisteFor(ov.id).some(function(x){return x&&x!=='—'})?'':' open')+'><summary class="lit">Slik gjør du den</summary><ol class="slik">'+ov.slik.map(function(x){return '<li>'+esc(x)+'</li>'}).join('')+'</ol></details>'; /* v1.36.0: åpen første gang, så lukket — taktlinja bærer resten */
     if(f.tekst)h+='<div class="'+(f.hold?'varsel':'ok')+'" style="margin:0 0 8px;font-size:0.7812rem">'+esc(f.tekst)+'</div>';
     if(ov.maaling==='gjort'){h+='<div class="rad"><button class="knapp sek lit" data-gjort="'+ov.id+'">'+(L.sett[0].ok?'Gjort ✓':'Marker som gjort')+'</button></div>'}
-    else{var forr=sisteFor(ov.id);h+='<div class="setthode"><span></span><span>forrige</span><span>'+(ov.vekt?(ov.vekt.enhet?'kg/hånd':'kg'):'')+'</span><span>reps</span><span></span></div>';
+    else{var forr=sisteFor(ov.id);
+      if(ov.oppvarmingssett){var OV=(AKTIV.oppv=AKTIV.oppv||{})[ov.id]||[];ov.oppvarmingssett.forEach(function(w,wi){h+='<div class="oppv'+(OV[wi]?' ferdig':'')+'"><span class="nr">O'+(wi+1)+'</span><span>Oppvarming: <b>'+(w.kg===20?'tom stang (20 kg)':w.kg+' kg')+' × '+w.reps+'</b> — ingen pause</span><button class="hak'+(OV[wi]?' p':'')+'" data-oppv="'+ov.id+'" data-i="'+wi+'">✓</button></div>'})} /* v1.42.0: oppvarmingssett vises, hakes uten timer og logges ikke */
+      h+='<div class="setthode"><span></span><span>forrige</span><span>'+(ov.vekt?(ov.vekt.enhet?'kg/hånd':'kg'):'')+'</span><span>reps</span><span></span></div>';
       L.sett.forEach(function(s,si){h+='<div class="sett'+(s.ok?' ferdig':'')+'"><span class="nr">'+(si+1)+'</span><span class="forr">'+(forr[si]?esc(forr[si]):'—')+'</span>'+(ov.vekt?'<input type="text" inputmode="decimal" data-ov="'+ov.id+'" data-s="'+si+'" data-f="kg" value="'+(s.kg!==null&&s.kg!==undefined?String(s.kg).replace('.',','):'')+'">':'<span></span>')+'<input type="text" inputmode="numeric" data-ov="'+ov.id+'" data-s="'+si+'" data-f="reps" value="'+(s.reps!==null&&s.reps!==undefined?s.reps:'')+'" placeholder="'+ov.reps[1]+'"><button class="hak'+(s.ok?' p':'')+'" data-hak="'+ov.id+'" data-s="'+si+'">✓</button></div>'});
       var mR=(PP().regler&&PP().regler.maks_reps)||15;if(ov.vekt&&L.sett.some(function(s){return (s.reps||0)>mR}))h+='<div class="varsel" style="margin:6px 0;font-size:0.7812rem">Over '+mR+' reps: vekta er for lett. Stopp settet på '+ov.reps[1]+' — neste gang går vekta opp. Lange sett sliter ut korsryggen før beina.</div>';
       h+='<div class="rpe"><span>RPE</span>'+[6,7,8,9,10].map(function(v){return '<button data-rpe="'+ov.id+'" data-v="'+v+'"'+(L.rpe===v?' class="on"':'')+'>'+v+'</button>'}).join('')+'</div>'}
@@ -1007,6 +1017,7 @@ function tegnOkt(){
           var e=document.querySelector('#okt-liste input[data-ov="'+id+'"][data-s="'+j+'"][data-f="kg"]');
           if(e&&document.activeElement!==e)e.value=String(v).replace('.',',')}}};
     inp.onchange=h;inp.oninput=h}); /* v1.5: også oninput, så et tall ikke går tapt om appen lukkes før feltet forlates */
+  Array.prototype.forEach.call(document.querySelectorAll('#okt-liste button[data-oppv]'),function(b){b.onclick=function(){var id=b.getAttribute('data-oppv'),i=+b.getAttribute('data-i');AKTIV.oppv=AKTIV.oppv||{};var a=AKTIV.oppv[id]=AKTIV.oppv[id]||[];a[i]=!a[i];lagreAktiv();tegnOkt()}});
   Array.prototype.forEach.call(document.querySelectorAll('#okt-liste button[data-hak]'),function(b){b.onclick=function(){var id=b.getAttribute('data-hak'),si=+b.getAttribute('data-s');var ov=finnOv(id);var L=AKTIV.ovelser[id];var s=L.sett[si];
     if(!s.ok){var kgI=document.querySelector('input[data-ov="'+id+'"][data-s="'+si+'"][data-f="kg"]'),rpI=document.querySelector('input[data-ov="'+id+'"][data-s="'+si+'"][data-f="reps"]');
       if(kgI)s.kg=tall(kgI.value);s.reps=tall(rpI.value);if(s.reps===null){s.reps=ov.reps[1];rpI.value=s.reps}s.ok=true;
@@ -1517,7 +1528,7 @@ function tegnMer(){
   Array.prototype.forEach.call(document.querySelectorAll('button[data-person]'),function(b){b.className='knapp lit '+(b.getAttribute('data-person')===PERSON?'':'sek');b.onclick=function(){var p=b.getAttribute('data-person');try{localStorage.setItem('lk-person',p)}catch(e){};location.search='?p='+p}});
   $('k-testskjema').hidden=!PROG.personer[PERSON].har_program||!erThor();$('program-tittel').textContent=PROG.personer[PERSON].har_program?'Programmet':'Thors program (ditt lages sammen med deg)';
   $('program-versjon').textContent=PROG.versjon+' · '+PROG.kilde+' · app v'+VERSJON;
-  var h='';styrkeTyper().forEach(function(t){var o=PP().okter[t];h+='<h3 style="color:'+o.farge+'">'+esc(o.navn)+' — '+esc(o.dag)+' · ~'+estMin(o,false)+' min</h3><p class="lit">'+esc(o.oppvarming)+'</p><p class="lit"><b style="color:var(--b)">Hovedøvelse</b> = settene du logger. <b style="color:#7c3aed">Pauseøvelse</b> = gjøres lett i pausen mellom settene, koster ikke tid. <b>Tilbehør</b> = kort, til slutt.</p><div class="tb"><table><tr><th>Øvelse</th><th>Sett × reps</th><th>Vekt</th></tr>';o.ovelser.forEach(function(ov){h+='<tr><td>'+typeLabel(ov.type)+'<br><b>'+esc(ov.navn)+'</b>'+(ov.bilde?'<img class="bilde ovbilde" src="'+esc(ov.bilde)+'" alt="" loading="lazy">':'')+(ov.hint?'<br><span class="lit">'+esc(ov.hint)+'</span>':'')+(ov.slik?'<ol class="slik">'+ov.slik.map(function(x){return '<li>'+esc(x)+'</li>'}).join('')+'</ol>':'')+(ov.fyllstoff?'<div class="fyll" style="margin-top:6px"><span class="typ pau">Pauseøvelse — lett</span><div class="t">'+esc(ov.fyllstoff.navn)+'</div><div class="m">'+esc(ov.fyllstoff.maal)+'</div>'+fyllBlokk(ov.fyllstoff,{aapen:false})+'</div>':'')+'</td><td>'+(ov.settmal?ov.settmal.join(' + '):ov.sett+' × '+ov.reps[0]+(ov.reps[1]!==ov.reps[0]?'–'+ov.reps[1]:''))+(ov.perSide?' /side':'')+'</td><td>'+(ov.vekt?ov.vekt.start+'–'+ov.vekt.tak+(ov.vekt.enhet?' '+ov.vekt.enhet:' kg'):'')+'</td></tr>'});h+='</table></div>'});
+  var h='';styrkeTyper().forEach(function(t){var o=PP().okter[t];h+='<h3 style="color:'+o.farge+'">'+esc(o.navn)+' — '+esc(o.dag)+' · ~'+estMin(o,false)+' min</h3><p class="lit">'+esc(o.oppvarming)+'</p><p class="lit"><b style="color:var(--b)">Hovedøvelse</b> = settene du logger. <b style="color:#7c3aed">Pauseøvelse</b> = gjøres lett i pausen mellom settene, koster ikke tid. <b>Tilbehør</b> = kort, til slutt.</p><div class="tb"><table><tr><th>Øvelse</th><th>Sett × reps</th><th>Vekt</th></tr>';o.ovelser.forEach(function(ov){h+='<tr><td>'+typeLabel(ov.type)+rolleLabel(ov.rolle)+'<br><b>'+esc(ov.navn)+'</b>'+(ov.bilde?'<img class="bilde ovbilde" src="'+esc(ov.bilde)+'" alt="" loading="lazy">':'')+(ov.hint?'<br><span class="lit">'+esc(ov.hint)+'</span>':'')+(ov.slik?'<ol class="slik">'+ov.slik.map(function(x){return '<li>'+esc(x)+'</li>'}).join('')+'</ol>':'')+(ov.fyllstoff?'<div class="fyll" style="margin-top:6px"><span class="typ pau">Pauseøvelse — lett</span><div class="t">'+esc(ov.fyllstoff.navn)+'</div><div class="m">'+esc(ov.fyllstoff.maal)+'</div>'+fyllBlokk(ov.fyllstoff,{aapen:false})+'</div>':'')+'</td><td>'+(ov.settmal?ov.settmal.join(' + '):ov.sett+' × '+ov.reps[0]+(ov.reps[1]!==ov.reps[0]?'–'+ov.reps[1]:''))+(ov.perSide?' /side':'')+'</td><td>'+(ov.vekt?ov.vekt.start+'–'+ov.vekt.tak+(ov.vekt.enhet?' '+ov.vekt.enhet:' kg'):'')+'</td></tr>'});h+='</table></div>'});
   var m=PP().okter.M;if(m)h+='<h3 style="color:'+m.farge+'">'+esc(m.navn)+' — '+esc(m.dag)+'</h3><ol class="steg">'+m.steg.map(function(s){return '<li><b>'+esc(s[0])+'</b> — '+esc(s[1])+'</li>'}).join('')+'</ol><p class="lit">+ '+m.tillegg.map(function(s){return esc(s[0])+' '+esc(s[1])}).join(' · ')+'</p>';
   h+='<p class="lit"><b>Pauseøvelsene:</b> '+esc(PP().regler.pauseovelse||'')+'</p>';if(erThor())h+='<p class="lit"><b>Regler:</b> '+esc(PROG.thor.regler.rygg)+' '+esc(PROG.thor.regler.kroppsarbeid)+' '+esc(PROG.thor.regler.sovn)+'</p>';
   $('program-vis').innerHTML=h;

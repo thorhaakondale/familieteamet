@@ -1,5 +1,5 @@
 {
- "versjon": "v1.39",
+ "versjon": "v1.40",
  "kilde": "Dale Livsstil & PT (programkortet) for øvelser og vekter · liv-treningsspesifikasjon.md v1.1 for mål, regler og progresjon · v1.6 12.10.2026: pauseøvelsene synlige, lette og med bilde · v1.7 14.10.2026: Annikens program (Liv) — to gymøkter, hjemmeøkt og månedssjekk · v1.8 16.10.2026: proteinkortet — lunsj og kvelds mot dagsmålet (Liv) · v1.9 17.10.2026: søndagsreserven H for Thor — kort hjemmeøkt bare på søndager uka mangler en styrkeøkt, turen går foran · v1.10 17.10.2026: reserveøkta H tilgjengelig torsdag–søndag (søndag uten gym-valg) · v1.11 4.11.2026: maks 15 reps per sett, prosjektuker (kort A + kort B, maks 4 i året), dypt knebøy-hold i 8-minutteren (nå 10-minutteren) og to bevegelighetstester · v1.12 7.11.2026: 10-minutteren (tirsdag kveld og søndag morgen) — hamstring og figur 4 ut, tillegget valgfritt; 90/90-hintet presisert · v1.13 8.11.2026: dypt knebøy-hold 2 min (aktivt hold, hæler på bok ved behov, stå over ved rygg 2+), katt–ku og tåklem 30 s så holdene er 8 min 30 s og økta fortsatt ca. 10 min; bilde på holdet (Liv/Thor) · v1.14 8.11.2026: steg 4 er den lange knelingen (bakre kne langt bak, bekkenet tippet under før hofta skyves fram) — Thor kjente at kort kneling var for mild; ankeldrillen (steg 5) holdes stram · v1.15 10.11.2026: 90/90 med aktive skift i 10-minutteren, valgfri hip thrust i maskinen etter A (Thor) · v1.15b 10.11.2026: to tapte økter gir ikke lettere økt (Thor) · v1.16 14.11.2026: framoverbøy (baksidelår) og lårstrekk (forsidelår) først i tillegget, med klokke · v1.17 14.11.2026: takt på hvert steg i 10-minutteren (dynamisk/hold, sekunder per ledd) · v1.18 14.11.2026: takt på alle øvelser i A, B og H for Thor og Anniken (dynamisk/hold, sekunder per ledd, én spenn-cue) · v1.19 14.11.2026: bird dog (Thor) — 8–10 s hold i stedet for flere reps · v1.20 14.11.2026: glute bridge i tillegget — 5 s hold med bekkenet tippet, ettbeins som progresjon · v1.21 14.11.2026: tillegget sortert viktigst først (sete, sideplanke, strekk, så albue/nakke/fot); sideplanke med klokke · v1.22 14.11.2026: tid på hvert steg i tillegget (est i sekunder) · v1.23 14.11.2026: 10-minutteren + tillegg for Anniken (valgfri tir/søn, magepust i stedet for tåklem; uten FlexBar og kort fot) · v1.24 15.11.2026: klokke på alle øvelser i tillegget (tidsramme + reps som mål); ankel, tåklem og pull-apart med hold ytterst i stedet for 2/2 (Thor: 2/2 ble masete) · v1.26 21.11.2026: halvpause-regelen for Anniken — pauseøvelsen tar maks halve pausen (bird dog 4 per side 2 s hold, sideplanke 20 s per side med tak 30 s, Pallof 6 per side), så det er minst ca. 60 s ekte hvile før neste hovedsett · v1.34 21.11.2026: pauseøvelsen tas i første del av hvilen (pauseSek, ca. 45–75 s), resten er ren hvile — timeren viser ① pauseøvelse → ② hvil, og et sett på en annen øvelse midt i hvilen starter ikke ny timer; «world's greatest stretch» (utfall med rotasjon) i Thors tillegg; feil sideplankebilde (viste vanlig planke) tatt ut (Thor) · v1.36 21.11.2026: hip thrust fast i B (ikke lenger valgfri, 2 sett), sittende tåhev som siste løft i A med 1 tung + 2 lette (3 sett, ikke 4) (Thor/Liv)",
  "personer": {
   "thor": {
@@ -43,13 +43,14 @@
    "maks_reps": 15,
    "maks_reps_tekst": "Maks 15 reps per sett (Thor 4.11.2026). Klarer du mer, er vekta for lett — gå opp, ikke flere reps. Lange sett sliter ut ryggstrekkerne før beina, og det er der korsryggen runder seg.",
    "knebøy_dybde": "Mål for dybden: hofta så vidt under kneet med nøytral korsrygg. Begynner korsryggen å runde i bunnen, er det din bunn i dag — dybden bygges med ankel- og hoftearbeidet i 10-minutteren, ikke ved å presse.",
-   "morgenokt": "Morgenøkt mandag og torsdag 07:05–08:00 (Thor 21.11.2026). Banan + saft før økta — aldri fastende. Begge dager: 5 min romaskin først — ryggen er stivere den første timen etter at du har stått opp. A: ett rampesett knebøy (60 kg × 5), det er alt. B: ingen oppvarmingssett (23.11.2026).",
+   "morgenokt": "Morgenøkt mandag og torsdag 07:05–08:00 (Thor 21.11.2026). Banan + saft før økta — aldri fastende. Begge dager: 5 min romaskin først — ryggen er stivere den første timen etter at du har stått opp. A: oppvarmingssettene ligger i appen på knebøy (tom stang × 8, 60 × 5, 80 × 3) og RDL (tom stang × 8, 50 × 5) — de hakes av uten pause og logges ikke. B: ingen oppvarmingssett (23.11.2026).",
    "vedlikehold": "Fra 21.11.2026: hovedløftene er vedlikehold — 2 harde sett ved taket holder styrken (Bickel 2011; Spiering 2021). Tiden som spares brukes ikke på mer volum. Brystet holder 3 sett fordi det er der Thor vil se mer form; mage og midje er fettprosent, ikke flere magesett.",
    "halvpause": "Halvpause-regelen (21.11.2026, skjerpet 23.11.2026): tunge hovedsett får ekte hvile. Incline press (vekstsettet) og roing har INGEN pauseøvelse. Knebøy og sideutfall heller ikke. RDL har bird dog (maks 72 s, minst 105 s ekte hvile), nedtrekk har sideplanke (minst 60 s ekte hvile). Suitcase carry ligger i pausen på sideutfall (A) og hip thrust (B), der den ikke stjeler fra et tungt sett. Dead hang er tatt ut av B for å holde 50 min — den måles i sprek-testen. Pauseøvelsen tar aldri mer enn halve pausen.",
    "hipthrust_i_B": "Hip thrust flyttet fra A til B (21.11.2026): samme dag som RDL ble det to hengslingsøvelser på ryggen. På B-dagen får sete og korsrygg sin dose tre dager etter RDL, og øktene blir like lange.",
    "ferie": "Ferieuker (jul, vinterferie, påske, sommer, høstferie): A og B på de vanlige dagene, men kl. 08:30 i stedet for tidlig morgen. Faller en øktdag på en helligdag, julaften eller nyttårsaften, flyttes økta til nærmeste dag som passer. Hjemme: på gymmet. På tur: hotellgym eller nærmeste gym. Ingen gym: hjemmeøkta (H). Første økt etter ferien: samme vekt som sist. (Thor 21.11.2026)",
    "vekstsett": "Vekstsett (Thor 23.11.2026): incline press er der brystet skal vokse — 3 sett × 6–10 reps, ren hvile 3 min, tak 60 kg. Dobbel progresjon: alle tre sett på 10 → +2,5 kg. Faller sett 2–3 under 6 to økter på rad, går vekta ned 5 % — ikke ved én dårlig dag.",
-   "pauseovelser_bytte": "Pauseøvelsene byttes ikke automatisk hver uke (Thor 23.11.2026): samme øvelse gir målbar fremgang. Unntak: sideplanke ↔ Copenhagen byttes av appen hver økt (samme jobb, ulik vinkel). Ellers byttes en pauseøvelse ved sesongstart (hver ~13. uke) eller når den har stått stille i 6 uker. Suitcase carry er prioritert og står fast i både A og B."
+   "pauseovelser_bytte": "Pauseøvelsene byttes ikke automatisk hver uke (Thor 23.11.2026): samme øvelse gir målbar fremgang. Unntak: sideplanke ↔ Copenhagen byttes av appen hver økt (samme jobb, ulik vinkel). Ellers byttes en pauseøvelse ved sesongstart (hver ~13. uke) eller når den har stått stille i 6 uker. Suitcase carry er prioritert og står fast i både A og B.",
+   "roller": "Hver øvelse har en merkelapp (Thor 23.11.2026): Vekst (incline press — vekta opp når alle sett når 10) · Vedlikehold (knebøy, roing, nedtrekk — hold vekta, 2 harde sett) · Opptrapping (RDL-trappa, hip thrust — ett steg om gangen) · Helse (albuevern, tåhev, tåklem — sener og ledd, aldri tungt) · Bevegelighet + styrke (sideutfall)."
   },
   "okter": {
    "A": {
@@ -57,7 +58,7 @@
     "dag": "mandag",
     "varighet": "maks 45 min inkl. oppvarming",
     "farge": "#2563eb",
-    "oppvarming": "5 min romaskin + ett rampesett knebøy 60 kg × 5. Ingen andre oppvarmingssett.",
+    "oppvarming": "5 min romaskin. Oppvarmingssettene står i appen: knebøy tom stang × 8 → 60 × 5 → 80 × 3, RDL tom stang × 8 → 50 × 5. Ingen pause mellom dem.",
     "ovelser": [
      {
       "id": "kneboy",
@@ -93,7 +94,22 @@
        ],
        "spenn": "Pust inn, spenn magen"
       },
-      "pauseFast": 150
+      "pauseFast": 150,
+      "rolle": "vedlikehold",
+      "oppvarmingssett": [
+       {
+        "kg": 20,
+        "reps": 8
+       },
+       {
+        "kg": 60,
+        "reps": 5
+       },
+       {
+        "kg": 80,
+        "reps": 3
+       }
+      ]
      },
      {
       "id": "sideutfall",
@@ -159,7 +175,8 @@
         "spenn": "Stå rett, ikke len"
        },
        "pauseSek": 60
-      }
+      },
+      "rolle": "bevegelighet"
      },
      {
       "id": "rdl",
@@ -235,7 +252,18 @@
         ]
        ],
        "spenn": "Flat rygg, stram mage"
-      }
+      },
+      "rolle": "opptrapping",
+      "oppvarmingssett": [
+       {
+        "kg": 20,
+        "reps": 8
+       },
+       {
+        "kg": 50,
+        "reps": 5
+       }
+      ]
      },
      {
       "id": "taahev",
@@ -274,7 +302,8 @@
         ]
        ]
       },
-      "pauseFast": 60
+      "pauseFast": 60,
+      "rolle": "helse"
      },
      {
       "id": "taaklem",
@@ -291,7 +320,8 @@
       "takt": {
        "type": "hold",
        "hold": "30 s per runde"
-      }
+      },
+      "rolle": "helse"
      }
     ],
     "hensikt": {
@@ -364,7 +394,8 @@
        "spenn": "Skulderbladene ned og bak"
       },
       "pauseFast": 180,
-      "hvorfor": "Brystet er der du vil se mer form. Vekst krever at hvert sett er nær tungt — da må pausen være ren, ellers taper sett 2 og 3 reps (8 → 6 på 55 kg 23.11.2026)."
+      "hvorfor": "Brystet er der du vil se mer form. Vekst krever at hvert sett er nær tungt — da må pausen være ren, ellers taper sett 2 og 3 reps (8 → 6 på 55 kg 23.11.2026).",
+      "rolle": "vekst"
      },
      {
       "id": "roing",
@@ -400,21 +431,26 @@
        ],
        "spenn": "Flat rygg, stram mage"
       },
-      "pauseFast": 90
+      "pauseFast": 90,
+      "rolle": "vedlikehold"
      },
      {
       "id": "nedtrekk",
       "navn": "Nedtrekk full ROM",
-      "hint": "full bevegelsesbane — strake armer øverst, stanga til brystet · vedlikeholdssett",
+      "hint": "full bevegelsesbane — strake armer øverst, stanga til brystet · maskinen har 68 eller 73 kg: 73 kg med 6–10 reps · faller du under 6 to økter på rad, 68 kg",
       "sett": 2,
       "reps": [
-       8,
+       6,
        10
       ],
       "vekt": {
-       "start": 64,
-       "tak": 70,
-       "steg": 2.5
+       "start": 68,
+       "tak": 73,
+       "steg": 5,
+       "mulige": [
+        68,
+        73
+       ]
       },
       "pause": 120,
       "type": "hoved",
@@ -462,7 +498,8 @@
        ],
        "spenn": "Brystet opp"
       },
-      "pauseFast": 120
+      "pauseFast": 120,
+      "rolle": "vedlikehold"
      },
      {
       "id": "hipthrust",
@@ -530,7 +567,8 @@
         "spenn": "Stå rett, ikke len"
        },
        "pauseSek": 60
-      }
+      },
+      "rolle": "opptrapping"
      },
      {
       "id": "albuevern",
@@ -567,7 +605,8 @@
         ]
        ]
       },
-      "pauseFast": 0
+      "pauseFast": 0,
+      "rolle": "helse"
      }
     ],
     "hensikt": {
@@ -1105,7 +1144,8 @@
         ]
        ],
        "spenn": "Brystet opp"
-      }
+      },
+      "rolle": "reserve"
      },
      {
       "id": "hs-hofteloft",
@@ -1176,7 +1216,8 @@
         ]
        ],
        "spenn": "Klem setet"
-      }
+      },
+      "rolle": "reserve"
      },
      {
       "id": "hs-push",
@@ -1229,7 +1270,8 @@
         ]
        ],
        "spenn": "Kroppen rett som en planke"
-      }
+      },
+      "rolle": "reserve"
      },
      {
       "id": "hs-yoga",
@@ -1250,7 +1292,8 @@
       "takt": {
        "type": "hold",
        "hold": "3 min, rolig pust"
-      }
+      },
+      "rolle": "reserve"
      }
     ],
     "utenGym": [
