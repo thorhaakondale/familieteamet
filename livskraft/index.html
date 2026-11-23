@@ -450,7 +450,7 @@ details.stegliste>summary{cursor:pointer;font-size:0.8125rem;font-weight:700;col
    ============================================================ */
 "use strict";
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
-var VERSJON='1.40.0'; /* v1.21: appversjonen, vises under Mer → Programmet */
+var VERSJON='1.41.0'; /* v1.21: appversjonen, vises under Mer → Programmet */
 var KODE=null, PERSON='thor', PROG=null, S=null, db=null, dbOk=false, PENDING=[];
 var AKTIV=null; /* pågående økt */
 var UKEVIS=0;   /* uke-offset i Uka-fanen */
@@ -617,7 +617,7 @@ function fyllForslag(f){ /* mål for fyllstoff denne økta */
     var m=nyUke?Math.min(f.maaltid||60,best+5):best;return {maal:m,tekst:(nyUke?'Ny uke: +5 s → mål '+m+' s.':'Samme uke: hold '+m+' s.')+' Beste sist: '+best+' s.'}}
   if(f.maaling==='m'){if(!l.length)return {maal:f.vekt.start,tekst:'Første økt: '+f.vekt.start+' kg × 20 m per side. Hak «rent» bare hvis kroppen holdt seg rett.'};
     var sist=l[l.length-1];var kg=sist.fyll[f.id].kg||f.vekt.start;var rent=!!sist.fyll[f.id].rent;
-    if(rent&&kg>=f.vekt.tak)return {maal:kg,tekst:'24 kg rent: neste steg er farmer 2 × 32 kg × 40 m — si fra til Liv.'};
+    if(rent&&kg>=f.vekt.tak)return {maal:kg,tekst:f.vekt.tak+' kg rent: hold vekta og gå 30 m per side — si fra til Liv om neste steg.'};
     return {maal:rent?Math.min(f.vekt.tak,kg+f.vekt.steg):kg,tekst:rent?'Alle sett rene sist: +2 kg → '+Math.min(f.vekt.tak,kg+f.vekt.steg)+' kg.':'Samme vekt ('+kg+' kg) til alle sett går rent.'}}
   return {maal:null,tekst:f.maal}
 }
@@ -915,7 +915,7 @@ function startOkt(type,kort){
   var okt=PP().okter[type];kort=!!kort;
   AKTIV={id:nyId(),person:PERSON,dato:idag(),uke:ukeKey(new Date()),type:type,start:Date.now(),kort:kort,affekt:null,ovelser:{},fyll:{}};
   okt.ovelser.forEach(function(ov){if(kort&&ov.type!=='hoved')return;var f=forslag(ov);var n=kort?1:ov.sett;var sett=[];for(var i=0;i<n;i++)sett.push({kg:ov.vekt?f.kg:null,reps:null,ok:false});AKTIV.ovelser[ov.id]={sett:sett,rpe:null,forslag:f};
-    if(ov.fyllstoff){var ff=fyllForslag(ov.fyllstoff);var sv=sisteVariant(ov.fyllstoff.id);AKTIV.fyll[ov.fyllstoff.id]={verdier:[],kg:ov.fyllstoff.vekt?ff.maal:null,rent:false,variant:sv,forslag:ff}}});
+    if(ov.fyllstoff){var ff=fyllForslag(ov.fyllstoff);var sv=nesteVariant(ov.fyllstoff);AKTIV.fyll[ov.fyllstoff.id]={verdier:[],kg:ov.fyllstoff.vekt?ff.maal:null,rent:false,variant:sv,forslag:ff}}});
   try{if(navigator.wakeLock)navigator.wakeLock.request('screen').then(function(w){wake=w}).catch(function(){})}catch(e){}
   Array.prototype.forEach.call(document.querySelectorAll('#seg-affekt button'),function(b){b.className=''});
   lagreAktiv();vis('okt');tegnOkt();window.scrollTo(0,0);
@@ -930,7 +930,7 @@ function redigerOkt(id){ /* v1.6: åpne en lagret økt på nytt for å rette ell
     if(!AKTIV.ovelser[ov.id]){var sett=[];for(var i=0;i<ov.sett;i++)sett.push({kg:ov.vekt?f.kg:null,reps:null,ok:false});AKTIV.ovelser[ov.id]={sett:sett,rpe:null}}
     AKTIV.ovelser[ov.id].forslag=f;
     if(ov.fyllstoff){var ff=fyllForslag(ov.fyllstoff);
-      if(!AKTIV.fyll[ov.fyllstoff.id])AKTIV.fyll[ov.fyllstoff.id]={verdier:[],kg:ov.fyllstoff.vekt?ff.maal:null,rent:false,variant:sisteVariant(ov.fyllstoff.id)};
+      if(!AKTIV.fyll[ov.fyllstoff.id])AKTIV.fyll[ov.fyllstoff.id]={verdier:[],kg:ov.fyllstoff.vekt?ff.maal:null,rent:false,variant:nesteVariant(ov.fyllstoff)};
       AKTIV.fyll[ov.fyllstoff.id].forslag=ff}});
   $('okt-kommentar').value=o.kommentar||'';nullstillBekreft();
   lagreAktiv();vis('okt');tegnOkt();window.scrollTo(0,0);}
@@ -964,6 +964,10 @@ function hentAktiv(){ /* v1.5: en påbegynt økt overlever at appen lastes på n
   try{var r=localStorage.getItem('lk-aktiv-'+PERSON);if(!r)return;var a=JSON.parse(r);
     if(!a||a.dato!==idag()||!erStyrke(a.type)){localStorage.removeItem('lk-aktiv-'+PERSON);return}
     AKTIV=a;vis('okt');tegnOkt();gjenopprettVis()}catch(e){}}
+/* v1.41.0 (Thor 23.11.2026): pauseøvelser med bytt:"okt" i programmet bytter variant hver økt (f.eks. sideplanke ↔ Copenhagen). Andre beholder siste valg. */
+function nesteVariant(fs){if(!fs||fs.bytt!=='okt'||!fs.varianter||fs.varianter.length<2)return sisteVariant(fs&&fs.id);
+  var l=okterSortert().filter(function(o){return o.fyll&&o.fyll[fs.id]});if(!l.length)return fs.varianter[0];
+  var sist=l[l.length-1].fyll[fs.id].variant||fs.varianter[0];var i=fs.varianter.indexOf(sist);return fs.varianter[(i+1)%fs.varianter.length]}
 function sisteVariant(fid){var hv=S.innst&&S.innst.varianter&&S.innst.varianter[fid];if(hv)return hv;var l=okterSortert().filter(function(o){return o.fyll&&o.fyll[fid]&&o.fyll[fid].variant});return l.length?l[l.length-1].fyll[fid].variant:null}
 function tegnOkt(){
   var okt=PP().okter[AKTIV.type];
@@ -1065,7 +1069,9 @@ $('okt-avbryt').onclick=function(){if(!AKTIV){vis('idag');return}
 /* ---------- pausetimer ---------- */
 var T={slutt:0,iv:null,ov:null,varslet:false};
 function restSek(){return T.slutt?Math.ceil((T.slutt-Date.now())/1000):0}
-function startTimer(sek,ov,si){T.slutt=Date.now()+sek*1000;T.ov=ov;T.si=si;T.varslet=false;T.fyll=fyllSek(ov,si,sek);T.start=Date.now();T.faseVarslet=false;$('timer').classList.add('on');ntfyPlan(sek,ov,si);
+/* v1.41.0 (Thor 23.11.2026): alarmene stablet seg — en ny pause bestilte ny push uten å trekke tilbake den forrige (ntfy).
+   Nå: bare siste haket sett har alarm. Forrige alarm og bestilte push avlyses før ny pause startes. */
+function startTimer(sek,ov,si){if(ALARM.iv)alarmStopp();ntfyAvlysNtfy();T.slutt=Date.now()+sek*1000;T.ov=ov;T.si=si;T.varslet=false;T.fyll=fyllSek(ov,si,sek);T.start=Date.now();T.faseVarslet=false;$('timer').classList.add('on');ntfyPlan(sek,ov,si);
   $('timer-info').innerHTML=timerInfo(ov,si);tegnTimer();if(T.iv)clearInterval(T.iv);T.iv=setInterval(tegnTimer,500);lagreVis()}
 /* v1.39.0 (Thor 21.11.2026): pauseøvelsen ligger INNI hvilen. Første ~60 s av pausen er pauseøvelsen, resten er hvile.
    Og: hakes et sett på en annen øvelse mens hvilen mellom to sett på en øvelse fortsatt går (f.eks. pauseøvelse eller
@@ -1077,7 +1083,7 @@ function timerInfo(ov,si){var info=esc(ov.navn)+' sett '+(si+1)+' ✓';if(ov.fyl
 function tegnFase(){var e=$('timer-fase');if(!e||!T.fyll||!T.ov||!T.ov.fyllstoff)return;var gaatt=(Date.now()-(T.start||Date.now()))/1000,igjen=Math.ceil(T.fyll-gaatt);
   if(igjen>0){e.style.background='#7c3aed';e.textContent='① Pauseøvelse nå: '+(AKTIV&&AKTIV.fyll&&AKTIV.fyll[T.ov.fyllstoff.id]&&AKTIV.fyll[T.ov.fyllstoff.id].variant||T.ov.fyllstoff.navn)+' · '+igjen+' s';return}
   e.style.background='#16a34a';e.textContent='② Hvil nå — rolig pust';
-  if(!T.faseVarslet){T.faseVarslet=true;if(S.innst.lyd&&document.visibilityState==='visible'&&gaatt-T.fyll<5){try{pip()}catch(x){}}}}
+  if(!T.faseVarslet){T.faseVarslet=true}} /* v1.41.0: ingen pip når pauseøvelsen er ferdig — bare fargen skifter. Alarm kun når pausen er over. */
 function tegnTimer(){ /* v1.4: regnes alltid fra klokka, aldri fra en teller som fryser i bakgrunnen */
   if(!T.slutt)return;
   tegnFase();
@@ -1167,11 +1173,12 @@ function ntfyPlan(sek,ov,si){ /* bestill en forsinket push når pausen starter �
   if(!ntfyPaa()||!window.fetch)return;
   var d=Math.max(10,Math.round((sek||0)-5));if(d<10)return; /* v1.11 (Thor 13.10): bestilles 5 s før pausen er over — ntfy + Apple bruker 5–15 s på leveringen */
   var navn=ov&&ov.navn?ov.navn:'';var tekst='Pausen er over'+(navn?' — '+navn+(si!==undefined&&si!==null?' sett '+(si+2):''):'')+'. Kjør.';
-  var topic=S.innst.ntfy.topic;NT.topic=topic;
+  var topic=S.innst.ntfy.topic;NT.topic=topic;var nr=NT.nr=(NT.nr||0)+1; /* v1.41.0: svar på en eldre bestilling (ny pause startet før svaret kom) avlyses med en gang */
   var u=NTFY_URL+encodeURIComponent(topic)+'?delay='+d+'s&priority=5&title='+encodeURIComponent('Livskraft')+'&tags=alarm_clock';
-  try{fetch(u,{method:'POST',body:tekst,keepalive:true}).then(function(r){return r.json()}).then(function(j){if(j&&j.id&&NT.topic===topic){NT.id=j.id;lagreVis()}}).catch(function(){})}catch(e){}}
+  try{fetch(u,{method:'POST',body:tekst,keepalive:true}).then(function(r){return r.json()}).then(function(j){if(!j||!j.id)return;if(nr!==NT.nr||NT.topic!==topic){try{fetch(NTFY_URL+encodeURIComponent(topic)+'/'+encodeURIComponent(j.id),{method:'DELETE',keepalive:true}).catch(function(){})}catch(e2){}return}NT.id=j.id;lagreVis()}).catch(function(){})}catch(e){}}
 function ntfyAvlys(){ /* pausen ble avbrutt, forlenget eller ringte i appen — trekk meldingen tilbake før ntfy sender den */
-  varselAvlys();
+  varselAvlys();ntfyAvlysNtfy()}
+function ntfyAvlysNtfy(){ /* v1.41.0: bare ntfy-delen. Livskraft-varselet erstattes på serveren (én jobb per telefon), så det avlyses ikke her — da kunne avlysningen komme etter den nye bestillingen */
   if(!NT.id)return;var id=NT.id,topic=NT.topic;NT.id=null;
   try{fetch(NTFY_URL+encodeURIComponent(topic)+'/'+encodeURIComponent(id),{method:'DELETE',keepalive:true}).catch(function(){})}catch(e){}}
 function ntfyTest(){if(!ntfyPaa())return;var e=$('ntfy-status');if(e)e.textContent='Sender testvarsel — legg telefonen fra deg, det kommer om 10–20 sekunder.';
