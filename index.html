@@ -760,7 +760,7 @@ h1.topp{margin:6px 0 4px;font-size:1.25rem}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.84.2';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.84.3';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -967,13 +967,25 @@ var AAPNE_PAA_TRYKK=false; /* true = trykk på hele ruta åpner arket i stedet f
 function erVoksen(){return valgt===null||valgt==='thor'||valgt==='anniken'}
 /* v1.57 (Thor 22.10): fredag kveld og lørdag er fri. Flytter en voksen noe dit, spør vi én gang om søndag i stedet — et spørsmål, ikke en sperre. */
 var FRI_DAGER=[4,5];
-function fridagSjekk(dato,fn){ var dt=new Date(dato+'T12:00:00'), di=(dt.getDay()+6)%7;
+function fridagSjekk(dato,fn){ fridagSjekk0(dato,function(d){ soneSjekk(d,fn) }); }
+function fridagSjekk0(dato,fn){ var dt=new Date(dato+'T12:00:00'), di=(dt.getDay()+6)%7;
   if(!erVoksen()||FRI_DAGER.indexOf(di)<0){fn(dato);return}
   var son=ymd(addDays(dt,6-di)), el=document.getElementById('fri-sp');
   el.innerHTML='<div class="fri-t">'+DAGER[di]+' er fri \u2014 heller s\u00f8ndag '+datoNorsk(new Date(son+'T12:00:00'))+'?</div><div class="fri-k"><button type="button" class="ja">S\u00f8ndag</button><button type="button" class="nei">Behold '+DAGER[di].toLowerCase()+'</button></div>';
   el.classList.add('show');
   el.querySelector('.ja').onclick=function(e){e.stopPropagation();el.classList.remove('show');fn(son)};
   el.querySelector('.nei').onclick=function(e){e.stopPropagation();el.classList.remove('show');fn(dato)};
+}
+/* v1.84.3 (Thor 23.11.2026): flytter en voksen noe til en dag som alt er oransje eller rød, sier vi fra — samme form som fredag/lørdag-spørsmålet. Et varsel, ikke en sperre. */
+function dagLast(p,dato){ var dag=new Date(dato+'T00:00:00'), m=mandag(dag), di=Math.round((dag-m)/86400000), t=0; planUke(m).forEach(function(s){ if(s.dag===di&&s.person===p) t+=lastMin(s.o); }); return t; }
+function soneSjekk(dato,fn){ var p=valgt||'thor'; if(!erVoksen()||(p!=='thor'&&p!=='anniken')){fn(dato);return}
+  var t=0,Z; try{ t=dagLast(p,dato); Z=soner(dato); }catch(e){ fn(dato); return }
+  if(t<=Z.g){fn(dato);return}
+  var dt=new Date(dato+'T12:00:00'), di=(dt.getDay()+6)%7, rod=t>Z.o, el=document.getElementById('fri-sp');
+  el.innerHTML='<div class="fri-t">'+(rod?'\uD83D\uDD34':'\uD83D\uDFE0')+' '+DAGER[di]+' '+datoNorsk(dt)+' er alt '+(rod?'r\u00f8d':'oransje')+' ('+minTxt(t)+')</div><div class="fri-k"><button type="button" class="ja">Flytt hit likevel</button><button type="button" class="nei">Velg en annen dag</button></div>';
+  el.classList.add('show');
+  el.querySelector('.ja').onclick=function(e){e.stopPropagation();el.classList.remove('show');fn(dato)};
+  el.querySelector('.nei').onclick=function(e){e.stopPropagation();el.classList.remove('show')};
 }
 /* v1.60 (Thor 24.10): handleliste i notatet — «## Butikk» gir overskrift, «- [ ] vare» gir avkrysning som lagres på oppgaven (o.avkr) */
 function slHash(t){var h=0;t=String(t).trim().toLowerCase();for(var i=0;i<t.length;i++){h=((h<<5)-h+t.charCodeAt(i))|0}return 'v'+(h>>>0).toString(36)}
