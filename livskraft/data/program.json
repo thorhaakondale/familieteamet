@@ -1,5 +1,5 @@
 {
- "versjon": "v1.41",
+ "versjon": "v1.42",
  "kilde": "Dale Livsstil & PT (programkortet) for øvelser og vekter · liv-treningsspesifikasjon.md v1.1 for mål, regler og progresjon · v1.6 12.10.2026: pauseøvelsene synlige, lette og med bilde · v1.7 14.10.2026: Annikens program (Liv) — to gymøkter, hjemmeøkt og månedssjekk · v1.8 16.10.2026: proteinkortet — lunsj og kvelds mot dagsmålet (Liv) · v1.9 17.10.2026: søndagsreserven H for Thor — kort hjemmeøkt bare på søndager uka mangler en styrkeøkt, turen går foran · v1.10 17.10.2026: reserveøkta H tilgjengelig torsdag–søndag (søndag uten gym-valg) · v1.11 4.11.2026: maks 15 reps per sett, prosjektuker (kort A + kort B, maks 4 i året), dypt knebøy-hold i 8-minutteren (nå 10-minutteren) og to bevegelighetstester · v1.12 7.11.2026: 10-minutteren (tirsdag kveld og søndag morgen) — hamstring og figur 4 ut, tillegget valgfritt; 90/90-hintet presisert · v1.13 8.11.2026: dypt knebøy-hold 2 min (aktivt hold, hæler på bok ved behov, stå over ved rygg 2+), katt–ku og tåklem 30 s så holdene er 8 min 30 s og økta fortsatt ca. 10 min; bilde på holdet (Liv/Thor) · v1.14 8.11.2026: steg 4 er den lange knelingen (bakre kne langt bak, bekkenet tippet under før hofta skyves fram) — Thor kjente at kort kneling var for mild; ankeldrillen (steg 5) holdes stram · v1.15 10.11.2026: 90/90 med aktive skift i 10-minutteren, valgfri hip thrust i maskinen etter A (Thor) · v1.15b 10.11.2026: to tapte økter gir ikke lettere økt (Thor) · v1.16 14.11.2026: framoverbøy (baksidelår) og lårstrekk (forsidelår) først i tillegget, med klokke · v1.17 14.11.2026: takt på hvert steg i 10-minutteren (dynamisk/hold, sekunder per ledd) · v1.18 14.11.2026: takt på alle øvelser i A, B og H for Thor og Anniken (dynamisk/hold, sekunder per ledd, én spenn-cue) · v1.19 14.11.2026: bird dog (Thor) — 8–10 s hold i stedet for flere reps · v1.20 14.11.2026: glute bridge i tillegget — 5 s hold med bekkenet tippet, ettbeins som progresjon · v1.21 14.11.2026: tillegget sortert viktigst først (sete, sideplanke, strekk, så albue/nakke/fot); sideplanke med klokke · v1.22 14.11.2026: tid på hvert steg i tillegget (est i sekunder) · v1.23 14.11.2026: 10-minutteren + tillegg for Anniken (valgfri tir/søn, magepust i stedet for tåklem; uten FlexBar og kort fot) · v1.24 15.11.2026: klokke på alle øvelser i tillegget (tidsramme + reps som mål); ankel, tåklem og pull-apart med hold ytterst i stedet for 2/2 (Thor: 2/2 ble masete) · v1.26 21.11.2026: halvpause-regelen for Anniken — pauseøvelsen tar maks halve pausen (bird dog 4 per side 2 s hold, sideplanke 20 s per side med tak 30 s, Pallof 6 per side), så det er minst ca. 60 s ekte hvile før neste hovedsett · v1.34 21.11.2026: pauseøvelsen tas i første del av hvilen (pauseSek, ca. 45–75 s), resten er ren hvile — timeren viser ① pauseøvelse → ② hvil, og et sett på en annen øvelse midt i hvilen starter ikke ny timer; «world's greatest stretch» (utfall med rotasjon) i Thors tillegg; feil sideplankebilde (viste vanlig planke) tatt ut (Thor) · v1.36 21.11.2026: hip thrust fast i B (ikke lenger valgfri, 2 sett), sittende tåhev som siste løft i A med 1 tung + 2 lette (3 sett, ikke 4) (Thor/Liv)",
  "personer": {
   "thor": {
@@ -1447,13 +1447,14 @@
    "morgenokt": "Morgenøkt mandag og onsdag 06:55–07:50 på NFK stadion (Anniken 21.11.2026). Banan før du går — ikke tren fastende. Hjemme ca. 08:00: dusj og sminke hjemme, på klinikken 09:00–09:30.",
    "ferie": "Ferieuker (jul, vinterferie, påske, sommer, høstferie): A og B på de vanlige dagene, men kl. 08:30 i stedet for tidlig morgen. Faller en øktdag på en helligdag, julaften eller nyttårsaften, flyttes økta til nærmeste dag som passer. Hjemme: på gymmet. På tur: hotellgym eller nærmeste gym. Ingen gym: hjemmeøkta (H). Første økt etter ferien: samme vekt som sist. (Thor 21.11.2026)",
    "halvpause": "Halvpause-regelen (23.11.2026, samme som Thor): mageøvelsen tar maks halve pausen, og det skal alltid være minst 60 s ekte hvile før neste tunge sett. Derfor er pausen på nedtrekk og roing 105 s. Mageøvelsene i pausene tar ikke fra beina eller ryggen og blir stående.",
-   "roller": "Hver øvelse har en merkelapp: Vekst (hip thrust — rumpa er der det bygges) · Vedlikehold (resten av hovedløftene — vekta opp når alle sett når 12) · Helse (mage: utrulling og kneløft) · Bevegelighet + styrke (splittknebøy)."
+   "roller": "Hver øvelse har en merkelapp: Vekst (hip thrust — rumpa er der det bygges) · Vedlikehold (resten av hovedløftene — vekta opp når alle sett når 12) · Helse (mage: utrulling og kneløft) · Bevegelighet + styrke (splittknebøy).",
+   "tid": "Øktene skal ta ca. 45 min i virkeligheten (Thor 23.11.2026): ut 06:45–06:55, hjemme 08:00. A: goblet 2 sett, utrulling i RDL-pausen. B: kneløft i pausen på skrå press. Hip thrust (vekst) har fortsatt 3 sett og 2 min pause."
   },
   "okter": {
    "A": {
     "navn": "A — Bein, rumpe og mage",
     "dag": "mandag",
-    "varighet": "ca. 50 min med pauser",
+    "varighet": "ca. 45 min med pauser (06:55–07:50)",
     "farge": "#db2777",
     "oppvarming": "5 min lett på sykkel eller tredemølle + 10 hoftehev på matta. Oppvarmingssettet på goblet knebøy står i appen.",
     "ferdigtekst": "Bein, rumpe og mage har fått sitt.",
@@ -1484,8 +1485,8 @@
      {
       "id": "goblet",
       "navn": "Goblet knebøy",
-      "hint": "manual mot brystet · sitt ned mellom hælene, brystet opp · knærne følger tærne",
-      "sett": 3,
+      "hint": "manual mot brystet · sitt ned mellom hælene, brystet opp · knærne følger tærne · 2 sett — splittknebøyen tar resten av lårene",
+      "sett": 2,
       "reps": [
        8,
        12
@@ -1496,7 +1497,7 @@
        "steg": 2,
        "enhet": "kg manual"
       },
-      "pause": 120,
+      "pause": 105,
       "type": "hoved",
       "tung": true,
       "bilde": "img/goblet.webp",
@@ -1508,10 +1509,10 @@
       "fyllstoff": {
        "id": "deadbug",
        "navn": "Dead bug",
-       "maal": "2 × 6 per side — sakte, korsryggen presset ned i matta",
+       "maal": "1 × 6 per side — sakte, korsryggen presset ned i matta",
        "maaling": "reps",
        "perSide": true,
-       "sett": 2,
+       "sett": 1,
        "slik": [
         "Ligg på ryggen, armene rett opp mot taket, hofter og knær i 90 grader.",
         "Press korsryggen ned i matta og pust ut. Senk motsatt arm og bein sakte mot gulvet — bare så langt ryggen holder seg nede.",
@@ -1532,7 +1533,7 @@
         ],
         "spenn": "Korsryggen i matta"
        },
-       "pauseSek": 50
+       "pauseSek": 45
       },
       "takt": {
        "type": "dynamisk",
@@ -1554,7 +1555,8 @@
         "tekst": "lett manual (ca. halve vekta)",
         "reps": 8
        }
-      ]
+      ],
+      "pauseFast": 105
      },
      {
       "id": "hipthrust",
@@ -1634,7 +1636,7 @@
      {
       "id": "rdlm",
       "navn": "Rumensk markløft med manualer",
-      "hint": "hofta bakover, flat rygg · manualene tett langs beina · kjenn det bak på lårene",
+      "hint": "hofta bakover, flat rygg · manualene tett langs beina · kjenn det bak på lårene · utrulling i pausen",
       "sett": 3,
       "reps": [
        8,
@@ -1646,7 +1648,7 @@
        "steg": 2,
        "enhet": "kg per hånd"
       },
-      "pause": 90,
+      "pause": 105,
       "type": "hoved",
       "bilde": "img/rdlmanual.webp",
       "slik": [
@@ -1668,7 +1670,36 @@
        ],
        "spenn": "Flat rygg, stram mage"
       },
-      "rolle": "vedlikehold"
+      "rolle": "vedlikehold",
+      "pauseFast": 105,
+      "fyllstoff": {
+       "id": "utrulling",
+       "navn": "Utrulling på knærne (ab wheel)",
+       "maal": "2 × 6–10 — bare så langt ryggen holder seg rett, stopp før det blir slitsomt",
+       "maaling": "reps",
+       "sett": 2,
+       "slik": [
+        "Stå på knærne på matta med hjulet (eller en vektstang med runde skiver) under skuldrene.",
+        "Spenn magen og rull rolig fram — stopp før korsryggen svaier.",
+        "Trekk deg tilbake med magen, ikke med armene. Start kort; lengden kommer."
+       ],
+       "hvorfor": "Magen: den lange, flate magemuskelen som gir fasong — tatt i pausen så økta ikke blir lengre.",
+       "takt": {
+        "type": "dynamisk",
+        "ledd": [
+         [
+          "ut",
+          3
+         ],
+         [
+          "inn",
+          2
+         ]
+        ],
+        "spenn": "Navlen inn, ikke svai"
+       },
+       "pauseSek": 40
+      }
      },
      {
       "id": "splitt",
@@ -1708,45 +1739,13 @@
        "spenn": "Brystet opp"
       },
       "rolle": "bevegelighet"
-     },
-     {
-      "id": "utrulling",
-      "navn": "Utrulling på knærne (ab wheel)",
-      "hint": "eller planke med hendene på en ball · bare så langt ryggen holder seg rett",
-      "sett": 2,
-      "reps": [
-       6,
-       10
-      ],
-      "pause": 60,
-      "type": "tilbehor",
-      "slik": [
-       "Stå på knærne på matta med hjulet (eller en vektstang med runde skiver) under skuldrene.",
-       "Spenn magen og rull rolig fram — stopp før korsryggen svaier.",
-       "Trekk deg tilbake med magen, ikke med armene. Start kort; lengden kommer."
-      ],
-      "takt": {
-       "type": "dynamisk",
-       "ledd": [
-        [
-         "ut",
-         3
-        ],
-        [
-         "inn",
-         2
-        ]
-       ],
-       "spenn": "Navlen inn, ikke svai"
-      },
-      "rolle": "helse"
      }
     ]
    },
    "B": {
     "navn": "B — Rygg, armer og mage",
     "dag": "onsdag",
-    "varighet": "ca. 45 min med pauser",
+    "varighet": "ca. 45 min med pauser (06:55–07:50)",
     "farge": "#9333ea",
     "oppvarming": "5 min lett på romaskin + 10 strikkdrag fra hverandre. Oppvarmingssettet på nedtrekk står i appen.",
     "ferdigtekst": "Rygg, armer og mage har fått sitt.",
@@ -1810,7 +1809,7 @@
         "hold": "20 s per side",
         "spenn": "Hofta oppe"
        },
-       "pauseSek": 60
+       "pauseSek": 45
       },
       "takt": {
        "type": "dynamisk",
@@ -1892,7 +1891,7 @@
         ],
         "spenn": "Hofta i ro"
        },
-       "pauseSek": 75
+       "pauseSek": 45
       },
       "takt": {
        "type": "dynamisk",
@@ -1918,7 +1917,7 @@
      {
       "id": "skraapress",
       "navn": "Skrå manualpress",
-      "hint": "benken på 30 grader · manualene ned til siden av brystet · press rett opp",
+      "hint": "benken på 30 grader · manualene ned til siden av brystet · press rett opp · kneløft i stativet i pausen",
       "sett": 3,
       "reps": [
        8,
@@ -1930,7 +1929,7 @@
        "steg": 2,
        "enhet": "kg per hånd"
       },
-      "pause": 90,
+      "pause": 105,
       "type": "hoved",
       "slik": [
        "Ligg på en benk med ryggstøtten på ca. 30 grader, en manual i hver hånd over brystet.",
@@ -1951,7 +1950,36 @@
        ],
        "spenn": "Skulderbladene ned og bak"
       },
-      "rolle": "vedlikehold"
+      "rolle": "vedlikehold",
+      "pauseFast": 105,
+      "fyllstoff": {
+       "id": "kneloft",
+       "navn": "Kneløft i stativ",
+       "maal": "2 × 8–12 — rolig, ingen sving",
+       "maaling": "reps",
+       "sett": 2,
+       "slik": [
+        "Stå i kneløftstativet med underarmene på putene og ryggen mot puta.",
+        "Løft knærne mot brystet og vipp bekkenet litt opp — det er der magen jobber.",
+        "Senk rolig uten å svinge. For tungt: ett kne om gangen."
+       ],
+       "hvorfor": "Magen: nedre del og bekkenkontroll — tatt i pausen så økta ikke blir lengre.",
+       "takt": {
+        "type": "dynamisk",
+        "ledd": [
+         [
+          "opp",
+          1
+         ],
+         [
+          "ned",
+          2
+         ]
+        ],
+        "spenn": "Ingen sving"
+       },
+       "pauseSek": 45
+      }
      },
      {
       "id": "skulderpress",
@@ -1990,38 +2018,6 @@
        "spenn": "Stram mage, ikke svai"
       },
       "rolle": "vedlikehold"
-     },
-     {
-      "id": "kneloft",
-      "navn": "Kneløft i stativ",
-      "hint": "underarmene på putene · løft knærne mot brystet og rull bekkenet opp · ingen sving",
-      "sett": 2,
-      "reps": [
-       8,
-       12
-      ],
-      "pause": 60,
-      "type": "tilbehor",
-      "slik": [
-       "Stå i kneløftstativet med underarmene på putene og ryggen mot puta.",
-       "Løft knærne mot brystet og vipp bekkenet litt opp — det er der magen jobber.",
-       "Senk rolig uten å svinge. For tungt: ett kne om gangen."
-      ],
-      "takt": {
-       "type": "dynamisk",
-       "ledd": [
-        [
-         "opp",
-         1
-        ],
-        [
-         "ned",
-         2
-        ]
-       ],
-       "spenn": "Ingen sving"
-      },
-      "rolle": "helse"
      }
     ]
    },
