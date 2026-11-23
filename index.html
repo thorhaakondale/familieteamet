@@ -546,6 +546,25 @@ h1.topp{margin:6px 0 4px;font-size:1.25rem}
 #handle li .hl-red button.slett{background:transparent;color:#c0392b}
 #handle .hl-butikk{list-style:none;margin:10px 0 0;padding:0 2px 2px;font-size:0.6875rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--line)}
 #handle .hl-butikk:first-child{margin-top:4px}
+.fd-btn{font:inherit;font-weight:700;font-size:0.9375rem;min-height:44px;padding:8px 14px;border-radius:10px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+.fd-btn.vdato{min-height:32px;font-size:0.8125rem;padding:3px 8px}
+.fd-bg{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:9999;display:flex;align-items:flex-end;justify-content:center}
+.fd-ark{background:var(--card);color:var(--ink);width:100%;max-width:420px;border-radius:18px 18px 0 0;padding:14px 14px calc(14px + env(safe-area-inset-bottom));box-shadow:0 -4px 24px rgba(0,0,0,.2)}
+@media (min-width:700px){.fd-bg{align-items:center}.fd-ark{border-radius:18px}}
+.fd-hode{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;font-size:1.0625rem}
+.fd-nav{font:inherit;font-size:1.5rem;width:44px;height:44px;border:0;background:transparent;color:var(--ink);cursor:pointer;border-radius:10px}
+.fd-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.fd-uk{text-align:center;font-size:0.75rem;color:var(--muted);padding:2px 0}
+.fd-d{font:inherit;min-height:46px;border-radius:10px;border:2px solid transparent;background:var(--card2,var(--bg));color:var(--ink);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2px;line-height:1.1}
+.fd-d span{font-size:0.9375rem;font-weight:700}.fd-d small{font-size:0.6875rem;color:var(--muted);min-height:0.75rem}
+.fd-d.zg{background:var(--okbg)}.fd-d.zo{background:var(--warnbg)}.fd-d.zr{background:var(--badbg)}
+.fd-d.zo small{color:var(--warn)}.fd-d.zr small{color:var(--bad)}
+.fd-d.idag span{text-decoration:underline}.fd-d.valgt{border-color:var(--ink)}.fd-d.av{opacity:.3;cursor:default;background:transparent}
+.fd-leg{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:0.75rem;color:var(--muted);margin-top:8px}
+.fd-leg i{display:inline-block;width:10px;height:10px;border-radius:3px}.fd-leg .zg{background:var(--ok)}.fd-leg .zo{background:var(--warn)}.fd-leg .zr{background:var(--bad)}
+.fd-info{font-size:0.875rem;margin:10px 0;min-height:2.5em}
+.fd-k{display:flex;gap:8px;justify-content:flex-end}.fd-k button{font:inherit;font-weight:800;font-size:0.9375rem;min-height:44px;padding:8px 16px;border-radius:10px;border:0;cursor:pointer}
+.fd-avb{background:transparent;color:var(--ink)}.fd-ok{background:#1a73e8;color:#fff}.fd-ok[disabled]{opacity:.4;cursor:default}
 </style>
 </head>
 <body>
@@ -760,7 +779,7 @@ h1.topp{margin:6px 0 4px;font-size:1.25rem}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.84.4';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.85.0';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -987,6 +1006,56 @@ function soneSjekk(dato,fn){ var p=valgt||'thor'; if(!erVoksen()||(p!=='thor'&&p
   el.querySelector('.ja').onclick=function(e){e.stopPropagation();el.classList.remove('show');fn(dato)};
   el.querySelector('.nei').onclick=function(e){e.stopPropagation();el.classList.remove('show')};
 }
+/* v1.85.0 (Thor 23.11.2026): fargekalender — trykk på en dato, så ser du om dagene er grønne, oransje eller røde før du flytter.
+   Erstatter telefonens datovelger på flytt-/utsett-/ny-oppgave-feltene. Fargen er husarbeidet for den voksne (i oversikten: den travleste av Thor og Anniken). */
+function fdPers(p){ p=p||valgt; if(p==='thor'||p==='anniken') return [p]; if(p===null||p===undefined) return ['thor','anniken']; return []; }
+function fdUke(cache,man){ var k=ymd(man); if(cache[k]) return cache[k]; var L={thor:[0,0,0,0,0,0,0],anniken:[0,0,0,0,0,0,0]};
+  try{ planUke(man).forEach(function(s){ if(L[s.person]&&s.dag>=0&&s.dag<7) L[s.person][s.dag]+=lastMin(s.o); }); }catch(e){}
+  return (cache[k]=L); }
+function fdDag(cache,y,ps){ var d=new Date(y+'T00:00:00'), man=mandag(d), di=Math.round((d-man)/86400000), U=fdUke(cache,man), Z=soner(y), best=null;
+  var R={g:0,o:1,r:2}; ps.forEach(function(p){ var t=U[p][di], z=t>Z.o?'r':(t>Z.g?'o':'g'); if(!best||R[z]>R[best.z]||(R[z]===R[best.z]&&t>best.t)) best={p:p,t:t,z:z}; });
+  return {best:best,per:ps.map(function(p){return {p:p,t:U[p][di]}})}; }
+function fdKal(inp,pFn){
+  if(!inp||inp._fd) return; inp._fd=1;
+  var desc=Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value');
+  var btn=document.createElement('button'); btn.type='button'; btn.className='fd-btn'+(inp.className?' '+inp.className:'');
+  function lab(){ var v=desc.get.call(inp); if(v){ var d=new Date(v+'T12:00:00'); btn.textContent='📅 '+DAGK[(d.getDay()+6)%7]+' '+datoNorsk(d)+(d.getFullYear()!==NAA.getFullYear()?d.getFullYear():''); } else btn.textContent='📅 Velg dato'; }
+  Object.defineProperty(inp,'value',{configurable:true,get:function(){return desc.get.call(inp)},set:function(v){desc.set.call(inp,v);lab()}});
+  inp.style.display='none'; inp.parentNode.insertBefore(btn,inp.nextSibling); lab();
+  btn.onclick=function(e){ e.stopPropagation(); e.preventDefault(); fdAapne(inp,pFn?pFn():undefined); };
+}
+function fdAapne(inp,p){
+  var host=(inp.closest&&inp.closest('dialog'))||document.body, ps=fdPers(p), cache={};
+  var min=inp.min||'', valgtY=inp.value||'', vis=new Date((valgtY||ymd(NAA))+'T12:00:00'); vis=new Date(vis.getFullYear(),vis.getMonth(),1);
+  var MND=['januar','februar','mars','april','mai','juni','juli','august','september','oktober','november','desember'];
+  var bg=document.createElement('div'); bg.className='fd-bg'; var ark=document.createElement('div'); ark.className='fd-ark'; ark.setAttribute('role','dialog'); bg.appendChild(ark); host.appendChild(bg);
+  function lukk(){ bg.remove(); }
+  bg.onclick=function(e){ e.stopPropagation(); if(e.target===bg) lukk(); };
+  ark.onclick=function(e){ e.stopPropagation(); };
+  function info(y){ if(!y) return ps.length?'Trykk på en dag for å se belastningen.':'Velg en dag.';
+    var d=new Date(y+'T12:00:00'), t=DAGER[(d.getDay()+6)%7]+' '+datoNorsk(d);
+    if(!ps.length) return t; var r=fdDag(cache,y,ps), Z={g:'🟢 grønn',o:'🟠 oransje',r:'🔴 rød'};
+    return '<b>'+t+'</b> · '+Z[r.best.z]+'<br>'+r.per.map(function(x){return (PMAP[x.p]?PMAP[x.p].navn:x.p)+' '+(x.t?minTxt(x.t):'ingenting')}).join(' · '); }
+  function tegn(){
+    var h='<div class="fd-hode"><button type="button" class="fd-nav" data-n="-1" aria-label="Forrige måned">‹</button><b>'+MND[vis.getMonth()]+' '+vis.getFullYear()+'</b><button type="button" class="fd-nav" data-n="1" aria-label="Neste måned">›</button></div><div class="fd-grid">';
+    DAGK.forEach(function(k){h+='<span class="fd-uk">'+k+'</span>'});
+    var forste=new Date(vis.getFullYear(),vis.getMonth(),1), off=(forste.getDay()+6)%7, n=new Date(vis.getFullYear(),vis.getMonth()+1,0).getDate(), idag=ymd(NAA);
+    for(var i=0;i<off;i++) h+='<span></span>';
+    for(var dd=1;dd<=n;dd++){ var y=ymd(new Date(vis.getFullYear(),vis.getMonth(),dd)), av=min&&y<min, cls='fd-d', sub='';
+      if(!av&&ps.length){ var r=fdDag(cache,y,ps); cls+=' z'+r.best.z; if(r.best.t) sub=minTxt(r.best.t).replace(' min','m').replace(' t ','t').replace(' t','t'); }
+      if(av) cls+=' av'; if(y===idag) cls+=' idag'; if(y===valgtY) cls+=' valgt';
+      h+='<button type="button" class="'+cls+'" data-y="'+y+'"'+(av?' disabled':'')+'><span>'+dd+'</span><small>'+sub+'</small></button>'; }
+    h+='</div>'+(ps.length?'<div class="fd-leg"><i class="zg"></i>grønn <i class="zo"></i>oransje <i class="zr"></i>rød · husarbeid '+(ps.length>1?'(den travleste av dere)':'for '+(PMAP[ps[0]]?PMAP[ps[0]].navn:ps[0]))+'</div>':'')
+      +'<div class="fd-info">'+info(valgtY)+'</div><div class="fd-k"><button type="button" class="fd-avb">Avbryt</button><button type="button" class="fd-ok"'+(valgtY&&valgtY!==inp.value?'':' disabled')+'>'+(valgtY&&valgtY!==inp.value?'✓ Velg '+DAGK[(new Date(valgtY+'T12:00:00').getDay()+6)%7]+' '+datoNorsk(new Date(valgtY+'T12:00:00')):'Velg')+'</button></div>';
+    ark.innerHTML=h;
+    ark.querySelectorAll('.fd-nav').forEach(function(b){b.onclick=function(){vis=new Date(vis.getFullYear(),vis.getMonth()+(+b.dataset.n),1);tegn()}});
+    ark.querySelectorAll('.fd-d').forEach(function(b){b.onclick=function(){valgtY=b.dataset.y;tegn()}});
+    ark.querySelector('.fd-avb').onclick=lukk;
+    ark.querySelector('.fd-ok').onclick=function(){ if(!valgtY) return; lukk(); inp.value=valgtY; inp.dispatchEvent(new Event('change',{bubbles:false})); };
+  }
+  tegn();
+}
+try{ fdKal(document.getElementById('f-dato')); }catch(e){}
 /* v1.60 (Thor 24.10): handleliste i notatet — «## Butikk» gir overskrift, «- [ ] vare» gir avkrysning som lagres på oppgaven (o.avkr) */
 function slHash(t){var h=0;t=String(t).trim().toLowerCase();for(var i=0;i<t.length;i++){h=((h<<5)-h+t.charCodeAt(i))|0}return 'v'+(h>>>0).toString(36)}
 function slVarer(n){var ut=[];String(n||'').split('\n').forEach(function(l){var m=l.match(/^\s*[-•*]\s*\[( |x|X)?\]\s*(.+)$/);if(m)ut.push(m[2].trim())});return ut}
@@ -1122,7 +1191,7 @@ function byggDagrad(o,knapp,d){ /* v1.15: én dagvelger for alle typer — hurti
   di.onchange=function(e){e.stopPropagation(); if(!di.value||di.value===vist){ok.hidden=true;return}
     var nd=new Date(di.value+'T12:00:00'); ok.textContent='✓ Flytt til '+DAGER[(nd.getDay()+6)%7].toLowerCase()+' '+datoNorsk(nd); ok.hidden=false};
   ok.onclick=function(e){e.stopPropagation(); var val=di.value; if(!val) return; d.close(); setTimeout(function(){gaaTil(val)},0)};
-  drad.appendChild(di); drad.appendChild(ok); v.appendChild(drad);
+  drad.appendChild(di); drad.appendChild(ok); v.appendChild(drad); fdKal(di,function(){return ds.naa||ds.fra||valgt});
   /* bytt til en annen — rett i arket (ikke for utsatte/forfalte ruter: der finnes ingen ukenøkkel å bytte på) */
   if(!ds.uts&&!ds.forfalt&&ds.k&&ds.fra){ var bv=seksjon('Bytt til');
     PERS.forEach(function(p){ if(p.id===(ds.naa||ds.fra)) return; var k=knapp2(bv,(p.id===ds.fra?'\u21A9 ':'')+p.dyr+' '+p.navn,false,function(){bytt(ds.k,o,+ds.dag0,ds.fra,p.id)},'pers'); k.style.setProperty('--pc',p.farge); }); }
@@ -2394,7 +2463,7 @@ function tegnIdag(){
       [[1,'i morgen'],[2,'+2 dager'],[7,'neste uke']].forEach(function(x){var k=document.createElement('button');k.style.setProperty('--pc','var(--warn)');k.textContent='⏭ '+x[1];
         k.onclick=function(e){e.stopPropagation();fridagSjekk(ymd(addDays(basis,x[0])),function(y){utsett(b.dataset.k,o,+b.dataset.dag0,b.dataset.fra,y)})};v.appendChild(k)});
       var di=document.createElement('input'); di.type='date'; di.className='vdato'; di.min=ymd(addDays(basis,1)); di.setAttribute('aria-label','Velg dato');
-      di.onclick=function(e){e.stopPropagation()}; di.onchange=function(e){e.stopPropagation();if(di.value)fridagSjekk(di.value,function(y){utsett(b.dataset.k,o,+b.dataset.dag0,b.dataset.fra,y)})}; v.appendChild(di);
+      di.onclick=function(e){e.stopPropagation()}; di.onchange=function(e){e.stopPropagation();if(di.value)fridagSjekk(di.value,function(y){utsett(b.dataset.k,o,+b.dataset.dag0,b.dataset.fra,y)})}; v.appendChild(di); fdKal(di,function(){return b.dataset.fra});
     }
     tile.appendChild(v);
   }});
@@ -2784,7 +2853,7 @@ function gaaTil(id){var m=document.getElementById(id);if(!m)return;var off=0;doc
   function settDato(n){var d=addDays(NAA,n);dIn.value=ymd(d);fyllLuker();
     w.querySelectorAll('button.dag').forEach(function(b){b.classList.toggle('on',+b.dataset.d===n)})}
   w.querySelectorAll('button.dag').forEach(function(b){b.onclick=function(){settDato(+b.dataset.d)}});
-  dIn.onchange=function(){w.querySelectorAll('button.dag').forEach(function(b){b.classList.remove('on')})};
+  dIn.onchange=function(){w.querySelectorAll('button.dag').forEach(function(b){b.classList.remove('on')})}; fdKal(dIn,function(){return tilPerson||valgt});
   byggHvem(); window.__nyRaskHvem=function(){settHvem(valgt||'thor')};
   settDato(0);
   /* Mikrofon: bruker nettleserens egen talegjenkjenning når den finnes (Safari/Chrome). Ellers skjules knappen —
@@ -2859,7 +2928,7 @@ function gaaTil(id){var m=document.getElementById(id);if(!m)return;var off=0;doc
     ut.innerHTML=(q?'':'<p class="small" style="margin:0 0 8px">Det som kommer snart. Skriv for å søke i alle oppgavene. Trykk på en oppgave for å se notatet.</p>')
       +(L.length?'<div style="display:flex;flex-direction:column;gap:8px">'+L.map(rad).join('')+'</div>':'<p class="small">Fant ingen oppgave med «'+esc(q)+'».</p>');
     ut.querySelectorAll('[data-steg]').forEach(function(b){b.onclick=function(){steg(b.dataset.sid,+b.dataset.steg)}});
-    ut.querySelectorAll('input[data-dato]').forEach(function(i){i.onchange=function(){flyttDato(i.dataset.dato,i.value)}});
+    ut.querySelectorAll('input[data-dato]').forEach(function(i){i.onchange=function(){flyttDato(i.dataset.dato,i.value)}; fdKal(i)});
     ut.querySelectorAll('[data-aapne]').forEach(function(b){b.onclick=function(){dlg.close(); aapneArk(b.dataset.aapne)}});
   }
   btn.onclick=function(){ if(!dlg.open) dlg.showModal(); vis(); setTimeout(function(){inn.focus()},50) };
