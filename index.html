@@ -238,6 +238,7 @@ body.side-laast{position:fixed;left:0;right:0;width:100%;overflow:hidden}
 .dagtxt{font-size:0.875rem;color:var(--ink2);margin:0 0 6px}
 .grp.hg{color:var(--warn)}
 /* v1.70: skillere for dagen (helg) + turkortet på tavla + huskelapper bak ett trykk */
+.skille .kap{font-weight:600;color:var(--muted);margin-left:8px;letter-spacing:0}.skille .kap.over{color:#b4411f}.kvro{margin:4px 0 10px}
 .skille{margin:20px 0 2px;padding:6px 0 4px;border-top:2px solid var(--accent);font-size:0.875rem;font-weight:900;letter-spacing:.02em;color:var(--ink)}.skille:first-child,.dagtxt+.skille,.glemt+.skille,.ferdigbadge+.skille,.fravchip+.skille{margin-top:8px}
 .skille+.grp{border-top:0;padding-top:0;margin-top:8px}
 .tile.turtile{border-color:var(--accent);background:var(--accentbg)}.tile.turtile .chk{display:none}
@@ -571,7 +572,7 @@ h1.topp{margin:6px 0 4px;font-size:1.25rem}
           <input id="nr-dato" type="date" aria-label="Annen dato">
         </div>
         <div class="nyrad hvem" id="nr-hvem"></div>
-        <div class="nyrad minn"><label><input type="checkbox" id="nr-minn"> Minn p&#xE5; kl.</label><input id="nr-tid" type="time" value="18:00" aria-label="Klokkeslett"><label id="nr-megl"><input type="checkbox" id="nr-meg"> og meg</label></div>
+        <div class="nyrad minn"><label><input type="checkbox" id="nr-minn"> Minn p&#xE5; i luka</label><select id="nr-tid" aria-label="Luke"></select><label id="nr-megl"><input type="checkbox" id="nr-meg"> og meg</label></div>
         <button type="button" id="nr-lagre">Legg til</button>
         <p class="small" id="nr-hjelp">Velg hvem den er til og hvilken dag. Havner som en vanlig oppgave — Bjørn ser den i søndagssjekken.</p>
       </div>
@@ -730,7 +731,7 @@ h1.topp{margin:6px 0 4px;font-size:1.25rem}
 <p><b>Rytmen.</b> Morgen- og hjemkomstrutinene går hver hverdag. Måltidsjobbene går hver dag og bytter mellom Erik og Vårin annenhver uke. <b>Torsdag er ryddedagen</b> — da er huset klart til helga og uka etter. Oppgaver som går hver 3. uke og hver 3. måned dukker opp på lørdager når de er modne. Sesongbyttet i garderoben kobles til Brukskortene, og skapsjekken onsdag kobles til Ukeshandel — samme rytme, samme sted.</p>
 <p><b>Pakkelistene</b> &#xE9;n liste per turtype pluss &#xAB;Alltid med&#xBB;. Turene (fra kalenderen, eller lagt inn av dere) styrer alt: pakkeslagene havner p&#xE5; tavla til hver som reiser &#x2014; start tidlig i uka, pakk ferdig dagen f&#xF8;r, restene p&#xE5; avreisedagen &#x2014; med ett varsel per slag. N&#xE5;r en tur er n&#xE6;r, flytter Pakkelistene opp under I dag. Hak av mens dere pakker; grupper som er ferdige trekker seg sammen, og de to siste punktene (s&#xF8;ppel &#x2192; l&#xE5;s) st&#xE5;r for seg selv. Endre linjene selv med &#x270E; &#x2014; Bj&#xF8;rn g&#xE5;r gjennom dem hvert kvartal.</p>
 <p><b>Trykk p&#xE5; teksten</b> i en rute for &#xE5; &#xE5;pne detaljene; haken tas i venstre del (boksen og ikonet). Overskriftene trekker seksjonene sammen &#x2014; enheten husker hva du har &#xE5;pent. <b>Ajourhet</b> nederst viser tre tall: vedlikehold, vask og sesong.</p>
-<p><b>Minn p&#xE5;.</b> En huskelapp kan f&#xE5; ett klokkeslett: da kommer &#xE9;n p&#xE5;minnelse p&#xE5; telefonen til den lappen gjelder &#x2014; og til deg selv om du vil. Ingen tid = ingen varsel, og lappen legger seg under Huskelapper sent p&#xE5; dagen, rett f&#xF8;r kvelden. Med tid sorteres den etter klokkeslettet (formiddag, ettermiddag, kveld). Det er m&#xE5;ten dere minner hverandre p&#xE5; ting til tider dere selv velger.</p>
+<p><b>Minn p&#xE5;.</b> En huskelapp kan legges i en luke (morgen, lunsj, p&#xE5; vei hjem, etter middag, kveld &#x2014; i helga f&#xF8;r og etter lunsj): da kommer &#xE9;n p&#xE5;minnelse p&#xE5; telefonen til den lappen gjelder &#x2014; og til deg selv om du vil. Ingen luke = ingen varsel, og lappen legger seg under Huskelapper sent p&#xE5; dagen, rett f&#xF8;r kvelden. Med luke sorteres den dit. Lukene f&#xF8;lger m&#xE5;ltidene, s&#xE5; dagen ikke f&#xE5;r mer enn den rommer &#x2014; og kvelden etter middag er familie og par.</p>
 <p><b>Poengene</b> er ett lag, ikke fem. Ingen konkurrerer mot søsken. Oscar (2) er med på sine småting, og alt han gjør teller.</p>
 <p><b>Bonus 🎁.</b> Noen jobber er ekstra: vaske i huset i torsdagstimen, hjelpe til med bilene og garasjen. De ligger i sin egen bolk nederst, gir ekstra poeng når de gjøres, men teller aldri i ukemålet — ingen taper noe på å la dem ligge. Det som bare er forventet hjelp (klargjøring, bære, rydde etter seg) gir ikke poeng i det hele tatt.</p>
 <p><b>Varsler — få og faste.</b> Tavla maser ikke. Hver får et varsel på mobilen bare til de faste tidene Bjørn har satt opp — de voksne: fabrikkrunden, torsdagstimen, bestilling av mat, søndagstur og søndagskos, pluss én kveldsmelding når barna har gjort alt sitt; barna: morgenrutinen på skoledager og «ferdig for i dag?» om kvelden. Varselet åpner tavla. Varslene sendes gjennom gratistjenesten ntfy (eget emne per voksen under Oppgavebanken) og inneholder ikke navn. Lenka i varselet har familiekoden i seg, slik at den åpner riktig tavle også i Safari — derfor skal emnene holdes hemmelige.</p>
@@ -755,7 +756,7 @@ h1.topp{margin:6px 0 4px;font-size:1.25rem}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.83.0';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.84.0';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -1303,13 +1304,33 @@ function arkForekomst(knapp){var t=knapp&&knapp.closest?knapp.closest('.tile'):n
 /* v1.53.2 (Thor 19.10): de voksne kan selv velge hvilken bolk en oppgave står i (f.eks. fra Huskelapper til I løpet av dagen) */
 var GRUPPE_NAVN={'Trening':'Trening','Morgen':'Morgen','Etter skolen':'Når du kommer hjem','Dagen':'I løpet av dagen','Måltider':'Måltider','Rydding':'Rydding / husøkta','Grovvask':'Grovvask / husvasken','Vask':'Vask og bestilling','Vedlikehold':'Vedlikehold hus, hage og bil','Hytta':'Hytta og Airbnb','Sesong':'Modent nå','Sikkerhet':'Sikkerhet','Huskelapper':'Huskelapper','Kveld':'Kveld — før legging'};
 /* v1.83 (Thor 23.11.2026): huskelapper uten varsel står i «Huskelapper» sent på dagen, rett før kvelden — det viktige kommer først. Med varsel: «I løpet av dagen», sortert etter klokkeslettet. Valgt bolk i arket (o.gruppe) vinner alltid. */
+/* v1.84 (Thor 23.11.2026): LUKER — dagen har et begrenset antall luker rundt måltidene. Varsel settes på en luke, ikke et fritt klokkeslett;
+   overskriftene på tavla viser hvor mye luka rommer, og kvelden etter middag er familie og par. Kan overstyres fra innstillinger/luker; innstillinger/storokt/<dato>=true gir en stor økt. */
+var LUKER_STD={hverdag:[{id:'morgen',navn:'Morgen',tid:'07:00'},{id:'lunsj',navn:'Lunsj',tid:'11:30'},{id:'hjem',navn:'På vei hjem',tid:'15:30'},{id:'ettermiddag',navn:'Etter middag',tid:'17:15'},{id:'kveld',navn:'Kveld — bare det lette',tid:'19:30',kap:30,seg:'kv'}],
+  helg:[{id:'morgen',navn:'Morgen',tid:'08:30'},{id:'forlunsj',navn:'Før lunsj',tid:'09:30',kap:60,stor:90,seg:'fm',varsel:true},{id:'etterlunsj',navn:'Etter lunsj',tid:'12:30',kap:60,stor:150,seg:'em',varsel:true},{id:'kveld',navn:'Kveld — bare det lette',tid:'19:30',kap:30,seg:'kv'}]};
+function lukerFor(dato){ var d=(typeof dato==='string')?new Date(dato+'T12:00:00'):dato, wd=(d.getDay()+6)%7, L=(INNST&&INNST.luker)||LUKER_STD; return (wd>=5?L.helg:L.hverdag)||[]; }
+function lukerForOppg(o){ if(o&&o.int==='dato'&&o.dato) return lukerFor(o.dato); if(o&&o.int==='dager'&&(o.dager||[]).length&&(o.dager||[]).every(function(d){return d>=5})) return lukerFor('2026-11-28'); if(o&&(o.int==='dato'||o.int==='dager'||o.int==='hverdag'||o.int==='daglig'||o.int==='annenhver')) return lukerFor('2026-11-25'); var dg=(o&&o.dag===undefined)?3:(o?o.dag:3); return lukerFor(dg>=5?'2026-11-28':'2026-11-25'); }
+function storOkt(yd){ return !!(INNST&&INNST.storokt&&INNST.storokt[yd]); }
+function lukeKap(l,yd){ return (storOkt(yd)&&l.stor)?l.stor:(l.kap||0); }
+function lukeForSeg(dato,seg){ var L=lukerFor(dato); for(var i=0;i<L.length;i++){ if(L[i].seg===seg) return L[i]; } return null; }
+function lukeNavn(tid,dato){ var L=lukerFor(dato); for(var i=0;i<L.length;i++){ if(L[i].tid===tid) return L[i].navn.split(' — ')[0]; } return tid; }
+function minTxt(m){ var h=Math.floor(m/60), r=m%60; return h?(h+' t'+(r?' '+r:'')):(r+' min'); }
+function lukeValg(o,dato,id,tid){ var L=dato?lukerFor(dato):lukerForOppg(o), fins=!tid||L.some(function(l){return l.tid===tid});
+  return '<select id="'+id+'"><option value="">Ingen varsel</option>'+L.map(function(l){return '<option value="'+l.tid+'"'+(l.tid===tid?' selected':'')+'>'+esc(l.navn)+'</option>'}).join('')+(fins?'':'<option value="'+esc(tid)+'" selected>Som nå (kl. '+esc(tid)+')</option>')+'</select>'; }
+var SEG_DELAV={'Huskelapper':'em','Vedlikehold':'em','Hytta':'em','Kveld':'kv'};
+function segForG(o,g){ var t=(o.minn&&o.minn.tid)||''; if(t&&(g==='Huskelapper'||g==='Dagen')){ return t<'12:00'?'fm':t<'19:00'?'em':'kv'; } return SEG_DELAV[g]||'fm'; }
+/* det som står igjen i en luke for én person en dag — brukes av luke-varselet */
+function lukeInnhold(p,dag,seg){ var m=mandag(dag), key=ukeKey(m), di=Math.round((new Date(dag.getFullYear(),dag.getMonth(),dag.getDate())-m)/86400000), ant=0, min=0, navn=[];
+  planUkeM(m).forEach(function(s){ if(s.dag!==di||s.person!==p||!s.o||s.o.kat==='Trening'||s.o.tur||!(s.o.min>0)||erGjort(key,s.key)) return;
+    if(segForG(s.o,gruppeFor(s.o))!==seg) return; ant++; min+=s.o.min; navn.push(s.o.navn); });
+  return {ant:ant,min:min,navn:navn}; }
 function gruppeStd(o){ if(o.egen) return ((o.kat||'Huskelapper')==='Huskelapper'&&!(o.minn&&o.minn.tid))?'Huskelapper':'Dagen'; return o.kat||'Rydding' }
 function gruppeFor(o){return (o.gruppe&&GRUPPER.indexOf(o.gruppe)>=0)?o.gruppe:gruppeStd(o)}
 function byggArkMinn(o){var el=document.getElementById('ark-minn'); if(!el) return;
   var vis=erVoksen()&&!o.tur; /* v1.47: varsel på alle oppgaver */ el.hidden=!vis; if(!vis){el.innerHTML='';return}
   var tid=(o.minn&&o.minn.tid)||'';
-  el.innerHTML='<label for="ark-minn-tid">⏰ Varsel</label><input type="time" id="ark-minn-tid" value="'+esc(tid)+'">'+(tid?'<button type="button" id="ark-minn-fjern">Fjern varsel</button>':'')+
-    '<small>'+(o.int==='dato'?(tid?'Varselet går på oppgavens dato. Endre tiden og trykk Ferdig.':'Velg et klokkeslett og trykk Ferdig — da får du varsel, og oppgaven sorteres etter tiden.'):'Gjentakende: varsel hver gang den står på tavla. Tiden sorterer også lista.')+'</small>';
+  el.innerHTML='<label for="ark-minn-tid">⏰ Varsel</label>'+lukeValg(o,null,'ark-minn-tid',tid)+''+(tid?'<button type="button" id="ark-minn-fjern">Fjern varsel</button>':'')+
+    '<small>'+(o.int==='dato'?(tid?'Varselet går på oppgavens dato. Velg en annen luke og trykk Ferdig.':'Velg en luke og trykk Ferdig — da får du varsel, og oppgaven legger seg i den luka.'):'Gjentakende: varsel hver gang den står på tavla. Luka sorterer også lista.')+'</small>';
   if(!o.bonus){var gn=gruppeFor(o); el.innerHTML+='<label for="ark-gruppe" style="margin-top:6px">📂 Står i</label><select id="ark-gruppe">'+GRUPPER.map(function(g){return '<option value="'+g+'"'+(g===gn?' selected':'')+'>'+esc(GRUPPE_NAVN[g]||g)+'</option>'}).join('')+'</select>';}
   var fj=document.getElementById('ark-minn-fjern'); if(fj) fj.onclick=function(){document.getElementById('ark-minn-tid').value=''; fj.remove()};}
 function byggArkSlett(o,occ){var el=document.getElementById('ark-slett'); if(!el) return;
@@ -1375,7 +1396,7 @@ function lagreArk(){
   if(db){var dok=JSON.parse(JSON.stringify(o));if(!dok.rull)delete dok.rull;db.child('oppgaver/'+id).set(dok).catch(function(){status('Kunne ikke lagre delt — ligger på denne enheten.')})}
   /* v1.58 (Thor 23.10): er en ny dato valgt i kalenderen, flytter «Ferdig» også oppgaven — uten å måtte trykke «Flytt til» først */
   var okb=document.querySelector('#ark-dagrad .dato-ok'); if(okb&&!okb.hidden){ okb.click(); tegn(); if(minnEndret){VARSLET_NAA=false; try{ryddMinn();planleggVarsler()}catch(e){}} return; }
-  d.close(); toast(minnEndret?(o.minn?'⏰ Varsel kl. '+o.minn.tid:'Varselet er fjernet'):(grEndret?'Flyttet til «'+(GRUPPE_NAVN[gruppeFor(o)]||gruppeFor(o))+'» ✓':(navnEndret?'Lagret ✓':'Notatet er lagret ✓'))); tegn();
+  d.close(); toast(minnEndret?(o.minn?'⏰ Varsel: '+lukeNavn(o.minn.tid,o.dato||ymd(NAA)):'Varselet er fjernet'):(grEndret?'Flyttet til «'+(GRUPPE_NAVN[gruppeFor(o)]||gruppeFor(o))+'» ✓':(navnEndret?'Lagret ✓':'Notatet er lagret ✓'))); tegn();
   if(minnEndret){VARSLET_NAA=false; try{ryddMinn();planleggVarsler()}catch(e){}}
 }
 var ARK_BUNDET=false;
@@ -1796,6 +1817,24 @@ function planleggBackup(){
     });
   });
 }
+/* v1.84: ett varsel per arbeidsluke i helga til de voksne — hva som ligger der mot hva luka rommer. Samme sekvens-id erstatter en bestilt melding, så teksten følger tavla.
+   Ingen varsel når luka er tom, i ferier, til den som er borte, eller når et fast varsel alt går til samme person inntil 30 min før. */
+function planleggLuker(naa,n,liste){ if(!db) return; PU_MEMO={}; try{
+  for(var d=0;d<2;d++){(function(dag){ var yd=ymd(dag), wd=(dag.getDay()+6)%7; if(erFerie(ukeKey(dag))) return;
+    lukerFor(dag).forEach(function(l){ if(!l.varsel||!l.seg||!l.tid) return;
+      var hm=String(l.tid).split(':'), t=new Date(dag.getFullYear(),dag.getMonth(),dag.getDate(),+hm[0],+hm[1]||0,0), tm=+hm[0]*60+(+hm[1]||0);
+      if(t.getTime()-naa.getTime()<120000) return;
+      ['thor','anniken'].forEach(function(p){ if(!n[p]||fravFor(yd,p)) return;
+        if((liste||[]).some(function(v){ if(!v||v.aktiv===false||!v.tid||(v.dager||[]).indexOf(wd)<0||(v.til||[]).indexOf(p)<0) return false; var a=String(v.tid).split(':'), vm=+a[0]*60+(+a[1]||0); return vm<=tm&&tm-vm<=30; })) return;
+        var inn=lukeInnhold(p,dag,l.seg), kap=lukeKap(l,yd), ref=db.child('varsler/sendt/'+yd+'_luke_'+l.id+'_'+p), seq=ntfySeq('ft',yd,'luke',l.id,p);
+        ref.once('value').then(function(snap){ var cur=snap.val();
+          if(!inn.ant){ if(cur){ ntfyDel(n[p],seq); ref.set(null).catch(function(){}); } return; }
+          var sig=inn.ant+'|'+inn.min+'|'+kap; if(cur&&cur.sig===sig) return;
+          var tekst=inn.ant+' ting \u00b7 '+minTxt(inn.min)+' av '+minTxt(kap)+(inn.min>kap?' \u2014 for mye, velg bort noe':'')+'\n'+inn.navn.slice(0,3).join(' \u00b7 ');
+          return ref.set({ts:Date.now(),sig:sig,by:valgt||'familie'}).then(function(){ return ntfyPost(n[p],l.navn.split(' \u2014 ')[0],tekst,'hourglass_flowing_sand',Math.floor(t.getTime()/1000),3,appLenke(p),seq); }).then(function(ok){ if(!ok) ref.set(null).catch(function(){}); });
+        }).catch(function(){});
+      }); }); })(addDays(naa,d)); }
+  } finally { PU_MEMO=null; } }
 function planleggVarsler(){
   if(VARSLET_NAA||!db||!INNST.varsler||!INNST.ntfy||!FRAV_LASTET||!UKER_LASTET||!OPPG_LASTET) return; VARSLET_NAA=true; /* v1.79.2 (Thor 14.11.2026): XPeng-vasken ringte lørdag selv om den var flyttet til fredag og hakket av — en enhet som åpnet tavla før ukas haker og flytt var lastet, bestilte ut fra grunnplanen. Nå venter all bestilling på ferske oppgaver OG uker; listenerne under kaller planleggVarsler når de er på plass. */ /* v1.17: vent til fraværet er lest, ellers går faste varsler til den som er borte */
   var naa=new Date(), n=lesNtfy(INNST.ntfy)||{};
@@ -1813,6 +1852,7 @@ function planleggVarsler(){
       });
     });
     planleggPakk(naa,n,yd); /* v1.18 */
+    if(d===0){ try{planleggLuker(naa,n,liste)}catch(e){} } /* v1.84 */
     /* v1.20: huskelapper med \u00abMinn p\u00e5\u00bb \u2014 ett varsel per lapp og person p\u00e5 lappens dato og klokkeslett; flyttes lappen, f\u00f8lger varselet datoen (ny n\u00f8kkel) */
     PU_MEMO={}; try{
     OPPG.forEach(function(o){ if(!minnPaa(o,yd)||minnGjort(o,yd)) return; /* v1.47: ikke bare huskelapper · v1.56: ikke det som alt er hakket av */
@@ -2168,9 +2208,9 @@ function tegnIdag(){
   /* v1.70 (Thor 7.11.2026): dagen brytes opp i Formiddag / Ettermiddag / Kveld på lørdag og søndag — jobbene før lunsj, turen og huskelappene etterpå, kvelden sist.
      Dagens tur (turer/<id>, type dag) står som eget kort øverst i Ettermiddag med sitt eget ikon (🥾 tur, ⚽ fotball …) og lenke til pakkelista. */
   var erHelg=(dIdx===5||dIdx===6), ydag=ymd(NAA);
-  var DELAV={'Huskelapper':'em','Vedlikehold':'em','Hytta':'em','Kveld':'kv'}; var SEG={fm:'',em:'',kv:''}; /* v1.72: formiddag = det som må unna og ute-jobbene (dagslys) · ettermiddag = turen, så vedlikehold inne og huskelapper */
+  var SEG={fm:'',em:'',kv:''}, SEGMIN={fm:0,em:0,kv:0}; /* v1.72: formiddag = det som må unna og ute-jobbene (dagslys) · ettermiddag = turen, så vedlikehold inne og huskelapper */
   /* v1.70.1: huskelapper og «I løpet av dagen» sorteres etter klokkeslettet på lappen (varsel/minn): før 12 = formiddag, 12–17 = ettermiddag, etter 17 = kveld; uten klokkeslett gjelder gruppas plass */
-  function segFor(o,g){ var t=(o.minn&&o.minn.tid)||''; if(t&&(g==='Huskelapper'||g==='Dagen')){ var h=+t.slice(0,2); return h<12?'fm':h<17?'em':'kv'; } return DELAV[g]||'fm'; }
+  function segFor(o,g){ return segForG(o,g); }
   var turer=turListe().filter(function(t){return t.fra<=ydag&&(t.til||t.fra)>=ydag&&(!valgt||!(t.hvem&&t.hvem.length)||t.hvem.indexOf(valgt)>=0)});
   /* v1.70.1 (Thor 7.11): turen er en vanlig rute i samme størrelse som de andre — trykk åpner turen (plan, pakkeliste) i Pakkelistene */
   var turK=turer.map(function(t){var L=PAKKL[t.type]||{}, med=((t.info||[]).filter(function(i){return i&&i.v&&/^med$/i.test(i.k||'')})[0]||{}).v||'';
@@ -2189,13 +2229,13 @@ function tegnIdag(){
         var fk=s.ukeKey||key;
         var alleD=s.felles.every(function(x){return erGjort(fk,x.key)}), antD=s.felles.filter(function(x){return erGjort(fk,x.key)}).length;
         var av=s.felles.map(function(x){var q=PMAP[x.person];return '<span class="av'+(erGjort(fk,x.key)?' ok':'')+'" style="--pc:'+q.farge+'" title="'+esc(q.navn)+'">'+esc(q.kort)+'</span>'}).join('');
-        var rkF=rytmeKort(s.o), metaF=(s.o.minn&&s.o.minn.tid?'⏰ '+s.o.minn.tid+' · ':'')+(rkF?'↻ '+rkF+' · ':'')+(s.o.min?s.o.min+' min · ':'')+'alle sammen · '+antD+' av '+s.felles.length+(s.o.notat||s.o.lenke?' · trykk ⓘ for stegene':'');
+        var rkF=rytmeKort(s.o), metaF=(s.o.minn&&s.o.minn.tid?'⏰ '+esc(lukeNavn(s.o.minn.tid,ydag))+' · ':'')+(rkF?'↻ '+rkF+' · ':'')+(s.o.min?s.o.min+' min · ':'')+'alle sammen · '+antD+' av '+s.felles.length+(s.o.notat||s.o.lenke?' · trykk ⓘ for stegene':'');
         var tF='<div class="tile'+(alleD?' done':'')+(s.o.bonus?' bonus':'')+'" style="--pc:var(--accent)"><button class="tmain" data-k="'+esc(fk)+'" data-f="'+esc(s.felles.map(function(x){return x.key}).join(','))+'" aria-pressed="'+alleD+'"><span class="chk">✓</span><span class="ik">'+s.o.ikon+'</span><span class="tx"><span class="nm">'+esc(s.o.navn)+'<span class="pt num">+'+(s.o.poeng*s.felles.length)+'</span></span><span class="mt">'+metaF+'</span><span class="avs">'+av+'</span></span></button><span class="side">'+arkKnapp(s.o)+'<button hidden class="tb" title="Utsett for alle" aria-label="Utsett for alle" data-k="'+esc(s.felles[0].ukeKey||key)+'" data-o="'+esc(s.o.id)+'" data-d="'+s.dag+'" data-dag0="'+(s.felles[0].flyttet?s.felles[0].fraDag:s.dag)+'" data-felles="'+esc(s.felles.map(function(x){return x.orig}).join(','))+'">⇄</button></span></div>';
         if(alleD) FERD.push(tF); else ghArr.push({h:tF,seg:segFor(s.o,g)});
         return;
       }
-      var done=erGjort(s.ukeKey||key,s.key), p=PMAP[s.person];
-      var rk=rytmeKort(s.o), meta=(s.o.minn&&s.o.minn.tid?'⏰ '+s.o.minn.tid+' · ':'')+(rk?'↻ '+rk+' · ':'')+(s.o.min?s.o.min+' min':'')+(valgt?'':' · '+p.navn)+(slStatus(s.o)?' · 🛒 '+slStatus(s.o).n+' av '+slStatus(s.o).av+' kjøpt':(s.o.notat?' · '+esc(kortNotat(s.o.notat)):''));
+      var done=erGjort(s.ukeKey||key,s.key), p=PMAP[s.person]; if(valgt&&s.o.kat!=='Trening'&&!s.o.tur) SEGMIN[segFor(s.o,g)]+=(s.o.min||0);
+      var rk=rytmeKort(s.o), meta=(s.o.minn&&s.o.minn.tid?'⏰ '+esc(lukeNavn(s.o.minn.tid,ydag))+' · ':'')+(rk?'↻ '+rk+' · ':'')+(s.o.min?s.o.min+' min':'')+(valgt?'':' · '+p.navn)+(slStatus(s.o)?' · 🛒 '+slStatus(s.o).n+' av '+slStatus(s.o).av+' kjøpt':(s.o.notat?' · '+esc(kortNotat(s.o.notat)):''));
       if(s.o.lenke) meta+=' · <a href="'+s.o.lenke+'" onclick="event.stopPropagation()">'+esc(s.o.lenkenavn||'åpne')+'</a>';
       if(s.byttet) meta='⇄ for '+PMAP[s.orig].navn+' · '+meta;
       if(s.flyttet) meta='→ fra '+DAGK[s.fraDag]+' · '+meta;
@@ -2216,9 +2256,12 @@ function tegnIdag(){
       if(g==='Huskelapper'&&!erBarn&&arr.length>MAKS_LAPP) inner=arr.slice(0,MAKS_LAPP).join('')+'</div><details class="merlapper"><summary>+ '+(arr.length-MAKS_LAPP)+' huskelapp'+(arr.length-MAKS_LAPP===1?'':'er')+' til \u2014 trykk for \u00e5 se</summary><div class="tiles">'+arr.slice(MAKS_LAPP).join('')+'</div></details><div class="tiles" hidden>';
       SEG[seg]+=(erHelg&&g==='Kveld'?'':'<div class="grp'+(g==='Henger igjen'?' hg':'')+(erTorsdag&&g==='Grovvask'?' hv':'')+'">'+esc(navnG[g]||g)+'</div>')+'<div class="tiles">'+inner+'</div>'; }); /* v1.71: i helga står «Kveld» alt som skille — gruppenavnet gjentas ikke */
   });
-  if(erHelg&&(SEG.fm||SEG.em||SEG.kv||turK)){
-    html+=(SEG.fm?'<div class="skille">\u2600\uFE0F Formiddag</div>'+SEG.fm:'')+(SEG.em||turK?'<div class="skille">\uD83E\uDDED Ettermiddag</div>'+turK+SEG.em:'')+(SEG.kv?'<div class="skille">\uD83C\uDF19 Kveld</div>'+SEG.kv:'');
-  } else html+=SEG.fm+turK+SEG.em+SEG.kv;
+  /* v1.84: lukene som overskrifter — navn, ikke klokkeslett; voksne ser hvor mye luka rommer. Kvelden etter middag er familie og par, alle dager. */
+  function kapTxt(seg){ if(!valgt||erBarn) return ''; var l=lukeForSeg(ydag,seg), k=l?lukeKap(l,ydag):0; if(!k) return ''; if(!SEGMIN[seg]) return '<span class="kap">rommer '+minTxt(k)+'</span>'; return '<span class="kap'+(SEGMIN[seg]>k?' over':'')+'">'+minTxt(SEGMIN[seg])+' av '+minTxt(k)+(SEGMIN[seg]>k?' \u2014 for mye':'')+'</span>'; }
+  var kvSkille='<div class="skille">\uD83C\uDF19 Kveld \u00b7 '+(erBarn?'familietid':'familie og par')+kapTxt('kv')+'</div>'+(SEG.kv?'':'<p class="small kvro">'+(erBarn?'Kvelden er for familien.':'Bare det lette n\u00e5 \u2014 resten av kvelden er deres.')+'</p>');
+  if(erHelg){
+    html+=(SEG.fm?'<div class="skille">\u2600\uFE0F F\u00f8r lunsj'+kapTxt('fm')+(storOkt(ydag)&&valgt&&!erBarn?'<span class="kap">\u00b7 stor \u00f8kt i dag</span>':'')+'</div>'+SEG.fm:'')+(SEG.em||turK?'<div class="skille">\uD83E\uDDED Etter lunsj'+kapTxt('em')+'</div>'+turK+SEG.em:'')+kvSkille+SEG.kv;
+  } else html+=SEG.fm+turK+SEG.em+kvSkille+SEG.kv;
   if(FERD.length) html+='<details class="ferdigstripe"'+(FERD_OPEN?' open':'')+' id="ferdigstripe"><summary>✓ Fullført'+(FRAM?'':' i dag')+' <span class="num">('+FERD.length+')</span> <span class="small">— trykk på en for å angre</span></summary><div class="tiles kompakt">'+FERD.join('')+'</div></details>';
   /* dagsframdrift + feiring */
   var pl=slots.filter(function(s){return !s.o.bonus});
@@ -2707,7 +2750,9 @@ function gaaTil(id){var m=document.getElementById(id);if(!m)return;var off=0;doc
     settHvem(valgt||'thor');
   }
   function settHvem(id){tilPerson=id;hRad.querySelectorAll('button').forEach(function(x){x.classList.toggle('on',x.dataset.p===id)}); var ml=document.getElementById('nr-megl'); if(ml) ml.hidden=(id===(valgt||'thor'));}
-  function settDato(n){var d=addDays(NAA,n);dIn.value=ymd(d);
+  function fyllLuker(){var mt=document.getElementById('nr-tid'); if(!mt) return; var f=mt.value; mt.innerHTML=lukerFor(dIn.value||ymd(NAA)).map(function(l){return '<option value="'+l.tid+'">'+esc(l.navn)+'</option>'}).join(''); if(f) mt.value=f; if(!mt.value&&mt.options.length) mt.selectedIndex=Math.min(1,mt.options.length-1);}
+  dIn.addEventListener('change',fyllLuker);
+  function settDato(n){var d=addDays(NAA,n);dIn.value=ymd(d);fyllLuker();
     w.querySelectorAll('button.dag').forEach(function(b){b.classList.toggle('on',+b.dataset.d===n)})}
   w.querySelectorAll('button.dag').forEach(function(b){b.onclick=function(){settDato(+b.dataset.d)}});
   dIn.onchange=function(){w.querySelectorAll('button.dag').forEach(function(b){b.classList.remove('on')})};
