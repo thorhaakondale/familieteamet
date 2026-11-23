@@ -1,5 +1,5 @@
 {
- "versjon": "v1.36",
+ "versjon": "v1.37",
  "kilde": "Dale Livsstil & PT (programkortet) for øvelser og vekter · liv-treningsspesifikasjon.md v1.1 for mål, regler og progresjon · v1.6 12.10.2026: pauseøvelsene synlige, lette og med bilde · v1.7 14.10.2026: Annikens program (Liv) — to gymøkter, hjemmeøkt og månedssjekk · v1.8 16.10.2026: proteinkortet — lunsj og kvelds mot dagsmålet (Liv) · v1.9 17.10.2026: søndagsreserven H for Thor — kort hjemmeøkt bare på søndager uka mangler en styrkeøkt, turen går foran · v1.10 17.10.2026: reserveøkta H tilgjengelig torsdag–søndag (søndag uten gym-valg) · v1.11 4.11.2026: maks 15 reps per sett, prosjektuker (kort A + kort B, maks 4 i året), dypt knebøy-hold i 8-minutteren (nå 10-minutteren) og to bevegelighetstester · v1.12 7.11.2026: 10-minutteren (tirsdag kveld og søndag morgen) — hamstring og figur 4 ut, tillegget valgfritt; 90/90-hintet presisert · v1.13 8.11.2026: dypt knebøy-hold 2 min (aktivt hold, hæler på bok ved behov, stå over ved rygg 2+), katt–ku og tåklem 30 s så holdene er 8 min 30 s og økta fortsatt ca. 10 min; bilde på holdet (Liv/Thor) · v1.14 8.11.2026: steg 4 er den lange knelingen (bakre kne langt bak, bekkenet tippet under før hofta skyves fram) — Thor kjente at kort kneling var for mild; ankeldrillen (steg 5) holdes stram · v1.15 10.11.2026: 90/90 med aktive skift i 10-minutteren, valgfri hip thrust i maskinen etter A (Thor) · v1.15b 10.11.2026: to tapte økter gir ikke lettere økt (Thor) · v1.16 14.11.2026: framoverbøy (baksidelår) og lårstrekk (forsidelår) først i tillegget, med klokke · v1.17 14.11.2026: takt på hvert steg i 10-minutteren (dynamisk/hold, sekunder per ledd) · v1.18 14.11.2026: takt på alle øvelser i A, B og H for Thor og Anniken (dynamisk/hold, sekunder per ledd, én spenn-cue) · v1.19 14.11.2026: bird dog (Thor) — 8–10 s hold i stedet for flere reps · v1.20 14.11.2026: glute bridge i tillegget — 5 s hold med bekkenet tippet, ettbeins som progresjon · v1.21 14.11.2026: tillegget sortert viktigst først (sete, sideplanke, strekk, så albue/nakke/fot); sideplanke med klokke · v1.22 14.11.2026: tid på hvert steg i tillegget (est i sekunder) · v1.23 14.11.2026: 10-minutteren + tillegg for Anniken (valgfri tir/søn, magepust i stedet for tåklem; uten FlexBar og kort fot) · v1.24 15.11.2026: klokke på alle øvelser i tillegget (tidsramme + reps som mål); ankel, tåklem og pull-apart med hold ytterst i stedet for 2/2 (Thor: 2/2 ble masete) · v1.26 21.11.2026: halvpause-regelen for Anniken — pauseøvelsen tar maks halve pausen (bird dog 4 per side 2 s hold, sideplanke 20 s per side med tak 30 s, Pallof 6 per side), så det er minst ca. 60 s ekte hvile før neste hovedsett · v1.34 21.11.2026: pauseøvelsen tas i første del av hvilen (pauseSek, ca. 45–75 s), resten er ren hvile — timeren viser ① pauseøvelse → ② hvil, og et sett på en annen øvelse midt i hvilen starter ikke ny timer; «world's greatest stretch» (utfall med rotasjon) i Thors tillegg; feil sideplankebilde (viste vanlig planke) tatt ut (Thor) · v1.36 21.11.2026: hip thrust fast i B (ikke lenger valgfri, 2 sett), sittende tåhev som siste løft i A med 1 tung + 2 lette (3 sett, ikke 4) (Thor/Liv)",
  "personer": {
   "thor": {
@@ -24,7 +24,7 @@
   },
   "regler": {
    "maks_styrkeokter_per_uke": 2,
-   "okt_minutter": "Morgenøkt (fra 23.11.2026): ca. 40 min A og 40 min B (hip thrust fast i B). Pausene er låst i programmet: 2,5 min knebøy, 3 min RDL, 2 min overkropp, 1 min tåhev, 45 s albuevern. Før var det 50 og 55 min.",
+   "okt_minutter": "Morgenøkt (fra 23.11.2026): ca. 40 min A og ca. 45 min B (hip thrust fast i B). Pausene er låst i programmet: 2,5 min knebøy, 3 min RDL, 3 min incline press (vekstsett), 2 min roing og nedtrekk, 1,5 min albuevern og hip thrust, 1 min tåhev.",
    "aldri_to_like_paa_rad": true,
    "maanedlig_tungt_sett": "Første mandag i måneden: ett tungt sett knebøy 5 × 115–120 kg etter oppvarming — påminnelsen som holder maksstyrken ved like.",
    "kroppsarbeid": "Tung kroppsarbeidsuke = én gym-økt, ingen progresjon den uka. Aldri RDL dagen etter spadedag.",
@@ -39,15 +39,16 @@
    "rode_flagg_tekst": "Stopp økta. Ring fastlegen i dag. Brystsmerter eller besvimelse: 113.",
    "aldri_1rm_over_reps": 10,
    "affekt": "Det som avgjør om vi fortsetter er hvordan økta kjennes mens den pågår. «For hardt» to ganger på rad = intensiteten er lagt feil — ned 5 %, ikke opp.",
-   "pauseovelse": "Pauseøvelsen gjøres i pausen mellom settene på hovedøvelsen. Den er LETT og stopper langt før utmattelse — den skal ikke koste hovedsettet noe. Hovedløftene er vedlikeholdssett med vektene som tak; målet er ikke 180 kg, det er en rygg, et grep og en albue som tåler livet.",
+   "pauseovelse": "Pauseøvelsen gjøres i pausen mellom settene, men ALDRI på et tungt sett der den tar fra hovedløftet. Den er LETT og stopper langt før utmattelse. Hovedløftene er vedlikeholdssett med vektene som tak — unntatt incline press, som er vekstsett.",
    "maks_reps": 15,
    "maks_reps_tekst": "Maks 15 reps per sett (Thor 4.11.2026). Klarer du mer, er vekta for lett — gå opp, ikke flere reps. Lange sett sliter ut ryggstrekkerne før beina, og det er der korsryggen runder seg.",
    "knebøy_dybde": "Mål for dybden: hofta så vidt under kneet med nøytral korsrygg. Begynner korsryggen å runde i bunnen, er det din bunn i dag — dybden bygges med ankel- og hoftearbeidet i 10-minutteren, ikke ved å presse.",
    "morgenokt": "Morgenøkt mandag og torsdag 07:05–08:00 (Thor 21.11.2026). Banan + saft før økta — aldri fastende. Torsdag (B) og mandag (A): 10 min roing først — ryggen er stivere den første timen etter at du har stått opp; ta ett ekstra rampesett på knebøy og RDL.",
    "vedlikehold": "Fra 21.11.2026: hovedløftene er vedlikehold — 2 harde sett ved taket holder styrken (Bickel 2011; Spiering 2021). Tiden som spares brukes ikke på mer volum. Brystet holder 3 sett fordi det er der Thor vil se mer form; mage og midje er fettprosent, ikke flere magesett.",
-   "halvpause": "Halvpause-regelen (21.11.2026): pauseøvelsen tar maks halve pausen. Minst 90 s ekte hvile før knebøy og rumensk markløft, minst 60 s før de andre hovedsettene. Øktene blir ikke lengre — det er pauseøvelsene som doseres ned. Pauseøvelser gjøres aldri sist i økta.",
+   "halvpause": "Halvpause-regelen (21.11.2026, skjerpet 23.11.2026): tunge hovedsett får ekte hvile. Incline press (vekstsettet) og roing har INGEN pauseøvelse. Knebøy og sideutfall heller ikke. RDL har bird dog (maks 72 s, minst 105 s ekte hvile), nedtrekk har sideplanke (minst 60 s ekte hvile). Grep- og bæreøvelsene (dead hang, suitcase) ligger i pausene på albuevern og hip thrust, der de ikke stjeler fra et tungt sett. Pauseøvelsen tar aldri mer enn halve pausen.",
    "hipthrust_i_B": "Hip thrust flyttet fra A til B (21.11.2026): samme dag som RDL ble det to hengslingsøvelser på ryggen. På B-dagen får sete og korsrygg sin dose tre dager etter RDL, og øktene blir like lange.",
-   "ferie": "Ferieuker (jul, vinterferie, påske, sommer, høstferie): A og B på de vanlige dagene, men kl. 08:30 i stedet for tidlig morgen. Faller en øktdag på en helligdag, julaften eller nyttårsaften, flyttes økta til nærmeste dag som passer. Hjemme: på gymmet. På tur: hotellgym eller nærmeste gym. Ingen gym: hjemmeøkta (H). Første økt etter ferien: samme vekt som sist. (Thor 21.11.2026)"
+   "ferie": "Ferieuker (jul, vinterferie, påske, sommer, høstferie): A og B på de vanlige dagene, men kl. 08:30 i stedet for tidlig morgen. Faller en øktdag på en helligdag, julaften eller nyttårsaften, flyttes økta til nærmeste dag som passer. Hjemme: på gymmet. På tur: hotellgym eller nærmeste gym. Ingen gym: hjemmeøkta (H). Første økt etter ferien: samme vekt som sist. (Thor 21.11.2026)",
+   "vekstsett": "Vekstsett (Thor 23.11.2026): incline press er der brystet skal vokse — 3 sett × 6–10 reps, ren hvile 3 min, tak 60 kg. Dobbel progresjon: alle tre sett på 10 → +2,5 kg. Faller sett 2–3 under 6 to økter på rad, går vekta ned 5 % — ikke ved én dårlig dag."
   },
   "okter": {
    "A": {
@@ -162,7 +163,7 @@
       "fyllstoff": {
        "id": "birddog",
        "navn": "Bird dog",
-       "maal": "1 runde · 4 per side — hold 8 s i strekk, ikke flere reps",
+       "maal": "1 runde · 3 per side — hold 8 s i strekk, ikke flere reps",
        "maaling": "reps",
        "perSide": true,
        "sett": 1,
@@ -170,7 +171,7 @@
        "slik": [
         "På alle fire, hendene under skuldrene, knærne under hofta.",
         "Strekk høyre arm fram og venstre bein bak samtidig — til de er i høyde med ryggen, ikke høyere.",
-        "Hold 8 sekunder uten at hofta vrir seg, tilbake, bytt side. 4 per side — ikke flere.",
+        "Hold 8 sekunder uten at hofta vrir seg, tilbake, bytt side. 3 per side — ikke flere.",
         "Lett med 8 s? Tegn en liten firkant med hånd og fot mens du holder."
        ],
        "hvorfor": "Ryggen: lærer korsryggen å holde seg i ro mens armer og bein jobber — McGill Big 3.",
@@ -192,7 +193,7 @@
         ],
         "spenn": "Hofta i ro, stram mage"
        },
-       "pauseSek": 75
+       "pauseSek": 72
       },
       "takt": {
        "type": "dynamisk",
@@ -308,44 +309,19 @@
      {
       "id": "press",
       "navn": "Incline chest press",
-      "hint": "vedlikeholdssett — vektene er tak · skulderbladene ned og bak",
+      "hint": "vekstsettet — ren hvile 3 min, ingen pauseøvelse · 6–10 reps: bli på 55 kg til alle tre sett når 10, så 57,5 · skulderbladene ned og bak",
       "sett": 3,
       "reps": [
-       8,
+       6,
        10
       ],
       "vekt": {
        "start": 50,
-       "tak": 55,
+       "tak": 60,
        "steg": 2.5
       },
-      "pause": 120,
+      "pause": 180,
       "type": "hoved",
-      "fyllstoff": {
-       "id": "deadhang",
-       "navn": "Dead hang",
-       "maal": "2 × 20–40 s — slipp lenge før du mister grepet",
-       "maaling": "sek",
-       "sett": 2,
-       "maaltid": 60,
-       "varianter": [
-        "Dead hang",
-        "Håndklehang"
-       ],
-       "bilde": "img/deadhang.webp",
-       "slik": [
-        "Grip stanga litt bredere enn skuldrene, heng med strake armer.",
-        "Skuldrene får henge — ingen trekk. Pust rolig.",
-        "Slipp mens du fortsatt har god kontroll. Maks tid måles bare på testdagen."
-       ],
-       "hvorfor": "Grep og albue: senene i underarmen tåler mer når de belastes jevnt og rolig.",
-       "takt": {
-        "type": "hold",
-        "hold": "20–40 s",
-        "spenn": "Aktive skuldre"
-       },
-       "pauseSek": 45
-      },
       "takt": {
        "type": "dynamisk",
        "ledd": [
@@ -360,12 +336,13 @@
        ],
        "spenn": "Skulderbladene ned og bak"
       },
-      "pauseFast": 120
+      "pauseFast": 180,
+      "hvorfor": "Brystet er der du vil se mer form. Vekst krever at hvert sett er nær tungt — da må pausen være ren, ellers taper sett 2 og 3 reps (8 → 6 på 55 kg 23.11.2026)."
      },
      {
       "id": "roing",
       "navn": "Bent over-roing",
-      "hint": "rygg parallell, ingen rykk · skulderbladene ett sekund ned og sammen på toppen (nakken) · vedlikeholdssett",
+      "hint": "rygg parallell, ingen rykk · skulderbladene ett sekund ned og sammen på toppen (nakken) · ren hvile 2 min — ingen pauseøvelse (grep og korsrygg skal være ferske)",
       "sett": 2,
       "reps": [
        8,
@@ -378,36 +355,6 @@
       },
       "pause": 120,
       "type": "hoved",
-      "fyllstoff": {
-       "id": "suitcase",
-       "navn": "Suitcase carry",
-       "maal": "1 runde · 20 m per side · én manual 16–20 kg · +2 kg når runden går rent",
-       "maaling": "m",
-       "sett": 1,
-       "perSide": true,
-       "vekt": {
-        "start": 16,
-        "tak": 24,
-        "steg": 2
-       },
-       "varianter": [
-        "Suitcase carry",
-        "Farmer's walk (to manualer)"
-       ],
-       "bilde": "img/suitcase.webp",
-       "slik": [
-        "Én manual i én hånd, hengende rett ned. Den andre hånda tom.",
-        "Gå 20 m helt rett i overkroppen — skuldrene like høye, ikke len deg fra vekta.",
-        "Bytt hånd, gå tilbake. Det er ett sett."
-       ],
-       "hvorfor": "Kjerne og rygg: trener siden av kroppen til å holde deg oppreist mot en skjev last — anti-sidebøy.",
-       "takt": {
-        "type": "hold",
-        "hold": "20 m per side",
-        "spenn": "Stå rett, ikke len"
-       },
-       "pauseSek": 50
-      },
       "takt": {
        "type": "dynamisk",
        "ledd": [
@@ -492,7 +439,7 @@
      {
       "id": "albuevern",
       "navn": "Albuevern",
-      "hint": "underarmen hviler på låret, hånda utenfor kneet med 2–4 kg: løft opp med den friske hånda, senk sakte på 4 s · 2 × 15 med håndflata ned, 2 × 15 med håndflata opp · så skulder utadrotasjon med strikk 2 × 15",
+      "hint": "underarmen hviler på låret, hånda utenfor kneet med 2–4 kg: løft opp med den friske hånda, senk sakte på 4 s · 2 × 15 med håndflata ned, 2 × 15 med håndflata opp · så skulder utadrotasjon med strikk 2 × 15 · suitcase carry i pausen",
       "sett": 2,
       "reps": [
        15,
@@ -503,7 +450,7 @@
        "tak": 4,
        "steg": 1
       },
-      "pause": 45,
+      "pause": 90,
       "type": "tilbehor",
       "slik": [
        "Sitt, legg hele underarmen på låret med hånda og manualen utenfor kneet.",
@@ -524,12 +471,42 @@
         ]
        ]
       },
-      "pauseFast": 45
+      "pauseFast": 90,
+      "fyllstoff": {
+       "id": "suitcase",
+       "navn": "Suitcase carry",
+       "maal": "1 runde · 20 m per side · én manual 16–20 kg · +2 kg når runden går rent",
+       "maaling": "m",
+       "sett": 1,
+       "perSide": true,
+       "vekt": {
+        "start": 16,
+        "tak": 24,
+        "steg": 2
+       },
+       "varianter": [
+        "Suitcase carry",
+        "Farmer's walk (to manualer)"
+       ],
+       "bilde": "img/suitcase.webp",
+       "slik": [
+        "Én manual i én hånd, hengende rett ned. Den andre hånda tom.",
+        "Gå 20 m helt rett i overkroppen — skuldrene like høye, ikke len deg fra vekta.",
+        "Bytt hånd, gå tilbake. Det er ett sett."
+       ],
+       "hvorfor": "Kjerne og rygg: trener siden av kroppen til å holde deg oppreist mot en skjev last — anti-sidebøy.",
+       "takt": {
+        "type": "hold",
+        "hold": "20 m per side",
+        "spenn": "Stå rett, ikke len"
+       },
+       "pauseSek": 45
+      }
      },
      {
       "id": "hipthrust",
       "navn": "Hip thrust i maskinen",
-      "hint": "sist i økta · startvekta er et anslag, juster første gang · 2 s klem på toppen, haka inn, ribbeina ned — setet løfter, ikke korsryggen · aldri over 15 reps",
+      "hint": "sist i økta · dead hang i pausen (avlaster ryggen) · startvekta er et anslag, juster første gang · 2 s klem på toppen, haka inn, ribbeina ned — setet løfter, ikke korsryggen · aldri over 15 reps",
       "sett": 2,
       "reps": [
        10,
@@ -566,6 +543,31 @@
         ]
        ],
        "spenn": "Haka inn, klem setet"
+      },
+      "fyllstoff": {
+       "id": "deadhang",
+       "navn": "Dead hang",
+       "maal": "1 × 20–40 s — slipp lenge før du mister grepet",
+       "maaling": "sek",
+       "sett": 1,
+       "maaltid": 60,
+       "varianter": [
+        "Dead hang",
+        "Håndklehang"
+       ],
+       "bilde": "img/deadhang.webp",
+       "slik": [
+        "Grip stanga litt bredere enn skuldrene, heng med strake armer.",
+        "Skuldrene får henge — ingen trekk. Pust rolig.",
+        "Slipp mens du fortsatt har god kontroll. Maks tid måles bare på testdagen."
+       ],
+       "hvorfor": "Grep og albue: senene i underarmen tåler mer når de belastes jevnt og rolig.",
+       "takt": {
+        "type": "hold",
+        "hold": "20–40 s",
+        "spenn": "Aktive skuldre"
+       },
+       "pauseSek": 45
       }
      }
     ],
