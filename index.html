@@ -594,6 +594,45 @@ h1.topp{margin:6px 0 4px;font-size:1.25rem}
 #ark .ark-minn select{flex:1 1 8em}
 #ark #ark-dagrad .ark-lbl{margin:4px 0 4px}
 #ark .ark-slett{margin:10px 0 0;padding-top:8px}
+
+/* v1.88 (Thor 26.11.2026): arket som bunnark på telefonen — Ferdig/Avbryt nederst i tommelsonen, notatet klappet til 3–4 linjer, lavere felter og knapper */
+#ark .ark-lesboks.klapp{max-height:5.8em}
+#ark .ark-inn{padding:0 12px;gap:8px}
+#ark .ark-bar{order:99;position:sticky;top:auto;bottom:0;margin:4px -12px 0;padding:8px 12px calc(8px + env(safe-area-inset-bottom,0px));border-bottom:0;border-top:1px solid var(--line);box-shadow:0 -6px 14px rgba(0,0,0,.06);gap:10px}
+#ark .ark-bar .ark-tittel{display:none}
+#ark .ark-bar #ark-avbryt,#ark .ark-bar #ark-lagre{flex:1;min-height:48px;font-size:1.0312rem;border-radius:12px}
+#ark .ark-bar #ark-avbryt{border:1.5px solid var(--line)}
+#ark .ark-bar #ark-lagre[hidden]{display:none}
+#ark .ark-felt{margin-top:12px}
+#ark .ark-ik{font-size:1.25rem}
+#ark h3,#ark .ark-felt #ark-navn-inn,#ark #ark-navn-inn{font-size:1rem}
+#ark .ark-notat{font-size:0.9688rem;line-height:1.45}
+#ark .ark-chips{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+#ark .ark-chips::-webkit-scrollbar{display:none}
+#ark .ark-chips span{flex:none;white-space:nowrap}
+#ark .ark-minn{display:grid;grid-template-columns:auto 1fr;align-items:center;gap:6px 8px;padding:8px 10px}
+#ark .ark-minn small{display:none}
+#ark .ark-minn label{font-size:0.875rem}
+#ark .ark-minn label[for=ark-gruppe]{margin-top:0!important}
+#ark .ark-minn select,#ark .ark-minn input{min-height:38px;font-size:0.9375rem;padding:2px 8px}
+#ark .ark-minn #ark-minn-tid-kl,#ark .ark-minn #ark-minn-fjern{grid-column:2}
+#ark .ark-minn button{min-height:34px;padding:4px 10px;justify-self:start}
+#ark .dagrad{gap:6px}
+#ark .dagrad button{min-height:40px;padding:7px 12px;font-size:0.9062rem}
+#ark .dagrad input[type=date]{min-height:40px;padding:6px 10px}
+#ark #ark-dagrad .ark-lbl{margin:2px 0 4px}
+#ark .ark-slett{margin:4px 0 0;padding-top:6px}
+#ark .ark-slett .slett-start{width:auto;min-height:38px;padding:6px 12px;font-size:0.875rem;border-width:1px}
+#ark .ark-hint{display:none}
+@media(max-width:700px){
+  dialog#ark[open]{margin:auto 0 0;width:100%;max-width:100%;border-radius:18px 18px 0 0;max-height:88dvh}
+}
+#ark .ark-felt textarea#ark-notat{min-height:0}
+#ark .ark-minn #ark-minn-fjern{display:none} /* «Ingen varsel» i velgeren gjør samme jobb */
+#ark .ark-felt .ark-topp{min-height:0}
+#ark .ark-felt #ark-navn-inn{padding:0 4px}
+#ark .dagrad button{font-size:0.8438rem;padding:6px 10px;min-height:38px}
+#ark .dagrad input[type=date]{min-height:38px}
 </style>
 </head>
 <body>
@@ -808,7 +847,7 @@ h1.topp{margin:6px 0 4px;font-size:1.25rem}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.87.0';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.88.0';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -1129,9 +1168,9 @@ function slVis(o,les){ var st=slStatus(o); les.classList.toggle('sl',!!st); var 
 /* v1.87: lange notater klappes sammen — trykk på teksten eller «Vis hele ▾» for å åpne. Handlelista (sl) klappes aldri, den skal hakes av. */
 function arkFold(les){ var bx=document.getElementById('ark-lesboks'), fb=document.getElementById('ark-fold'); if(!bx||!fb) return;
   bx.classList.remove('klapp'); fb.hidden=true; fb.setAttribute('aria-expanded','false');
-  var lb=document.getElementById('ark-lbl'); if(lb) lb.style.display=(les.classList.contains('sl')||(les.hidden&&!document.getElementById('ark-notat').hidden))?'':'none'; /* «Notat»-merket tar plass uten å si noe; handlelista og skrivefeltet beholder det */
+  var lb=document.getElementById('ark-lbl'); if(lb) lb.style.display=les.classList.contains('sl')?'':'none'; /* «Notat»-merket tar plass uten å si noe; handlelista og skrivefeltet beholder det */
   if(les.hidden||les.classList.contains('sl')) return;
-  requestAnimationFrame(function(){ var lh=parseFloat(getComputedStyle(les).lineHeight)||23; if(les.scrollHeight<=lh*6.2) return;
+  requestAnimationFrame(function(){ var lh=parseFloat(getComputedStyle(les).lineHeight)||23; if(les.scrollHeight<=lh*4.6) return;
     bx.classList.add('klapp'); fb.hidden=false; fb.textContent='Vis hele ▾'; });
   fb.onclick=function(e){ e.stopPropagation(); var aapen=!bx.classList.toggle('klapp'); fb.textContent=aapen?'Vis mindre ▴':'Vis hele ▾'; fb.setAttribute('aria-expanded',aapen?'true':'false'); };
   bx.onclick=function(e){ if(bx.classList.contains('klapp')&&!e.target.closest('a,button,input,label')){ fb.click(); } };
@@ -1161,7 +1200,7 @@ function aapneArk(id,knapp){
   lbl.hidden=!(o.notat||voksen);
   var avb=document.getElementById('ark-avbryt'); if(avb){avb.textContent=voksen?'Avbryt':'Lukk'; avb.classList.toggle('lukk',!voksen)}
   /* v1.58 (Thor 23.10): notatet vises som lesbar tekst — «Endre» åpner skrivefeltet, som vokser med innholdet */
-  var endre=document.getElementById('ark-endre'); function taVokse(){ta.style.height='auto';ta.style.height=Math.max(120,ta.scrollHeight+4)+'px'}
+  var endre=document.getElementById('ark-endre'); function taVokse(){ta.style.height='auto';ta.style.height=Math.max(ta.value?96:52,ta.scrollHeight+4)+'px'}
   ta.oninput=taVokse;
   if(endre) endre.onclick=function(e){e.stopPropagation();les.hidden=true;endre.hidden=true;var fb=document.getElementById('ark-fold'); if(fb) fb.hidden=true; var bx=document.getElementById('ark-lesboks'); if(bx) bx.classList.remove('klapp'); ta.hidden=false;taVokse();ta.focus()};
   if(voksen){var harN=!!(o.notat&&o.notat.trim()); les.hidden=!harN; slVis(o,les); if(endre) endre.hidden=!harN; ta.hidden=harN; lag.hidden=false; ta.value=o.notat||''; if(!harN) setTimeout(taVokse,0);
