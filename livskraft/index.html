@@ -452,7 +452,7 @@ details.stegliste>summary{cursor:pointer;font-size:0.8125rem;font-weight:700;col
    ============================================================ */
 "use strict";
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
-var VERSJON='1.43.0'; /* v1.21: appversjonen, vises under Mer → Programmet */
+var VERSJON='1.44.0'; /* v1.21: appversjonen, vises under Mer → Programmet */
 var KODE=null, PERSON='thor', PROG=null, S=null, db=null, dbOk=false, PENDING=[];
 var AKTIV=null; /* pågående økt */
 var UKEVIS=0;   /* uke-offset i Uka-fanen */
@@ -991,7 +991,7 @@ function tegnOkt(){
     if(f.tekst)h+='<div class="'+(f.hold?'varsel':'ok')+'" style="margin:0 0 8px;font-size:0.7812rem">'+esc(f.tekst)+'</div>';
     if(ov.maaling==='gjort'){h+='<div class="rad"><button class="knapp sek lit" data-gjort="'+ov.id+'">'+(L.sett[0].ok?'Gjort ✓':'Marker som gjort')+'</button></div>'}
     else{var forr=sisteFor(ov.id);
-      if(ov.oppvarmingssett){var OV=(AKTIV.oppv=AKTIV.oppv||{})[ov.id]||[];ov.oppvarmingssett.forEach(function(w,wi){h+='<div class="oppv'+(OV[wi]?' ferdig':'')+'"><span class="nr">O'+(wi+1)+'</span><span>Oppvarming: <b>'+(w.tekst?esc(w.tekst):(w.kg===20?'tom stang (20 kg)':w.kg+' kg'))+' × '+w.reps+'</b> — ingen pause</span><button class="hak'+(OV[wi]?' p':'')+'" data-oppv="'+ov.id+'" data-i="'+wi+'">✓</button></div>'})} /* v1.42.0: oppvarmingssett vises, hakes uten timer og logges ikke */
+      if(ov.oppvarmingssett){var OV=(AKTIV.oppv=AKTIV.oppv||{})[ov.id]||[];ov.oppvarmingssett.forEach(function(w,wi){h+='<div class="oppv'+(OV[wi]?' ferdig':'')+'"><span class="nr">'+(w.under?'R':'O'+(wi+1))+'</span><span>'+(w.under?'Rolig første sett':'Oppvarming')+': <b>'+(w.tekst?esc(w.tekst):(w.under?(f.kg!==null&&f.kg!==undefined?(f.kg-w.under)+' kg':w.under+' kg under'):(w.kg===20?'tom stang (20 kg)':w.kg+' kg')))+' × '+w.reps+'</b> — '+(w.etter?esc(w.etter):'ingen pause')+'</span><button class="hak'+(OV[wi]?' p':'')+'" data-oppv="'+ov.id+'" data-i="'+wi+'">✓</button></div>'})} /* v1.42.0: oppvarmingssett vises, hakes uten timer og logges ikke · v1.44.0: «under» = rolig første sett N kg under dagens vekt */
       h+='<div class="setthode"><span></span><span>forrige</span><span>'+(ov.vekt?(ov.vekt.enhet?'kg/hånd':'kg'):'')+'</span><span>reps</span><span></span></div>';
       L.sett.forEach(function(s,si){h+='<div class="sett'+(s.ok?' ferdig':'')+'"><span class="nr">'+(si+1)+'</span><span class="forr">'+(forr[si]?esc(forr[si]):'—')+'</span>'+(ov.vekt?'<input type="text" inputmode="decimal" data-ov="'+ov.id+'" data-s="'+si+'" data-f="kg" value="'+(s.kg!==null&&s.kg!==undefined?String(s.kg).replace('.',','):'')+'">':'<span></span>')+'<input type="text" inputmode="numeric" data-ov="'+ov.id+'" data-s="'+si+'" data-f="reps" value="'+(s.reps!==null&&s.reps!==undefined?s.reps:'')+'" placeholder="'+ov.reps[1]+'"><button class="hak'+(s.ok?' p':'')+'" data-hak="'+ov.id+'" data-s="'+si+'">✓</button></div>'});
       var mR=(PP().regler&&PP().regler.maks_reps)||15;if(ov.vekt&&L.sett.some(function(s){return (s.reps||0)>mR}))h+='<div class="varsel" style="margin:6px 0;font-size:0.7812rem">Over '+mR+' reps: vekta er for lett. Stopp settet på '+ov.reps[1]+' — neste gang går vekta opp. Lange sett sliter ut korsryggen før beina.</div>';
@@ -1007,6 +1007,7 @@ function tegnOkt(){
       if(fs.maaling==='m')h+='<div class="rad" style="margin-top:6px"><button class="knapp sek lit" data-rent="'+fs.id+'">'+(F.rent?'Alle sett rene ✓':'Hak av: alle sett rene')+'</button></div>';
       h+='</div>'}
     h+='</div>'});
+  if(okt.tilslutt&&!AKTIV._rediger)h+='<div class="ok" style="margin:10px 0;font-size:0.8125rem"><b>Valgfritt til slutt</b> — '+esc(okt.tilslutt)+'</div>'; /* v1.44.0 */
   $('okt-liste').innerHTML=h;
   /* hendelser */
   Array.prototype.forEach.call(document.querySelectorAll('#okt-liste input[data-ov]'),function(inp){
