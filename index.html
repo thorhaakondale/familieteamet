@@ -568,6 +568,32 @@ h1.topp{margin:6px 0 4px;font-size:1.25rem}
 .fd-info{font-size:0.875rem;margin:10px 0;min-height:2.5em}
 .fd-k{display:flex;gap:8px;justify-content:flex-end}.fd-k button{font:inherit;font-weight:800;font-size:0.9375rem;min-height:44px;padding:8px 16px;border-radius:10px;border:0;cursor:pointer}
 .fd-avb{background:transparent;color:var(--ink)}.fd-ok{background:#1a73e8;color:#fff}.fd-ok[disabled]{opacity:.4;cursor:default}
+
+/* v1.87 (Thor 26.11.2026): arket er kompakt øverst — lange notater klappes sammen til ca. 5 linjer med «Vis hele ▾», så varsel, dag og knapper kommer høyere opp */
+#ark .ark-inn{gap:8px}
+#ark .ark-bar{padding:6px 10px;margin-bottom:0}
+#ark .ark-bar button{min-height:36px;font-size:0.9375rem}
+#ark .ark-felt{padding:8px 10px;gap:4px}
+#ark .ark-topp{gap:8px;align-items:center}
+#ark .ark-ik{font-size:1.375rem;line-height:1}
+#ark h3{font-size:1.0938rem;line-height:1.25}
+#ark .ark-felt #ark-navn-inn,#ark #ark-navn-inn{font-size:1.0625rem;line-height:1.25;min-height:0}
+#ark .ark-felt textarea#ark-notat+*,#ark .ark-felt textarea#ark-notat{margin-top:2px}
+#ark .ark-notat{font-size:1rem;line-height:1.45}
+#ark .ark-lesboks{position:relative}
+#ark .ark-lesboks.klapp{max-height:7.4em;overflow:hidden;cursor:pointer}
+#ark .ark-lesboks.klapp::after{content:'';position:absolute;left:0;right:0;bottom:0;height:2.2em;background:linear-gradient(rgba(0,0,0,0),var(--card2));pointer-events:none}
+#ark .ark-notatknapper{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+#ark .ark-notatknapper:empty,#ark .ark-notatknapper:not(:has(button:not([hidden]))){display:none}
+#ark .ark-fold{font:inherit;font-size:0.9062rem;font-weight:800;color:var(--accent);background:transparent;border:0;padding:6px 2px;min-height:36px;cursor:pointer}
+#ark .ark-fold[hidden],#ark .ark-endre[hidden]{display:none}
+#ark .ark-endre{margin-left:auto;font-size:0.8438rem;padding:4px 10px;min-height:32px}
+#ark .ark-chips{gap:4px}
+#ark .ark-chips span{font-size:0.7812rem;padding:2px 8px}
+#ark .ark-minn{margin:0;padding:8px 10px;gap:6px}
+#ark .ark-minn select{flex:1 1 8em}
+#ark #ark-dagrad .ark-lbl{margin:4px 0 4px}
+#ark .ark-slett{margin:10px 0 0;padding-top:8px}
 </style>
 </head>
 <body>
@@ -782,7 +808,7 @@ h1.topp{margin:6px 0 4px;font-size:1.25rem}
 
 <script>
 /* ---------- oppsett ---------- */
-var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.86.0';
+var STARTDATO=new Date(2026,8,12); /* appen tok over 12.9.2026 */ var VERSJON='1.87.0';
 var FIREBASE={databaseURL:'https://familieteamet-edf81-default-rtdb.europe-west1.firebasedatabase.app',projectId:'familieteamet-edf81'};
 /* ---------- grunnlag ---------- */
 var PERS=[
@@ -1100,6 +1126,16 @@ function slVis(o,les){ var st=slStatus(o); les.classList.toggle('sl',!!st); var 
     if(db){db.child('oppgaver/'+o.id+'/avkr/'+k).set(cb.checked?o.avkr[k]:null).catch(function(){status('Kunne ikke lagre delt — ligger på denne enheten.')})}
     tegn(); }; });
 }
+/* v1.87: lange notater klappes sammen — trykk på teksten eller «Vis hele ▾» for å åpne. Handlelista (sl) klappes aldri, den skal hakes av. */
+function arkFold(les){ var bx=document.getElementById('ark-lesboks'), fb=document.getElementById('ark-fold'); if(!bx||!fb) return;
+  bx.classList.remove('klapp'); fb.hidden=true; fb.setAttribute('aria-expanded','false');
+  var lb=document.getElementById('ark-lbl'); if(lb) lb.style.display=(les.classList.contains('sl')||(les.hidden&&!document.getElementById('ark-notat').hidden))?'':'none'; /* «Notat»-merket tar plass uten å si noe; handlelista og skrivefeltet beholder det */
+  if(les.hidden||les.classList.contains('sl')) return;
+  requestAnimationFrame(function(){ var lh=parseFloat(getComputedStyle(les).lineHeight)||23; if(les.scrollHeight<=lh*6.2) return;
+    bx.classList.add('klapp'); fb.hidden=false; fb.textContent='Vis hele ▾'; });
+  fb.onclick=function(e){ e.stopPropagation(); var aapen=!bx.classList.toggle('klapp'); fb.textContent=aapen?'Vis mindre ▴':'Vis hele ▾'; fb.setAttribute('aria-expanded',aapen?'true':'false'); };
+  bx.onclick=function(e){ if(bx.classList.contains('klapp')&&!e.target.closest('a,button,input,label')){ fb.click(); } };
+}
 function aapneArk(id,knapp){
   if(!arkInit())return;
   var o=OPPG.filter(function(x){return x.id===id})[0]; if(!o)return;
@@ -1117,7 +1153,7 @@ function aapneArk(id,knapp){
   if(hvem)bit.push(hvem);
   if(o.min)bit.push(o.min+' min');
   if(o.poeng)bit.push(o.poeng+' poeng');
-  if(o.minn&&o.minn.tid)bit.push('\u23F0 minner kl. '+o.minn.tid+((o.minn.til||[]).length>1?' \u2014 begge':''));
+  if(o.minn&&o.minn.tid&&!(erVoksen()&&!o.tur))bit.push('\u23F0 minner kl. '+o.minn.tid+((o.minn.til||[]).length>1?' \u2014 begge':''));
   document.getElementById('ark-meta').innerHTML=bit.map(function(x){return '<span>'+esc(x)+'</span>'}).join('');
   document.getElementById('ark-lenkerad').innerHTML=o.lenke?'<a class="ark-lenkeknapp" href="'+esc(o.lenke)+'" target="_blank" rel="noopener">'+esc(o.lenkenavn||'Åpne')+' →</a>':'';
   var les=document.getElementById('ark-les'), ta=document.getElementById('ark-notat'), lag=document.getElementById('ark-lagre');
@@ -1127,11 +1163,12 @@ function aapneArk(id,knapp){
   /* v1.58 (Thor 23.10): notatet vises som lesbar tekst — «Endre» åpner skrivefeltet, som vokser med innholdet */
   var endre=document.getElementById('ark-endre'); function taVokse(){ta.style.height='auto';ta.style.height=Math.max(120,ta.scrollHeight+4)+'px'}
   ta.oninput=taVokse;
-  if(endre) endre.onclick=function(e){e.stopPropagation();les.hidden=true;endre.hidden=true;ta.hidden=false;taVokse();ta.focus()};
+  if(endre) endre.onclick=function(e){e.stopPropagation();les.hidden=true;endre.hidden=true;var fb=document.getElementById('ark-fold'); if(fb) fb.hidden=true; var bx=document.getElementById('ark-lesboks'); if(bx) bx.classList.remove('klapp'); ta.hidden=false;taVokse();ta.focus()};
   if(voksen){var harN=!!(o.notat&&o.notat.trim()); les.hidden=!harN; slVis(o,les); if(endre) endre.hidden=!harN; ta.hidden=harN; lag.hidden=false; ta.value=o.notat||''; if(!harN) setTimeout(taVokse,0);
     document.getElementById('ark-hint').textContent='Linjeskift blir egne linjer. Lagre skriver til alle enhetene.'}
   else{les.hidden=false;ta.hidden=true;lag.hidden=true;slVis(o,les); if(endre) endre.hidden=true;
     document.getElementById('ark-hint').textContent='Flytt dagen eller bytt til en annen rett over her.'}
+  arkFold(les);
   var d=document.getElementById('ark');
   byggDagrad(o,knapp,d);
   document.getElementById('ark-handling').innerHTML=''; /* v1.19: bytt-raden ligger i dagvelgeren */
@@ -3056,7 +3093,7 @@ if('serviceWorker' in navigator){window.addEventListener('load',function(){navig
     <div class="ark-felt">
       <div class="ark-topp"><span class="ark-ik" id="ark-ik"></span><h3 id="ark-navn"></h3><textarea id="ark-navn-inn" hidden rows="2" maxlength="200" enterkeyhint="done" aria-label="Oppgavens tekst" placeholder="Hva skal gjøres?"></textarea></div>
       <span class="ark-lbl" id="ark-lbl">Notat</span>
-      <p class="ark-notat" id="ark-les"></p><button type="button" class="ark-endre" id="ark-endre" hidden>✏️ Endre notatet</button>
+      <div class="ark-lesboks" id="ark-lesboks"><p class="ark-notat" id="ark-les"></p></div><div class="ark-notatknapper"><button type="button" class="ark-fold" id="ark-fold" hidden aria-expanded="false">Vis hele ▾</button><button type="button" class="ark-endre" id="ark-endre" hidden>✏️ Endre</button></div>
       <textarea id="ark-notat" aria-labelledby="ark-lbl" placeholder="Slik gjøres det, hva som trengs …"></textarea>
     </div>
     <div class="ark-meta ark-chips" id="ark-meta"></div>
